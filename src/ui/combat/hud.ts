@@ -22,7 +22,7 @@ const BAR_LOW = 0.3;
 /** The statuses that change how a fighter's sprite looks, and the looks themselves (the half-HP rage is one of them). */
 const LOOKS = Object.values(STATUSES).filter((s): s is typeof s & { look: string } => !!s.look);
 const ALL_LOOKS = [...new Set([...LOOKS.map((s) => s.look), 'enraged'])];
-/** Steps of the stun banner's draining bar. */
+/** Steps of the stun veil's fading. */
 const STUN_STEPS = 20;
 /** Steps of the belt's red wash (motion is stepped). */
 const BELT_ALARM_STEPS = 8;
@@ -307,7 +307,7 @@ export function createHud(v: CombatView, onPassive: () => void): { render(): voi
     setText(r.popupPct, pct < 90 ? `${Math.floor(pct)}%` : `${(Math.floor(pct * 100) / 100).toFixed(2)}%`);
   };
 
-  /** The veil over the belt while the hero can't act: striped, it shrinks towards the belt's exit as the stun runs out (`--left`, 1 to 0). */
+  /** The veil over the belt while the hero can't act: it fades out in steps as the stun runs out (`--left`, 1 to 0), the cards stay readable under it. */
   const renderTied = (): void => {
     const id = combat.isOver ? undefined : Object.keys(combat.hero.statuses).find((s) => combat.has('hero', s) && STATUSES[s].handsTied);
     toggle(r.stun, 'on', !!id);
@@ -316,15 +316,12 @@ export function createHud(v: CombatView, onPassive: () => void): { render(): voi
       tiedSpan = 0;
       return;
     }
-    const left = combat.hero.statuses[id].t;
-    tiedSpan = Math.max(tiedSpan, left);
+    tiedSpan = Math.max(tiedSpan, combat.hero.statuses[id].t);
     if (id !== tiedId) {
       tiedId = id;
       r.stun.dataset.tone = STATUSES[id].tone;
-      setHtml(r.stunIcon, icon(statusIcon(id, 'hero')));
     }
-    setText(r.stunTime, `${left.toFixed(1)}s`);
-    r.stun.style.setProperty('--left', (Math.ceil((left / tiedSpan) * STUN_STEPS) / STUN_STEPS).toFixed(2));
+    r.stun.style.setProperty('--left', (Math.ceil((combat.hero.statuses[id].t / tiedSpan) * STUN_STEPS) / STUN_STEPS).toFixed(2));
   };
 
   const renderEnemyState = (): void => {

@@ -101,12 +101,8 @@ function markup(run: RunState, combat: Combat): string {
       <div class="belt-auto" aria-hidden="true"><i></i><i></i><i></i><i></i></div>
       <div class="maw-eyes" aria-hidden="true"><i></i><i></i></div>
       <div class="belt-cards"></div>
-      <!-- while the hero's hands are tied (a stun): a striped veil over the whole belt, pulling back as it ends -->
-      <div class="belt-stun" aria-hidden="true">
-        <span class="stun-ico"></span>
-        <span class="stun-time"></span>
-        <i class="stun-fill"></i>
-      </div>
+      <!-- while the hero's hands are tied (a stun): a flat veil over the belt that fades out as it ends -->
+      <div class="belt-stun" aria-hidden="true"></div>
       <!-- the IT guy's window: it covers the whole belt (shown by the HUD while the engine has one up) -->
       <div class="update-popup">
         <div class="up-bar"><span>${t('combat.update.title')}</span></div>
@@ -168,8 +164,6 @@ function queryRefs(el: HTMLElement) {
     track: $('.belt-track', el),
     beltCards: $('.belt-cards', el),
     stun: $('.belt-stun', el),
-    stunIcon: $('.stun-ico', el),
-    stunTime: $('.stun-time', el),
     popup: $('.update-popup', el),
     popupText: $('.up-text', el),
     popupUpdate: $<HTMLButtonElement>('.js-update', el),

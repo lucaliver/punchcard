@@ -111,46 +111,18 @@
   clip-path: polygon(0 30%, 12% 30%, 12% 0, 70% 0, 70% 20%, 100% 20%, 100% 80%, 80% 80%, 80% 100%, 20% 100%, 20% 70%, 0 70%);
   opacity: calc(0.35 + 0.6 * var(--grime, 1));
 }
-/* A stun (the hero's hands are tied): a striped veil over the whole belt, cards included (they stay readable). It is anchored at the exit and its edge
-   closes in on it as the stun runs out (`--left` is the share still to go); the seconds sit in the middle. */
+/* A stun (the hero's hands are tied): a flat veil over the whole belt, cards included, that fades out in steps as the stun ends
+   (`--left` is the share still to go): the cards stay readable, to know what to play the moment it lifts. */
 .belt-stun {
   display: none;
   position: absolute;
   inset: 0;
   z-index: var(--z-belt-window);
-  align-items: center;
-  justify-content: center;
-  gap: 8px;
-  overflow: hidden;
   pointer-events: none;
-  line-height: 1;
-  animation: stamp-in 0.15s steps(2);
+  background: var(--tone);
+  opacity: calc(var(--left, 1) * 0.5);
 }
-.belt-stun.on { display: flex; }
-.stun-fill {
-  position: absolute;
-  top: 0;
-  bottom: 0;
-  left: 0;
-  width: calc(var(--left, 1) * 100%);
-  border-right: 4px solid var(--tone);
-}
-.belt.ltr .stun-fill { left: auto; right: 0; border-right: 0; border-left: 4px solid var(--tone); }
-.stun-fill::before {
-  content: '';
-  position: absolute;
-  inset: 0;
-  opacity: 0.4;
-  background: repeating-linear-gradient(-45deg, var(--tone) 0 6px, transparent 6px 14px);
-}
-.stun-ico,
-.stun-time {
-  position: relative;
-  color: var(--paper);
-  text-shadow: var(--off) var(--off) 0 var(--k);
-}
-.stun-ico { display: grid; width: 34px; font-size: 34px; color: var(--tone-hi); --ink2: var(--k); filter: drop-shadow(var(--off) var(--off) 0 var(--k)); }
-.stun-time { font-family: var(--font-ui); font-size: 44px; font-variant-numeric: tabular-nums; }
+.belt-stun.on { display: block; }
 /* The IT guy's window: it covers the whole belt (the cards ride on underneath) until the update is done or Postpone sends it away */
 .update-popup {
   display: none;
