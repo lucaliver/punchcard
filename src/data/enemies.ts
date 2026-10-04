@@ -93,9 +93,9 @@ const defs: EnemyDef[] = [
         intent: 'buff',
         windup: 6,
         status: [{ id: 'strength', v: 2, target: 'enemy' }],
-        curse: [{ id: 'mandatoryFun', n: 2, to: 'draw' }],
+        curse: [{ id: 'mandatoryFun', n: 4, to: 'draw' }],
       },
-      { id: 'letsSync', intent: 'curse', windup: 6, curse: [{ id: 'quickSync', n: 2, to: 'belt' }] },
+      { id: 'letsSync', intent: 'curse', windup: 6, curse: [{ id: 'quickSync', n: 4, to: 'belt' }] },
     ],
   },
   {
