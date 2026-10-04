@@ -112,6 +112,8 @@ export interface CardDef {
   pack?: string;
   /** Card widths it covers on the belt (default 1): wider cards ride over the ones ahead of them. */
   span?: number;
+  /** A wide card whose extra widths are its own body, behind it, not a gate over the cards ahead (Meeting Table): the belt leaves room for all of it before dealing the next card. */
+  joined?: true;
   /** A wide card that covers both belt rows ahead of it, not just its own. */
   tall?: boolean;
   /** While on the belt, every other card of its row is out of reach (Priority Task). */

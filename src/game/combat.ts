@@ -390,7 +390,7 @@ export class Combat {
       if (def.lockRow && w.row === b.row) return true;
       const span = def.span ?? 1;
       const d = b.pos - w.pos;
-      return span > 1 && (def.tall || w.row === b.row) && d > 0 && d < (span - 0.5) * CONFIG.cardWidth;
+      return span > 1 && !def.joined && (def.tall || w.row === b.row) && d > 0 && d < (span - 0.5) * CONFIG.cardWidth;
     });
   }
 
@@ -808,10 +808,14 @@ export class Combat {
     for (const b of this.belt) if (b.row === row && !b.pinned) b.pos += move;
   }
 
-  /** Distance from the entry to the newest card of a row (Infinity if the row is empty). */
+  /** Distance from the entry to the newest card of a row (Infinity if the row is empty); a joined card's extra widths trail behind it, so they count as taken. */
   private rowGap(row: number): number {
     let gap = Infinity;
-    for (const b of this.belt) if (b.row === row && !b.pinned && b.pos < gap) gap = b.pos;
+    for (const b of this.belt) {
+      if (b.row !== row || b.pinned) continue;
+      const def = CARDS[b.card.id];
+      gap = Math.min(gap, b.pos - (def.joined ? ((def.span ?? 1) - 1) * CONFIG.spacing : 0));
+    }
     return gap;
   }
 

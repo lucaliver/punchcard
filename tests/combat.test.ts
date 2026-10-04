@@ -840,6 +840,21 @@ describe('combat engine', () => {
     expect(c.discard[0].uid).toBeLessThan(0);
   });
 
+  it('Meeting Table takes two places on the belt: the next card comes one place later, and it covers nothing', () => {
+    const c = setup({ beltRows: 1, deck: deckOf(Array(8).fill('punch')) });
+    c.enemy.move = { id: 'wait', intent: 'defend', windup: 999 };
+    c.belt.length = 0;
+    c.addTempCard('meetingTable', 'belt');
+    c.addTempCard('punch', 'belt', false, 0.4);
+    expect(c.isCovered(c.belt[1].card.uid)).toBe(false);
+    c.belt.pop();
+    const table = c.belt[0];
+    run(c, CONFIG.introTime + 0.01);
+    while (c.belt.length < 2) run(c, 0.05);
+    const next = c.belt.find((b) => b !== table)!;
+    expect(table.pos - next.pos).toBeGreaterThanOrEqual(CONFIG.minGap + CONFIG.spacing - 0.02);
+  });
+
   it('every card has a play or expire effect (or is plain unplayable) and valid numbers', () => {
     for (const d of CARD_LIST) {
       expect(d.play || d.onExpire || d.keywords?.includes('unplayable'), d.id).toBeTruthy();

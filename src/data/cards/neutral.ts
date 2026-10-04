@@ -721,6 +721,7 @@ export const neutralCards: CardDef[] = [
     vals: [25],
     upVals: [32],
     span: 2,
+    joined: true,
     art: 'meetingTable',
     play: (c, v) => c.gainBlock('hero', v[0]),
   },

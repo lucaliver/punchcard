@@ -118,7 +118,7 @@ tests/         combat, content, balance.sim (+ bot), balance.stats, e2e/
 - **A card's `type` is the colour of its background**: attack pink, defense blue, skill yellow, power grey, curse green (`--cat-*` tokens, `data-type` on the card). There are no other types (no spell, no potion): rules and effects name a type ("every attack", "every defence card") and the player sees it on the card.
 - Cost, keywords and values of a copy always come from `cardCostOf`/`cardKeywordsOf`/`cardValsOf` (upgrades and **perks**
   included). Set `dmg: []` only for raw damage that ignores modifiers.
-- Special mechanics (`ride`, `onOverflow`, `tip`, `sweep`, `costDrop`, `inSleeve`, `span`/`tall`/`lockRow`, `pack`) are
+- Special mechanics (`ride`, `onOverflow`, `tip`, `sweep`, `costDrop`, `inSleeve`, `span`/`tall`/`joined`/`lockRow`, `pack`) are
   documented on `CardDef`. Curse *cards* live in `neutral.ts` (their rarity is a power level: common = a nuisance, rare = hurts or clogs, epic = shuts down belt space or can't be cleared; they never drop as rewards and can't be upgraded); **hexes** (`hexes.ts`) are a different thing (a curse on one
   belt card, chipped away by taps).
 - A fight can give a copy something its deck card doesn't have: `CombatCard.fleeting` (Krusty Krab's copies), read through `cardKeywordsOf`; `addTempCard(…, extra)` carries it.

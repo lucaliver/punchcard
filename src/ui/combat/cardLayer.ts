@@ -1,5 +1,6 @@
 import { t } from '../../core/i18n';
 import { sfx } from '../../audio/sfx';
+import { CONFIG } from '../../data/config';
 import { CARDS, cardValsOf } from '../../data/cards';
 import { STATUSES, statusIcon } from '../../data/statuses';
 import type { CombatCard } from '../../game/types';
@@ -101,12 +102,16 @@ export function createCardLayer(v: CombatView): CardLayer {
     const cardEl = cardView(card, { combat });
     const def = CARDS[card.id];
     const span = def.span ?? 1;
-    // A wide card is a normal card with a gate stretching over the belt ahead of it (it's all one tap target).
+    // A wide card is a normal card with a gate stretching over the belt ahead of it, or (joined) with more card welded on behind it: it's all one tap target.
     if (span > 1) {
       cardEl.classList.add('wide');
       toggle(cardEl, 'tall', !!def.tall);
+      toggle(cardEl, 'joined', !!def.joined);
       cardEl.style.setProperty('--span', String(span));
-      cardEl.append(h('div', { class: 'c-gate' }));
+      cardEl.style.setProperty('--join', String(((span - 1) * CONFIG.spacing) / CONFIG.cardWidth));
+      cardEl.append(
+        def.joined ? h('div', { class: 'c-join' }, h('div', { class: 'c-top' }), h('div', { class: 'c-art' })) : h('div', { class: 'c-gate' }),
+      );
     }
     // A lane lock pulls caution tape across its whole row.
     if (def.lockRow) {
@@ -119,7 +124,7 @@ export function createCardLayer(v: CombatView): CardLayer {
       face: cardEl.querySelector('.c-face')!,
       cost: cardEl.querySelector('.c-cost')!,
       span,
-      over: span > 1 || !!def.lockRow,
+      over: (span > 1 && !def.joined) || !!def.lockRow,
     };
   };
 

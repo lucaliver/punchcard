@@ -400,6 +400,23 @@
   box-shadow: var(--sh) var(--sh) 0 var(--shadow);
 }
 
+/* Joined card (Meeting Table): more card welded on behind it (to the right while the belt runs left), so the belt reads as two cards in one. */
+.card.joined .c-join {
+  position: absolute;
+  top: calc(var(--bw) * -1);
+  bottom: calc(var(--bw) * -1);
+  left: 100%;
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  width: calc(var(--cw) * var(--join) + var(--bw));
+  background: var(--paper);
+  border: var(--bw) solid var(--k);
+  border-left: 0;
+  box-shadow: var(--sh) var(--sh) 0 var(--shadow);
+}
+.sleeve-slot .c-join { display: none; }
+
 /* Lockout: the gate hangs over the lane below too (tall cards always ride the top lane). */
 .card.wide.tall .c-gate { bottom: calc(var(--bw) * -1 - var(--belt-row-h)); }
 
@@ -425,6 +442,14 @@
 .belt.ltr .belt-track { transform: scaleX(-1); }
 .belt.ltr .maw-eyes { left: auto; right: 4px; }
 .belt.ltr .card.wide .c-gate { right: auto; left: 100%; }
+.belt.ltr .card.joined .c-join {
+  left: auto;
+  right: 100%;
+  border-left: var(--bw) solid var(--k);
+  border-right: 0;
+  /* its right side is the card: only the strip under it shows */
+  box-shadow: 0 var(--sh) 0 var(--shadow);
+}
 
 /* Virus: a green halftone over the card, a virus on the corner (opposite the cost), and the cost in red like Inflation */
 .card.sick::after {
