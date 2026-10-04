@@ -84,7 +84,7 @@ const necromancer: HeroDef = {
   maxMana: 2,
   regen: 1.25,
   blockDecay: 0.9,
-  startDeck: [...rep('skeletonCrew', 6), ...rep('karlMarx', 5), ...rep('toxicMemo', 2), 'coffee', 'italianEspresso'],
+  startDeck: [...rep('skeletonCrew', 4), ...rep('karlMarx', 5), ...rep('toxicMemo', 3), 'coffee', 'italianEspresso'],
   startUpgraded: ['skeletonCrew', 'karlMarx'],
   firstRewards: [
     ['bloodMoney', 'rust', 'barricade', 'macGyver'],

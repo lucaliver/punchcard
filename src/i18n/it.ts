@@ -225,7 +225,7 @@ const it: Record<EnKey, string> = {
   'hero.mage.name': 'Mago',
   'hero.mage.job': "L'informatico, conosce la tua password",
   'hero.mage.passiveName': 'Multitasking',
-  'hero.mage.passiveShort': 'Ogni attacco aggiunge una carica di [multitasking]: +1 danno per carica, fino a {$multitaskingMax}.',
+  'hero.mage.passiveShort': 'Ogni attacco aggiunge una carica di multitasking: +1 danno per carica, fino a {$multitaskingMax}.',
   'hero.mage.abilityShort': 'Stordisci il nemico per {$timeTheft}s e accelera il tuo nastro per {$timeTheft}s.',
   'hero.mage.ability': 'Furto di Tempo',
 

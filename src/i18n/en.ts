@@ -223,7 +223,7 @@ const en = {
   'hero.mage.name': 'Mage',
   'hero.mage.job': 'I.T. guy, knows your password',
   'hero.mage.passiveName': 'Multitasking',
-  'hero.mage.passiveShort': 'Every attack adds a charge of [multitasking]: +1 damage per charge, up to {$multitaskingMax}.',
+  'hero.mage.passiveShort': 'Every attack adds a charge of multitasking: +1 damage per charge, up to {$multitaskingMax}.',
   'hero.mage.abilityShort': 'Stun the enemy for {$timeTheft}s and rush your belt for {$timeTheft}s.',
   'hero.mage.ability': 'Time Theft',
 
