@@ -52,14 +52,16 @@
   align-items: center;
   padding: 0 2.5cqw;
   font-family: var(--font-ui);
-  font-size: 17cqw;
+  --base: 17cqw;
+  /* the title band is about 60cqw wide (less with the upgrade's +) and a letter 0.45em: the longest word (`--w`) caps the size so it isn't broken mid-word */
+  font-size: min(var(--base), calc(125cqw / var(--w, 1)));
   line-height: 0.85;
   overflow: hidden;
   overflow-wrap: anywhere;
 }
 /* longer names go on two lines, a size down */
-.c-name.long { font-size: 14cqw; }
-.c-name.xlong { font-size: 12cqw; }
+.c-name.long { --base: 14cqw; }
+.c-name.xlong { --base: 12cqw; }
 .card.is-up .c-name::after {
   content: '+';
   margin-left: 1cqw;
