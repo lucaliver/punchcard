@@ -725,6 +725,70 @@ export const neutralCards: CardDef[] = [
     play: (c, v) => c.gainBlock('hero', v[0]),
   },
 
+  // Tempo and mana cards any hero can use (they started as Mage cards)
+  {
+    id: 'turnItOff',
+    face: '{selfStun:0}|{addCard}',
+    cls: 'neutral',
+    type: 'skill',
+    rarity: 'rare',
+    cost: 1,
+    upCost: 0,
+    vals: [3],
+    keywords: ['exhaust'],
+    art: 'powerOff',
+    play: (c, v, card) => {
+      c.applyStatus('hero', 'stun', 1, v[0]);
+      c.addTempCard('turnItOn', 'draw', card.up);
+    },
+  },
+  {
+    id: 'powerNap',
+    face: '{crystal:0}|{mana:1}',
+    cls: 'neutral',
+    type: 'skill',
+    rarity: 'epic',
+    cost: 2,
+    minCost: 1,
+    vals: [1, 3],
+    upVals: [1, 4],
+    keywords: ['exhaust'],
+    art: 'powerNap',
+    play: (c, v) => {
+      c.addManaCrystals(v[0]);
+      c.gainMana(v[1]);
+    },
+  },
+  {
+    id: 'modernTimes',
+    face: '{rush:0}',
+    cls: 'neutral',
+    type: 'skill',
+    rarity: 'rare',
+    cost: 2,
+    upCost: 1,
+    vals: [6],
+    upVals: [8],
+    art: 'gears',
+    play: (c, v) => c.rushBelt(v[0]),
+  },
+  {
+    id: 'sudo',
+    face: '{sudo:0}|{rush:1}',
+    cls: 'neutral',
+    type: 'skill',
+    rarity: 'epic',
+    cost: 2,
+    upCost: 1,
+    vals: [5, 5],
+    upVals: [8, 8],
+    art: 'rootKey',
+    play: (c, v) => {
+      c.applyStatus('hero', 'rootAccess', 1, v[0]);
+      c.rushBelt(v[1]);
+    },
+  },
+
   // Generated during a fight (never offered as rewards).
   {
     id: 'alreadyDone',
