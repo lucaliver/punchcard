@@ -410,7 +410,7 @@ export const necromancerCards: CardDef[] = [
   },
   {
     id: 'voodooPin',
-    face: '{pin:0}|{cheaper:1}',
+    face: '{petrify:0}|{cheaper:1}',
     cls: 'necromancer',
     type: 'skill',
     rarity: 'rare',

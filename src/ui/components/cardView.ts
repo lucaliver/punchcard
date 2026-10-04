@@ -66,6 +66,8 @@ export const GLYPHS: Record<string, { icon: string; unit?: string; sign?: string
   pile: { icon: 'pile' },
   snatch: { icon: 'snatch' },
   pin: { icon: 'pushpin' },
+  /** Petrifies cards of your deck (the hex's rock). */
+  petrify: { icon: 'stone' },
   sweep: { icon: 'windKey', sign: '+' },
   manaRegen: { icon: 'crystalUp', unit: 's' },
   /** Multitasking, for seconds or as charges. */
