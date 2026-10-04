@@ -32,7 +32,7 @@ const nodeKind = (n: RunNode): 'finalBoss' | RunNode['type'] => (n.type === 'bos
 /** The icon of a room on the map: a boss wears the one of its act. */
 export const nodeIcon = (n: RunNode): string => (n.type === 'boss' ? (actDef(n.act).bossIcon ?? NODE_ICON.boss) : NODE_ICON[n.type]);
 /** Height of one floor on the map (px); a room takes most of it, the rest is corridor. */
-const ROW_H = 92;
+const ROW_H = 100;
 const laneX = (lane: number): number => 22 + lane * 56;
 /** Rooms more than this many doors ahead are lost in fog: only the ones the player can go to next are in sight. */
 const VISION = 1;
