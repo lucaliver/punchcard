@@ -19,12 +19,12 @@ export const ROOM_SCENE: Partial<Record<NodeType, { anim: string; inks: string[]
 
 const NO_SCENE = { anim: '', inks: [], alt: false };
 
-/** The big picture at the top of a room: its sprite, moving, with motes drifting behind. */
+/** The big picture at the top of a room: its sprite, moving, on a plinth in the act's ink, with motes drifting behind. */
 export function roomScene(type: NodeType): HTMLElement {
   const { anim, inks, alt } = ROOM_SCENE[type] ?? NO_SCENE;
   return h('div', {
     class: 'room-scene',
-    html: `${motes(14, inks)}<div class="room-art ${anim}">${roomArt(type)}${alt ? roomArt(`${type}.open`, 'alt') : ''}</div>`,
+    html: `${motes(14, inks)}<div class="room-stage"><div class="pedestal"></div><div class="room-art ${anim}">${roomArt(type)}${alt ? roomArt(`${type}.open`, 'alt') : ''}</div></div>`,
   });
 }
 
