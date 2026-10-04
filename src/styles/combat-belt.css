@@ -257,7 +257,8 @@
 .card.charging .c-top,
 .card.charging .c-art,
 .card.charging .c-face { opacity: 1; }
-.card.charging::after {
+.card.charging::after,
+.card.charging .c-join::after {
   content: '';
   position: absolute;
   left: 0;
@@ -269,7 +270,8 @@
   border-bottom: max(2px, calc(var(--cw) * 0.03)) solid var(--b);
 }
 /* Pending: its first ride along the belt, stamped and out of reach until it comes round again */
-.card.pending::before {
+.card.pending::before,
+.card.pending .c-join::before {
   content: '';
   position: absolute;
   inset: 0;
@@ -452,7 +454,8 @@
 }
 
 /* Virus: a green halftone over the card, a virus on the corner (opposite the cost), and the cost in red like Inflation */
-.card.sick::after {
+.card.sick::after,
+.card.sick .c-join::after {
   content: '';
   position: absolute;
   inset: 0;
