@@ -22,6 +22,8 @@ const SHREDDER_BLOCK = 2;
 const LANYARD_SPEED = 1.15;
 /** Share of max HP the Emergency Exit gets you back on your feet with. */
 const EXIT_HP = 0.35;
+/** Cards the Statuette petrifies at the start of a fight. */
+const STATUETTE_CARDS = 5;
 
 /**
  * Relics found in the Lost & Found (and one sold by the Tailor). `n` is the number their text shows (`{n}`); the hooks and
@@ -149,6 +151,18 @@ const defs: RelicDef[] = [
       onCardExpired: (c) => {
         c.gainBlock('hero', SHREDDER_BLOCK);
         proc(c, 'paperShredder');
+      },
+    },
+  },
+  {
+    id: 'statuette',
+    rarity: 'rare',
+    n: STATUETTE_CARDS,
+    hooks: {
+      // The cards are upgraded for this fight only (combat cards are copies), but each must be chipped free first.
+      onCombatStart: (c) => {
+        c.pinCards('petrify', STATUETTE_CARDS, 0, true);
+        proc(c, 'statuette');
       },
     },
   },

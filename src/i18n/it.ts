@@ -432,6 +432,8 @@ const it: Record<EnKey, string> = {
   'relic.rubberDuck.d': 'La prima volta in uno scontro che scendi sotto metà dei HP, ottieni {n} di Blocco.',
   'relic.paperShredder.name': 'Distruggidocumenti',
   'relic.paperShredder.d': 'Ogni carta che scivola via dal nastro ti dà {n} di Blocco.',
+  'relic.statuette.name': 'Statuina',
+  'relic.statuette.d': 'A inizio combattimento pietrifica {n} carte del tuo mazzo. Sono potenziate per tutto il combattimento.',
   'relic.lanyard.name': 'Cordino Portabadge',
   'relic.lanyard.d': 'Il nastro va il {n}% più veloce.',
   'relic.companyCard.name': 'Carta Aziendale',

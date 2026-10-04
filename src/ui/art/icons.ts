@@ -1382,6 +1382,10 @@ export const ICONS: Record<string, { el: Element; svg: string }> = {
     el: 'steel',
     svg: `<rect x="6" y="10" width="52" height="22" rx="4"/><path fill="#16121f" d="M12 18h40v4H12z"/><path d="M12 36h6v22h-6zM24 36h6v26h-6zM36 36h6v20h-6zM48 36h6v24h-6z"/>`,
   },
+  'relic.statuette': {
+    el: 'steel',
+    svg: `<path d="M6 54h52l3 8H3z"/><path d="M18 52c-4-14-3-26 4-34 4-6 16-6 20 0 7 8 8 20 4 34z"/><path fill="#16121f" d="M26 30h4v4h-4zM36 30h4v4h-4zM28 40h8v3h-8z"/>`,
+  },
   'relic.lanyard': {
     el: 'steel',
     svg: `<path d="M12 2h10l14 26-6 4zM52 2H42L28 28l6 4z"/><rect x="26" y="28" width="12" height="8" rx="2"/><rect x="16" y="38" width="32" height="24" rx="3"/><path fill="#16121f" d="M28 42h8v3h-8zM24 52h16v3H24z"/>`,

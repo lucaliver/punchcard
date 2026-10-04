@@ -2290,6 +2290,14 @@ describe('relics', () => {
     expect(rollRewards(r, 'fight')).toHaveLength(5);
   });
 
+  it('the Statuette petrifies cards at the start of a fight and upgrades them for that fight only', () => {
+    const c = setup({ relics: ['statuette'] });
+    const all = [...c.draw, ...c.belt.map((b) => b.card)];
+    const stone = all.filter((card) => card.hex);
+    expect(stone).toHaveLength(RELICS.statuette.n);
+    for (const card of stone) expect(card.up).toBe(true);
+  });
+
   it('the Rubber Duck gives Block once per fight when HP falls under half, and the Shredder for every card lost', () => {
     const c = setup({ relics: ['rubberDuck', 'paperShredder'] });
     run(c, CONFIG.introTime + 0.1);

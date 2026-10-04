@@ -430,6 +430,8 @@ const en = {
   'relic.rubberDuck.d': 'The first time you drop under half HP in a fight, gain {n} Block.',
   'relic.paperShredder.name': 'Paper Shredder',
   'relic.paperShredder.d': 'Every card that slips off the belt gives you {n} Block.',
+  'relic.statuette.name': 'Statuette',
+  'relic.statuette.d': 'At the start of a fight, petrifies {n} cards of your deck. They are upgraded for the fight.',
   'relic.lanyard.name': 'Lanyard',
   'relic.lanyard.d': 'The belt runs {n}% faster.',
   'relic.companyCard.name': 'Company Card',

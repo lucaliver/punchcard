@@ -143,6 +143,15 @@ const paperShredder = `
 <path d="M60 112v36M76 112v44M92 112v32M108 112v42M124 112v34M140 112v40" stroke="${PAPER}" stroke-width="7" stroke-linecap="round"/>
 ${face(100, 92, 24, 5)}`;
 
+const statuette = `
+<path d="M34 164h132l8 20H26z" fill="#6c6880" ${OUT}/>
+<path d="M44 140h112v26H44z" fill="#8a8798" ${OUT}/>
+<path d="M62 142c-8-34-6-64 10-82 8-10 48-10 56 0 16 18 18 48 10 82z" fill="#a9a6b8" ${OUT}/>
+<path d="M76 70c6-8 14-12 24-12" stroke="#d8d5e2" stroke-width="8" fill="none" stroke-linecap="round"/>
+<path d="M118 52l-8 20 12 10-8 22" stroke="${INK}" stroke-width="4" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M60 112l-18 14M140 112l18 14" stroke="${INK}" stroke-width="5" stroke-linecap="round"/>
+${face(100, 100, 18, 5)}`;
+
 const lanyard = `
 <path d="M34 0h28l50 106-26 8z" fill="#ff3d9a" ${OUT}/>
 <path d="M166 0h-28L88 106l26 8z" fill="#ff3d9a" ${OUT}/>
@@ -179,6 +188,7 @@ export const RELIC_SPRITES: Record<string, string> = Object.fromEntries(
     stickyNotes,
     rubberDuck,
     paperShredder,
+    statuette,
     lanyard,
     companyCard,
   }).map(([id, svg]) => [`relic.${id}`, svg]),

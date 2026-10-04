@@ -1617,11 +1617,12 @@ export class Combat {
   }
 
   /** Voodoo Pin: `n` random cards (belt first, then the rest of the deck) are hexed, and cost `cheaper` less for the rest of the fight. */
-  pinCards(id: string, n: number, cheaper: number): void {
+  pinCards(id: string, n: number, cheaper: number, upgrade = false): void {
     const hex = HEXES[id];
     for (const card of this.pickCards((c) => !isCurse(c) && !c.hex && this.cardCost(c) > 0, n)) {
       card.hex = { id, left: hex.taps, t: hex.thaw };
       card.cut = (card.cut ?? 0) + cheaper;
+      if (upgrade) card.up = true;
       this.events.emit({ type: 'hexed', card });
     }
   }
