@@ -1,8 +1,10 @@
 /* ------------------------------------------------------------------ journey */
+/* big numbers (3-digit HP, thousands of pay, a thick deck) can outgrow a narrow phone: the buttons then drop to a second line instead of pushing the screen wide */
 .run-hud {
   display: flex;
+  flex-wrap: wrap;
   align-items: center;
-  gap: 8px;
+  gap: 6px 8px;
 }
 .chip {
   color: var(--k);
@@ -23,7 +25,7 @@
 .run-hud .chip:not(.hero-chip) { padding: 6px 8px; gap: 4px; }
 .chip.money .pico { color: var(--y); --ink2: var(--k); }
 .run-hud .spacer { flex: 1; }
-.hud-btns { display: flex; gap: 6px; }
+.hud-btns { display: flex; gap: 6px; margin-left: auto; }
 .hero-chip { width: 50px; padding: 2px; justify-content: center; }
 .hero-chip .riso { width: 40px; height: 40px; }
 /* hero sheet (hold the portrait on the map) */
@@ -244,6 +246,8 @@
 }
 /* the name plate is a sibling of the icon box: it bobs with it */
 .node.current :is(.dot, .label) { animation: bob 0.8s steps(2) infinite; }
+/* the map is never panned sideways: what pokes out of the screen (a ring, a shadow) is cut, not scrollable */
+.journey { overflow-x: clip; }
 .journey .debug-fab {
   top: calc(var(--safe-t) + 70px);
   right: 6px;
