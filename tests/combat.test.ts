@@ -335,7 +335,7 @@ describe('combat engine', () => {
     expect(c.playCard(under!.card.uid)).toBe(true);
   });
 
-  it("the Senior Boomer's paper cuts hurt for every card that slips off the belt, three times as much under half HP", () => {
+  it("the Senior Boomer's paper cuts deal 2 damage for every card that slips off the belt, at any HP", () => {
     const c = setup({ enemy: ENEMIES.seniorBoomer, deck: deckOf(new Array(8).fill('punch')) });
     run(c, CONFIG.introTime + 0.01);
     c.enemy.move = { id: 'wait', intent: 'defend', windup: 999 };
@@ -345,9 +345,9 @@ describe('combat engine', () => {
       run(c, 0.05);
       return hp - c.hero.hp;
     };
-    expect(lost()).toBe(1);
+    expect(lost()).toBe(2);
     c.damage('hero', 'enemy', Math.ceil(c.enemy.maxHp / 2), { raw: true }, 'hero');
-    expect(lost()).toBe(3);
+    expect(lost()).toBe(2);
   });
 
   it('the Goblin Consultant stops the belt for a moment, then reverses it, for every quarter of its HP you take, cards keeping their place', () => {

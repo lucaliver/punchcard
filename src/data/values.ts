@@ -89,7 +89,6 @@ export const VALUES = {
   kamikazeDamage: CARDS.kamikaze.vals[1],
   // Half-HP moves (the Paper Cuts it starts with count 1)
   deepBeltSecs: ENEMIES.exaggeratedGirl.deepBelt ?? 0,
-  paperCutsX: 1 + HALF.paperCuts,
   securityBlock: HALF.securityBlock,
   slavesStall: HALF.slavesStall,
   complianceSlow: HALF.complianceSlow,

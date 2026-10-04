@@ -9,7 +9,7 @@ const ramp: Partial<MoveDef> = { status: [gainStrength] };
 const SIREN_SONG = 8;
 
 /** What the half-HP moves bring (their texts quote these, see `data/values.ts`). */
-export const HALF = { paperCuts: 2, securityBlock: 30, slavesStall: 8, complianceSlow: 20 } as const;
+export const HALF = { securityBlock: 30, slavesStall: 8, complianceSlow: 20 } as const;
 
 /**
  * Every enemy has one steady main attack and, every `every` main attacks, a special move
@@ -62,9 +62,8 @@ const defs: EnemyDef[] = [
       atk('seniority', 17, 13, { intent: 'charge' }),
       { id: 'gatekeep', intent: 'curse', windup: 4, curse: [{ id: 'gatekeeping', n: 2, to: 'belt' }], status: [gainStrength] },
     ],
-    // Paper cuts: every card you let slip off the belt hurts, and at half HP it's worse.
-    start: [{ id: 'paperCuts' }],
-    onHalf: (c) => c.applyStatus('enemy', 'paperCuts', HALF.paperCuts),
+    // Paper cuts: every card you let slip off the belt hurts.
+    start: [{ id: 'paperCuts', v: 2 }],
   },
   {
     id: 'toxicCoworker',
@@ -159,7 +158,7 @@ const defs: EnemyDef[] = [
     art: 'bossSon',
     main: atk('tantrum', 6, 6),
     every: 2,
-    specials: [atk('nepoBaby', 8, 8, { intent: 'defend', block: 12 }), { id: 'ccDad', intent: 'buff', windup: 4, status: [gainStrength] }],
+    specials: [{ id: 'nepoBaby', intent: 'buff', windup: 8, block: 12, status: [gainStrength] }],
     start: [{ id: 'weakSpot' }],
   },
   {
