@@ -23,9 +23,6 @@ export function rewardPool(cls: CardClass, rarity: Rarity): CardDef[] {
   return all.filter((c) => (c.cls === cls || c.cls === 'neutral') && c.rarity === rarity && !c.pack);
 }
 
-/** Whether a card may join (or be copied into) this deck: a `oneOf` tag is taken once. */
-export const fitsDeck = (deck: CardInst[], def: CardDef): boolean => !def.oneOf || !deck.some((c) => CARDS[c.id]?.oneOf === def.oneOf);
-
 // Card rules shared by the engine and the UI, so what a card shows is what it does.
 
 /** How a class's card damage looks and sounds when the card says nothing (`hit(v, { kind })`): the magic classes are arcane, the rest slash (attacks) or hit blunt. */

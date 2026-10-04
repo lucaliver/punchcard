@@ -1,6 +1,5 @@
 import { t } from '../../core/i18n';
 import { sfx } from '../../audio/sfx';
-import { CARDS, fitsDeck } from '../../data/cards';
 import { CONFIG } from '../../data/config';
 import { canCopy, canShred, photocopyCard, shredCard, type RunState } from '../../game/run';
 import type { Screen } from '../app';
@@ -14,18 +13,11 @@ import { runHud } from './journey';
 
 /** Copy Room: shred a card out of the deck for good, or photocopy one (it costs HP). */
 export function copyRoomScreen(run: RunState, onDone: () => void): Screen {
-  const pick = (
-    title: string,
-    confirmLabel: string,
-    apply: (uid: number) => void,
-    play: (screen: HTMLElement, card: CardInst) => void,
-    filter?: (c: CardInst) => boolean,
-  ): void => {
+  const pick = (title: string, confirmLabel: string, apply: (uid: number) => void, play: (screen: HTMLElement, card: CardInst) => void): void => {
     sfx('tap');
     openDeck(run.deck, {
       title,
       confirmLabel,
-      filter,
       onPick: (c) => {
         const card = { ...c };
         apply(c.uid);
@@ -69,7 +61,6 @@ export function copyRoomScreen(run: RunState, onDone: () => void): Screen {
             t('copy.photocopyConfirm'),
             (uid) => photocopyCard(run, uid),
             (screen, c) => playPhotocopy(screen, c, t('copy.copied')),
-            (c) => fitsDeck(run.deck, CARDS[c.id]),
           ),
       ),
     ),
