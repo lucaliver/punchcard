@@ -25,7 +25,7 @@ const warrior: HeroDef = {
   startDeck: [...rep('punch', 6), ...rep('bobTheBuilder', 6), 'bellaCiao', 'coffee', 'coffee'],
   startUpgraded: ['punch', 'bobTheBuilder'],
   firstRewards: [
-    ['heavyLifting', 'crowbar', 'wallStreet', 'macGyver'],
+    ['heavyLifting', 'hostileTakeover', 'wallStreet', 'macGyver'],
     ['wrenchWhack', 'shoulderCheck', 'fika', 'grievance'],
     ['picketDrums', 'stonks', 'secondBreakfast', 'youShallNotPass'],
   ],
@@ -52,7 +52,7 @@ const mage: HeroDef = {
   startDeck: [...rep('clippy', 7), ...rep('fireDoor', 5), 'coffee', 'italianEspresso', 'caffeineJolt'],
   startUpgraded: ['clippy', 'fireDoor'],
   firstRewards: [
-    ['coldCall', 'slagBall', 'coldStorage', 'macGyver'],
+    ['coldCall', 'flambe', 'digitalDetox', 'macGyver'],
     ['caffeineJolt', 'staticShock', 'fika', 'burnout'],
     ['replyAll', 'blueScreen', 'modernTimes', 'lookBusy'],
   ],
@@ -87,9 +87,9 @@ const necromancer: HeroDef = {
   startDeck: [...rep('skeletonCrew', 4), ...rep('karlMarx', 5), ...rep('toxicMemo', 3), 'coffee', 'italianEspresso'],
   startUpgraded: ['skeletonCrew', 'karlMarx'],
   firstRewards: [
-    ['bloodMoney', 'rust', 'barricade', 'macGyver'],
+    ['bloodMoney', 'karoshi', 'pingPongTable', 'macGyver'],
     ['unionDues', 'zombieShift', 'fika', 'chainSmoking'],
-    ['deadLetter', 'sickLeave', 'boris', 'slowdown'],
+    ['deadLetter', 'sickLeave', 'boris', 'waterCooler'],
   ],
   sleeve: 3,
   ink: 'var(--green)',

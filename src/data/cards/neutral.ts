@@ -377,7 +377,7 @@ export const neutralCards: CardDef[] = [
 
   {
     // Plays every attack that is on the belt right now, for free.
-    id: 'onARoll',
+    id: 'fordism',
     face: '{dmg}{pile}',
     cls: 'neutral',
     type: 'skill',
@@ -385,7 +385,7 @@ export const neutralCards: CardDef[] = [
     cost: 4,
     upCost: 3,
     vals: [],
-    art: 'paperRoll',
+    art: 'fordism',
     play: (c) => c.playBelt('attack'),
   },
 

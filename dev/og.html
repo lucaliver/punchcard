@@ -40,7 +40,7 @@ document.getElementById('stage').innerHTML = [
 ].join('');
 const hand = document.createElement('div');
 hand.className = 'og-hand';
-const cards = ['crowbar', 'rust', 'youShallNotPass', 'picketDrums', 'slagBall'];
+const cards = ['hostileTakeover', 'karoshi', 'youShallNotPass', 'picketDrums', 'flambe'];
 cards.forEach((id, i) => {
   const c = cardView({ uid: i, id, up: i === 1 || i === 3 });
   const k = i - (cards.length - 1) / 2;

@@ -317,11 +317,11 @@ describe('combat engine', () => {
 
   it('perks: innate puts a copy first on the belt, discount lowers its cost', () => {
     const deck = deckOf(new Array(10).fill('punch'));
-    deck[9] = { ...deck[9], id: 'sledgehammer', perks: ['fastTrack', 'budgetCut'] };
+    deck[9] = { ...deck[9], id: 'printerSmash', perks: ['fastTrack', 'budgetCut'] };
     const c = setup({ deck });
-    const card = c.belt.find((b) => b.card.id === 'sledgehammer')?.card;
+    const card = c.belt.find((b) => b.card.id === 'printerSmash')?.card;
     expect(card).toBeDefined();
-    expect(c.cardCost(card!)).toBe(c.cardCost({ uid: 0, id: 'sledgehammer', up: false }) - 1);
+    expect(c.cardCost(card!)).toBe(c.cardCost({ uid: 0, id: 'printerSmash', up: false }) - 1);
   });
 
   it('a hexed card needs its taps, then thaws, then plays normally', () => {
@@ -446,18 +446,18 @@ describe('combat engine', () => {
 
     it('plays every attack on the belt for free, and only the attacks', () => {
       const c = quiet();
-      const roll = add(c, 'onARoll');
+      const roll = add(c, 'fordism');
       for (const id of ['punch', 'bobTheBuilder', 'punch', 'punch']) add(c, id);
       const mana = c.hero.mana;
       expect(c.playCard(roll)).toBe(true);
-      expect(mana - c.hero.mana).toBe(CARDS.onARoll.cost);
+      expect(mana - c.hero.mana).toBe(CARDS.fordism.cost);
       expect(500 - c.enemy.hp).toBe(3 * CARDS.punch.vals[0]);
       expect(c.belt.map((b) => b.card.id)).toEqual(['bobTheBuilder']);
     });
 
     it('leaves alone an attack that cannot be played right now (hexed)', () => {
       const c = quiet();
-      const roll = add(c, 'onARoll');
+      const roll = add(c, 'fordism');
       add(c, 'punch');
       const hexed = add(c, 'punch');
       c.belt.find((b) => b.card.uid === hexed)!.card.hex = { id: 'petrify', left: 2, t: 99 };
@@ -747,7 +747,7 @@ describe('combat engine', () => {
 
   it('necromancer: the enemy starts the fight with Poison (Virulence), other heroes do not', () => {
     const enemy = ENEMIES.seniorBoomer;
-    const necro = setup({ hero: HEROES.necromancer, hp: 50, maxHp: 50, deck: deckOf(['rust', 'rust']), enemy });
+    const necro = setup({ hero: HEROES.necromancer, hp: 50, maxHp: 50, deck: deckOf(['karoshi', 'karoshi']), enemy });
     expect(necro.stacks('enemy', 'poison')).toBe(VIRULENCE_START);
     expect(setup({ deck: deckOf(['punch']), enemy }).stacks('enemy', 'poison')).toBe(0);
   });
@@ -1881,12 +1881,12 @@ describe('cards that fill the classes out', () => {
 
   it('Safety Briefing multiplies Block, up to its cap', () => {
     const c = quiet();
-    const [mul, cap] = CARDS.safetyBriefing.vals;
+    const [mul, cap] = CARDS.pyramidScheme.vals;
     c.gainBlock('hero', 10);
-    cast(c, 'safetyBriefing');
+    cast(c, 'pyramidScheme');
     expect(c.hero.block).toBe(10 * mul);
     c.hero.block = 100;
-    cast(c, 'safetyBriefing');
+    cast(c, 'pyramidScheme');
     expect(c.hero.block).toBe(100 + cap);
   });
 
@@ -1932,7 +1932,7 @@ describe('cards that fill the classes out', () => {
     expect(c.stash(c.belt[c.belt.length - 1].card.uid, 0)).toBe(true);
     c.hero.block = 0;
     const mana = c.hero.mana;
-    cast(c, 'cacheFlush');
+    cast(c, 'crunchTime');
     expect(c.sleeve.every((x) => x === null)).toBe(true);
     expect(c.hero.block).toBe(CARDS.bobTheBuilder.vals[0]);
     expect(c.hero.mana).toBe(mana);
@@ -2074,12 +2074,12 @@ describe('cards that fill the classes out', () => {
     const c = quiet({ hero: HEROES.necromancer });
     delete c.enemy.statuses.poison;
     let hp = c.enemy.hp;
-    cast(c, 'cheapShot');
-    expect(hp - c.enemy.hp).toBe(CARDS.cheapShot.vals[0]);
+    cast(c, 'rugPull');
+    expect(hp - c.enemy.hp).toBe(CARDS.rugPull.vals[0]);
     c.applyStatus('enemy', 'weak', 1, 20);
     hp = c.enemy.hp;
-    cast(c, 'cheapShot');
-    expect(hp - c.enemy.hp).toBe(CARDS.cheapShot.vals[1]);
+    cast(c, 'rugPull');
+    expect(hp - c.enemy.hp).toBe(CARDS.rugPull.vals[1]);
     c.applyStatus('enemy', 'poison', 9);
     cast(c, 'hazmatSuit');
     expect(c.hero.block).toBe(9);

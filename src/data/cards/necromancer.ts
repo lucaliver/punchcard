@@ -63,7 +63,7 @@ export const necromancerCards: CardDef[] = [
 
   // Commons
   {
-    id: 'rust',
+    id: 'karoshi',
     face: '{poison:0}',
     cls: 'necromancer',
     type: 'attack',
@@ -71,7 +71,7 @@ export const necromancerCards: CardDef[] = [
     cost: 2,
     vals: [3],
     upVals: [4],
-    art: 'nail',
+    art: 'karoshi',
     play: (c, v) => c.applyStatus('enemy', 'poison', v[0]),
   },
   {
@@ -105,7 +105,7 @@ export const necromancerCards: CardDef[] = [
     },
   },
   {
-    id: 'barricade',
+    id: 'pingPongTable',
     face: '{block:0}',
     cls: 'necromancer',
     type: 'defense',
@@ -113,7 +113,7 @@ export const necromancerCards: CardDef[] = [
     cost: 3,
     vals: [12],
     upVals: [16],
-    art: 'barricade',
+    art: 'pingPongTable',
     play: (c, v) => c.gainBlock('hero', v[0]),
   },
   {
@@ -171,7 +171,7 @@ export const necromancerCards: CardDef[] = [
     play: (c, v) => c.applyStatus('hero', 'plague', v[0]),
   },
   {
-    id: 'slowdown',
+    id: 'waterCooler',
     face: '{weak:0}',
     cls: 'necromancer',
     type: 'skill',
@@ -180,7 +180,7 @@ export const necromancerCards: CardDef[] = [
     upCost: 1,
     vals: [15],
     upVals: [20],
-    art: 'snail',
+    art: 'waterCooler',
     play: (c, v) => c.applyStatus('enemy', 'weak', 1, v[0]),
   },
 
@@ -336,7 +336,7 @@ export const necromancerCards: CardDef[] = [
     play: (c, v) => c.applyStatus('enemy', 'poison', v[0]),
   },
   {
-    id: 'cheapShot',
+    id: 'rugPull',
     face: '{dmg:0}|{?weak}{dmg:1}',
     cls: 'necromancer',
     type: 'attack',
@@ -344,7 +344,7 @@ export const necromancerCards: CardDef[] = [
     cost: 2,
     vals: [5, 14],
     upVals: [7, 18],
-    art: 'slingshot',
+    art: 'rugPull',
     play: (c, v) => void c.hit(c.has('enemy', 'weak') ? v[1] : v[0]),
   },
   {

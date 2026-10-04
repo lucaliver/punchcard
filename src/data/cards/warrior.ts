@@ -51,7 +51,7 @@ export const warriorCards: CardDef[] = [
 
   // Commons
   {
-    id: 'crowbar',
+    id: 'hostileTakeover',
     face: '{dmg:0}',
     cls: 'warrior',
     type: 'attack',
@@ -59,7 +59,7 @@ export const warriorCards: CardDef[] = [
     cost: 2,
     vals: [9],
     upVals: [12],
-    art: 'crowbar',
+    art: 'hostileTakeover',
     play: (c, v) => void c.hit(v[0]),
   },
   {
@@ -90,7 +90,7 @@ export const warriorCards: CardDef[] = [
     },
   },
   {
-    id: 'sledgehammer',
+    id: 'printerSmash',
     face: '{dmg:0}',
     cls: 'warrior',
     type: 'attack',
@@ -98,7 +98,7 @@ export const warriorCards: CardDef[] = [
     cost: 4,
     vals: [18],
     upVals: [28],
-    art: 'maul',
+    art: 'printerSmash',
     play: (c, v) => void c.hit(v[0], { kind: 'blunt' }),
   },
   {
@@ -426,7 +426,7 @@ export const warriorCards: CardDef[] = [
     },
   },
   {
-    id: 'braceForImpact',
+    id: 'trustFall',
     face: '{dmg:0}|{?bare}{dmg:1}',
     cls: 'warrior',
     type: 'attack',
@@ -434,7 +434,7 @@ export const warriorCards: CardDef[] = [
     cost: 2,
     vals: [6, 18],
     upVals: [8, 24],
-    art: 'braceForImpact',
+    art: 'trustFall',
     play: (c, v) => void c.hit(c.hero.block > 0 ? v[0] : v[1]),
   },
   {
@@ -452,7 +452,7 @@ export const warriorCards: CardDef[] = [
   },
   // Filling the rares: a Block multiplier, thorns that grow, and a once-a-fight comeback
   {
-    id: 'safetyBriefing',
+    id: 'pyramidScheme',
     face: '{block}×{0}',
     cls: 'warrior',
     type: 'defense',
@@ -460,7 +460,7 @@ export const warriorCards: CardDef[] = [
     cost: 2,
     upCost: 1,
     vals: [2, 24],
-    art: 'safetyBriefing',
+    art: 'pyramidScheme',
     play: (c, v) => c.gainBlock('hero', Math.min(v[1], c.hero.block * (v[0] - 1))),
   },
   {

@@ -38,15 +38,15 @@ const BLOCKISH = [
   'bobTheBuilder',
   'fireDoor',
   'karlMarx',
-  'barricade',
+  'pingPongTable',
   'wallStreet',
-  'coldStorage',
+  'digitalDetox',
   'employeeOfTheMonth',
   'youShallNotPass',
   'secondBreakfast',
   'lookBusy',
 ];
-const DEBUFFS = ['rust', 'chainSmoking', 'slowdown', 'blackFriday', 'walkout'];
+const DEBUFFS = ['karoshi', 'chainSmoking', 'waterCooler', 'blackFriday', 'walkout'];
 
 export function botDecide(c: Combat, rnd: () => number, opts: BotOpts): void {
   if (rnd() < opts.sloppiness) return;

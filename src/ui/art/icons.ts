@@ -48,9 +48,9 @@ export const ICONS: Record<string, { el: Element; svg: string }> = {
     el: 'steel',
     svg: `<path d="M6 12h24v10H6zM34 12h24v10H34zM6 26h12v10H6zM22 26h20v10H22zM46 26h12v10H46zM6 40h24v10H6zM34 40h24v10H34z"/><path ${HI} d="M6 12h52v3H6z"/>`,
   },
-  maul: {
+  printerSmash: {
     el: 'steel',
-    svg: `<g transform="rotate(-35 32 32)"><rect x="28.5" y="22" width="7" height="40" rx="2"/><rect x="10" y="3" width="44" height="22" rx="4"/><rect ${HI} x="12" y="5" width="40" height="5" rx="2"/><path fill="#16121f" opacity=".35" d="M10 18h44v7H10z"/></g>`,
+    svg: `<rect x="16" y="6" width="30" height="20"/><path d="M22 12h18M22 18h12" stroke="#16121f" stroke-width="3.5"/><rect x="5" y="26" width="54" height="28" rx="3"/><rect x="13" y="44" width="38" height="5" fill="#16121f"/><path d="M37 26l-7 8 8 5-9 11" stroke="#16121f" stroke-width="4.5" fill="none" stroke-linejoin="miter"/><path d="M0 8l10 2-2 9-10-2zM53 3l10 3-3 9-10-3zM51 57l11 2-2 5-11-2z"/>`,
   },
   blood: {
     el: 'blood',
@@ -89,9 +89,9 @@ export const ICONS: Record<string, { el: Element; svg: string }> = {
     el: 'arcane',
     svg: `<path d="M12.8 3.2h38.4v57.6H12.8z"/><path fill="#16121f" d="M16 6.4h32v54.4H16z"/><path d="M19.2 9.6h25.6v51.2H19.2z"/><path fill="#16121f" d="M35.2 12.8h3.2v3.2h-3.2zM32 16h6.4v3.2h-6.4zM28.8 19.2h9.6v3.2h-9.6zM22.4 22.4h3.2v3.2h-3.2zM28.8 22.4h9.6v3.2h-9.6zM22.4 25.6h3.2v3.2h-3.2zM28.8 25.6h12.8v3.2h-12.8zM22.4 28.8h19.2v3.2h-19.2zM22.4 32h19.2v3.2h-19.2zM22.4 35.2h19.2v3.2h-19.2zM25.6 38.4h12.8v3.2h-12.8zM28.8 41.6h6.4v3.2h-6.4zM22.4 51.2h19.2v3.2H22.4z"/>`,
   },
-  fireball: {
+  flambe: {
     el: 'fire',
-    svg: `<path d="M4 58c8-16 16-26 26-32l8 8C32 44 22 52 4 58z" opacity=".55"/><circle cx="40" cy="24" r="17"/><circle cx="40" cy="24" r="9" fill="#fff" opacity=".45"/>`,
+    svg: `<g transform="translate(11 0) scale(.75)">${flame}</g><g transform="translate(46 12) scale(.38)">${flame}</g><rect x="2" y="42" width="46" height="6" rx="2"/><path d="M6 48h38v2a11 11 0 0 1-11 11H17A11 11 0 0 1 6 50z"/><path d="M48 43h14v5H48z"/>`,
   },
   iceLance: { el: 'ice', svg: `<path d="M58 6L48 26 18 56l-8-2-2-8L38 16z"/><path ${HI} d="M58 6L40 18l-2-2z"/><path d="M8 46l10 10-8 4-6-6z"/>` },
   crystal: { el: 'arcane', svg: crystal },
@@ -318,9 +318,9 @@ export const ICONS: Record<string, { el: Element; svg: string }> = {
     el: 'steel',
     svg: `<circle cx="22" cy="12" r="9"/><path d="M8 26h24l16 10-5 8-11-6v24H14V44l-6 6-6-6z"/><g ${S} stroke-width="4.5"><path d="M52 24l9-6M54 38h9"/></g>`,
   },
-  crowbar: {
+  hostileTakeover: {
     el: 'steel',
-    svg: `<path d="M44 4h8c6 0 10 4 10 10v4h-6v-4c0-3-1-4-4-4h-4z"/><path d="M50 16l6 4L14 60l-6-4z"/><path d="M8 56l-6-6 4-4 6 6z"/>`,
+    svg: `<rect x="3" y="24" width="44" height="32" rx="3"/><path d="M15 24v-9a3 3 0 0 1 3-3h12a3 3 0 0 1 3 3v9h-6v-6h-6v6z"/><rect x="3" y="37" width="44" height="4" fill="#16121f"/><path d="M32 40L58 8" stroke="#16121f" stroke-width="10" stroke-linecap="round"/><path d="M32 40L58 8" stroke="currentColor" stroke-width="5" stroke-linecap="round"/><path d="M54 12c5-1 8-5 6-9" stroke="#16121f" stroke-width="9" stroke-linecap="round" fill="none"/><path d="M54 12c5-1 8-5 6-9" stroke="currentColor" stroke-width="4.5" stroke-linecap="round" fill="none"/>`,
   },
   stonks: {
     el: 'blood',
@@ -371,9 +371,9 @@ export const ICONS: Record<string, { el: Element; svg: string }> = {
     el: 'arcane',
     svg: `<circle cx="22" cy="40" r="13"/><rect x="19.0" y="22" width="6" height="6" transform="rotate(0 22 40)"/><rect x="19.0" y="22" width="6" height="6" transform="rotate(45 22 40)"/><rect x="19.0" y="22" width="6" height="6" transform="rotate(90 22 40)"/><rect x="19.0" y="22" width="6" height="6" transform="rotate(135 22 40)"/><rect x="19.0" y="22" width="6" height="6" transform="rotate(180 22 40)"/><rect x="19.0" y="22" width="6" height="6" transform="rotate(225 22 40)"/><rect x="19.0" y="22" width="6" height="6" transform="rotate(270 22 40)"/><rect x="19.0" y="22" width="6" height="6" transform="rotate(315 22 40)"/><circle cx="22" cy="40" r="5" fill="#16121f"/><circle cx="45" cy="19" r="10"/><rect x="42.5" y="5" width="5" height="5" transform="rotate(0 45 19)"/><rect x="42.5" y="5" width="5" height="5" transform="rotate(51 45 19)"/><rect x="42.5" y="5" width="5" height="5" transform="rotate(103 45 19)"/><rect x="42.5" y="5" width="5" height="5" transform="rotate(154 45 19)"/><rect x="42.5" y="5" width="5" height="5" transform="rotate(206 45 19)"/><rect x="42.5" y="5" width="5" height="5" transform="rotate(257 45 19)"/><rect x="42.5" y="5" width="5" height="5" transform="rotate(309 45 19)"/><circle cx="45" cy="19" r="4" fill="#16121f"/>`,
   },
-  coldStorage: {
+  digitalDetox: {
     el: 'ice',
-    svg: `<rect x="14" y="4" width="36" height="56" rx="3"/><rect x="14" y="24" width="36" height="4" fill="#16121f"/><rect x="40" y="10" width="4" height="10" fill="#16121f"/><rect x="40" y="32" width="4" height="14" fill="#16121f"/>`,
+    svg: `<rect x="16" y="4" width="32" height="56" rx="5"/><rect x="20" y="10" width="24" height="38" rx="2" fill="#16121f"/><circle cx="32" cy="54" r="2.2" fill="#16121f"/><path d="M6 58L58 6" stroke="#16121f" stroke-width="10" stroke-linecap="round"/><path d="M6 58L58 6" stroke="currentColor" stroke-width="5" stroke-linecap="round"/>`,
   },
   coldCall: {
     el: 'ice',
@@ -400,9 +400,9 @@ export const ICONS: Record<string, { el: Element; svg: string }> = {
     el: 'necro',
     svg: `<path d="M4 10h34c8 0 14 6 14 14v12H40V24c0-2-2-2-2-2H4z"/><path d="M36 36h20v8H36z"/><path d="M46 48c4 6 5 8 5 10a5 5 0 0 1-10 0c0-2 1-4 5-10z"/><path d="M20 26c3 4 4 6 4 8a4 4 0 0 1-8 0c0-2 1-4 4-8z"/>`,
   },
-  barricade: {
+  pingPongTable: {
     el: 'steel',
-    svg: `<rect x="4" y="14" width="56" height="16"/><rect x="4" y="34" width="56" height="10"/><path d="M10 44v16h6V44zM48 44v16h6V44z"/><g fill="#16121f"><path d="M12 14l10 16h7L19 14zM32 14l10 16h7L39 14z"/></g>`,
+    svg: `<path d="M14 22h46l-8 16H6z"/><rect x="30" y="8" width="5" height="30"/><path d="M8 38v20h5V38zM48 38v20h5V38z"/><circle cx="14" cy="12" r="4"/>`,
   },
   speech: {
     el: 'necro',
@@ -441,9 +441,9 @@ export const ICONS: Record<string, { el: Element; svg: string }> = {
     el: 'necro',
     svg: `<path d="M4 18l16 10c4-5 10-8 18-8 12 0 22 7 24 14-2 7-12 14-24 14-8 0-14-3-18-8L4 50l5-18z"/><circle cx="48" cy="32" r="4" fill="#16121f"/><path fill="none" stroke="#16121f" stroke-width="3" stroke-linecap="round" d="M34 24c3 5 3 11 0 16M42 44c2 0 4-1 5-2"/><path ${HI} d="M26 28c4-3 9-4 14-3-5 1-9 3-12 6z"/>`,
   },
-  nail: {
+  karoshi: {
     el: 'necro',
-    svg: `<rect x="10" y="4" width="44" height="10" rx="2"/><path d="M27 14h10v34l-5 14-5-14z"/><g fill="#16121f"><rect x="28" y="22" width="4" height="5"/><rect x="32" y="34" width="4" height="5"/></g>`,
+    svg: `<g transform="translate(11 0) scale(.66)"><path d="M32 6C18 6 9 16 9 28c0 8 4 13 8 16v8c0 3 2 5 5 5h20c3 0 5-2 5-5v-8c4-3 8-8 8-16C55 16 46 6 32 6z"/><circle cx="23" cy="30" r="6" fill="#16121f"/><circle cx="41" cy="30" r="6" fill="#16121f"/><path d="M32 36l-4 7h8z" fill="#16121f"/></g><rect x="3" y="42" width="58" height="18" rx="2"/><path d="M8 49h48M8 55h48" stroke="#16121f" stroke-width="3"/><path d="M20 43v6M32 43v6M44 43v6M26 49v6M38 49v6" stroke="#16121f" stroke-width="3"/>`,
   },
   mangioni: {
     el: 'nature',
@@ -465,9 +465,9 @@ export const ICONS: Record<string, { el: Element; svg: string }> = {
     el: 'necro',
     svg: `<rect x="10" y="12" width="44" height="48" rx="3"/><rect x="26" y="4" width="12" height="12"/><g fill="#16121f"><circle cx="32" cy="30" r="7"/><path d="M19 50c2-9 7-11 13-11s11 2 13 11z"/></g>`,
   },
-  snail: {
+  waterCooler: {
     el: 'necro',
-    svg: `<circle cx="36" cy="30" r="19"/><path d="M2 58c0-8 6-10 14-8h44v8z"/><path d="M6 50V34l-4-8h5l5 6v18z"/><circle cx="36" cy="30" r="10" fill="#16121f"/><circle cx="36" cy="30" r="4"/>`,
+    svg: `<path d="M22 2h20c4 4 6 10 6 16s-2 10-6 12H22c-4-2-6-6-6-12s2-12 6-16z"/><circle cx="27" cy="14" r="3" fill="#16121f" opacity=".5"/><circle cx="37" cy="22" r="2.5" fill="#16121f" opacity=".5"/><rect x="14" y="33" width="36" height="28" rx="2"/><rect x="21" y="39" width="22" height="14" fill="#16121f"/><rect x="29" y="39" width="6" height="7"/><rect x="26" y="57" width="12" height="3" fill="#16121f"/>`,
   },
   // Neutral
   bean: {
@@ -586,9 +586,9 @@ export const ICONS: Record<string, { el: Element; svg: string }> = {
     svg: `<path d="M4 6h38v52H4z"/><g fill="#16121f"><rect x="10" y="14" width="26" height="4"/><rect x="10" y="24" width="26" height="4"/><rect x="10" y="34" width="16" height="4"/></g><path d="M38 54l18-36 6 3-18 36-7 3z"/>`,
   },
 
-  safetyBriefing: {
+  pyramidScheme: {
     el: 'steel',
-    svg: `<path d="M8 42a24 24 0 0 1 48 0z"/><rect x="4" y="42" width="56" height="9"/><rect x="28" y="10" width="8" height="32" fill="#16121f" opacity=".4"/><path d="M14 56h36" stroke="#16121f" stroke-width="3"/>`,
+    svg: `<path d="M32 4l28 52H4z"/><path d="M11 47h42M20 28h24" stroke="#16121f" stroke-width="3.5"/><path d="M20 37q12-12 24 0q-12 12-24 0z" fill="#16121f"/><circle cx="32" cy="37" r="4.5"/>`,
   },
   goodVibesOnly: {
     el: 'steel',
@@ -598,9 +598,9 @@ export const ICONS: Record<string, { el: Element; svg: string }> = {
     el: 'steel',
     svg: `<rect x="4" y="6" width="56" height="40"/><path d="M12 16h40M12 25h40M12 34h22" stroke="#16121f" stroke-width="3.5"/><circle cx="46" cy="44" r="12"/><path d="M38 52l-4 11 12-5 12 5-4-11z"/><g fill="#16121f">${star4(46, 44, 7)}</g>`,
   },
-  cacheFlush: {
+  crunchTime: {
     el: 'arcane',
-    svg: `<rect x="10" y="14" width="44" height="36"/><path d="M18 4v10M28 4v10M38 4v10M48 4v10M18 50v10M28 50v10M38 50v10M48 50v10" stroke="currentColor" stroke-width="4"/><rect x="20" y="24" width="24" height="16" fill="#16121f"/><path d="M26 32h12" stroke="currentColor" stroke-width="3"/>`,
+    svg: `<circle cx="14" cy="14" r="8"/><circle cx="50" cy="14" r="8"/><circle cx="32" cy="37" r="21"/><path d="M13 55l-5 7M51 55l5 7" stroke="currentColor" stroke-width="4"/><circle cx="32" cy="37" r="15" fill="#16121f"/><path d="M32 37V26M32 37l8 5" stroke="currentColor" stroke-width="3.5" stroke-linecap="round"/><rect x="30.5" y="24" width="3" height="3"/><rect x="43" y="35.5" width="3" height="3"/><rect x="30.5" y="48" width="3" height="3"/><rect x="18" y="35.5" width="3" height="3"/>`,
   },
   hotDesking: {
     el: 'fire',
@@ -993,9 +993,9 @@ export const ICONS: Record<string, { el: Element; svg: string }> = {
     el: 'holy',
     svg: `<rect x="4" y="32" width="28" height="28"/><rect x="11" y="20" width="31" height="33" fill="#16121f"/><rect x="14" y="23" width="25" height="27"/><rect x="22" y="5" width="35" height="38" fill="#16121f"/><rect x="25" y="8" width="29" height="32"/>`,
   },
-  paperRoll: {
+  fordism: {
     el: 'holy',
-    svg: `<circle cx="30" cy="26" r="22"/><circle cx="30" cy="26" r="9" fill="#16121f"/><path ${HI} d="M12 18c3-6 8-9 14-10-5 3-8 7-9 13z"/><path d="M22 44h40v10H26z"/>`,
+    svg: `<rect x="10" y="10" width="32" height="4"/><path d="M14 36V14h24v22z"/><rect x="18" y="18" width="16" height="12" fill="#16121f"/><rect x="6" y="36" width="52" height="14" rx="2"/><path d="M38 24h14v12H38z"/><circle cx="18" cy="50" r="8"/><circle cx="48" cy="50" r="8"/><circle cx="18" cy="50" r="3" fill="#16121f"/><circle cx="48" cy="50" r="3" fill="#16121f"/><rect x="2" y="59" width="60" height="4"/>`,
   },
   scanner: {
     el: 'arcane',
@@ -1058,9 +1058,9 @@ export const ICONS: Record<string, { el: Element; svg: string }> = {
     el: 'necro',
     svg: `<path d="M10 22h44l-6 36H16z"/><rect x="8" y="14" width="48" height="8"/><path d="M40 14c4-8 14-10 18-6-6 0-10 2-12 6z"/><path fill="#16121f" opacity=".45" d="M16 30h32l-2 16H18z"/><circle cx="26" cy="38" r="3" fill="#16121f"/><circle cx="36" cy="42" r="2.5" fill="#16121f"/><circle cx="40" cy="35" r="2" fill="#16121f"/>`,
   },
-  slingshot: {
+  rugPull: {
     el: 'blood',
-    svg: `<path d="M26 62V38L8 8h12l12 20 12-20h12L38 38v24z"/><path d="M14 10Q32 34 50 10" stroke="#16121f" stroke-width="3" fill="none"/><circle cx="32" cy="27" r="5" fill="#16121f"/>`,
+    svg: `<circle cx="36" cy="8" r="7"/><path d="M34 17l-5 14" stroke="currentColor" stroke-width="9" stroke-linecap="round"/><path d="M29 32l20-9M31 34l22 7M33 21L16 20" stroke="currentColor" stroke-width="5" stroke-linecap="round"/><path d="M16 46h44l4 14H20z"/><path d="M32 46l-4 14M46 46l-4 14" stroke="#16121f" stroke-width="3.5"/><circle cx="9" cy="53" r="7"/><circle cx="9" cy="53" r="2.5" fill="#16121f"/>`,
   },
   petriDish: {
     el: 'necro',
@@ -1228,9 +1228,9 @@ export const ICONS: Record<string, { el: Element; svg: string }> = {
     el: 'holy',
     svg: `<path d="M28 36V8A26 26 0 1 0 56 36z"/><path d="M36 28V4a26 26 0 0 1 24 24z"/>`,
   },
-  braceForImpact: {
+  trustFall: {
     el: 'steel',
-    svg: `<circle cx="32" cy="16" r="10"/><path d="M12 58l10-26h20l10 26z"/><path stroke="#16121f" stroke-width="6" d="M18 36l28 14M46 36L18 50"/>`,
+    svg: `<circle cx="46" cy="12" r="8"/><path d="M12 56L32 31" stroke="currentColor" stroke-width="11" stroke-linecap="round"/><circle cx="56" cy="36" r="5.5"/><path d="M56 43v19" stroke="currentColor" stroke-width="9" stroke-linecap="round"/><path d="M54 48L38 42" stroke="currentColor" stroke-width="5" stroke-linecap="round"/>`,
   },
   step1: {
     el: 'holy',

@@ -44,7 +44,7 @@ export const mageCards: CardDef[] = [
 
   // Commons
   {
-    id: 'slagBall',
+    id: 'flambe',
     face: '{dmg:0}|{burn:1}',
     cls: 'mage',
     type: 'attack',
@@ -52,7 +52,7 @@ export const mageCards: CardDef[] = [
     cost: 4,
     vals: [14, 3],
     upVals: [18, 4],
-    art: 'fireball',
+    art: 'flambe',
     play: (c, v) => {
       c.hit(v[0], { kind: 'fire' });
       c.applyStatus('enemy', 'burn', v[1]);
@@ -95,7 +95,7 @@ export const mageCards: CardDef[] = [
     play: (c, v) => void c.hit(v[0], { kind: 'arcane' }),
   },
   {
-    id: 'coldStorage',
+    id: 'digitalDetox',
     face: '{block:0}|{chill:1}',
     cls: 'mage',
     type: 'defense',
@@ -103,7 +103,7 @@ export const mageCards: CardDef[] = [
     cost: 3,
     vals: [10, 7],
     upVals: [14, 12],
-    art: 'coldStorage',
+    art: 'digitalDetox',
     play: (c, v) => {
       c.gainBlock('hero', v[0]);
       c.applyStatus('enemy', 'chill', 1, v[1]);
@@ -483,14 +483,14 @@ export const mageCards: CardDef[] = [
 
   // Sleeve payoff and a Chill to Burn bridge
   {
-    id: 'cacheFlush',
+    id: 'crunchTime',
     face: '{sleeve}',
     cls: 'mage',
     type: 'skill',
     rarity: 'rare',
     cost: 1,
     vals: [],
-    art: 'cacheFlush',
+    art: 'crunchTime',
     play: (c) => c.playSleeve(),
   },
   {
