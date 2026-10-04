@@ -119,6 +119,8 @@
   --dur-door-read: 1000ms;
   --dur-swap-fly: 350ms;
   --dur-swap-gone: 200ms;
+  /** extra time the bonus card of a skipped reward stays up to be read */
+  --dur-show-extra: 1000ms;
   --delay-swap-gone: 250ms;
 
   /* Layers above the screens, lowest first (the small numbers inside a component stay local) */

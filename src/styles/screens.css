@@ -476,6 +476,7 @@
   animation: show-out 0.2s steps(2) 1.5s forwards;
 }
 @keyframes show-out { to { opacity: 0; } }
+.reward .card-show { animation-delay: calc(1.5s + var(--dur-show-extra)); }
 .show-stage { position: relative; width: min(46vw, 190px); aspect-ratio: 1 / 1.4; }
 .show-stage .card { --cw: min(46vw, 190px); position: absolute; inset: 0; }
 .show-stamp {
