@@ -56,9 +56,7 @@ export function rewardScreen(run: RunState, picks: RewardOffer[], adds: boolean,
         setTimeout(onDone, bonus ? CARD_SHOW_MS + cssMs('--dur-show-extra') : HEAL_FAST_MS);
       },
     },
-    h('span', null, t('reward.skip')),
-    h('small', { html: `${icon('heart')}${t('reward.skipHp', { n: skipPay(run) })}` }),
-    h('small', null, t('reward.skipCard')),
+    t('reward.skip', { n: skipPay(run) }),
   );
   const deckGrid = h('div', { class: 'swap-deck' });
   const offerRow = h('div', { class: 'swap-offer' });

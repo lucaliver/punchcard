@@ -548,7 +548,7 @@ export const warriorCards: CardDef[] = [
     cls: 'warrior',
     type: 'defense',
     rarity: 'rare',
-    cost: 1,
+    cost: 3,
     vals: [5],
     upVals: [8],
     keywords: ['fleeting'],

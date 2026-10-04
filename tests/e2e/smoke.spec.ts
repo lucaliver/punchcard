@@ -312,7 +312,7 @@ test('debug menus: the fight menu kills the enemy, the map menu opens rooms and 
   await page.locator('.combat .debug-fab').click();
   await page.getByRole('button', { name: 'Kill enemy' }).click();
   await expect(page.getByRole('button', { name: /^swap$/i })).toBeVisible({ timeout: 8000 });
-  await page.getByRole('button', { name: /skip/i }).click();
+  await page.locator('.skip-btn').click();
   await expect(page.locator('.node.open').first()).toBeVisible();
   // Rooms from the map menu leave the current room's state alone.
   await page.evaluate('window.__game.run.hp = 30');
