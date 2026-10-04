@@ -11,7 +11,18 @@
 .topline .h1:not(:last-child) { margin: 0; }
 
 /* game-style carousel: one hero per screen, horizontal swipe with snapping */
-.hero-select { gap: 8px; }
+.hero-select {
+  gap: 8px;
+  /* the plinth's stage and the hero on it (the arrows centre on the stage); tall phones give them the spare room */
+  --stage-h: clamp(140px, 30vh, 250px);
+  --sprite: clamp(120px, 27vh, 230px);
+}
+@media (min-height: 800px) {
+  .hero-select {
+    --stage-h: clamp(250px, 36vh, 330px);
+    --sprite: clamp(230px, 32vh, 290px);
+  }
+}
 .hero-carousel {
   position: relative;
   flex: 1;
@@ -48,7 +59,7 @@
   position: relative;
   flex: none;
   width: 100%;
-  height: clamp(140px, 30vh, 250px);
+  height: var(--stage-h);
   display: grid;
   place-items: end center;
 }
@@ -85,7 +96,7 @@
 .hero-sprite {
   position: relative;
   z-index: 1;
-  width: clamp(120px, 27vh, 230px);
+  width: var(--sprite);
   aspect-ratio: 1;
   margin-bottom: 14px;
   transition: transform 0.25s steps(3);
@@ -169,7 +180,7 @@
 
 .hero-arrow {
   position: absolute;
-  top: calc(clamp(140px, 30vh, 250px) / 2 - 22px);
+  top: calc(var(--stage-h) / 2 - 22px);
   z-index: 2;
   width: 44px;
   height: 44px;
