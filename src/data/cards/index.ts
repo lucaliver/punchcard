@@ -1,4 +1,4 @@
-import type { CardClass, CardDef, CardInst, CardLike, Keyword, Rarity } from '../../game/types';
+import type { CardClass, CardDef, CardLike, Keyword, Rarity } from '../../game/types';
 import { CONFIG } from '../config';
 import { PERKS } from '../perks';
 import { mageCards } from './mage';
@@ -28,11 +28,12 @@ export function rewardPool(cls: CardClass, rarity: Rarity): CardDef[] {
 /** How a class's card damage looks and sounds when the card says nothing (`hit(v, { kind })`): the magic classes are arcane, the rest slash (attacks) or hit blunt. */
 export const CLASS_HIT: Partial<Record<CardClass, string>> = { mage: 'arcane', necromancer: 'arcane' };
 
-/** Keywords of a card copy: its definition (base or upgraded) plus its perks. */
-export function cardKeywordsOf(card: CardInst): Keyword[] {
+/** Keywords of a card copy: its definition (base or upgraded) plus its perks and, in a fight, what the copy was given. */
+export function cardKeywordsOf(card: CardLike): Keyword[] {
   const def = CARDS[card.id];
   const base = (card.up ? (def.upKeywords ?? def.keywords) : def.keywords) ?? [];
   const extra = (card.perks ?? []).flatMap((p) => PERKS[p]?.keywords ?? []);
+  if (card.fleeting) extra.push('fleeting');
   return extra.length ? [...new Set([...base, ...extra])] : base;
 }
 

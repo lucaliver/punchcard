@@ -948,7 +948,7 @@ export class Combat {
     this.heroDef.hooks.onCardPlayed?.(this, card, def, spent);
     for (const [held, hd] of this.held()) hd.inSleeve?.onCardPlayed?.(this, this.cardVals(held), held, def);
     for (const id of this.relics) RELICS[id]?.hooks?.onCardPlayed?.(this, card, def);
-    for (const [side, id] of watching) if (this.has(side, id)) STATUSES[id].onCardPlayed?.(this, side, def);
+    for (const [side, id] of watching) if (this.has(side, id)) STATUSES[id].onCardPlayed?.(this, side, def, card);
 
     // Inflation lasts until the card is paid for once.
     delete card.tax;
@@ -1234,6 +1234,14 @@ export class Combat {
     return amount;
   }
 
+  /** The hero's max HP grows for this fight, and so does its HP (a mushroom). */
+  gainMaxHp(n: number): void {
+    const h = this.hero;
+    h.maxHp += n;
+    h.hp += n;
+    this.events.emit({ type: 'heal', target: 'hero', amount: n });
+  }
+
   loseHp(n: number): void {
     const lost = Math.min(this.hero.hp, n);
     this.hero.hp -= lost;
@@ -1305,11 +1313,11 @@ export class Combat {
 
   /**
    * Adds a temporary card (curses, generated cards) to a pile or straight onto the belt. `at` < 0 queues a belt card
-   * just before the entry, so several arriving together come in one after the other.
+   * just before the entry, so several arriving together come in one after the other. `extra` is what a copy carries over (perks, `fleeting`).
    */
-  addTempCard(id: string, to: 'belt' | 'draw' | 'discard', up = false, at = 0): void {
+  addTempCard(id: string, to: 'belt' | 'draw' | 'discard', up = false, at = 0, extra: Partial<CombatCard> = {}): void {
     // Temporary cards get negative uids so they never collide with deck cards.
-    const card: CombatCard = { uid: -++this.tempUid, id, up, bonus: 0, temp: true };
+    const card: CombatCard = { uid: -++this.tempUid, id, up, bonus: 0, temp: true, ...extra };
     if (to === 'belt' && this.spawnCard(at, card)) {
       // already riding
     } else if (to !== 'discard') {
@@ -1320,6 +1328,57 @@ export class Combat {
       this.discard.push(card);
     }
     this.events.emit({ type: 'cardAdded', card, to });
+  }
+
+  /** Removes every curse from the belt, the sleeve and the piles (one from the run's own deck is gone for good). Returns how many. */
+  removeCurses(): number {
+    const gone: CombatCard[] = [];
+    for (const b of this.belt.filter((x) => isCurse(x.card))) {
+      this.belt.splice(this.belt.indexOf(b), 1);
+      gone.push(b.card);
+      this.events.emit({ type: 'cardDiscarded', card: b.card });
+    }
+    this.sleeve.forEach((c, i) => {
+      if (!c || !isCurse(c)) return;
+      this.sleeve[i] = null;
+      gone.push(c);
+      this.events.emit({ type: 'cardDiscarded', card: c });
+    });
+    for (const pile of [this.draw, this.discard]) {
+      for (let i = pile.length - 1; i >= 0; i--) if (isCurse(pile[i])) gone.push(...pile.splice(i, 1));
+    }
+    for (const card of gone) if (!card.temp) this.consumed.push(card.uid);
+    return gone.length;
+  }
+
+  /** Strips the enemy of its Block and of every buff (a good status that isn't one of its permanent traits). Returns how many things it lost. */
+  stripBuffs(): number {
+    let n = 0;
+    if (this.enemy.block > 0) {
+      this.breakBlock('enemy');
+      n++;
+    }
+    for (const id of Object.keys(this.enemy.statuses)) {
+      const def = STATUSES[id];
+      if (!this.has('enemy', id) || !def.good || def.passive || def.hidden) continue;
+      this.removeStatus('enemy', id);
+      n++;
+    }
+    return n;
+  }
+
+  /** Hands every debuff the hero carries that can hurt the enemy too (`StatusDef.passable`) over to it, as it was. Returns how many. */
+  passDebuffs(): number {
+    let n = 0;
+    for (const [id, s] of Object.entries(this.hero.statuses)) {
+      const def = STATUSES[id];
+      if (!def.passable || !this.has('hero', id)) continue;
+      const { v, t } = s;
+      this.removeStatus('hero', id);
+      this.applyStatus('enemy', id, v, def.kind === 'timed' ? t : 0);
+      n++;
+    }
+    return n;
   }
 
   /** Exhausts the whole belt (no leave-the-belt effects). Returns how many cards it held. */

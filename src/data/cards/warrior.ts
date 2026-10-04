@@ -513,6 +513,48 @@ export const warriorCards: CardDef[] = [
     art: 'skillIssue',
     play: (c, v) => c.applyStatus('enemy', 'vulnerable', 1, v[0]),
   },
+  {
+    id: 'eightHours',
+    face: '{cards:0}={copy}',
+    cls: 'warrior',
+    type: 'power',
+    rarity: 'epic',
+    cost: 3,
+    vals: [8],
+    upVals: [6],
+    art: 'eightHours',
+    // A new one replaces the old count, so the upgrade can shorten the shift.
+    play: (c, v) => {
+      c.removeStatus('hero', 'eightHours');
+      c.applyStatus('hero', 'eightHours', v[0]);
+    },
+  },
+  {
+    id: 'raiseDenied',
+    face: '{dmg:0}|{buff}×{dmg:1}',
+    cls: 'warrior',
+    type: 'attack',
+    rarity: 'rare',
+    cost: 2,
+    vals: [5, 8],
+    upVals: [7, 11],
+    art: 'raiseDenied',
+    // Stripped first, so the Block it takes away doesn't soak the hit.
+    play: (c, v) => void c.hit(v[0] + v[1] * c.stripBuffs()),
+  },
+  {
+    id: 'itsAMe',
+    face: '{maxHp:0}',
+    cls: 'warrior',
+    type: 'defense',
+    rarity: 'rare',
+    cost: 1,
+    vals: [5],
+    upVals: [8],
+    keywords: ['fleeting'],
+    art: 'mushroom',
+    play: (c, v) => c.gainMaxHp(v[0]),
+  },
 
   // Generated during a fight (never offered as rewards).
   {

@@ -77,6 +77,16 @@ export const GLYPHS: Record<string, { icon: string; unit?: string; sign?: string
   bare: { icon: 'shieldOff' },
   /** The card's own cost goes down. */
   cheaper: { icon: 'priceTag', sign: '-' },
+  /** Max HP, for this fight. */
+  maxHp: { icon: 'heartUp', sign: '+' },
+  /** The enemy's buffs (and its Block). */
+  buff: { icon: 'up' },
+  /** The debuffs you carry. */
+  debuff: { icon: 'down' },
+  /** A curse card. */
+  curse: { icon: 'skull' },
+  /** Handed over to the enemy. */
+  pass: { icon: 'share' },
 };
 
 /** Long names get a smaller font (and two lines) so they fit the title band instead of being cut. */

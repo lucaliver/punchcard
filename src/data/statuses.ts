@@ -221,6 +221,38 @@ const defs: StatusDef[] = [
       if (n % LUNCH_EVERY === 0) c.applyStatus('enemy', 'poison', s.v);
     }),
   },
+  // Eight Hours (a power): every `v`-th card the hero plays is played twice. `e` counts the cards since the last echo; curses don't count.
+  {
+    id: 'eightHours',
+    tone: 'amber',
+    kind: 'stacks',
+    good: true,
+    icon: 'shiftClock',
+    progress: (_c, _side, s) => (s.e ?? 0) / s.v,
+    cue: 'punchClock',
+    onCardPlayed: (c, side, def) => {
+      const s = c.fighter(side).statuses.eightHours;
+      if (def.type === 'curse' || !s) return;
+      s.e = (s.e ?? 0) + 1;
+      if (s.e < s.v) return;
+      s.e = 0;
+      c.cue(side, 'eightHours');
+      c.replayLast();
+    },
+  },
+  // Krusty Krab: each of the next `v` cards the hero plays leaves a Fleeting copy in the draw pile (curses don't count).
+  {
+    id: 'krustyKrab',
+    tone: 'amber',
+    kind: 'stacks',
+    good: true,
+    icon: 'copy',
+    onCardPlayed: (c, side, def, card) => {
+      if (def.type === 'curse') return;
+      c.addTempCard(card.id, 'draw', card.up, 0, { perks: card.perks, fleeting: true });
+      c.applyStatus(side, 'krustyKrab', -1, 0, true);
+    },
+  },
   // Lost Badge: the next card that costs mana is free (a stack each).
   { id: 'lostBadge', tone: 'blue', kind: 'stacks', good: true, icon: 'priceTag', freeNext: true },
   // Root access (sudo): no rule can stop the hero's cards.
@@ -273,18 +305,20 @@ const defs: StatusDef[] = [
     tone: 'red',
     kind: 'stacks',
     good: false,
+    passable: true,
     icon: 'flame',
     burst: { kind: 'fire', n: 10 },
     onAttack: (c, side, s) => void c.damage(side === 'enemy' ? 'hero' : 'enemy', side, s.v, { raw: true, ignoreBlock: true, kind: 'burn' }, 'dot'),
   },
-  { id: 'poison', tone: 'green', kind: 'dot', good: false, icon: 'drop' },
-  { id: 'weak', tone: 'purple', kind: 'timed', good: false, icon: 'broken', dealtMul: 0.75 },
-  { id: 'vulnerable', tone: 'red', kind: 'timed', good: false, icon: 'crack', takenMul: 1.5 },
+  { id: 'poison', tone: 'green', kind: 'dot', good: false, passable: true, icon: 'drop' },
+  { id: 'weak', tone: 'purple', kind: 'timed', good: false, passable: true, icon: 'broken', dealtMul: 0.75 },
+  { id: 'vulnerable', tone: 'red', kind: 'timed', good: false, passable: true, icon: 'crack', takenMul: 1.5 },
   {
     id: 'chill',
     tone: 'blue',
     kind: 'timed',
     good: false,
+    passable: true,
     icon: 'snow',
     regenMul: 0.5,
     timeMul: 0.5,
@@ -297,6 +331,7 @@ const defs: StatusDef[] = [
     tone: 'purple',
     kind: 'timed',
     good: false,
+    passable: true,
     icon: 'stars',
     look: 'stunned',
     selfIcon: 'ko',

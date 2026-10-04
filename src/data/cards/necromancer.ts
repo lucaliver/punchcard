@@ -485,4 +485,60 @@ export const necromancerCards: CardDef[] = [
     art: 'grudgeLedger',
     play: (c, v) => c.applyStatus('hero', 'grudgeLedger', v[0]),
   },
+  {
+    id: 'oompaLoompa',
+    face: '{addCard:0}',
+    cls: 'necromancer',
+    type: 'skill',
+    rarity: 'rare',
+    cost: 2,
+    vals: [3],
+    art: 'oompaLoompa',
+    play: (c, v, card) => {
+      for (let i = 0; i < v[0]; i++) c.addTempCard('loompa', 'draw', card.up);
+    },
+  },
+  {
+    id: 'ccTheBoss',
+    face: '{debuff}{pass}',
+    cls: 'necromancer',
+    type: 'skill',
+    rarity: 'rare',
+    cost: 1,
+    upCost: 0,
+    vals: [],
+    art: 'ccTheBoss',
+    play: (c) => void c.passDebuffs(),
+  },
+  {
+    id: 'mealVoucher',
+    face: '{dmg}={curse}×{0}|{curse}=0',
+    cls: 'necromancer',
+    type: 'attack',
+    rarity: 'rare',
+    cost: 1,
+    vals: [8],
+    upVals: [12],
+    art: 'mealVoucher',
+    play: (c, v) => {
+      const n = c.removeCurses();
+      if (n) c.hit(n * v[0]);
+    },
+  },
+
+  // Generated during a fight (never offered as rewards).
+  {
+    id: 'loompa',
+    face: '{dmg:0}|{exit}{heal:1}',
+    cls: 'necromancer',
+    type: 'attack',
+    rarity: 'special',
+    cost: 0,
+    vals: [4, 2],
+    upVals: [6, 3],
+    keywords: ['exhaust', 'fleeting'],
+    art: 'loompa',
+    play: (c, v) => void c.hit(v[0]),
+    onExpire: (c, v) => void c.heal('hero', v[1]),
+  },
 ];

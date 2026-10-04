@@ -50,7 +50,7 @@ This file is the technical guide: read it before changing code. Field-by-field d
 
 - Adding a card, enemy, hero, status or relic touches data, i18n and art only. If it needs `if (id === …)` in engine or UI,
   add a generic field or hook instead. Statuses already work this way (`StatusDef`: `timeMul`, `beltMul`, `dealtMul`,
-  `takenMul`, `holdsBlock`, `immune`, `ignoresRules`, `autoplay`, `heals`, `strength`, `cutsHits`, `regenMul`, `manaCap`, `keeps`, hooks…).
+  `takenMul`, `holdsBlock`, `immune`, `ignoresRules`, `autoplay`, `heals`, `strength`, `cutsHits`, `regenMul`, `manaCap`, `keeps`, `passable` (a debuff CC the Boss can hand to the enemy), hooks…).
 - No hard-coded hero/enemy ids in UI; lists and icons come from data maps (`HEROES`, `ENEMIES`, `CARDS`, `STATUSES`,
   `ABILITY_ICON`). Tunable numbers live in `data/config.ts` or the records, never inline in UI or engine.
 - Every player-facing string goes through `t()`; use `{placeholders}` and plurals, never English word order.
@@ -121,6 +121,7 @@ tests/         combat, content, balance.sim (+ bot), balance.stats, e2e/
 - Special mechanics (`ride`, `onOverflow`, `tip`, `sweep`, `costDrop`, `inSleeve`, `span`/`tall`/`lockRow`, `pack`) are
   documented on `CardDef`. Curse *cards* live in `neutral.ts` (their rarity is a power level: common = a nuisance, rare = hurts or clogs, epic = shuts down belt space or can't be cleared; they never drop as rewards and can't be upgraded); **hexes** (`hexes.ts`) are a different thing (a curse on one
   belt card, chipped away by taps).
+- A fight can give a copy something its deck card doesn't have: `CombatCard.fleeting` (Krusty Krab's copies), read through `cardKeywordsOf`; `addTempCard(…, extra)` carries it.
 - Every card has its own art; rule icons (glyphs, statuses, intents, map nodes) are shared only within one concept.
 
 ### Enemies, heroes, statuses

@@ -133,6 +133,7 @@
 .gk-rush .pico,
 .gk-dodge .pico { color: var(--b); --ink2: var(--p); }
 .gk-heal .pico,
+.gk-maxHp .pico,
 .gk-regen .pico,
 .gk-hp .pico,
 .gk-str .pico,
@@ -146,6 +147,7 @@
 .gk-parry .pico,
 .gk-grow .pico,
 .gk-skull .pico,
+.gk-curse .pico,
 .gk-clog .pico { color: var(--k); --ink2: var(--y); }
 .gk-clog .pico { font-size: 1.5em; }
 

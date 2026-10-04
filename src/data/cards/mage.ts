@@ -548,6 +548,36 @@ export const mageCards: CardDef[] = [
     art: 'freeCoffee',
     play: (c, v) => c.applyStatus('hero', 'freeCoffee', v[0]),
   },
+  {
+    id: 'krustyKrab',
+    face: '{copy}{addCard}',
+    cls: 'mage',
+    type: 'skill',
+    rarity: 'rare',
+    cost: 1,
+    upCost: 0,
+    vals: [],
+    art: 'krustyKrab',
+    play: (c) => c.applyStatus('hero', 'krustyKrab', 1),
+  },
+  {
+    id: 'tipJar',
+    face: '{mana:0}|{?crystal}{grow}',
+    cls: 'mage',
+    type: 'skill',
+    rarity: 'rare',
+    cost: 0,
+    vals: [1],
+    upVals: [2],
+    // Every second of wasted (overflowing) mana is another tip in the jar; the jar is emptied when played.
+    onOverflow: 1,
+    bonusIdx: 0,
+    art: 'tipJar',
+    play: (c, v, card) => {
+      c.gainMana(v[0]);
+      card.bonus = 0;
+    },
+  },
 
   // Generated during a fight (never offered as rewards).
   {

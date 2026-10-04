@@ -58,6 +58,8 @@ export interface CombatCard extends CardInst {
   age?: number;
   /** Mana its cost has dropped by so far this fight (`costDrop`). */
   cut?: number;
+  /** A copy made this fight with the Fleeting keyword on top of its own (Krusty Krab). */
+  fleeting?: true;
 }
 
 /** A card as the rules and the UI read it: a deck copy, with the combat state (bonus, tax…) when it is in a fight. */
@@ -201,6 +203,8 @@ export interface StatusDef {
   hidesCards?: true;
   /** While active on the hero, the hero can't act: no card played by hand, no ability (stashing is still allowed). Cards still play themselves under `autoplay` (Stun). */
   handsTied?: true;
+  /** A debuff that hurts whoever carries it the same way, so the hero can hand it to the enemy (CC the Boss). */
+  passable?: true;
   /** While active on the hero, the next card that costs mana is free and takes one stack with it (Lost Badge). */
   freeNext?: true;
   /** While active on the hero, no card rule (`canPlay`) applies (Root access). */
@@ -211,8 +215,8 @@ export interface StatusDef {
   canPlay?: (c: Combat, side: Side, def: CardDef, uid: number) => TKey | null;
   /** While active (on either side), the hero's max mana can't grow past this. */
   manaCap?: number;
-  /** Reacts to every card the hero plays after the status was applied. */
-  onCardPlayed?: (c: Combat, side: Side, def: CardDef) => void;
+  /** Reacts to every card the hero plays after the status was applied (`card` = the copy that was played). */
+  onCardPlayed?: (c: Combat, side: Side, def: CardDef, card: CombatCard) => void;
   /** The side carrying it just lost HP to a hit (`lost` > 0). */
   onHurt?: (c: Combat, side: Side, s: StatusVal, lost: number) => void;
   /** The side carrying it just attacked: one of its moves dealt damage (Burn). */

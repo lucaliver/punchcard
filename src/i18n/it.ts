@@ -548,6 +548,8 @@ const it: Record<EnKey, string> = {
   'kw.power.d': 'Dura per il resto dello scontro.',
   'kw.thorns': 'Spine',
   'kw.thorns.d': 'Ogni volta che un nemico ti colpisce, subisce altrettanti danni.',
+  'kw.buff': 'Potenziamento',
+  'kw.buff.d': 'Uno status positivo del nemico (Forza, Rigenerazione…). I suoi tratti permanenti non contano.',
 
   // ------------------------------------------------------------ statuses
   'status.onYou': 'Su di te',
@@ -1128,6 +1130,29 @@ const it: Record<EnKey, string> = {
     'Applica {0} di [poison]. Mentre aspetta nella manica, questa carta ottiene +{1} di [poison] per ogni attacco che giochi (si azzera quando la giochi).',
   'card.sisyphus.name': 'Sisifo',
   'card.sisyphus.desc': 'Rimescola {0} carte esaurite a caso nel tuo mazzo.',
+  'card.eightHours.name': 'Otto Ore',
+  'card.eightHours.desc': "Ogni {0} carte che giochi, l'ultima viene giocata due volte.",
+  'status.eightHours': 'Otto Ore',
+  'status.eightHours.d': "Ogni {v} carte che giochi, l'ultima viene giocata due volte.",
+  'card.raiseDenied.name': 'Aumento Negato',
+  'card.raiseDenied.desc': 'Privi il nemico del suo [block] e di ogni [buff], poi fai {0} danni più {1} per ogni cosa tolta.',
+  'card.itsAMe.name': "It's-a Me!",
+  'card.itsAMe.desc': 'Ottieni {0} HP massimi per questo scontro, e li recuperi subito.',
+  'card.krustyKrab.name': 'Krusty Krab',
+  'card.krustyKrab.desc': 'Mescola nel tuo mazzo una copia [fleeting] della prossima carta che giochi.',
+  'status.krustyKrab': 'Krusty Krab',
+  'status.krustyKrab.d': 'Ognuna delle prossime {v} {v|carta|carte} che giochi lascia nel tuo mazzo una copia [fleeting].',
+  'card.tipJar.name': 'Barattolo delle Mance',
+  'card.tipJar.desc':
+    'Ottieni {0} di [mana]. Questa carta ottiene +1 di [mana] per ogni secondo in cui il tuo mana è pieno e va sprecato (ovunque sia). Si svuota quando viene giocata.',
+  'card.oompaLoompa.name': 'Oompa Loompa',
+  'card.oompaLoompa.desc': 'Mescola {0} Loompa nel tuo mazzo.',
+  'card.loompa.name': 'Loompa',
+  'card.loompa.desc': 'Fai {0} danni. Se lascia il nastro senza essere giocata, curi {1} HP.',
+  'card.ccTheBoss.name': 'Cc al Capo',
+  'card.ccTheBoss.desc': 'Passi al nemico i tuoi malus: [poison], [burn], [weak], [vulnerable], [chill] e [stun].',
+  'card.mealVoucher.name': 'Buono Pasto',
+  'card.mealVoucher.desc': 'Rimuovi ogni maledizione dal tuo mazzo e dal nastro. Fai {0} danni per ciascuna.',
 
   // ------------------------------------------------------------- enemies
   'enemy.snitch.name': 'Lo snitch',

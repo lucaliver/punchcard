@@ -931,6 +931,62 @@ export const ICONS: Record<string, { el: Element; svg: string }> = {
     el: 'fire',
     svg: `<path d="M6 10c16-8 36-8 52 0L32 62z"/><path fill="#16121f" d="M8 14c16-6 32-6 48 0l-2 4c-14-6-30-6-44 0z"/><circle cx="24" cy="24" r="5" fill="#16121f"/><circle cx="40" cy="26" r="5" fill="#16121f"/><circle cx="32" cy="40" r="4" fill="#16121f"/>`,
   },
+  // ---- Eight Hours, Oompa Loompa, Krusty Krab, It's-a Me, Tip Jar, Raise Denied, CC the Boss, Meal Voucher
+  // An alarm clock at eight o'clock.
+  eightHours: {
+    el: 'steel',
+    svg: `<circle cx="14" cy="14" r="9"/><circle cx="50" cy="14" r="9"/><circle cx="32" cy="37" r="24"/><path d="M14 54l-6 8M50 54l6 8" stroke="currentColor" stroke-width="5" stroke-linecap="round"/><circle cx="32" cy="37" r="18" fill="#16121f"/><path d="M32 37V24M32 37l-9 9" stroke="#fff" stroke-width="5" stroke-linecap="round" fill="none"/><circle cx="32" cy="37" r="3"/>`,
+  },
+  // A smiling face under a bush of hair, in overalls.
+  oompaLoompa: {
+    el: 'nature',
+    svg: `<circle cx="16" cy="16" r="9"/><circle cx="32" cy="10" r="10"/><circle cx="48" cy="16" r="9"/><circle cx="32" cy="34" r="21"/><path d="M6 64c2-9 12-12 26-12s24 3 26 12z"/><path d="M12 25Q32 15 52 25" stroke="#16121f" stroke-width="4" fill="none"/><circle cx="23" cy="33" r="4.5" fill="#16121f"/><circle cx="41" cy="33" r="4.5" fill="#16121f"/><path d="M18 41Q32 58 46 41z" fill="#16121f"/><path d="M24 54v10M40 54v10" stroke="#16121f" stroke-width="4"/>`,
+  },
+  // One worker on the march with a pickaxe.
+  loompa: {
+    el: 'nature',
+    svg: `<circle cx="26" cy="15" r="9"/><circle cx="19" cy="7" r="5"/><circle cx="27" cy="4" r="5"/><circle cx="35" cy="7" r="5"/><path d="M16 26h20l2 22H14z"/><path d="M20 48l-6 14M32 48l8 14" stroke="currentColor" stroke-width="8" stroke-linecap="round"/><path d="M36 30l14-10" stroke="currentColor" stroke-width="6" stroke-linecap="round"/><path d="M54 6l-8 52" stroke="currentColor" stroke-width="4" stroke-linecap="round"/><path d="M38 12Q54 2 62 18Q50 8 40 20z"/><circle cx="23" cy="15" r="2.5" fill="#16121f"/><circle cx="30" cy="15" r="2.5" fill="#16121f"/><path d="M16 38h20" stroke="#16121f" stroke-width="3"/>`,
+  },
+  // A Krabby Patty: sesame bun, lettuce, cheese, patty, bun.
+  krustyKrab: {
+    el: 'fire',
+    svg: `<path d="M6 26C6 12 18 3 32 3s26 9 26 23z"/><g fill="#16121f"><ellipse cx="19" cy="14" rx="3.5" ry="2.3"/><ellipse cx="32" cy="9" rx="3.5" ry="2.3"/><ellipse cx="45" cy="14" rx="3.5" ry="2.3"/><ellipse cx="25" cy="21" rx="3.5" ry="2.3"/><ellipse cx="39" cy="21" rx="3.5" ry="2.3"/></g><path d="M4 29h56v3c-3 6-7 6-10 0-3 6-7 6-10 0-3 6-7 6-10 0-3 6-7 6-10 0-3 6-7 6-10 0-3 6-7 6-10 0z"/><rect x="6" y="41" width="52" height="10" rx="5"/><path d="M6 55h52c0 6-4 8-8 8H14c-4 0-8-2-8-8z"/>`,
+  },
+  // A spotted mushroom with eyes.
+  mushroom: {
+    el: 'nature',
+    svg: `<path d="M3 34C3 14 16 3 32 3s29 11 29 31z"/><circle cx="32" cy="15" r="7" fill="#16121f"/><circle cx="12" cy="28" r="6" fill="#16121f"/><circle cx="52" cy="28" r="6" fill="#16121f"/><path d="M15 38h34v10c0 9-7 15-17 15S15 57 15 48z"/><ellipse cx="25" cy="47" rx="3.5" ry="6" fill="#16121f"/><ellipse cx="39" cy="47" rx="3.5" ry="6" fill="#16121f"/>`,
+  },
+  // A glass jar of coins with one more on its way in.
+  tipJar: {
+    el: 'holy',
+    svg: `<circle cx="32" cy="6" r="6"/><rect x="12" y="16" width="40" height="8" rx="2"/><path d="M10 28h44v26a8 8 0 0 1-8 8H18a8 8 0 0 1-8-8z"/><path d="M16 33h32v20a4 4 0 0 1-4 4H20a4 4 0 0 1-4-4z" fill="#16121f"/><circle cx="25" cy="51" r="6"/><circle cx="39" cy="51" r="6"/><circle cx="32" cy="41" r="6"/>`,
+  },
+  // A rise, with the ban sign through it.
+  raiseDenied: {
+    el: 'blood',
+    svg: `<path d="M32 4l26 28H42v28H22V32H6z"/><path d="M8 6L56 58" stroke="#16121f" stroke-width="11" stroke-linecap="round"/><path d="M8 6L56 58" stroke="currentColor" stroke-width="5" stroke-linecap="round"/>`,
+  },
+  // An envelope marked CC.
+  ccTheBoss: {
+    el: 'shadow',
+    svg: `<rect x="4" y="10" width="56" height="46"/><path d="M4 12L32 34L60 12" stroke="#16121f" stroke-width="4" fill="none"/><path d="M28 42A6.5 6.5 0 1 0 28 52M44 42A6.5 6.5 0 1 0 44 52" stroke="#16121f" stroke-width="4" fill="none"/>`,
+  },
+  // A meal ticket with notched sides, a perforated stub, a fork and a knife.
+  mealVoucher: {
+    el: 'curse',
+    svg: `<rect x="4" y="10" width="56" height="44"/><circle cx="4" cy="32" r="6" fill="#16121f"/><circle cx="60" cy="32" r="6" fill="#16121f"/><path d="M20 12v6M20 24v6M20 36v6M20 48v4" stroke="#16121f" stroke-width="3"/><g fill="#16121f"><rect x="25" y="16" width="3.5" height="13"/><rect x="31" y="16" width="3.5" height="13"/><rect x="37" y="16" width="3.5" height="13"/><rect x="25" y="27" width="15.5" height="5"/><rect x="30" y="31" width="5.5" height="19"/><path d="M45 16q9 5 5 21h-5z"/><rect x="45" y="36" width="5" height="14"/></g>`,
+  },
+  // Max HP up: a heart with an arrow.
+  heartUp: {
+    el: 'nature',
+    svg: `<g transform="translate(-3 0) scale(.95)">${heart}</g><g transform="translate(0 -3)"><path d="M48 30l14 16h-8v16H42V46h-8z" fill="#16121f" stroke="#16121f" stroke-width="6" stroke-linejoin="round"/><path d="M48 30l14 16h-8v16H42V46h-8z"/></g>`,
+  },
+  // The clock behind Eight Hours: a wall clock at eight.
+  shiftClock: {
+    el: 'steel',
+    svg: `<circle cx="32" cy="32" r="28"/><circle cx="32" cy="32" r="21" fill="#16121f"/><path d="M32 32V16M32 32l-11 11" stroke="#fff" stroke-width="6" stroke-linecap="round" fill="none"/><circle cx="32" cy="32" r="4"/>`,
+  },
   // ---- locked content
   lock: {
     el: 'steel',

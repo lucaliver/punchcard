@@ -545,6 +545,8 @@ const en = {
   'kw.power.d': 'Lasts for the rest of the fight.',
   'kw.thorns': 'Thorns',
   'kw.thorns.d': 'Every time an enemy hits you, it takes that much damage back.',
+  'kw.buff': 'Buff',
+  'kw.buff.d': "A good status the enemy has (Strength, Regeneration…). Its permanent traits aren't buffs.",
 
   // ------------------------------------------------------------ statuses
   'status.onYou': 'On you',
@@ -1116,6 +1118,29 @@ const en = {
   'card.petriDish.desc': 'Apply {0} [poison]. While it waits in your sleeve, this card gains +{1} [poison] for every attack you play.',
   'card.sisyphus.name': 'Sisyphus',
   'card.sisyphus.desc': 'Shuffle {0} random exhausted cards back into your draw pile.',
+  'card.eightHours.name': 'Eight Hours',
+  'card.eightHours.desc': 'Every {0} cards you play, the last one is played twice.',
+  'status.eightHours': 'Eight Hours',
+  'status.eightHours.d': 'Every {v} cards you play, the last one is played twice.',
+  'card.raiseDenied.name': 'Raise Denied',
+  'card.raiseDenied.desc': 'Strip the enemy of its [block] and every [buff], then deal {0} damage plus {1} for each thing stripped.',
+  'card.itsAMe.name': "It's-a Me!",
+  'card.itsAMe.desc': 'Gain {0} max HP for this fight, and heal that much.',
+  'card.krustyKrab.name': 'Krusty Krab',
+  'card.krustyKrab.desc': 'Shuffle a [fleeting] copy of the next card you play into your deck.',
+  'status.krustyKrab': 'Krusty Krab',
+  'status.krustyKrab.d': 'Each of the next {v} {v|card|cards} you play leaves a [fleeting] copy in your deck.',
+  'card.tipJar.name': 'Tip Jar',
+  'card.tipJar.desc':
+    'Gain {0} [mana]. This card gains +1 [mana] for every second your mana is full and going to waste (wherever it is). Emptied when played.',
+  'card.oompaLoompa.name': 'Oompa Loompa',
+  'card.oompaLoompa.desc': 'Shuffle {0} Loompas into your deck.',
+  'card.loompa.name': 'Loompa',
+  'card.loompa.desc': 'Deal {0} damage. If it leaves the belt unplayed, heal {1} HP.',
+  'card.ccTheBoss.name': 'CC the Boss',
+  'card.ccTheBoss.desc': 'Pass your debuffs on to the enemy: [poison], [burn], [weak], [vulnerable], [chill] and [stun].',
+  'card.mealVoucher.name': 'Meal Voucher',
+  'card.mealVoucher.desc': 'Remove every curse from your deck and the belt. Deal {0} damage for each.',
 
   // ------------------------------------------------------------- enemies
   'enemy.snitch.name': 'The Snitch',

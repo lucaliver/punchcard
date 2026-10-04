@@ -2619,3 +2619,137 @@ describe('act 3 elites and boss', () => {
     expect(c.result).toBe('lose');
   });
 });
+
+describe("Eight Hours, Krusty Krab, It's-a Me, Tip Jar, Raise Denied, CC the Boss, Meal Voucher, Oompa Loompa", () => {
+  /** A fight with a quiet enemy, lots of HP and mana, and a fresh sleeve: cards are put in slot 0 and played from there. */
+  const quiet = (over: Partial<CombatSetup> = {}): Combat => {
+    const c = setup({ hp: 80, maxHp: 80, deck: deckOf(Array(6).fill('punch')), ...over });
+    c.enemy.move = { id: 'wait', intent: 'defend', windup: 999 };
+    c.enemy.hp = c.enemy.maxHp = 999;
+    run(c, CONFIG.introTime + 0.01);
+    c.hero.maxMana = c.hero.mana = 10;
+    return c;
+  };
+  let tempId = 0;
+  const give = (c: Combat, id: string, up = false): number => {
+    const card = { uid: 9000 + ++tempId, id, up, bonus: 0, temp: true };
+    c.sleeve[0] = card;
+    return card.uid;
+  };
+  const play = (c: Combat, id: string, up = false): boolean => c.playCard(give(c, id, up));
+
+  it('Eight Hours plays every 8th card twice, and its chip counts them', () => {
+    const c = quiet();
+    expect(play(c, 'eightHours')).toBe(true);
+    expect(c.stacks('hero', 'eightHours')).toBe(CARDS.eightHours.vals[0]);
+    const damage = (): number => c.enemy.maxHp - c.enemy.hp;
+    for (let i = 0; i < 7; i++) play(c, 'redStapler');
+    expect(damage()).toBe(7 * CARDS.redStapler.vals[0]);
+    expect(STATUSES.eightHours.progress?.(c, 'hero', c.hero.statuses.eightHours)).toBeCloseTo(7 / 8);
+    play(c, 'redStapler');
+    expect(damage()).toBe(9 * CARDS.redStapler.vals[0]);
+    // The count starts over, and the upgrade shortens the shift.
+    expect(c.hero.statuses.eightHours.e).toBe(0);
+    play(c, 'eightHours', true);
+    expect(c.stacks('hero', 'eightHours')).toBe(CARDS.eightHours.upVals![0]);
+  });
+
+  it('Krusty Krab leaves a fleeting copy of the next card in the draw pile, once', () => {
+    const c = quiet();
+    play(c, 'krustyKrab');
+    expect(c.stacks('hero', 'krustyKrab')).toBe(1);
+    const before = c.draw.length;
+    play(c, 'punch', true);
+    expect(c.has('hero', 'krustyKrab')).toBe(false);
+    expect(c.draw).toHaveLength(before + 1);
+    const copy = c.draw.find((x) => x.temp && x.id === 'punch')!;
+    expect(copy.up).toBe(true);
+    expect(c.keywords(copy)).toContain('fleeting');
+    play(c, 'punch');
+    expect(c.draw).toHaveLength(before + 1);
+  });
+
+  it("It's-a Me! raises max HP and HP for the fight, and is fleeting", () => {
+    const c = quiet();
+    c.hero.hp = 50;
+    play(c, 'itsAMe');
+    expect(c.hero.maxHp).toBe(80 + CARDS.itsAMe.vals[0]);
+    expect(c.hero.hp).toBe(50 + CARDS.itsAMe.vals[0]);
+    expect(CARDS.itsAMe.keywords).toContain('fleeting');
+  });
+
+  it('Tip Jar saves the mana that goes to waste, and is emptied when played', () => {
+    const c = quiet();
+    const uid = give(c, 'tipJar');
+    run(c, 3.1);
+    const jar = c.sleeve[0]!;
+    expect(jar.bonus).toBe(3);
+    c.hero.mana = 0;
+    expect(c.playCard(uid)).toBe(true);
+    expect(c.hero.mana).toBe(CARDS.tipJar.vals[0] + 3);
+    expect(jar.bonus).toBe(0);
+  });
+
+  it('Raise Denied strips Block and buffs (not traits) first, then hits for each', () => {
+    const c = quiet();
+    c.enemy.block = 20;
+    c.applyStatus('enemy', 'strength', 2);
+    c.applyStatus('enemy', 'lightSleeper', 1);
+    c.applyStatus('enemy', 'weak', 1, 5);
+    const [base, each] = CARDS.raiseDenied.vals;
+    play(c, 'raiseDenied');
+    expect(c.enemy.block).toBe(0);
+    expect(c.has('enemy', 'strength')).toBe(false);
+    expect(c.has('enemy', 'lightSleeper')).toBe(true);
+    expect(c.has('enemy', 'weak')).toBe(true);
+    expect(c.enemy.maxHp - c.enemy.hp).toBe(base + each * 2);
+  });
+
+  it("CC the Boss hands the hero's debuffs to the enemy, and keeps what only hurts the belt", () => {
+    const c = quiet();
+    c.applyStatus('hero', 'poison', 3);
+    c.applyStatus('hero', 'weak', 1, 5);
+    c.applyStatus('hero', 'hurry', 1, 5);
+    c.applyStatus('hero', 'strength', 2);
+    play(c, 'ccTheBoss');
+    expect(c.has('hero', 'poison')).toBe(false);
+    expect(c.has('hero', 'weak')).toBe(false);
+    expect(c.stacks('enemy', 'poison')).toBe(3);
+    expect(c.enemy.statuses.weak.t).toBeCloseTo(5, 0);
+    expect(c.has('hero', 'hurry')).toBe(true);
+    expect(c.stacks('hero', 'strength')).toBe(2);
+  });
+
+  it('Meal Voucher removes every curse from the belt, the sleeve and both piles, and hits for each', () => {
+    const c = quiet({ deck: deckOf(['punch', 'punch', 'drama']) });
+    c.addTempCard('tpsReport', 'belt');
+    c.addTempCard('drama', 'draw');
+    c.addTempCard('drama', 'discard');
+    c.sleeve[1] = { uid: 9990, id: 'writeUp', up: false, bonus: 0, temp: true };
+    const every = [...c.belt.map((b) => b.card), ...c.draw, ...c.discard, ...c.sleeve].filter((x) => x && CARDS[x.id].type === 'curse');
+    const deckCurse = every.find((x) => !x!.temp)!;
+    expect(every.length).toBeGreaterThanOrEqual(5);
+    play(c, 'mealVoucher');
+    const left = [...c.belt.map((b) => b.card), ...c.draw, ...c.discard, ...c.sleeve].filter((x) => x && CARDS[x.id].type === 'curse');
+    expect(left).toHaveLength(0);
+    expect(c.enemy.maxHp - c.enemy.hp).toBe(CARDS.mealVoucher.vals[0] * every.length);
+    // The one that belonged to the run's deck is gone from it for good.
+    expect(c.consumed).toContain(deckCurse.uid);
+  });
+
+  it('Oompa Loompa shuffles Loompas into the deck; one that slips off the belt heals and is gone', () => {
+    const c = quiet();
+    const before = c.draw.length;
+    play(c, 'oompaLoompa', true);
+    const loompas = c.draw.filter((x) => x.id === 'loompa');
+    expect(loompas).toHaveLength(CARDS.oompaLoompa.vals[0]);
+    expect(loompas.every((x) => x.up)).toBe(true);
+    expect(c.draw.length).toBe(before + loompas.length);
+    c.hero.hp = 50;
+    c.addTempCard('loompa', 'belt', true);
+    const lost = c.belt[c.belt.length - 1].card;
+    run(c, (CONFIG.beltTime * EXPIRE_POS) / c.beltRate() + 0.5);
+    expect(c.hero.hp).toBe(50 + CARDS.loompa.upVals![1]);
+    expect(c.exhaust.some((x) => x.uid === lost.uid)).toBe(true);
+  });
+});
