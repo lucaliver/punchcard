@@ -6,6 +6,7 @@ import { addCard, type RewardOffer, rewardKindOf, type RunState, skipPay, skipRe
 import type { CardInst } from '../../game/types';
 import type { Screen } from '../app';
 import { icon } from '../art/icons';
+import { CARD_SHOW_MS, playCardGain } from '../components/cardShow';
 import { cardView } from '../components/cardView';
 import { openCardDetail, sortCards, sortControl } from '../components/modals';
 import { SLACK_MS, cssMs, h, onTapOrHold } from '../dom';
@@ -45,13 +46,14 @@ export function rewardScreen(run: RunState, picks: RewardOffer[], adds: boolean,
         sfx('tap');
         const pay = skipPay(run);
         trackReward(run, offered, null, null);
-        skipReward(run, rewardKindOf(run), offered);
+        const bonus = skipReward(run, rewardKindOf(run), offered);
         // Max HP goes up: hearts rise, then on to the map.
         swapBtn.disabled = true;
         skipBtn.disabled = true;
         (e.currentTarget as HTMLElement).blur();
         playHealing(el, pay, t('reward.maxHp'), true);
-        setTimeout(onDone, HEAL_FAST_MS);
+        if (bonus) playCardGain(el, { ...bonus }, t('reward.bonus'), { start: 'ding', end: 'deckAdd' });
+        setTimeout(onDone, bonus ? CARD_SHOW_MS : HEAL_FAST_MS);
       },
     },
     h('span', null, t('reward.skip')),

@@ -345,6 +345,7 @@ const en = {
   'reward.skip': 'Skip',
   'reward.skipHp': '+{n} max HP',
   'reward.skipCard': '+ a random card',
+  'reward.bonus': 'Bonus!',
   'reward.maxHp': 'max HP',
   'reward.yourDeck': 'Your deck',
   'reward.offer': 'Reward offers',
