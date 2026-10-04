@@ -4,7 +4,7 @@ import { PERKS } from '../../data/perks';
 import { STATUSES } from '../../data/statuses';
 import type { Combat } from '../../game/combat';
 import type { CardInst, Tone } from '../../game/types';
-import { h, longestWord } from '../dom';
+import { h } from '../dom';
 import { icon } from '../art/icons';
 
 const KEYWORD_LINE = ['innate', 'pending', 'exhaust', 'consume', 'fleeting', 'volatile', 'unplayable'];
@@ -201,7 +201,7 @@ export function cardView(card: CardInst & { bonus?: number }, opts: CardViewOpts
     .join('');
   const lines = def.face.split('|').length;
   el.innerHTML = `
-    <div class="c-top"><div class="c-cost ${card.perks?.some((p) => PERKS[p]?.costDelta) ? 'cheap' : ''}">${cardCostLabel(card)}</div><div class="c-name ${nameFit(cardName(card))}" style="--w:${longestWord(cardName(card))}">${cardName(card)}</div></div>
+    <div class="c-top"><div class="c-cost ${card.perks?.some((p) => PERKS[p]?.costDelta) ? 'cheap' : ''}">${cardCostLabel(card)}</div><div class="c-name ${nameFit(cardName(card))}">${cardName(card)}</div></div>
     <div class="c-art">${icon(def.art)}</div>
     <div class="c-face ${lines > 1 ? 'two' : ''}">${cardFace(card, opts.combat)}</div>
     ${tags ? `<div class="c-tags">${tags}</div>` : ''}
