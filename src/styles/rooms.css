@@ -2,14 +2,18 @@
 .room-scene {
   position: relative;
   flex: 1;
+  min-height: 0;
   display: grid;
+  grid-template-rows: minmax(0, 1fr);
   place-items: center;
   padding-bottom: 12px;
 }
 /* the sprite stands on the hero select's plinth, tinted with the act's map ink; only the sprite bobs */
 .room-stage {
   position: relative;
-  width: min(62vw, 280px, 33vh);
+  /* as big as the room left over allows (a long text above or below takes some), never over 280px */
+  height: min(100%, 62vw, 280px);
+  aspect-ratio: 1;
   --hero-ink: var(--map-trod);
 }
 .room-stage .pedestal { bottom: -10px; width: 78%; }
