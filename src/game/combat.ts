@@ -1284,8 +1284,9 @@ export class Combat {
     if (to === 'belt' && this.spawnCard(at, card)) {
       // already riding
     } else if (to !== 'discard') {
-      // A card that finds no room on the belt is shuffled into the draw pile like any other added card.
-      this.draw.splice(this.rng.int(0, this.draw.length + 1), 0, card);
+      // A card that finds no room on the belt is shuffled into the draw pile like any other added card (the whole pile, so a short one doesn't keep copies side by side).
+      this.draw.push(card);
+      this.draw = this.rng.shuffle(this.draw);
     } else {
       this.discard.push(card);
     }
