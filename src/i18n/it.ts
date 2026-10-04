@@ -44,7 +44,7 @@ const it: Record<EnKey, string> = {
   'crash.copied': 'Copiato',
   'beg.title': 'Supplica di restare',
   'beg.body':
-    "Stai per essere licenziato. Implora un'altra possibilità: HP e mana al massimo, {$begCrystals} cristallo di mana in più, {$begStrength} Forza e {$begDodge}s di Schivata. Si può fare una sola volta per giornata.",
+    "Stai per essere licenziato. Implora un'altra possibilità: HP e mana al massimo, via tutti i malus, {$begCrystals} cristallo di mana in più, {$begStrength} Forza e {$begDodge}s di Schivata. Si può fare una sola volta per giornata.",
   'beg.yes': 'Supplica',
   'beg.no': 'Accetta il destino',
   'beg.done': 'Supplicato',

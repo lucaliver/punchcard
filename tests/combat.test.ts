@@ -2438,6 +2438,7 @@ describe('act 3 elites and boss', () => {
     run(c, CONFIG.introTime + 0.01);
     c.hero.mana = 0;
     const crystals = c.hero.maxMana;
+    c.applyStatus('hero', 'poison', 3);
     c.damage('enemy', 'hero', 999, { raw: true }, 'enemy');
     expect(c.begging).toBe(true);
     expect(c.result).toBeNull();
@@ -2447,6 +2448,7 @@ describe('act 3 elites and boss', () => {
     c.beg(true);
     expect(c.hero.hp).toBe(c.hero.maxHp);
     expect(c.hero.maxMana).toBe(crystals + CONFIG.beg.crystals);
+    expect(c.stacks('hero', 'poison')).toBe(0);
     expect(c.hero.mana).toBe(c.hero.maxMana);
     expect(c.stacks('hero', 'strength')).toBe(CONFIG.beg.strength);
     expect(c.has('hero', 'dodge')).toBe(true);

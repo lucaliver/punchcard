@@ -1151,7 +1151,7 @@ export class Combat {
     return false;
   }
 
-  /** The answer to the offer to beg to stay: yes, and the hero is back on their feet (full HP and mana, a spare crystal, Dodge and Strength) for the rest of the fight; no, and it is lost. */
+  /** The answer to the offer to beg to stay: yes, and the hero is back on their feet (full HP and mana, no debuffs, a spare crystal, Dodge and Strength) for the rest of the fight; no, and it is lost. */
   beg(accept: boolean): void {
     if (!this.begging) return;
     this.begging = false;
@@ -1162,6 +1162,7 @@ export class Combat {
     this.canBeg = false;
     this.relicFlags[BEG_FLAG] = 1;
     this.hero.hp = this.hero.maxHp;
+    for (const id of Object.keys(this.hero.statuses)) if (!STATUSES[id]?.good) this.removeStatus('hero', id);
     this.addManaCrystals(CONFIG.beg.crystals);
     this.hero.mana = this.hero.maxMana;
     this.applyStatus('hero', 'dodge', 1, CONFIG.beg.dodge);
