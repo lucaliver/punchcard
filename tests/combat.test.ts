@@ -1984,6 +1984,29 @@ describe('cards that fill the classes out', () => {
     expect(c.hero.mana).toBeLessThan(5);
   });
 
+  it('Dress Code shrinks with the belt, Skill Issue makes the enemy Vulnerable, Grudge Ledger chills when the hero is hurt', () => {
+    const c = quiet();
+    c.belt.length = 0;
+    const [base, per] = CARDS.dressCode.vals;
+    cast(c, 'dressCode');
+    expect(c.hero.block).toBe(base);
+    c.hero.block = 0;
+    c.addTempCard('punch', 'belt');
+    c.addTempCard('punch', 'belt');
+    const onBelt = c.belt.length;
+    cast(c, 'dressCode');
+    expect(c.hero.block).toBe(Math.max(0, base - per * onBelt));
+
+    cast(c, 'skillIssue');
+    expect(c.has('enemy', 'vulnerable')).toBe(true);
+
+    cast(c, 'grudgeLedger');
+    expect(c.has('enemy', 'chill')).toBe(false);
+    c.hero.block = 0;
+    c.damage('enemy', 'hero', 5, { raw: true }, 'enemy');
+    expect(c.has('enemy', 'chill')).toBe(true);
+  });
+
   it('Sick Day gives Block and stuns the hero', () => {
     const c = quiet();
     cast(c, 'sickDay');

@@ -473,4 +473,16 @@ export const necromancerCards: CardDef[] = [
     art: 'forgottenLunch',
     play: (c, v) => c.applyStatus('hero', 'forgottenLunch', v[0]),
   },
+  {
+    id: 'grudgeLedger',
+    face: '{*hp}|{chill:0}',
+    cls: 'necromancer',
+    type: 'power',
+    rarity: 'epic',
+    cost: 2,
+    vals: [2],
+    upVals: [3],
+    art: 'grudgeLedger',
+    play: (c, v) => c.applyStatus('hero', 'grudgeLedger', v[0]),
+  },
 ];

@@ -711,6 +711,20 @@ export const neutralCards: CardDef[] = [
     },
   },
 
+  {
+    id: 'meetingTable',
+    face: '{block:0}',
+    cls: 'neutral',
+    type: 'defense',
+    rarity: 'rare',
+    cost: 3,
+    vals: [25],
+    upVals: [32],
+    span: 2,
+    art: 'meetingTable',
+    play: (c, v) => c.gainBlock('hero', v[0]),
+  },
+
   // Generated during a fight (never offered as rewards).
   {
     id: 'alreadyDone',

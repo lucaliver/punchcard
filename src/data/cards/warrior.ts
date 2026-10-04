@@ -488,6 +488,32 @@ export const warriorCards: CardDef[] = [
     play: (c, v) => c.applyStatus('hero', 'forkliftCertified', v[0]),
   },
 
+  // More commons and skills: a Block that shrinks as the belt fills, and a Vulnerable skill
+  {
+    id: 'dressCode',
+    face: '{block:0}|{shrink:1}',
+    cls: 'warrior',
+    type: 'defense',
+    rarity: 'common',
+    cost: 1,
+    vals: [18, 2],
+    upVals: [24, 2],
+    art: 'dressCode',
+    play: (c, v) => c.gainBlock('hero', Math.max(0, v[0] - v[1] * c.belt.length)),
+  },
+  {
+    id: 'skillIssue',
+    face: '{vuln:0}',
+    cls: 'warrior',
+    type: 'skill',
+    rarity: 'rare',
+    cost: 1,
+    vals: [8],
+    upVals: [12],
+    art: 'skillIssue',
+    play: (c, v) => c.applyStatus('enemy', 'vulnerable', 1, v[0]),
+  },
+
   // Generated during a fight (never offered as rewards).
   {
     id: 'step2',

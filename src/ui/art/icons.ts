@@ -637,6 +637,23 @@ export const ICONS: Record<string, { el: Element; svg: string }> = {
     svg: `<rect x="14" y="14" width="36" height="46"/><rect x="26" y="4" width="12" height="10"/><circle cx="32" cy="30" r="8" fill="#16121f"/><path d="M20 46h24M20 53h16" stroke="#16121f" stroke-width="4"/><path d="M28 28l8 4M36 28l-8 4" stroke="currentColor" stroke-width="3"/>`,
   },
 
+  dressCode: {
+    el: 'steel',
+    svg: `<path d="M20 4h24l-4 12H24z"/><path d="M26 16h12l-2 6 6 28-10 12-10-12 6-28z"/><path d="M26 30h12M25 40h14" stroke="#16121f" stroke-width="3"/><path d="M12 4l12 12-6 6-12-12zM52 4L40 16l6 6 12-12z" fill="#16121f" opacity=".5"/>`,
+  },
+  skillIssue: {
+    el: 'steel',
+    svg: `<path d="M10 4h18v38h26v18H10z"/><path d="M18 12h2v26M18 50h30" stroke="#16121f" stroke-width="3" opacity=".5"/><g fill="#16121f"><circle cx="46" cy="18" r="9"/><rect x="41" y="25" width="10" height="5"/></g><g fill="currentColor"><circle cx="43" cy="17" r="2.2"/><circle cx="49" cy="17" r="2.2"/></g>`,
+  },
+  meetingTable: {
+    el: 'steel',
+    svg: `<rect x="4" y="26" width="56" height="12"/><rect x="10" y="38" width="6" height="22"/><rect x="48" y="38" width="6" height="22"/><circle cx="16" cy="14" r="7"/><circle cx="32" cy="14" r="7"/><circle cx="48" cy="14" r="7"/><path d="M6 44h8M50 44h8" stroke="#16121f" stroke-width="3"/>`,
+  },
+  grudgeLedger: {
+    el: 'ice',
+    svg: `<path d="M8 6h40a8 8 0 0 1 8 8v46H16a8 8 0 0 1-8-8z"/><path d="M8 52a8 8 0 0 1 8-8h40" fill="none" stroke="#16121f" stroke-width="3"/><g fill="none" stroke="#16121f" stroke-width="3.5" stroke-linecap="round"><path d="M32 14v22M22 18l20 14M22 32l20-14"/></g>`,
+  },
+
   // ---- Rule icons: one concept each.
   overtime: {
     el: 'blood',
