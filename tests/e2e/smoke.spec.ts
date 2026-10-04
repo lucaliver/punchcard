@@ -332,6 +332,8 @@ test('debug menus: the fight menu kills the enemy, the map menu opens rooms and 
     expect(await page.evaluate('window.__game.run.hp === window.__game.run.maxHp')).toBe(true);
     await page.locator('.act-intro').click();
     await expect(page.locator('.act-intro')).toBeHidden();
+    // The boss just fell: no road is lit from it across the new act's map.
+    await expect(page.locator('.path .step.lamp')).toHaveCount(0);
   }
   await map.locator('.debug-fab').click();
   await expect(page.getByRole('button', { name: 'Skip to next act' })).toBeHidden();

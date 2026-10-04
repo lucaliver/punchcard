@@ -101,8 +101,11 @@ export function journeyScreen(run: RunState, onEnter: (to?: number) => void, onH
   };
   const dist = seenFrom(cur.id);
   // Back from a job in the same act: the rooms that came out of the fog with this step stamp in once the walk ends.
+  // (Not when the boss just fell: `cur` is still the old act's boss and the map is the new act's, so no road leads from it.)
   const before =
-    run.cleared && run.path.length > 1 && run.nodes[run.path[run.path.length - 2]].act === cur.act ? seenFrom(run.path[run.path.length - 2]) : null;
+    run.cleared && run.path.length > 1 && cur.act === act && run.nodes[run.path[run.path.length - 2]].act === cur.act
+      ? seenFrom(run.path[run.path.length - 2])
+      : null;
   let walkMs = 0;
   /** When the walk and the roads lighting up are over: the new rooms are stamped then. */
   let revealMs = 0;
