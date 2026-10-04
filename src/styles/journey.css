@@ -35,6 +35,9 @@
 .hero-sheet .hero-stats { justify-content: flex-start; margin-bottom: 10px; }
 .act-banner { position: relative; text-align: center; margin-top: 10px; }
 .act-banner > :not(.act-scene) { position: relative; }
+/* the words sit on the skyline (windows, fences, things drifting by): the ink ring keeps them readable on any of its colours */
+.act-banner .h1 { text-shadow: 3px 3px 0 var(--p), var(--ring-k); }
+.act-banner .sub { color: var(--fg); text-shadow: var(--ring-k); }
 /* the act's skyline sits behind its title and name, bottom-aligned, tone on tone so the words stay readable */
 .act-scene {
   position: absolute;
