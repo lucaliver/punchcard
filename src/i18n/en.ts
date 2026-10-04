@@ -1073,7 +1073,7 @@ const en = {
   'card.forgottenLunch.name': 'Forgotten Lunch',
   'card.forgottenLunch.desc': 'Every {$lunchEvery}s, apply {0} [poison].',
   'card.sickDay.name': 'Sick Day',
-  'card.sickDay.desc': 'Gain {0} [block]. You are out of action for {1}s.',
+  'card.sickDay.desc': 'Gain {0} [block]. But you are [stun]ned for {1}s.',
   'card.steelToes.name': 'Steel Toes',
   'card.steelToes.desc': 'Whenever you play an attack, gain {0} [block].',
   'card.overstock.name': 'Overstock',

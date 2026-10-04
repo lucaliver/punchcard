@@ -1084,7 +1084,7 @@ const it: Record<EnKey, string> = {
   'card.forgottenLunch.name': 'Tupperware Dimenticato',
   'card.forgottenLunch.desc': 'Ogni {$lunchEvery}s, applichi {0} di [poison].',
   'card.sickDay.name': 'Giorno di Malattia',
-  'card.sickDay.desc': 'Ottieni {0} di [block]. Sei fuori gioco per {1}s.',
+  'card.sickDay.desc': 'Ottieni {0} di [block]. Ma sei in [stun] per {1}s.',
   'card.steelToes.name': 'Antinfortunistiche',
   'card.steelToes.desc': 'Ogni volta che giochi un attacco, ottieni {0} di [block].',
   'card.overstock.name': 'Magazzino Pieno',
