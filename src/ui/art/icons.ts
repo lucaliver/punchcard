@@ -977,6 +977,11 @@ export const ICONS: Record<string, { el: Element; svg: string }> = {
     el: 'curse',
     svg: `<rect x="4" y="10" width="56" height="44"/><circle cx="4" cy="32" r="6" fill="#16121f"/><circle cx="60" cy="32" r="6" fill="#16121f"/><path d="M20 12v6M20 24v6M20 36v6M20 48v4" stroke="#16121f" stroke-width="3"/><g fill="#16121f"><rect x="25" y="16" width="3.5" height="13"/><rect x="31" y="16" width="3.5" height="13"/><rect x="37" y="16" width="3.5" height="13"/><rect x="25" y="27" width="15.5" height="5"/><rect x="30" y="31" width="5.5" height="19"/><path d="M45 16q9 5 5 21h-5z"/><rect x="45" y="36" width="5" height="14"/></g>`,
   },
+  // Large: one card as wide as two.
+  large: {
+    el: 'steel',
+    svg: `<rect x="2" y="16" width="60" height="32"/><path d="M8 32l11-10v6h26v-6l11 10-11 10v-6H19v6z" fill="#16121f"/>`,
+  },
   // Max HP up: a heart with an arrow.
   heartUp: {
     el: 'nature',

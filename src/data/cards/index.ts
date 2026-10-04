@@ -25,6 +25,9 @@ export function rewardPool(cls: CardClass, rarity: Rarity): CardDef[] {
 
 // Card rules shared by the engine and the UI, so what a card shows is what it does.
 
+/** A wide card that is one big card (the `large` keyword), not a gate over the cards ahead. */
+export const isLarge = (def: CardDef): boolean => !!def.keywords?.includes('large');
+
 /** How a class's card damage looks and sounds when the card says nothing (`hit(v, { kind })`): the magic classes are arcane, the rest slash (attacks) or hit blunt. */
 export const CLASS_HIT: Partial<Record<CardClass, string>> = { mage: 'arcane', necromancer: 'arcane' };
 

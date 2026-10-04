@@ -6,7 +6,7 @@ export type CardClass = HeroId | 'neutral' | 'curse';
 /** A card's type is the colour of its background: attack pink, defense blue, skill yellow, power grey, curse green. */
 export type CardType = 'attack' | 'defense' | 'skill' | 'power' | 'curse';
 export type Rarity = 'starter' | 'common' | 'rare' | 'epic' | 'legendary' | 'special';
-export type Keyword = 'exhaust' | 'consume' | 'fleeting' | 'unplayable' | 'volatile' | 'innate' | 'pending' | 'bulky';
+export type Keyword = 'exhaust' | 'consume' | 'fleeting' | 'unplayable' | 'volatile' | 'innate' | 'pending' | 'bulky' | 'large';
 export type Side = 'hero' | 'enemy';
 
 /** A card in the run deck. */
@@ -110,10 +110,8 @@ export interface CardDef {
   face: string;
   /** Unlock pack id; cards without a pack are always available. */
   pack?: string;
-  /** Card widths it covers on the belt (default 1): wider cards ride over the ones ahead of them. */
+  /** Card widths it covers on the belt (default 1): wider cards ride over the ones ahead of them. A `large` card instead has its extra widths as its own body, behind it, and the belt leaves room for all of it before dealing the next card. */
   span?: number;
-  /** A wide card whose extra widths are its own body, behind it, not a gate over the cards ahead (Meeting Table): the belt leaves room for all of it before dealing the next card. */
-  joined?: true;
   /** A wide card that covers both belt rows ahead of it, not just its own. */
   tall?: boolean;
   /** While on the belt, every other card of its row is out of reach (Priority Task). */

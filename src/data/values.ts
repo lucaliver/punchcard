@@ -91,6 +91,7 @@ export const VALUES = {
   virusCost: CONFIG.virusCost,
   inflationCost: CONFIG.inflationCost,
   kamikazeDamage: CARDS.kamikaze.vals[1],
+  largeSpan: CARDS.meetingTable.span ?? 1,
   // Half-HP moves (the Paper Cuts it starts with count 1)
   deepBeltSecs: ENEMIES.exaggeratedGirl.deepBelt ?? 0,
   securityBlock: HALF.securityBlock,
