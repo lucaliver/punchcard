@@ -1157,6 +1157,16 @@ export class Combat {
   }
 
   /** The answer to the offer to beg to stay: yes, and the hero is back on their feet (full HP and mana, no debuffs, a spare crystal, Dodge and Strength) for the rest of the fight; no, and it is lost. */
+  /** Plays, for free, every card waiting in the sleeve (skipping any that can't be played right now). */
+  playSleeve(): void {
+    if (this.lowerHidden) return;
+    for (const card of this.sleeve.filter((c) => c !== null)) {
+      if (this.result) return;
+      if (this.sleeveIndex(card.uid) < 0 || card.hex || this.isPending(card) || !this.isPlayable(card) || this.ruleBlock(card)) continue;
+      this.resolvePlay(card, true);
+    }
+  }
+
   beg(accept: boolean): void {
     if (!this.begging) return;
     this.begging = false;

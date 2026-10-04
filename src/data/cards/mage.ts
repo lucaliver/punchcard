@@ -502,6 +502,36 @@ export const mageCards: CardDef[] = [
       c.rushBelt(v[1]);
     },
   },
+  // Sleeve payoff and a Chill to Burn bridge
+  {
+    id: 'cacheFlush',
+    face: '{sleeve}',
+    cls: 'mage',
+    type: 'skill',
+    rarity: 'rare',
+    cost: 1,
+    vals: [],
+    art: 'cacheFlush',
+    play: (c) => c.playSleeve(),
+  },
+  {
+    id: 'hotDesking',
+    face: '{chill}|{burn}',
+    cls: 'mage',
+    type: 'skill',
+    rarity: 'rare',
+    cost: 1,
+    vals: [2],
+    upVals: [1],
+    art: 'hotDesking',
+    play: (c, v) => {
+      const chill = c.fighter('enemy').statuses.chill;
+      if (!chill) return;
+      c.removeStatus('enemy', 'chill');
+      c.applyStatus('enemy', 'burn', Math.ceil(chill.t / v[0]));
+    },
+  },
+
   // Powers
   {
     id: 'coldOpen',

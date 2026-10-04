@@ -666,6 +666,22 @@ export const neutralCards: CardDef[] = [
     play: (c, v) => c.gainBlock('hero', v[0] + Math.floor((c.hero.maxHp - c.hero.hp) / v[1])),
   },
 
+  {
+    id: 'sickDay',
+    face: '{block:0}|{selfStun:1}',
+    cls: 'neutral',
+    type: 'defense',
+    rarity: 'common',
+    cost: 0,
+    vals: [10, 2],
+    upVals: [14, 2],
+    art: 'sickDay',
+    play: (c, v) => {
+      c.gainBlock('hero', v[0]);
+      c.applyStatus('hero', 'stun', 1, v[1]);
+    },
+  },
+
   // Generated during a fight (never offered as rewards).
   {
     id: 'alreadyDone',

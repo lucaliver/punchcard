@@ -586,6 +586,35 @@ export const ICONS: Record<string, { el: Element; svg: string }> = {
     svg: `<path d="M4 6h38v52H4z"/><g fill="#16121f"><rect x="10" y="14" width="26" height="4"/><rect x="10" y="24" width="26" height="4"/><rect x="10" y="34" width="16" height="4"/></g><path d="M38 54l18-36 6 3-18 36-7 3z"/>`,
   },
 
+  safetyBriefing: {
+    el: 'steel',
+    svg: `<path d="M8 42a24 24 0 0 1 48 0z"/><rect x="4" y="42" width="56" height="9"/><rect x="28" y="10" width="8" height="32" fill="#16121f" opacity=".4"/><path d="M14 56h36" stroke="#16121f" stroke-width="3"/>`,
+  },
+  goodVibesOnly: {
+    el: 'steel',
+    svg: `<circle cx="32" cy="32" r="19"/><path d="M32 2l5 11h-10zM32 62l-5-11h10zM2 32l11-5v10zM62 32l-11 5V27zM11 11l12 4-8 8zM53 53l-12-4 8-8zM53 11l-4 12-8-8zM11 53l4-12 8 8z"/><g fill="#16121f"><circle cx="25" cy="27" r="3.5"/><circle cx="39" cy="27" r="3.5"/><path d="M21 37q11 12 22 0z"/></g>`,
+  },
+  forkliftCertified: {
+    el: 'steel',
+    svg: `<circle cx="32" cy="24" r="19"/><path d="M20 38l-7 24 13-7 6 7V41zM44 38l7 24-13-7-6 7V41z"/><g fill="#16121f">${star4(32, 24, 12)}</g>`,
+  },
+  cacheFlush: {
+    el: 'arcane',
+    svg: `<ellipse cx="26" cy="14" rx="19" ry="8"/><path d="M7 14v34c0 5 8 8 19 8s19-3 19-8V14c0 5-8 8-19 8S7 19 7 14z"/><path d="M7 30c0 5 8 8 19 8s19-3 19-8M7 44c0 5 8 8 19 8s19-3 19-8" fill="none" stroke="#16121f" stroke-width="3"/><path d="M48 22l14 11-14 11v-7H40V29h8z"/>`,
+  },
+  hotDesking: {
+    el: 'fire',
+    svg: `<rect x="12" y="4" width="40" height="30"/><rect x="29" y="34" width="6" height="8"/><rect x="4" y="42" width="56" height="6"/><rect x="8" y="48" width="6" height="14"/><rect x="50" y="48" width="6" height="14"/><path fill="#16121f" d="M32 9c2 6 9 8 9 15a9 9 0 0 1-18 0c0-4 3-7 5-9 0 3 1 5 3 5-1-4-1-8 1-11z"/>`,
+  },
+  forgottenLunch: {
+    el: 'nature',
+    svg: `<rect x="4" y="20" width="56" height="10"/><rect x="8" y="30" width="48" height="26"/><path d="M14 56v6M30 56v4M46 56v6" stroke="currentColor" stroke-width="4" stroke-linecap="round"/><g fill="#16121f"><circle cx="20" cy="42" r="5"/><circle cx="34" cy="38" r="3.5"/><circle cx="44" cy="46" r="4.5"/></g><path d="M20 20c0-8 8-8 8-14M38 20c0-8 8-8 8-14" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"/>`,
+  },
+  sickDay: {
+    el: 'steel',
+    svg: `<rect x="24" y="4" width="16" height="42" rx="8"/><circle cx="32" cy="48" r="14"/><rect x="30" y="14" width="4" height="34" fill="#16121f"/><circle cx="32" cy="48" r="7" fill="#16121f"/><path d="M42 14h6M42 22h6M42 30h6" stroke="currentColor" stroke-width="3"/>`,
+  },
+
   // ---- Rule icons: one concept each.
   overtime: {
     el: 'blood',

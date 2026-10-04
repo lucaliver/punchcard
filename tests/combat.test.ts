@@ -3,7 +3,17 @@ import { Combat, type CombatSetup } from '../src/game/combat';
 import { CONFIG, EXPIRE_POS, rewardUpgradeChance } from '../src/data/config';
 import { ENEMIES, enemiesFor } from '../src/data/enemies';
 import { HEROES, VIRULENCE_START } from '../src/data/heroes';
-import { COFFEE_EVERY, FLICKER_EVERY, SMILE_HEAL, STATUSES, TABS_EVERY, UNDERSTUDY_BLOCK, UNDERSTUDY_EVERY } from '../src/data/statuses';
+import {
+  COFFEE_EVERY,
+  FLICKER_EVERY,
+  FORKLIFT_BLOCK,
+  LUNCH_EVERY,
+  SMILE_HEAL,
+  STATUSES,
+  TABS_EVERY,
+  UNDERSTUDY_BLOCK,
+  UNDERSTUDY_EVERY,
+} from '../src/data/statuses';
 import { CARD_LIST, CARDS, RARITY_ORDER, cardCostOf } from '../src/data/cards';
 import { RELICS } from '../src/data/relics';
 import { hasStamp, memosOpen, stampAct } from '../src/game/meta';
@@ -1867,6 +1877,72 @@ describe('cards that fill the classes out', () => {
     expect(c.hero.block).toBe(per);
     cast(c, 'bobTheBuilder');
     expect(c.hero.block).toBe(per + CARDS.bobTheBuilder.vals[0]);
+  });
+
+  it('Safety Briefing multiplies Block, up to its cap', () => {
+    const c = quiet();
+    const [mul, cap] = CARDS.safetyBriefing.vals;
+    c.gainBlock('hero', 10);
+    cast(c, 'safetyBriefing');
+    expect(c.hero.block).toBe(10 * mul);
+    c.hero.block = 100;
+    cast(c, 'safetyBriefing');
+    expect(c.hero.block).toBe(100 + cap);
+  });
+
+  it('Good Vibes Only gives Thorns every time the hero loses HP', () => {
+    const c = quiet();
+    cast(c, 'goodVibesOnly');
+    c.damage('enemy', 'hero', 5, { raw: true }, 'enemy');
+    c.damage('enemy', 'hero', 5, { raw: true }, 'enemy');
+    expect(c.stacks('hero', 'thorns')).toBe(2 * CARDS.goodVibesOnly.vals[0]);
+  });
+
+  it('Forklift Certified goes off once, the first time HP falls below half', () => {
+    const c = quiet();
+    cast(c, 'forkliftCertified');
+    c.hero.mana = 0;
+    c.hero.hp = c.hero.maxHp / 2 + 5;
+    c.damage('enemy', 'hero', 4, { raw: true }, 'enemy');
+    expect(c.hero.block).toBe(0);
+    c.damage('enemy', 'hero', 4, { raw: true }, 'enemy');
+    expect(c.hero.block).toBe(FORKLIFT_BLOCK);
+    expect(c.stacks('hero', 'strength')).toBe(CARDS.forkliftCertified.vals[0]);
+    expect(c.hero.mana).toBe(c.hero.maxMana);
+    expect(c.has('hero', 'forkliftCertified')).toBe(false);
+  });
+
+  it('Forgotten Lunch poisons the enemy every few seconds', () => {
+    const c = quiet();
+    cast(c, 'forgottenLunch');
+    run(c, LUNCH_EVERY - 0.5);
+    expect(c.stacks('enemy', 'poison')).toBe(0);
+    run(c, 0.6);
+    expect(c.stacks('enemy', 'poison')).toBeGreaterThan(0);
+  });
+
+  it('Hot Desking turns Chill into Burn, and Cache Flush plays the sleeve for free', () => {
+    const c = quiet();
+    c.applyStatus('enemy', 'chill', 1, 6);
+    cast(c, 'hotDesking');
+    expect(c.has('enemy', 'chill')).toBe(false);
+    expect(c.stacks('enemy', 'burn')).toBe(Math.ceil(6 / CARDS.hotDesking.vals[0]));
+
+    c.addTempCard('bobTheBuilder', 'belt');
+    expect(c.stash(c.belt[c.belt.length - 1].card.uid, 0)).toBe(true);
+    c.hero.block = 0;
+    const mana = c.hero.mana;
+    cast(c, 'cacheFlush');
+    expect(c.sleeve.every((x) => x === null)).toBe(true);
+    expect(c.hero.block).toBe(CARDS.bobTheBuilder.vals[0]);
+    expect(c.hero.mana).toBe(mana);
+  });
+
+  it('Sick Day gives Block and stuns the hero', () => {
+    const c = quiet();
+    cast(c, 'sickDay');
+    expect(c.hero.block).toBe(CARDS.sickDay.vals[0]);
+    expect(c.has('hero', 'stun')).toBe(true);
   });
 
   it("Cold Open chills on every attack, Forty Tabs Open charges Multitasking, Free Coffee pours mana, Workers' Comp blocks after a hurt", () => {

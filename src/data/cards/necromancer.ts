@@ -461,4 +461,16 @@ export const necromancerCards: CardDef[] = [
       c.applyStatus('enemy', 'stun', 1, v[1]);
     },
   },
+  {
+    id: 'forgottenLunch',
+    face: '{*timer}{poison:0}',
+    cls: 'necromancer',
+    type: 'power',
+    rarity: 'epic',
+    cost: 2,
+    vals: [3],
+    upVals: [4],
+    art: 'forgottenLunch',
+    play: (c, v) => c.applyStatus('hero', 'forgottenLunch', v[0]),
+  },
 ];

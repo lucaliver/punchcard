@@ -82,6 +82,11 @@ export const TABS_EVERY = 4;
 /** Free Coffee: seconds between two cups (each one gives its stacks in mana). */
 export const COFFEE_EVERY = 6;
 
+/** Forgotten Lunch: seconds between two helpings of Poison. */
+export const LUNCH_EVERY = 5;
+/** Forklift Certified: the Block it gives (its stacks are the Strength) once the hero's HP falls below half. */
+export const FORKLIFT_BLOCK = 20;
+
 /** A status tick that runs `fn` once per whole second the status has been up (n = 1, 2, 3…). */
 const everySecond =
   (fn: (c: Combat, side: Side, n: number, s: StatusVal) => void): NonNullable<StatusDef['tick']> =>
@@ -183,6 +188,36 @@ const defs: StatusDef[] = [
     good: true,
     icon: 'redCross',
     onHurt: (c, side, s) => c.gainBlock(side, s.v),
+  },
+  // Good Vibes Only (a power): every time the hero loses HP it gains `v` Thorns.
+  { id: 'goodVibesOnly', tone: 'red', kind: 'stacks', good: true, icon: 'thorns', onHurt: (c, side, s) => c.applyStatus(side, 'thorns', s.v) },
+  // Forklift Certified (a power, one use): the first time the hero's HP falls below half it gains Block, `v` Strength and all its mana.
+  {
+    id: 'forkliftCertified',
+    tone: 'teal',
+    kind: 'stacks',
+    good: true,
+    icon: 'helm',
+    onHurt: (c, side, s) => {
+      const f = c.fighter(side);
+      if (f.hp * 2 >= f.maxHp) return;
+      c.gainBlock(side, FORKLIFT_BLOCK);
+      c.applyStatus(side, 'strength', s.v);
+      c.gainMana(c.hero.maxMana);
+      c.removeStatus(side, 'forkliftCertified');
+    },
+  },
+  // Forgotten Lunch (a power): `v` Poison on the enemy every few seconds.
+  {
+    id: 'forgottenLunch',
+    tone: 'green',
+    kind: 'stacks',
+    good: true,
+    icon: 'biohazard',
+    progress: cycle(LUNCH_EVERY),
+    tick: everySecond((c, _side, n, s) => {
+      if (n % LUNCH_EVERY === 0) c.applyStatus('enemy', 'poison', s.v);
+    }),
   },
   // Root access (sudo): no rule can stop the hero's cards.
   { id: 'rootAccess', tone: 'blue', kind: 'timed', good: true, icon: 'terminal', ignoresRules: true },
