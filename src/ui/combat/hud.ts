@@ -307,7 +307,7 @@ export function createHud(v: CombatView, onPassive: () => void): { render(): voi
     setText(r.popupPct, pct < 90 ? `${Math.floor(pct)}%` : `${(Math.floor(pct * 100) / 100).toFixed(2)}%`);
   };
 
-  /** The banner over the belt while the hero can't act: what it is, and a bar draining to the second it ends. */
+  /** The veil over the belt while the hero can't act: striped, it shrinks towards the belt's exit as the stun runs out (`--left`, 1 to 0). */
   const renderTied = (): void => {
     const id = combat.isOver ? undefined : Object.keys(combat.hero.statuses).find((s) => combat.has('hero', s) && STATUSES[s].handsTied);
     toggle(r.stun, 'on', !!id);
@@ -324,7 +324,7 @@ export function createHud(v: CombatView, onPassive: () => void): { render(): voi
       setHtml(r.stunIcon, icon(statusIcon(id, 'hero')));
     }
     setText(r.stunTime, `${left.toFixed(1)}s`);
-    r.stunFill.style.transform = `scaleX(${(Math.ceil((left / tiedSpan) * STUN_STEPS) / STUN_STEPS).toFixed(2)})`;
+    r.stun.style.setProperty('--left', (Math.ceil((left / tiedSpan) * STUN_STEPS) / STUN_STEPS).toFixed(2));
   };
 
   const renderEnemyState = (): void => {

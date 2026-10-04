@@ -999,7 +999,7 @@ test('losing the first fight offers to beg to stay, once, and the fight goes on'
   await expect(page.locator('.end')).toBeVisible({ timeout: 8000 });
 });
 
-test('a stun shows one banner over the belt, not a badge on every card', async ({ page }) => {
+test('a stun covers the belt with one veil, not a badge on every card', async ({ page }) => {
   await freshGame(page);
   await startFight(page);
   await combat(page, "c.applyStatus('hero', 'stun', 1, 6);");

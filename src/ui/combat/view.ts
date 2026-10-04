@@ -101,7 +101,7 @@ function markup(run: RunState, combat: Combat): string {
       <div class="belt-auto" aria-hidden="true"><i></i><i></i><i></i><i></i></div>
       <div class="maw-eyes" aria-hidden="true"><i></i><i></i></div>
       <div class="belt-cards"></div>
-      <!-- while the hero's hands are tied (a stun): a banner with the time left -->
+      <!-- while the hero's hands are tied (a stun): a striped veil over the whole belt, pulling back as it ends -->
       <div class="belt-stun" aria-hidden="true">
         <span class="stun-ico"></span>
         <span class="stun-time"></span>
@@ -170,7 +170,6 @@ function queryRefs(el: HTMLElement) {
     stun: $('.belt-stun', el),
     stunIcon: $('.stun-ico', el),
     stunTime: $('.stun-time', el),
-    stunFill: $('.stun-fill', el),
     popup: $('.update-popup', el),
     popupText: $('.up-text', el),
     popupUpdate: $<HTMLButtonElement>('.js-update', el),
