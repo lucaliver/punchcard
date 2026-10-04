@@ -236,19 +236,25 @@ export function journeyScreen(run: RunState, onEnter: (to?: number) => void, onH
         class: `node ${n.type} ${past ? 'done' : ''} ${missed ? 'missed' : ''} ${open ? 'open' : ''} ${fog ? 'fog' : ''} ${revealed ? 'revealed' : ''}`,
         style: { left: `${laneX(n.lane)}%`, top: `${y(n)}px` },
       },
-      h('button', {
-        class: 'dot',
-        html: fog ? icon('question') : past || !(n.type === 'boss' && !!actDef(n.act).bossClock) ? icon(past ? 'check' : nodeIcon(n)) : undefined,
-        'aria-label': `${t('common.floor', { n: n.floor })} · ${label}`,
-        // Not `disabled`: every node can still be held to read what it is.
-        'aria-disabled': String(!open),
-      }),
-      h('span', { class: 'label' }, label),
+      h(
+        'button',
+        {
+          class: 'dot',
+          'aria-label': `${t('common.floor', { n: n.floor })} · ${label}`,
+          // Not `disabled`: every node can still be held to read what it is.
+          'aria-disabled': String(!open),
+        },
+        h('span', {
+          class: 'ico',
+          html: fog ? icon('question') : past || !(n.type === 'boss' && !!actDef(n.act).bossClock) ? icon(past ? 'check' : nodeIcon(n)) : undefined,
+        }),
+        h('span', { class: 'label' }, label),
+      ),
       ...[...(doors.get(n.id) ?? [])].map((side) => h('i', { class: `door ${side}` })),
     );
     if (revealed) el.style.setProperty('--reveal', `${revealMs}ms`);
     const dot = el.querySelector<HTMLElement>('.dot')!;
-    if (!past && !fog && n.type === 'boss' && actDef(n.act).bossClock) dot.append(clockFace());
+    if (!past && !fog && n.type === 'boss' && actDef(n.act).bossClock) dot.querySelector('.ico')!.append(clockFace());
     // Tap an open node to pick it (again to go in); hold any node to learn what it is.
     onTapOrHold(
       dot,

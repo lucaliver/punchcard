@@ -204,7 +204,7 @@
   0% { scale: 0.8; opacity: 1; }
   100% { scale: 1.3; opacity: 0; }
 }
-/* a room: its icon on top, its name plate at the bottom */
+/* a room: its icon, and its name right under it (up to two lines), the two together in the middle of the box */
 .node {
   position: absolute;
   z-index: 1;
@@ -215,11 +215,14 @@
 }
 .node .dot {
   position: relative;
-  display: grid;
-  place-items: start center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 2px;
   width: 100%;
   height: var(--node-h);
-  padding-top: 5px;
+  padding: 4px 0;
   font-size: 30px;
   color: var(--k);
   background: var(--paper);
@@ -227,11 +230,15 @@
   box-shadow: 4px 4px 0 var(--shadow);
   --ink2: var(--y);
 }
+.node .ico {
+  flex: none;
+  display: grid;
+  place-items: center;
+  width: 100%;
+  height: 32px;
+}
 .node .label {
-  position: absolute;
-  left: 0;
-  right: 0;
-  bottom: 4px;
+  width: 100%;
   padding: 0 4px;
   font-family: var(--font-ui);
   font-size: 15px;
@@ -248,8 +255,7 @@
   box-shadow: 5px 5px 0 var(--p);
   --ink2: var(--p);
 }
-/* the name plate is a sibling of the icon box: it bobs with it */
-.node.current :is(.dot, .label) { animation: bob 0.8s steps(2) infinite; }
+.node.current .dot { animation: bob 0.8s steps(2) infinite; }
 /* the map is never panned sideways: what pokes out of the screen (a ring, a shadow) is cut, not scrollable */
 .journey { overflow-x: clip; }
 .journey .debug-fab {
