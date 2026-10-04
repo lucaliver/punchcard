@@ -219,7 +219,7 @@ export const mageCards: CardDef[] = [
     minCost: 1,
     vals: [1, 3],
     upVals: [1, 4],
-    keywords: ['exhaust'],
+    oneOf: 'crystal',
     art: 'powerNap',
     play: (c, v) => {
       c.addManaCrystals(v[0]);

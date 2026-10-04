@@ -1,7 +1,7 @@
 import { Rng } from '../core/rng';
 import { loadRaw, remove, store } from '../core/save';
 import { nextUid, peekUid, resetUid } from '../core/util';
-import { CARD_LIST, CARDS, RARITY_ORDER, cardCostOf, cardKeywordsOf, rewardPool } from '../data/cards';
+import { CARD_LIST, CARDS, RARITY_ORDER, cardCostOf, cardKeywordsOf, fitsDeck, rewardPool } from '../data/cards';
 import { PERKS } from '../data/perks';
 import { RELIC_LIST, RELICS, relicSum } from '../data/relics';
 import { ACT_DEFS, actDef } from '../data/acts';
@@ -385,7 +385,7 @@ export function rollRewards(run: RunState, kind: RewardKind): RewardOffer[] {
   const atLeast = odds.filter(([r]) => RARITY_ORDER.indexOf(r) >= RARITY_ORDER.indexOf(floor));
   for (let tries = 0; picks.length < rewardChoices(run) && tries < 80; tries++) {
     const rarity = rng.weighted(picks.length < count ? atLeast : odds, ([, w]) => w)[0];
-    const pool = rewardPool(run.hero, rarity).filter((c) => !picks.includes(c));
+    const pool = rewardPool(run.hero, rarity).filter((c) => !picks.includes(c) && fitsDeck(run.deck, c));
     if (pool.length) picks.push(rng.pick(pool));
   }
   const upgraded = picks.length && rng.next() < rewardUpgradeChance(currentNode(run).act) ? rng.int(0, picks.length - 1) : -1;
@@ -501,7 +501,7 @@ export const canVend = (run: RunState, rarity: keyof typeof CONFIG.vendingHp): b
 /** A random card of this rarity drops into the deck, for HP. Returns it. */
 export function vend(run: RunState, rarity: keyof typeof CONFIG.vendingHp): CardInst {
   const rng = rngOf(run);
-  const def = rng.pick(rewardPool(run.hero, rarity));
+  const def = rng.pick(rewardPool(run.hero, rarity).filter((c) => fitsDeck(run.deck, c)));
   run.rng = rng.state;
   run.hp -= vendingCost(rarity);
   discover([def.id]);
@@ -521,7 +521,7 @@ export function rollCrossTraining(run: RunState): CardDef[] {
     const own: CardDef[] = [];
     for (let tries = 0; own.length < CONFIG.crossTrainPerClass && tries < 80; tries++) {
       const rarity = rng.weighted(odds, ([, w]) => w)[0];
-      const pool = CARD_LIST.filter((c) => c.cls === hero.id && c.rarity === rarity && !c.pack && !own.includes(c));
+      const pool = CARD_LIST.filter((c) => c.cls === hero.id && c.rarity === rarity && !c.pack && !own.includes(c) && fitsDeck(run.deck, c));
       if (pool.length) own.push(rng.pick(pool));
     }
     offer.push(...own);

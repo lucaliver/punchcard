@@ -88,6 +88,8 @@ export interface CardDef {
   upCost?: number;
   /** Discounts (perks) never take the cost below this (mana crystals must always cost something). */
   minCost?: number;
+  /** At most one card with this tag in a deck: rewards, vending and Cross-Training skip it once the deck has one, and a photocopy can't repeat it. */
+  oneOf?: string;
   vals: number[];
   upVals?: number[];
   /** The value `CombatCard.bonus` adds to (default: the first damage value): a curse that hits harder every time. */

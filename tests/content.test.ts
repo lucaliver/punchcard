@@ -6,7 +6,7 @@ import itStrings from '../src/i18n/it';
 
 /** Indexed as a plain dictionary: these tests check keys that are built at runtime. */
 const en: Record<string, string> = enStrings;
-import { CARD_LIST, CARDS } from '../src/data/cards';
+import { CARD_LIST, CARDS, fitsDeck } from '../src/data/cards';
 import { ACT_DEFS } from '../src/data/acts';
 import { rewardOdds, rewardUpgradeChance } from '../src/data/config';
 import { DIFFICULTY, ENEMY_LIST, enemyMoves } from '../src/data/enemies';
@@ -252,5 +252,16 @@ describe('translations', () => {
     const it: Record<string, string> = itStrings;
     expect(Object.keys(it).sort()).toEqual(Object.keys(en).sort());
     for (const [key, text] of Object.entries(en)) expect(holes(it[key]), key).toEqual(holes(text));
+  });
+});
+
+describe('oneOf cards', () => {
+  it('max-mana cards are one per deck and no longer exhaust', () => {
+    const crystal = CARD_LIST.filter((c) => c.oneOf === 'crystal');
+    expect(crystal.length).toBeGreaterThan(1);
+    for (const c of crystal) expect(c.keywords ?? []).not.toContain('exhaust');
+    const deck = [{ uid: 1, id: crystal[0].id, up: false }];
+    expect(crystal.some((c) => fitsDeck(deck, c))).toBe(false);
+    expect(fitsDeck([], crystal[0])).toBe(true);
   });
 });

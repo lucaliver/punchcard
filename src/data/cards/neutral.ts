@@ -1,7 +1,7 @@
 import type { CardDef } from '../../game/types';
 
 export const neutralCards: CardDef[] = [
-  // Mana growth: add empty crystals (they fill up over time). Once per fight, never free.
+  // Mana growth: add empty crystals (they fill up over time). One per deck, never free.
   {
     id: 'coffee',
     face: '{crystal:0}',
@@ -12,7 +12,7 @@ export const neutralCards: CardDef[] = [
     minCost: 1,
     vals: [1],
     upVals: [2],
-    keywords: ['exhaust'],
+    oneOf: 'crystal',
     art: 'bean',
     play: (c, v) => c.addManaCrystals(v[0]),
   },
@@ -26,7 +26,7 @@ export const neutralCards: CardDef[] = [
     minCost: 1,
     vals: [2],
     upVals: [3],
-    keywords: ['exhaust'],
+    oneOf: 'crystal',
     art: 'espresso',
     play: (c, v) => c.addManaCrystals(v[0]),
   },
@@ -37,8 +37,8 @@ export const neutralCards: CardDef[] = [
     type: 'defense',
     rarity: 'rare',
     cost: 0,
-    vals: [10],
-    upVals: [15],
+    vals: [15],
+    upVals: [25],
     keywords: ['consume'],
     art: 'medkit',
     play: (c, v) => void c.heal('hero', v[0]),
@@ -50,8 +50,8 @@ export const neutralCards: CardDef[] = [
     type: 'attack',
     rarity: 'common',
     cost: 0,
-    vals: [15],
-    upVals: [22],
+    vals: [17],
+    upVals: [27],
     keywords: ['consume'],
     art: 'potionOrange',
     play: (c, v) => void c.hit(v[0], { kind: 'fire' }),
@@ -103,7 +103,7 @@ export const neutralCards: CardDef[] = [
     cost: 1,
     upCost: 0,
     vals: [4],
-    upVals: [6],
+    upVals: [8],
     keywords: ['consume'],
     art: 'energyCan',
     play: (c, v) => c.gainMana(v[0]),
