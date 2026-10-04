@@ -2193,13 +2193,17 @@ describe('the Copy Room', () => {
     expect(canCopy(r)).toBe(false);
   });
 
-  it('skipping a card reward pays max HP, and every skip pays more than the one before', () => {
+  it('skipping a card reward pays max HP and a card not on offer, and every skip pays more than the one before', () => {
     const r = newRun('warrior', 5);
     const hp = r.maxHp;
+    const decked = r.deck.length;
+    const shown = rollRewards(r, 'fight').map((o) => o.def.id);
     expect(skipPay(r)).toBe(CONFIG.skipMaxHp);
-    skipReward(r);
+    const bonus = skipReward(r, 'fight', shown);
+    expect(bonus && shown.includes(bonus.id)).toBe(false);
+    expect(r.deck.length).toBe(decked + 1);
     expect(skipPay(r)).toBe(CONFIG.skipMaxHp + CONFIG.skipMaxHpStep);
-    skipReward(r);
+    skipReward(r, 'fight', shown);
     expect(r.maxHp).toBe(hp + 2 * CONFIG.skipMaxHp + CONFIG.skipMaxHpStep);
   });
 

@@ -346,6 +346,7 @@ const it: Record<EnKey, string> = {
   'reward.swap': 'Scambia',
   'reward.skip': 'Salta',
   'reward.skipHp': '+{n} HP massimi',
+  'reward.skipCard': '+ una carta a caso',
   'reward.maxHp': 'HP massimi',
   'reward.yourDeck': 'Il tuo mazzo',
   'reward.offer': 'Carte in offerta',

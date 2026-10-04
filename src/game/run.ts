@@ -430,11 +430,25 @@ function newCard(run: RunState, id: string): CardInst {
 /** Skipping a card reward pays max HP (so passing on a weak offer still pays), a little more every time. */
 export const skipPay = (run: RunState): number => CONFIG.skipMaxHp + CONFIG.skipMaxHpStep * run.skips;
 
-export function skipReward(run: RunState): void {
+/** Skipping also pays one more card, dealt like the offer's (same kind and act odds) but never one of the cards just shown. */
+export function skipReward(run: RunState, kind: RewardKind, shown: string[]): CardInst | null {
   const pay = skipPay(run);
   run.maxHp += pay;
   run.hp += pay;
   run.skips++;
+  const rng = rngOf(run);
+  const odds = rewardOdds(kind, currentNode(run).act);
+  let def: CardDef | null = null;
+  for (let tries = 0; !def && tries < 80; tries++) {
+    const pool = rewardPool(run.hero, rng.weighted(odds, ([, w]) => w)[0]).filter((c) => !shown.includes(c.id));
+    if (pool.length) def = pickReward(rng, run.hero, pool);
+  }
+  run.rng = rng.state;
+  if (!def) return null;
+  discover([def.id]);
+  const card = newCard(run, def.id);
+  run.deck.push(card);
+  return card;
 }
 
 /** Debug: adds a copy of a card to the deck. */

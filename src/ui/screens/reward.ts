@@ -2,7 +2,7 @@ import { trackReward } from '../../analytics';
 import { t } from '../../core/i18n';
 import { sfx } from '../../audio/sfx';
 import { burst, haptic } from '../fx/fx';
-import { addCard, type RewardOffer, type RunState, skipPay, skipReward, swapCard } from '../../game/run';
+import { addCard, type RewardOffer, rewardKindOf, type RunState, skipPay, skipReward, swapCard } from '../../game/run';
 import type { CardInst } from '../../game/types';
 import type { Screen } from '../app';
 import { icon } from '../art/icons';
@@ -45,7 +45,7 @@ export function rewardScreen(run: RunState, picks: RewardOffer[], adds: boolean,
         sfx('tap');
         const pay = skipPay(run);
         trackReward(run, offered, null, null);
-        skipReward(run);
+        skipReward(run, rewardKindOf(run), offered);
         // Max HP goes up: hearts rise, then on to the map.
         swapBtn.disabled = true;
         skipBtn.disabled = true;
@@ -56,6 +56,7 @@ export function rewardScreen(run: RunState, picks: RewardOffer[], adds: boolean,
     },
     h('span', null, t('reward.skip')),
     h('small', { html: `${icon('heart')}${t('reward.skipHp', { n: skipPay(run) })}` }),
+    h('small', null, t('reward.skipCard')),
   );
   const deckGrid = h('div', { class: 'swap-deck' });
   const offerRow = h('div', { class: 'swap-offer' });
