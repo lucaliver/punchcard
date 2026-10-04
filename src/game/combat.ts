@@ -10,6 +10,7 @@ import type {
   BeltCard,
   CardDef,
   CardInst,
+  CardLike,
   CardType,
   CombatCard,
   CombatEvent,
@@ -302,8 +303,13 @@ export class Combat {
     return this.flag('hero', 'autoplay');
   }
 
+  /** Whether the lights are out: the cards' faces are hidden (Blackout). */
+  get cardsHidden(): boolean {
+    return this.flag('hero', 'hidesCards');
+  }
+
   /** Whether any active status of the side carries this rule flag. */
-  private flag(side: Side, key: 'holdsBlock' | 'immune' | 'ignoresRules' | 'autoplay' | 'handsTied'): boolean {
+  private flag(side: Side, key: 'holdsBlock' | 'immune' | 'ignoresRules' | 'autoplay' | 'handsTied' | 'hidesCards'): boolean {
     return Object.keys(this.fighter(side).statuses).some((id) => STATUSES[id][key] && this.has(side, id));
   }
 
@@ -311,7 +317,7 @@ export class Combat {
     return this.fighter(side).statuses[id]?.v ?? 0;
   }
 
-  cardVals(card: CardInst & { bonus?: number; age?: number }): number[] {
+  cardVals(card: CardLike): number[] {
     return cardValsOf(card);
   }
 
@@ -930,7 +936,7 @@ export class Combat {
         .map((id) => [side, id] as const),
     );
     this.replaying = false;
-    this.withCard(card, def, () => def.play!(this, vals, card), row);
+    this.withCard(card, def, () => def.play?.(this, vals, card), row);
     if (def.sweep) card.bonus = 0;
     if (def.type === 'attack') this.removeStatus('hero', 'crit');
     if (this.result === 'lose') return;

@@ -3,7 +3,7 @@ import { CARDS, cardCostOf, cardKeywordsOf, cardValsOf } from '../../data/cards'
 import { PERKS } from '../../data/perks';
 import { STATUSES } from '../../data/statuses';
 import type { Combat } from '../../game/combat';
-import type { CardInst, Tone } from '../../game/types';
+import type { CardInst, CardLike, Tone } from '../../game/types';
 import { h } from '../dom';
 import { icon } from '../art/icons';
 
@@ -89,13 +89,13 @@ export function cardName(card: CardInst): string {
   return t(`card.${card.id}.name`);
 }
 
-export function cardCostLabel(card: CardInst & { tax?: number; cut?: number; virus?: object }): string {
+export function cardCostLabel(card: CardLike): string {
   const cost = cardCostOf(card);
   return cost < 0 ? 'X' : String(cost);
 }
 
 /** Value HTML with live damage preview (green = buffed/upgraded, red = weakened). */
-function valueHtml(card: CardInst & { bonus?: number }, idx: number, combat?: Combat | null): string {
+function valueHtml(card: CardLike, idx: number, combat?: Combat | null): string {
   const def = CARDS[card.id];
   const base = cardValsOf(card)[idx];
   const upgraded = card.up && def.upVals && def.upVals[idx] !== def.vals[idx];
@@ -111,7 +111,7 @@ function valueHtml(card: CardInst & { bonus?: number }, idx: number, combat?: Co
  * The language-neutral face: icons + big numbers, one effect per line (`|`).
  * Grammar: `{kind:i}` icon + value i · `{kind}` icon · `{?kind}` condition ("if"), shown as (icon) (`{?a+b}`: both in one pair of brackets) · `{*kind}` trigger ("every time"), shown as a loop icon and the icon (`{*a+b}`: both) · `{i}` bare value · other text as is.
  */
-export function cardFace(card: CardInst & { bonus?: number }, combat?: Combat | null): string {
+export function cardFace(card: CardLike, combat?: Combat | null): string {
   const def = CARDS[card.id];
   const lines = def.face.split('|').map((line) => {
     const html = line.replace(
@@ -156,7 +156,7 @@ export function keywordText(text: string): string {
 }
 
 /** Full rules text as HTML (detail view). */
-export function cardText(card: CardInst & { bonus?: number }): string {
+export function cardText(card: CardLike): string {
   const def = CARDS[card.id];
   const vals = cardValsOf(card);
   let s = t(`card.${card.id}.desc`).replace(/\{(\d)\}/g, (_, i: string) => {
@@ -183,12 +183,12 @@ export function cardKeywords(card: CardInst): string[] {
   return [...found];
 }
 
-export interface CardViewOpts {
+interface CardViewOpts {
   combat?: Combat | null;
   cls?: string;
 }
 
-export function cardView(card: CardInst & { bonus?: number }, opts: CardViewOpts = {}): HTMLDivElement {
+export function cardView(card: CardLike, opts: CardViewOpts = {}): HTMLDivElement {
   const def = CARDS[card.id];
   const el = h('div', {
     class: `card ${opts.cls ?? ''} ${card.up ? 'is-up' : ''}`,

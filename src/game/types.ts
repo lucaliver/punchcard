@@ -60,6 +60,9 @@ export interface CombatCard extends CardInst {
   cut?: number;
 }
 
+/** A card as the rules and the UI read it: a deck copy, with the combat state (bonus, tax…) when it is in a fight. */
+export type CardLike = CardInst & Partial<CombatCard>;
+
 /** A patch of rust on the belt: where (x, y: shares of the belt's width and height) and how much grime is left (1 = new). */
 export interface RustSpot {
   id: number;
@@ -194,6 +197,8 @@ export interface StatusDef {
   immune?: true;
   /** While active on the enemy, an attack card the hero drags onto the stage (instead of tapping it) is critical (VIP Treatment). */
   critOnDrag?: true;
+  /** While active on the hero, the cards' faces are hidden and can't be inspected (Blackout). */
+  hidesCards?: true;
   /** While active on the hero, the hero can't act: no card played by hand, no ability (stashing is still allowed). Cards still play themselves under `autoplay` (Stun). */
   handsTied?: true;
   /** While active on the hero, the next card that costs mana is free and takes one stack with it (Lost Badge). */

@@ -309,7 +309,7 @@ const defs: StatusDef[] = [
   { id: 'stalled', tone: 'purple', kind: 'timed', good: false, icon: 'pause', beltMul: 0 },
   { id: 'crunch', tone: 'purple', kind: 'timed', good: false, icon: 'siren', beltMul: CONFIG.beltCrunch },
   // Every card turns black: only the art and the cost are left to go by.
-  { id: 'blackout', tone: 'purple', kind: 'timed', good: false, icon: 'bulbOff' },
+  { id: 'blackout', tone: 'purple', kind: 'timed', good: false, icon: 'bulbOff', hidesCards: true },
   { id: 'slowdown', tone: 'purple', kind: 'timed', good: false, icon: 'cone', beltMul: CONFIG.beltSlow },
   // Enemy passives (permanent traits).
   {

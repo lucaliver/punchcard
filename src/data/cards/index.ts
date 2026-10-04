@@ -1,4 +1,4 @@
-import type { CardClass, CardDef, CardInst, Keyword, Rarity } from '../../game/types';
+import type { CardClass, CardDef, CardInst, CardLike, Keyword, Rarity } from '../../game/types';
 import { CONFIG } from '../config';
 import { PERKS } from '../perks';
 import { mageCards } from './mage';
@@ -37,7 +37,7 @@ export function cardKeywordsOf(card: CardInst): Keyword[] {
 }
 
 /** Mana cost of a card copy after its upgrade, perks, a fight's Inflation (`tax`), a `virus` and `costDrop` (`cut`) (-1 = X). */
-export function cardCostOf(card: CardInst & { tax?: number; cut?: number; virus?: object }): number {
+export function cardCostOf(card: CardLike): number {
   const def = CARDS[card.id];
   const cost = card.up && def.upCost !== undefined ? def.upCost : def.cost;
   if (cost < 0) return cost;
@@ -46,7 +46,7 @@ export function cardCostOf(card: CardInst & { tax?: number; cut?: number; virus?
 }
 
 /** Values of a card copy (upgrade, per-fight bonus and time on the belt included). */
-export function cardValsOf(card: CardInst & { bonus?: number; age?: number }): number[] {
+export function cardValsOf(card: CardLike): number[] {
   const def = CARDS[card.id];
   const vals = [...(card.up ? (def.upVals ?? def.vals) : def.vals)];
   const grows = def.bonusIdx ?? def.dmg?.[0];

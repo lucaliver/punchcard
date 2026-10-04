@@ -365,7 +365,7 @@ export function createHud(v: CombatView, onPassive: () => void): { render(): voi
     for (const look of ALL_LOOKS) toggle(r.portrait, look, heroLooks.has(look));
     toggle(r.enemyArt, 'absorbing', !!combat.enemy.move.absorb && combat.enemyTimeRate() > 0);
     // Blackout: the cards hide what they do (their art, name and cost stay).
-    toggle(v.el, 'blackout', combat.has('hero', 'blackout'));
+    toggle(v.el, 'blackout', combat.cardsHidden);
     // Autopilot: a blue fade at the belt's exit, where the cards play themselves.
     toggle(r.belt, 'autoplay', combat.isAutoplay());
     // Belt rows an enemy keeps shut are barred (the `rowsOpen` / `rowsClose` events slide the bars away or in).

@@ -37,6 +37,11 @@ interface CardEl {
   rule?: string;
 }
 
+/** Stacking on the belt: a card's place by position, a pinned one behind the rest, a wide card or lane lock over everything. */
+const Z_BASE = 10;
+const Z_PINNED = 1;
+const Z_OVER = 1000;
+
 /** Steps of the refill shown on a card waiting for mana (stepped, like the rest of the motion). */
 const CHARGE_STEPS = 10;
 
@@ -120,6 +125,11 @@ export function createCardLayer(v: CombatView): CardLayer {
 
   const findCard = (uid: number): CombatCard | null =>
     combat.belt.find((b) => b.card.uid === uid)?.card ?? combat.sleeve.find((c) => c?.uid === uid) ?? null;
+  /** The `sweep` rule of the card with this uid, if it has one. */
+  const sweepOf = (uid: number) => {
+    const card = findCard(uid);
+    return card ? CARDS[card.id].sweep : undefined;
+  };
 
   /** Where the cards a sweep knocks off fly (belt-relative offsets), and what to do with them when their element goes. */
   const flings = new Map<number, { dx: number; dy: number }>();
@@ -143,8 +153,8 @@ export function createCardLayer(v: CombatView): CardLayer {
       sfx('ratchet');
       haptic('hit');
     }
-    const def = CARDS[held.id].sweep;
-    d.el.style.scale = def ? String(1 + SWEEP_GROW * Math.min(1, held.bonus / cardValsOf(held)[def.max])) : '';
+    const sweep = sweepOf(d.uid);
+    d.el.style.scale = sweep ? String(1 + SWEEP_GROW * Math.min(1, held.bonus / cardValsOf(held)[sweep.max])) : '';
   };
 
   const playUid = (uid: number, dragged = false): void => {
@@ -213,7 +223,7 @@ export function createCardLayer(v: CombatView): CardLayer {
     const card = findCard(uid);
     if (!card) return;
     // In a blackout what the cards do can't be read, not even up close.
-    if (combat.has('hero', 'blackout')) {
+    if (combat.cardsHidden) {
       v.toast(t('combat.blackout'));
       return;
     }
@@ -244,7 +254,7 @@ export function createCardLayer(v: CombatView): CardLayer {
     } else {
       drag.el.style.transform = `translate3d(${dx}px, ${dy}px, 0) scale(1.08)`;
     }
-    if (CARDS[findCard(drag.uid)?.id ?? '']?.sweep) sweepUnder(drag);
+    if (sweepOf(drag.uid)) sweepUnder(drag);
     toggle(r.stage, 'drop-play', ev.clientY < r.belt.getBoundingClientRect().top);
   };
 
@@ -253,7 +263,7 @@ export function createCardLayer(v: CombatView): CardLayer {
     const d = drag;
     clearTimeout(d.timer);
     // A card that sweeps the belt is played the moment it is let go, wherever that is.
-    if (!d.moved || CARDS[findCard(d.uid)?.id ?? '']?.sweep) {
+    if (!d.moved || sweepOf(d.uid)) {
       cancelDrag();
       playUid(d.uid, d.moved);
       return;
@@ -285,41 +295,41 @@ export function createCardLayer(v: CombatView): CardLayer {
 
   const flyOut = (ce: CardEl, reason: Removal): void => {
     const def = CARDS[ce.card.id];
-    const el2 = ce.el;
-    const rc = el2.getBoundingClientRect();
+    const node = ce.el;
+    const rc = node.getBoundingClientRect();
     // Exhausted (or consumed): it doesn't fly anywhere, it burns away where it was played.
     if (reason === 'played' && combat.exhaust.includes(ce.card)) {
-      el2.classList.add('exhaust-out');
+      node.classList.add('exhaust-out');
       burst('ash', rc.left + rc.width / 2, rc.top + rc.height / 2, 18);
-      setTimeout(() => el2.remove(), cssMs('--dur-exhaust') + SLACK_MS);
+      setTimeout(() => node.remove(), cssMs('--dur-exhaust') + SLACK_MS);
       return;
     }
     const swept = flings.get(ce.card.uid);
     flings.delete(ce.card.uid);
     const target =
       reason === 'swept' ? null : reason === 'stolen' || def.type === 'attack' ? v.enemyPoint() : reason === 'expired' ? null : v.heroPoint();
-    const base = (el2.style.transform || '').replace(/scale\([^)]*\)|rotate\([^)]*\)/g, '');
+    const base = (node.style.transform || '').replace(/scale\([^)]*\)|rotate\([^)]*\)/g, '');
     if (swept) {
-      el2.classList.add('fall-out');
-      el2.style.transform = `${base} translate3d(${swept.dx}px, ${swept.dy}px, 0) rotate(${swept.dx > 0 ? 40 : -40}deg)`;
+      node.classList.add('fall-out');
+      node.style.transform = `${base} translate3d(${swept.dx}px, ${swept.dy}px, 0) rotate(${swept.dx > 0 ? 40 : -40}deg)`;
     } else if (reason === 'expired') {
       // A card that slips off the end is quickly pushed out past the belt's end, tipping over, shrinking and fading: short, to keep the screen quiet.
       const side = state.ltr ? 1 : -1;
-      el2.classList.add('slip-out');
-      el2.style.transform = `${base} translate3d(${side * rc.width * 0.9}px, ${rc.height * 0.6}px, 0) rotate(${side * 40}deg) scale(.6)`;
+      node.classList.add('slip-out');
+      node.style.transform = `${base} translate3d(${side * rc.width * 0.9}px, ${rc.height * 0.6}px, 0) rotate(${side * 40}deg) scale(.6)`;
     } else if (!target) {
-      el2.classList.add('fall-out');
-      el2.style.transform = state.ltr ? `${base} translate3d(40px, 60px, 0) rotate(25deg)` : `${base} translate3d(-40px, 60px, 0) rotate(-25deg)`;
+      node.classList.add('fall-out');
+      node.style.transform = state.ltr ? `${base} translate3d(40px, 60px, 0) rotate(25deg)` : `${base} translate3d(-40px, 60px, 0) rotate(-25deg)`;
     } else {
       const dx = target.x - (rc.left + rc.width / 2);
       const dy = target.y - (rc.top + rc.height / 2);
-      el2.classList.add('fly-out');
-      el2.style.transform = `${base} translate3d(${dx}px, ${dy}px, 0) scale(.35) rotate(${dx > 0 ? 20 : -20}deg)`;
+      node.classList.add('fly-out');
+      node.style.transform = `${base} translate3d(${dx}px, ${dy}px, 0) scale(.35) rotate(${dx > 0 ? 20 : -20}deg)`;
       // Only attacks land with a hit: the other cards have their own effects (Block, heal, mana…).
       if (reason === 'played' && def.type === 'attack') setTimeout(() => burst('hit', target.x, target.y, 8), cssMs('--dur-fly'));
     }
-    const dur = el2.classList.contains('slip-out') ? '--dur-slip' : el2.classList.contains('fall-out') ? '--dur-fall' : '--dur-fly';
-    setTimeout(() => el2.remove(), cssMs(dur) + SLACK_MS);
+    const dur = node.classList.contains('slip-out') ? '--dur-slip' : node.classList.contains('fall-out') ? '--dur-fall' : '--dur-fly';
+    setTimeout(() => node.remove(), cssMs(dur) + SLACK_MS);
   };
 
   /**
@@ -394,7 +404,7 @@ export function createCardLayer(v: CombatView): CardLayer {
       const x = Math.round(state.ltr ? state.beltW * b.pos - state.cardW : state.beltW * (1 - b.pos));
       ce.el.style.transform = `translate3d(${x}px, ${b.row * state.rowH}px, 0)`;
       // Wide cards (Gatekeeping) and lane locks ride over everything else on the belt; pinned cards stay behind the ones riding past.
-      ce.el.style.zIndex = b.pinned ? '1' : String(Math.round(b.pos * 100) + 10 + (ce.over ? 1000 : 0));
+      ce.el.style.zIndex = b.pinned ? String(Z_PINNED) : String(Math.round(b.pos * 100) + Z_BASE + (ce.over ? Z_OVER : 0));
     }
     for (const [uid, ce] of beltEls) {
       if (onBelt.has(uid)) continue;
