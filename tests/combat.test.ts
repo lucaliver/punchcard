@@ -676,6 +676,15 @@ describe('combat engine', () => {
     expect(hp - c.enemy.hp).toBe(3 + 4);
   });
 
+  it('Wellness Seminar gives Regeneration for each Multitasking charge', () => {
+    const c = setup({ hero: HEROES.mage, hp: 40, maxHp: 70, deck: deckOf(['wellnessSeminar']), enemy: ENEMIES.toxicCoworker });
+    run(c, CONFIG.introTime + 0.01);
+    c.hero.maxMana = c.hero.mana = 10;
+    for (let i = 0; i < 3; i++) c.chargeMultitasking();
+    c.playCard(c.belt[0].card.uid);
+    expect(c.stacks('hero', 'regen')).toBe(CARDS.wellnessSeminar.vals[0] * 3);
+  });
+
   it('played cards are never replaced in place: new cards always enter from the right', () => {
     // One row, so the spacing check below reads a single line of cards.
     const c = setup({ beltRows: 1, deck: deckOf(['punch', 'punch', 'punch', 'punch', 'punch', 'punch']) });
@@ -2230,6 +2239,7 @@ describe('management memos', () => {
     plain.hp = 1;
     hard.hp = 1;
     expect(restHeal(hard)).toBeLessThan(restHeal(plain));
+    expect(restHeal(plain)).toBe(Math.round(0.9 * (plain.maxHp - 1)));
     expect(rewardChoices(plain)).toBe(4);
     expect(rewardChoices(hard)).toBe(3);
     expect(rollRewards(hard, 'fight')).toHaveLength(3);

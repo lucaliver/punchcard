@@ -111,6 +111,7 @@
   --dur-leave: 200ms;
   --dur-row-grow: 600ms;
   --dur-hold: 1000ms;
+  --dur-beg-lock: 500ms;
   --dur-exhaust: 300ms;
   --dur-fly: 280ms;
   --dur-fall: 400ms;

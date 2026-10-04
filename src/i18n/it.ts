@@ -225,7 +225,7 @@ const it: Record<EnKey, string> = {
   'hero.mage.name': 'Mago',
   'hero.mage.job': "L'informatico, conosce la tua password",
   'hero.mage.passiveName': 'Multitasking',
-  'hero.mage.passiveShort': 'Attacchi in catena: +1 danno ciascuno.',
+  'hero.mage.passiveShort': 'Ogni attacco aggiunge una carica di [multitasking]: +1 danno per carica, fino a {$multitaskingMax}.',
   'hero.mage.abilityShort': 'Stordisci il nemico per {$timeTheft}s e accelera il tuo nastro per {$timeTheft}s.',
   'hero.mage.ability': 'Furto di Tempo',
 
@@ -976,7 +976,7 @@ const it: Record<EnKey, string> = {
   'card.hustleCulture.name': "Cultura dell'Hustle",
   'card.hustleCulture.desc': 'Perdi {0} HP. Per {1}s, ottieni una carica di [multitasking] ogni secondo.',
   'card.wellnessSeminar.name': 'Seminario sul Benessere',
-  'card.wellnessSeminar.desc': 'Curi {0} HP per ogni carica del tuo [multitasking].',
+  'card.wellnessSeminar.desc': 'Ottieni {0} di [regen] per ogni carica del tuo [multitasking].',
   'card.allNighter.name': 'Nottata in Ufficio',
   'card.allNighter.desc': 'Per {0}s, il tuo [mana] si ricarica il {$brownPct}% più veloce. Blackout per {1}s.',
   'card.walkInFreezer.name': 'Cella Frigorifera',

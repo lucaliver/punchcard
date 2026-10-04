@@ -446,7 +446,7 @@ export const mageCards: CardDef[] = [
   },
   {
     id: 'wellnessSeminar',
-    face: '{heal:0}×{multi}',
+    face: '{regen:0}×{multi}',
     cls: 'mage',
     type: 'skill',
     rarity: 'legendary',
@@ -455,7 +455,7 @@ export const mageCards: CardDef[] = [
     upVals: [3],
     keywords: ['exhaust'],
     art: 'wellnessSeminar',
-    play: (c, v) => void c.heal('hero', v[0] * c.stacks('hero', 'multitasking')),
+    play: (c, v) => c.applyStatus('hero', 'regen', v[0] * c.stacks('hero', 'multitasking')),
   },
   {
     id: 'allNighter',

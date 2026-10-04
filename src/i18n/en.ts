@@ -223,7 +223,7 @@ const en = {
   'hero.mage.name': 'Mage',
   'hero.mage.job': 'I.T. guy, knows your password',
   'hero.mage.passiveName': 'Multitasking',
-  'hero.mage.passiveShort': 'Chain attacks: +1 damage each.',
+  'hero.mage.passiveShort': 'Every attack adds a charge of [multitasking]: +1 damage per charge, up to {$multitaskingMax}.',
   'hero.mage.abilityShort': 'Stun the enemy for {$timeTheft}s and rush your belt for {$timeTheft}s.',
   'hero.mage.ability': 'Time Theft',
 
@@ -968,7 +968,7 @@ const en = {
   'card.hustleCulture.name': 'Hustle Culture',
   'card.hustleCulture.desc': 'Lose {0} HP. For {1}s, gain a charge of [multitasking] every second.',
   'card.wellnessSeminar.name': 'Wellness Seminar',
-  'card.wellnessSeminar.desc': 'Heal {0} HP for each charge of your [multitasking].',
+  'card.wellnessSeminar.desc': 'Gain {0} [regen] for each charge of your [multitasking].',
   'card.allNighter.name': 'All-Nighter',
   'card.allNighter.desc': 'For {0}s, your [mana] refills {$brownPct}% faster. Blackout for {1}s.',
   'card.walkInFreezer.name': 'Walk-in Freezer',

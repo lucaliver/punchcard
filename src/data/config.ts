@@ -91,8 +91,7 @@ export const CONFIG = {
   /** Chance that an act's map has one road between two floors cut, so that lane is crossed to the other and back. */
   roadCut: 0.5,
   /** Break Room: a rest heals this share of max HP plus this share of the HP missing. Skipping a card reward: the max HP it pays. */
-  restHeal: 0.25,
-  restHealMissing: 0.25,
+  restHeal: 0.9,
   skipMaxHp: 3,
   /** Each time a card reward is skipped for max HP, the next skip pays this much more. */
   skipMaxHpStep: 2,

@@ -210,7 +210,7 @@ describe('colours', () => {
   });
 
   it('an enemy move takes the colour of what it does', () => {
-    expect(moveTone(ENEMIES.toxicCoworker.main)).toBe('green');
+    expect(moveTone(ENEMIES.toxicCoworker.specials[1])).toBe('green');
     expect(moveTone(ENEMIES.seniorBoomer.main)).toBe('red');
     expect(moveTone(ENEMIES.hrOrientationVideo.specials[0])).toBe('teal');
     for (const e of ENEMY_LIST) for (const m of enemyMoves(e)) if (m.intent !== 'idle') expect(moveTone(m), `${e.id}.${m.id}`).not.toBeNull();

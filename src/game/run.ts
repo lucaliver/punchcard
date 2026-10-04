@@ -576,7 +576,7 @@ export function startShift(run: RunState): number {
 /** HP a Break Room rest would heal now. */
 export const restHeal = (run: RunState): number => {
   const missing = run.maxHp - run.hp;
-  return Math.min(missing, Math.round((run.maxHp * CONFIG.restHeal + missing * CONFIG.restHealMissing) * resolveMods(run.mods).restHeal));
+  return Math.round(missing * CONFIG.restHeal * resolveMods(run.mods).restHeal);
 };
 
 export function rest(run: RunState): number {

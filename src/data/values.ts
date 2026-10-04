@@ -97,6 +97,7 @@ export const VALUES = {
   overtimeMult: OVERTIME_MULT,
   overtimeTime: OVERTIME_TIME,
   timeTheft: TIME_THEFT,
+  multitaskingMax: CONFIG.multitaskingMax,
   virulenceStart: VIRULENCE_START,
   // Relics, perks, cards
   mugMana: MUG_MANA,

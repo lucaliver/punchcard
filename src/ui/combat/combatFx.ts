@@ -10,7 +10,7 @@ import { saveSettings, settings } from '../../game/settings';
 import type { CombatEvent } from '../../game/types';
 import { creature } from '../art/creatures';
 import { icon } from '../art/icons';
-import { centerOf, h } from '../dom';
+import { centerOf, cssMs, h } from '../dom';
 import { burst, floatText, haptic, shake } from '../fx/fx';
 import { keywordText } from '../components/cardView';
 import type { CardLayer } from './cardLayer';
@@ -380,7 +380,7 @@ export function bindCombatFx(v: CombatView, cards: CardLayer, onEnd: (result: 'w
         // The fight waits on the answer.
         sfx('defeat');
         v.inspect(true);
-        openModal({
+        const ask = openModal({
           title: t('beg.title'),
           body: h('p', null, t('beg.body')),
           dismissable: false,
@@ -390,6 +390,12 @@ export function bindCombatFx(v: CombatView, cards: CardLayer, onEnd: (result: 'w
           ],
           onClose: () => v.inspect(false),
         });
+        // Buttons stay dead for a beat so a tap meant for the fight can't answer by mistake.
+        const buttons = ask.el.querySelectorAll<HTMLButtonElement>('.actions .btn');
+        for (const b of buttons) b.disabled = true;
+        setTimeout(() => {
+          for (const b of buttons) b.disabled = false;
+        }, cssMs('--dur-beg-lock'));
         break;
       }
       case 'begged': {

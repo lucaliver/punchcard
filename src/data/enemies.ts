@@ -71,12 +71,12 @@ const defs: EnemyDef[] = [
     tier: 'normal',
     hp: 70,
     art: 'toxicCoworker',
-    // Toxic: the snark doesn't hit, it poisons (and Block can't stop it).
-    main: { id: 'snark', intent: 'debuff', windup: 6, status: [{ id: 'poison', v: 2, target: 'hero' }] },
+    // Toxic: gossip is the usual move; the snark doesn't hit, it poisons (and Block can't stop it).
+    main: { id: 'spreadGossip', intent: 'curse', windup: 5, curse: [{ id: 'gossip', n: 2, to: 'draw' }] },
     every: 2,
     specials: [
       { id: 'stirDrama', intent: 'curse', windup: 5, curse: [{ id: 'drama', n: 2, to: 'belt' }] },
-      { id: 'spreadGossip', intent: 'curse', windup: 5, curse: [{ id: 'gossip', n: 2, to: 'draw' }] },
+      { id: 'snark', intent: 'debuff', windup: 6, status: [{ id: 'poison', v: 2, target: 'hero' }] },
     ],
   },
   {
