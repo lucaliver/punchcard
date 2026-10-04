@@ -165,7 +165,7 @@
 }
 .seg button {
   min-width: 50px;
-  min-height: 42px;
+  min-height: 44px;
   font-family: var(--font-ui);
   font-size: 18px;
 }

@@ -168,7 +168,7 @@
 .stat.hp .pico { color: var(--p); --ink2: var(--y); }
 .stat.mana .pico { color: var(--b); --ink2: var(--p); }
 .stat.sleeve .pico { color: var(--k); --ink2: var(--y); }
-.stat.deck { cursor: pointer; }
+.stat.deck { cursor: pointer; min-height: 44px; }
 .stat.deck .pico { --ink2: var(--y); }
 .hero-features {
   width: 100%;
