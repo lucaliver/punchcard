@@ -17,6 +17,12 @@
   font-size: 18px;
   color: var(--muted-d);
 }
+/* a long word breaks with a hyphen at the end of a line instead of shrinking or spilling out (the page's `lang` picks the language's rules; `anywhere` is the fallback when the browser has none) */
+.option b,
+.c-name {
+  hyphens: auto;
+  overflow-wrap: anywhere;
+}
 .kw {
   font-weight: 700;
   color: var(--b);

@@ -1,11 +1,11 @@
 import type { NodeType } from '../../game/run';
-import { h, longestWord } from '../dom';
+import { h } from '../dom';
 import { roomArt } from '../art/rooms';
 import { motes } from './decor';
 
 /** A choice button of a room (Break Room, Copy Room, Promotion); `art` is the HTML of its icon or sprite. */
 export const roomOption = (art: string, title: string, desc: string, disabled: boolean, fn: () => void): HTMLButtonElement =>
-  h('button', { class: 'option', disabled, onclick: fn, html: `${art}<b style="--w:${longestWord(title)}">${title}</b><span>${desc}</span>` });
+  h('button', { class: 'option', disabled, onclick: fn, html: `${art}<b>${title}</b><span>${desc}</span>` });
 
 /** How a room's picture moves (`anim`: a class of rooms.css), the inks of its motes, and whether its sprite has a second frame (`.open`). */
 export const ROOM_SCENE: Partial<Record<NodeType, { anim: string; inks: string[]; alt?: boolean }>> = {

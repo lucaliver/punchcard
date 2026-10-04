@@ -152,7 +152,6 @@
   gap: 14px;
 }
 .option {
-  container-type: inline-size;
   color: var(--k);
   display: flex;
   flex-direction: column;
@@ -247,8 +246,7 @@
 .option:nth-child(2n + 1):last-child { grid-column: 1 / -1; }
 .option b {
   font-family: var(--font-display);
-  /* Silkscreen is about 0.86em a letter: the longest word (`--w`, from `roomOption`) sets the size so it never spills out of the card */
-  font-size: clamp(11px, calc(100cqw / (0.86 * var(--w, 1))), 20px);
+  font-size: 18px;
   text-transform: uppercase;
 }
 .option span {

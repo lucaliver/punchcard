@@ -357,7 +357,7 @@ const it: Record<EnKey, string> = {
   'rest.desc': 'La macchinetta del caffè gorgoglia.\nQuindici minuti, non retribuiti.',
   'rest.heal': 'Pisolino',
   'rest.healDesc': 'Cura {n} HP',
-  'rest.smith': 'Formazione',
+  'rest.smith': 'Addestramento',
   'rest.smithDesc': 'Potenzia una carta',
   'rest.smithHint': 'Scegli una carta da potenziare',
   'rest.upgrade': 'Potenzia',
