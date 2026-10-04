@@ -71,15 +71,15 @@
   display: grid;
   place-items: center;
   border-bottom: var(--bw) solid var(--k);
-  background-color: var(--paper);
+  background-color: var(--art-bg, var(--paper));
   background-image: radial-gradient(circle, var(--art-dot, var(--cat-defense-dot)) 30%, transparent 33%);
   background-size: 7cqw 7cqw;
 }
-.card[data-type='attack'] .c-art { background-color: var(--cat-attack); --art-dot: var(--cat-attack-dot); --art-ink2: var(--y); }
-.card[data-type='defense'] .c-art { background-color: var(--cat-defense); --art-dot: var(--cat-defense-dot); --art-ink2: var(--y); }
-.card[data-type='skill'] .c-art { background-color: var(--cat-skill); --art-dot: var(--cat-skill-dot); --art-ink2: var(--b); }
-.card[data-type='power'] .c-art { background-color: var(--cat-power); --art-dot: var(--cat-power-dot); --art-ink2: var(--y); }
-.card[data-type='curse'] .c-art { background-color: var(--cat-curse); --art-dot: var(--cat-curse-dot); --art-ink2: var(--p); }
+.card[data-type='attack'] { --art-bg: var(--cat-attack); --art-dot: var(--cat-attack-dot); --art-ink2: var(--y); }
+.card[data-type='defense'] { --art-bg: var(--cat-defense); --art-dot: var(--cat-defense-dot); --art-ink2: var(--y); }
+.card[data-type='skill'] { --art-bg: var(--cat-skill); --art-dot: var(--cat-skill-dot); --art-ink2: var(--b); }
+.card[data-type='power'] { --art-bg: var(--cat-power); --art-dot: var(--cat-power-dot); --art-ink2: var(--y); }
+.card[data-type='curse'] { --art-bg: var(--cat-curse); --art-dot: var(--cat-curse-dot); --art-ink2: var(--p); }
 .c-art .pico {
   font-size: 34cqw;
   color: var(--k);
@@ -207,6 +207,23 @@
 .combat .card[data-rarity='legendary']:not(.charging)::after { content: none; }
 /* ...but a legendary waiting for mana still shows its charge veil (combat-belt.css), without the foil */
 .combat .card[data-rarity='legendary'].charging::after { opacity: 1; background-image: none; animation: none; }
+
+/* legendary: sunburst rays behind the picture (under the dots) and a chip in the type ink closing the name band */
+.card[data-rarity='legendary'] .c-art {
+  background-image: radial-gradient(circle, var(--art-dot) 22%, transparent 25%), repeating-conic-gradient(from 0deg at 50% 50%, transparent 0 7.5deg, var(--paper) 7.5deg 15deg);
+  background-size: 7cqw 7cqw, 100% 100%;
+}
+.card[data-rarity='legendary'] .c-top::after {
+  content: '';
+  flex: none;
+  width: 7cqw;
+  background: var(--art-dot);
+  border-left: var(--bw) solid var(--k);
+}
+
+/* curses: the name is label-maker tape (black, the name in the class colour) */
+.card[data-cls='curse'] .c-top { background: var(--k); }
+.card[data-cls='curse'] .c-name { color: var(--band); }
 
 /* cost lowered by a perk (Budget Cut) */
 .card .c-cost.cheap { color: var(--y); }
