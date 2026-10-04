@@ -6,15 +6,15 @@
   box-shadow: 3px 3px 0 var(--shadow);
 }
 .tabs button {
-  flex: 1;
-  min-height: 44px;
-  padding: 0 2px;
+  /* each tab is as wide as its word (the five of a phone's width in any language), and shares what is left */
+  flex: 1 1 auto;
+  min-width: 0;
+  min-height: 46px;
+  padding: 0 5px;
   font-family: var(--font-ui);
-  font-size: 15px;
+  font-size: 14px;
   color: var(--k);
   white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
 }
 .tabs button + button { border-left: 2px solid var(--void); }
 .tabs button[aria-selected='true'] { background: var(--y); }
@@ -38,9 +38,11 @@
 }
 .section-switch::-webkit-scrollbar { display: none; }
 .section-switch button {
-  flex: none;
+  /* the five sections fit a phone's width in either language: each as wide as its word, a size down from the settings' switch */
+  flex: 1 1 auto;
   min-width: 0;
-  padding: 0 8px;
+  padding: 0 5px;
+  font-size: 14px;
   color: var(--k);
 }
 /* the run history: one paper line per run, a stamp for how it ended */
