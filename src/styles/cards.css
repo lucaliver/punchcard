@@ -207,17 +207,10 @@
 /* ...but a legendary waiting for mana still shows its charge veil (combat-belt.css), without the foil */
 .combat .card[data-rarity='legendary'].charging::after { opacity: 1; background-image: none; animation: none; }
 
-/* legendary: sunburst rays behind the picture (under the dots) and a chip in the type ink closing the name band */
+/* legendary: sunburst rays behind the picture, under the dots */
 .card[data-rarity='legendary'] .c-art {
   background-image: radial-gradient(circle, var(--art-dot) 22%, transparent 25%), repeating-conic-gradient(from 0deg at 50% 50%, transparent 0 7.5deg, var(--paper) 7.5deg 15deg);
   background-size: 7cqw 7cqw, 100% 100%;
-}
-.card[data-rarity='legendary'] .c-top::after {
-  content: '';
-  flex: none;
-  width: 7cqw;
-  background: var(--art-dot);
-  border-left: var(--bw) solid var(--k);
 }
 
 /* curses: the name is label-maker tape (black, the name in the class colour) */
