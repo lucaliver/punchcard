@@ -596,11 +596,11 @@ export const ICONS: Record<string, { el: Element; svg: string }> = {
   },
   forkliftCertified: {
     el: 'steel',
-    svg: `<circle cx="32" cy="24" r="19"/><path d="M20 38l-7 24 13-7 6 7V41zM44 38l7 24-13-7-6 7V41z"/><g fill="#16121f">${star4(32, 24, 12)}</g>`,
+    svg: `<rect x="4" y="6" width="56" height="40"/><path d="M12 16h40M12 25h40M12 34h22" stroke="#16121f" stroke-width="3.5"/><circle cx="46" cy="44" r="12"/><path d="M38 52l-4 11 12-5 12 5-4-11z"/><g fill="#16121f">${star4(46, 44, 7)}</g>`,
   },
   cacheFlush: {
     el: 'arcane',
-    svg: `<ellipse cx="26" cy="14" rx="19" ry="8"/><path d="M7 14v34c0 5 8 8 19 8s19-3 19-8V14c0 5-8 8-19 8S7 19 7 14z"/><path d="M7 30c0 5 8 8 19 8s19-3 19-8M7 44c0 5 8 8 19 8s19-3 19-8" fill="none" stroke="#16121f" stroke-width="3"/><path d="M48 22l14 11-14 11v-7H40V29h8z"/>`,
+    svg: `<rect x="10" y="14" width="44" height="36"/><path d="M18 4v10M28 4v10M38 4v10M48 4v10M18 50v10M28 50v10M38 50v10M48 50v10" stroke="currentColor" stroke-width="4"/><rect x="20" y="24" width="24" height="16" fill="#16121f"/><path d="M26 32h12" stroke="currentColor" stroke-width="3"/>`,
   },
   hotDesking: {
     el: 'fire',

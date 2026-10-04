@@ -465,7 +465,7 @@ export const warriorCards: CardDef[] = [
   },
   {
     id: 'goodVibesOnly',
-    face: '{*hp}{thorns:0}',
+    face: '{*hp}|{thorns:0}',
     cls: 'warrior',
     type: 'power',
     rarity: 'rare',
@@ -477,7 +477,7 @@ export const warriorCards: CardDef[] = [
   },
   {
     id: 'forkliftCertified',
-    face: '{?hp}{block}{str:0}{mana}',
+    face: '{?hp}|{block}{str:0}{mana}',
     cls: 'warrior',
     type: 'power',
     rarity: 'rare',
