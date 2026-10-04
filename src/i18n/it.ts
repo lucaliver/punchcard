@@ -725,7 +725,7 @@ const it: Record<EnKey, string> = {
   'card.bobTheBuilder.name': 'Bob Aggiustatutto',
   'card.bobTheBuilder.desc': 'Ottieni {0} di [block].',
   'card.wrenchWhack.name': 'Chiave Inglese',
-  'card.wrenchWhack.desc': 'Fai {0} danni. [stun] per {1}s.',
+  'card.wrenchWhack.desc': 'Rimuovi tutto il [block] del nemico, poi fai {0} danni.',
   'card.crowbar.name': 'Piede di Porco',
   'card.crowbar.desc': 'Fai {0} danni.',
   'card.wallStreet.name': 'Wall Street',

@@ -21,6 +21,8 @@ export const TAG_ICON: Record<string, string> = {
 export const GLYPHS: Record<string, { icon: string; unit?: string; sign?: string }> = {
   dmg: { icon: 'sword' },
   block: { icon: 'shield' },
+  /** Strips the enemy's Block. */
+  breakBlock: { icon: 'shield', sign: '-' },
   heal: { icon: 'heart', sign: '+' },
   mana: { icon: 'crystal', sign: '+' },
   stun: { icon: 'stars', unit: 's' },

@@ -212,6 +212,14 @@ describe('combat engine', () => {
     expect(c.hero.block).toBe(0);
   });
 
+  it("breakBlock strips a fighter's Block", () => {
+    const c = setup();
+    run(c, CONFIG.introTime + 0.01);
+    c.gainBlock('enemy', 15);
+    c.breakBlock('enemy');
+    expect(c.enemy.block).toBe(0);
+  });
+
   it('stun pauses the enemy timer, chill halves it', () => {
     const c = setup();
     run(c, CONFIG.introTime + 0.01);

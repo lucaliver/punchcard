@@ -722,7 +722,7 @@ const en = {
   'card.bobTheBuilder.name': 'Bob the Builder',
   'card.bobTheBuilder.desc': 'Gain {0} [block].',
   'card.wrenchWhack.name': 'Wrench Whack',
-  'card.wrenchWhack.desc': 'Deal {0} damage. [stun] for {1}s.',
+  'card.wrenchWhack.desc': 'Remove all enemy [block], then deal {0} damage.',
   'card.crowbar.name': 'Crowbar',
   'card.crowbar.desc': 'Deal {0} damage.',
   'card.wallStreet.name': 'Wall Street',

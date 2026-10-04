@@ -34,17 +34,18 @@ export const warriorCards: CardDef[] = [
   },
   {
     id: 'wrenchWhack',
-    face: '{dmg:0}|{stun:1}',
+    face: '{breakBlock}|{dmg:0}',
     cls: 'warrior',
     type: 'attack',
     rarity: 'epic',
     cost: 4,
-    vals: [12, 4],
-    upVals: [16, 6],
+    vals: [14],
+    upVals: [20],
     art: 'wrenchWhack',
+    // The wrench goes through the armour first: the whole hit lands.
     play: (c, v) => {
+      c.breakBlock('enemy');
       c.hit(v[0], { kind: 'blunt' });
-      c.applyStatus('enemy', 'stun', 1, v[1]);
     },
   },
 

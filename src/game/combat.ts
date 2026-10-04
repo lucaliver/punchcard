@@ -618,6 +618,11 @@ export class Combat {
     this.events.emit({ type: 'beltPinned' });
   }
 
+  /** Strips all of a fighter's Block. */
+  breakBlock(side: Side): void {
+    this.fighter(side).block = 0;
+  }
+
   /** Takes a `share` (0–1) of the enemy's Block and adds it to the hero's. */
   stealBlock(share: number): void {
     const n = Math.floor(this.enemy.block * share);
