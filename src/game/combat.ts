@@ -730,8 +730,8 @@ export class Combat {
     for (const s of m.status ?? []) this.applyStatus(s.target, s.id, s.v ?? 1, s.t ?? 0);
     let queued = 0;
     for (const cu of m.curse ?? []) {
-      // Curses arriving on the belt together come in one after the other.
-      const gap = CONFIG.spacing * (CARDS[cu.id].span ?? 1);
+      // Curses arriving on the belt together come in one after the other, spread over the rows (one row's spacing is shared by all).
+      const gap = (CONFIG.spacing * (CARDS[cu.id].span ?? 1)) / this.rowsOpen;
       for (let i = 0; i < cu.n; i++) this.addTempCard(cu.id, cu.to, false, cu.to === 'belt' ? -queued++ * gap : 0);
     }
     if (m.steal) for (let i = 0; i < m.steal; i++) this.stealCard();
