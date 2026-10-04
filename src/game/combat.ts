@@ -247,6 +247,7 @@ export class Combat {
     const innate = this.draw.filter((c) => this.keywords(c).includes('innate'));
     this.draw = [...this.draw.filter((c) => !innate.includes(c)), ...innate];
 
+    this.heroDef.hooks.onCombatStart?.(this);
     for (const id of this.relics) RELICS[id]?.hooks?.onCombatStart?.(this);
     // Prewarm: run the belt on its own until the first card reaches `prewarm`, so the fight starts with
     // the right side filled at the normal spacing (and a second row alternating) without crowding it.

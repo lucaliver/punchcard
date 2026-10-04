@@ -7,9 +7,8 @@ export function starterCards(hero: HeroDef): { id: string; up: boolean }[] {
   const pending = new Set(hero.startUpgraded);
   return hero.startDeck.map((id) => ({ id, up: pending.delete(id) }));
 }
-/** Virulence (Necromancer passive) only kicks in once the enemy carries this much Poison, and then adds this much per tick. */
-export const VIRULENCE_AT = 7;
-export const VIRULENCE_BONUS = 1;
+/** Virulence (Necromancer passive): every enemy starts the fight with this much Poison. */
+export const VIRULENCE_START = 3;
 /** Overtime (Warrior ability): attacks deal this many times as much, for this long (s). */
 export const OVERTIME_MULT = 2;
 export const OVERTIME_TIME = 10;
@@ -101,9 +100,10 @@ const necromancer: HeroDef = {
     use: (c) => c.applyStatus('enemy', 'poison', c.stacks('enemy', 'poison')),
   },
   hooks: {
-    // Virulence: heavy Poison (7+) deals +1 per tick; Virulent Form adds its bonus on top, always.
-    enemyDotBonus: (c, id) =>
-      id === 'poison' ? (c.stacks('enemy', 'poison') >= VIRULENCE_AT ? VIRULENCE_BONUS : 0) + c.stacks('hero', 'virulence') : 0,
+    // Virulence: the enemy starts with Poison.
+    onCombatStart: (c) => c.applyStatus('enemy', 'poison', VIRULENCE_START, 0, true),
+    // Virulent Form: its stacks add to every Poison tick.
+    enemyDotBonus: (c, id) => (id === 'poison' ? c.stacks('hero', 'virulence') : 0),
     // Plague: Attacks also apply Poison.
     onCardPlayed: (c, _card, def) => {
       const plague = c.stacks('hero', 'plague');

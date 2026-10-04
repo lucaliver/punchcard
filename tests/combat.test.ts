@@ -2,7 +2,7 @@ import { describe, expect, it } from 'vitest';
 import { Combat, type CombatSetup } from '../src/game/combat';
 import { CONFIG, EXPIRE_POS, rewardUpgradeChance } from '../src/data/config';
 import { ENEMIES, enemiesFor } from '../src/data/enemies';
-import { HEROES } from '../src/data/heroes';
+import { HEROES, VIRULENCE_START } from '../src/data/heroes';
 import { COFFEE_EVERY, FLICKER_EVERY, SMILE_HEAL, STATUSES, TABS_EVERY, UNDERSTUDY_BLOCK, UNDERSTUDY_EVERY } from '../src/data/statuses';
 import { CARD_LIST, CARDS, RARITY_ORDER, cardCostOf } from '../src/data/cards';
 import { RELICS } from '../src/data/relics';
@@ -718,17 +718,11 @@ describe('combat engine', () => {
     expect(spawnsWith(true)).toBe(spawnsWith(false));
   });
 
-  it('necromancer poison ticks harder at 7+ Poison (Virulence), plain below', () => {
-    const c = setup({ hero: HEROES.necromancer, hp: 50, maxHp: 50, deck: deckOf(['rust', 'rust']), enemy: ENEMIES.seniorBoomer });
-    c.enemy.move = { id: 'wait', intent: 'defend', windup: 999 };
-    run(c, CONFIG.introTime + 0.01);
-    c.applyStatus('enemy', 'poison', 7);
-    let hp = c.enemy.hp;
-    run(c, CONFIG.dotInterval + 0.02);
-    expect(hp - c.enemy.hp).toBe(7 + 1);
-    hp = c.enemy.hp;
-    run(c, CONFIG.dotInterval);
-    expect(hp - c.enemy.hp).toBe(6);
+  it('necromancer: the enemy starts the fight with Poison (Virulence), other heroes do not', () => {
+    const enemy = ENEMIES.seniorBoomer;
+    const necro = setup({ hero: HEROES.necromancer, hp: 50, maxHp: 50, deck: deckOf(['rust', 'rust']), enemy });
+    expect(necro.stacks('enemy', 'poison')).toBe(VIRULENCE_START);
+    expect(setup({ deck: deckOf(['punch']), enemy }).stacks('enemy', 'poison')).toBe(0);
   });
 
   it('sudo lifts every rule and rushes the belt for the time shown on the card', () => {
@@ -785,6 +779,8 @@ describe('combat engine', () => {
     expect(hp - c.enemy.hp).toBe(CARDS.grievance.vals[1]);
 
     const n = setup({ hero: HEROES.necromancer, hp: 62, maxHp: 62, deck: deckOf(['wordOfMouth', 'wordOfMouth']) });
+    // Virulence's starting Poison is not what this checks.
+    delete n.enemy.statuses.poison;
     run(n, CONFIG.introTime + 0.01);
     n.hero.mana = 6;
     n.playCard(n.belt[0].card.uid);
@@ -1914,6 +1910,7 @@ describe('cards that fill the classes out', () => {
 
   it('Cheap Shot hits harder on a Weak enemy, Hazmat Suit turns Poison into Block, Healthcare Plan regenerates', () => {
     const c = quiet({ hero: HEROES.necromancer });
+    delete c.enemy.statuses.poison;
     let hp = c.enemy.hp;
     cast(c, 'cheapShot');
     expect(hp - c.enemy.hp).toBe(CARDS.cheapShot.vals[0]);
@@ -1939,6 +1936,7 @@ describe('cards that fill the classes out', () => {
 
   it('Petri Dish: every attack played while it waits in the sleeve grows its Poison, spent when played', () => {
     const c = quiet({ hero: HEROES.necromancer });
+    delete c.enemy.statuses.poison;
     c.addTempCard('petriDish', 'belt');
     c.stash(c.belt[c.belt.length - 1].card.uid, 0);
     const [base, grow] = CARDS.petriDish.vals;

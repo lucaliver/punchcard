@@ -230,7 +230,7 @@ const en = {
   'hero.necromancer.name': 'Necromancer',
   'hero.necromancer.job': 'Socialist and Union cult leader',
   'hero.necromancer.passiveName': 'Virulence',
-  'hero.necromancer.passiveShort': 'At {$virulenceAt}+ Poison, your Poison deals +{$virulenceBonus} per tick.',
+  'hero.necromancer.passiveShort': 'The enemy starts the fight with {$virulenceStart} Poison.',
   'hero.necromancer.ability': 'General Strike',
   'hero.necromancer.abilityShort': "Double the enemy's Poison.",
 
@@ -539,8 +539,6 @@ const en = {
   'kw.vulnerable.d': 'Takes {$vulnPct}% more damage.',
   'kw.weak': 'Weak',
   'kw.weak.d': 'Deals {$weakPct}% less damage.',
-  'kw.virulence': 'Virulence',
-  'kw.virulence.d': 'Heavy [poison] on the enemy ({$virulenceAt}+) deals extra damage per tick.',
   'kw.bulky': 'Bulky',
   'kw.bulky.d': "Stuck in your sleeve: it can't be swapped out, only paid for.",
   'kw.power': 'Power',

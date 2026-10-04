@@ -2,7 +2,7 @@ import { ENEMIES, HALF } from './enemies';
 import { CONFIG } from './config';
 import { CARDS } from './cards';
 import { HARDSHIP_HP, JUST_CAUSE_HP } from './cards/warrior';
-import { HEROES, OVERTIME_MULT, OVERTIME_TIME, TIME_THEFT, VIRULENCE_AT, VIRULENCE_BONUS } from './heroes';
+import { HEROES, OVERTIME_MULT, OVERTIME_TIME, TIME_THEFT, VIRULENCE_START } from './heroes';
 import { PERKS } from './perks';
 import { CLOCK_BLOCK, MUG_MANA, STAPLER_DAMAGE } from './relics';
 import {
@@ -98,8 +98,7 @@ export const VALUES = {
   overtimeMult: OVERTIME_MULT,
   overtimeTime: OVERTIME_TIME,
   timeTheft: TIME_THEFT,
-  virulenceAt: VIRULENCE_AT,
-  virulenceBonus: VIRULENCE_BONUS,
+  virulenceStart: VIRULENCE_START,
   // Relics, perks, cards
   mugMana: MUG_MANA,
   clockBlock: CLOCK_BLOCK,

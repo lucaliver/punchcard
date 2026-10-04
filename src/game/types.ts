@@ -315,6 +315,8 @@ export interface EnemyDef {
 }
 
 export interface HeroHooks {
+  /** Called once when the fight is set up, after the enemy's own starting statuses (relics' `onCombatStart` come next). */
+  onCombatStart?: (c: Combat) => void;
   onCardPlayed?: (c: Combat, card: CombatCard, def: CardDef, manaSpent: number) => void;
   onCardExpired?: (c: Combat, card: CombatCard) => void;
   /** Called when the hero applies a status to the enemy. */
