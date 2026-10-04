@@ -615,6 +615,19 @@ export const ICONS: Record<string, { el: Element; svg: string }> = {
     svg: `<rect x="24" y="4" width="16" height="42" rx="8"/><circle cx="32" cy="48" r="14"/><rect x="30" y="14" width="4" height="34" fill="#16121f"/><circle cx="32" cy="48" r="7" fill="#16121f"/><path d="M42 14h6M42 22h6M42 30h6" stroke="currentColor" stroke-width="3"/>`,
   },
 
+  quickReboot: {
+    el: 'arcane',
+    svg: `<g ${S} stroke-width="7"><path d="M32 4v28M17 13a24 24 0 1 0 30 0"/></g>`,
+  },
+  twoFactorAuth: {
+    el: 'arcane',
+    svg: `<rect x="16" y="4" width="32" height="56"/><rect x="21" y="11" width="22" height="36" fill="#16121f"/><path d="M25 21h14M25 29h14M25 37h8" stroke="currentColor" stroke-width="3.5"/><circle cx="32" cy="53" r="3" fill="#16121f"/>`,
+  },
+  cloudBackup: {
+    el: 'arcane',
+    svg: `<path d="M16 50a13 13 0 0 1 2-26 16 16 0 0 1 30-2 14 14 0 0 1 0 28z"/><path d="M32 46V28M24 35l8-8 8 8" fill="none" stroke="#16121f" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/>`,
+  },
+
   // ---- Rule icons: one concept each.
   overtime: {
     el: 'blood',

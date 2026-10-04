@@ -502,6 +502,47 @@ export const mageCards: CardDef[] = [
       c.rushBelt(v[1]);
     },
   },
+  // Filling the common and defence slots: a mana and belt boost, Block from Multitasking, Block from the sleeve
+  {
+    id: 'quickReboot',
+    face: '{mana:0}|{rush:1}',
+    cls: 'mage',
+    type: 'skill',
+    rarity: 'common',
+    cost: 1,
+    vals: [1, 2],
+    upVals: [2, 3],
+    art: 'quickReboot',
+    play: (c, v) => {
+      c.gainMana(v[0]);
+      c.rushBelt(v[1]);
+    },
+  },
+  {
+    id: 'twoFactorAuth',
+    face: '{block}={multi}×{0}',
+    cls: 'mage',
+    type: 'defense',
+    rarity: 'rare',
+    cost: 1,
+    vals: [3],
+    upVals: [4],
+    art: 'twoFactorAuth',
+    play: (c, v) => c.gainBlock('hero', c.stacks('hero', 'multitasking') * v[0]),
+  },
+  {
+    id: 'cloudBackup',
+    face: '{block:0}|{sleeve}{block:1}',
+    cls: 'mage',
+    type: 'defense',
+    rarity: 'epic',
+    cost: 3,
+    vals: [12, 6],
+    upVals: [16, 8],
+    art: 'cloudBackup',
+    play: (c, v) => c.gainBlock('hero', v[0] + v[1] * c.sleeve.filter((x) => x !== null).length),
+  },
+
   // Sleeve payoff and a Chill to Burn bridge
   {
     id: 'cacheFlush',

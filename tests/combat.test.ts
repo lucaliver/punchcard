@@ -1938,6 +1938,29 @@ describe('cards that fill the classes out', () => {
     expect(c.hero.mana).toBe(mana);
   });
 
+  it('Quick Reboot gives mana and rushes the belt, Two-Factor Auth and Cloud Backup give Block', () => {
+    const c = quiet();
+    c.hero.mana = 0;
+    cast(c, 'quickReboot');
+    expect(c.hero.mana).toBe(CARDS.quickReboot.vals[0]);
+    expect(c.has('hero', 'rush')).toBe(true);
+
+    c.chargeMultitasking();
+    c.chargeMultitasking();
+    cast(c, 'twoFactorAuth');
+    expect(c.hero.block).toBe(2 * CARDS.twoFactorAuth.vals[0]);
+
+    c.hero.block = 0;
+    cast(c, 'cloudBackup');
+    const [base, per] = CARDS.cloudBackup.vals;
+    expect(c.hero.block).toBe(base);
+    c.addTempCard('punch', 'belt');
+    expect(c.stash(c.belt[c.belt.length - 1].card.uid, 0)).toBe(true);
+    c.hero.block = 0;
+    cast(c, 'cloudBackup');
+    expect(c.hero.block).toBe(base + per);
+  });
+
   it('Sick Day gives Block and stuns the hero', () => {
     const c = quiet();
     cast(c, 'sickDay');
