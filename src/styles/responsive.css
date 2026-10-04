@@ -30,6 +30,11 @@
   .slip-row.slip-section { display: none; }
 }
 @media (max-height: 700px) {
+  /* the hero is smaller so the ability cards under it still show in full, even in a language with longer words */
+  .hero-select {
+    --stage-h: clamp(110px, 22vh, 250px);
+    --sprite: clamp(96px, 19vh, 230px);
+  }
   .enemy-info { gap: 4px; }
   .enemy-info .statuses,
   .hero-info .statuses { height: 26px; }
