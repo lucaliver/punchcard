@@ -22,6 +22,8 @@ const BAR_LOW = 0.3;
 /** The statuses that change how a fighter's sprite looks, and the looks themselves (the half-HP rage is one of them). */
 const LOOKS = Object.values(STATUSES).filter((s): s is typeof s & { look: string } => !!s.look);
 const ALL_LOOKS = [...new Set([...LOOKS.map((s) => s.look), 'enraged'])];
+/** Steps of the stun banner's draining bar. */
+const STUN_STEPS = 20;
 /** Steps of the belt's red wash (motion is stepped). */
 const BELT_ALARM_STEPS = 8;
 
@@ -36,6 +38,9 @@ export function createHud(v: CombatView, onPassive: () => void): { render(): voi
   let alarmed = -1;
   /** The belt's red wash, in steps (written only when the step changes). */
   let beltAlarm = 0;
+  /** The status tying the hero's hands now, and the most seconds it has shown (the bar's full length). */
+  let tiedId = '';
+  let tiedSpan = 0;
   /** Rust spot elements by id. */
   const rustEls = new Map<number, HTMLElement>();
   let lastMaxMana = -1;
@@ -302,6 +307,26 @@ export function createHud(v: CombatView, onPassive: () => void): { render(): voi
     setText(r.popupPct, pct < 90 ? `${Math.floor(pct)}%` : `${(Math.floor(pct * 100) / 100).toFixed(2)}%`);
   };
 
+  /** The banner over the belt while the hero can't act: what it is, and a bar draining to the second it ends. */
+  const renderTied = (): void => {
+    const id = combat.isOver ? undefined : Object.keys(combat.hero.statuses).find((s) => combat.has('hero', s) && STATUSES[s].handsTied);
+    toggle(r.stun, 'on', !!id);
+    if (!id) {
+      tiedId = '';
+      tiedSpan = 0;
+      return;
+    }
+    const left = combat.hero.statuses[id].t;
+    tiedSpan = Math.max(tiedSpan, left);
+    if (id !== tiedId) {
+      tiedId = id;
+      r.stun.dataset.tone = STATUSES[id].tone;
+      setHtml(r.stunIcon, icon(statusIcon(id, 'hero')));
+    }
+    setText(r.stunTime, `${left.toFixed(1)}s`);
+    r.stunFill.style.transform = `scaleX(${(Math.ceil((left / tiedSpan) * STUN_STEPS) / STUN_STEPS).toFixed(2)})`;
+  };
+
   const renderEnemyState = (): void => {
     const alarm = combat.isOver ? 0 : Math.floor(combat.enemyWarning() * BELT_ALARM_STEPS) / BELT_ALARM_STEPS;
     if (alarm !== beltAlarm) {
@@ -310,6 +335,7 @@ export function createHud(v: CombatView, onPassive: () => void): { render(): voi
     }
     toggle(r.weakSpot, 'on', !!combat.weakSpot && !combat.isOver);
     renderPopup();
+    renderTied();
     toggle(r.mop, 'on', combat.rustsBelt && !combat.isOver);
     toggle(r.mop, 'alarm', combat.rustAlarm && !combat.isOver);
     for (const spot of combat.rustSpots) {

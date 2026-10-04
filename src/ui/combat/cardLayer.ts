@@ -1,7 +1,7 @@
 import { t } from '../../core/i18n';
 import { sfx } from '../../audio/sfx';
 import { CARDS, cardValsOf } from '../../data/cards';
-import { statusIcon } from '../../data/statuses';
+import { STATUSES, statusIcon } from '../../data/statuses';
 import type { CombatCard } from '../../game/types';
 import { icon } from '../art/icons';
 import { cardCostLabel, cardFace, cardView } from '../components/cardView';
@@ -350,7 +350,8 @@ export function createCardLayer(v: CombatView): CardLayer {
       ce.virusEl?.remove();
       ce.virusEl = card.virus ? ce.el.appendChild(h('div', { class: 'virus-badge', html: icon('virus') })) : undefined;
     }
-    const ruleId = rule?.status;
+    // What ties the hero's hands has its own banner over the belt: no badge on every card.
+    const ruleId = rule && !STATUSES[rule.status].handsTied ? rule.status : undefined;
     if (ruleId !== ce.rule) {
       ce.rule = ruleId;
       ce.ruleEl?.remove();

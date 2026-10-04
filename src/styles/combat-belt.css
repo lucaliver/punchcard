@@ -111,6 +111,38 @@
   clip-path: polygon(0 30%, 12% 30%, 12% 0, 70% 0, 70% 20%, 100% 20%, 100% 80%, 80% 80%, 80% 100%, 20% 100%, 20% 70%, 0 70%);
   opacity: calc(0.35 + 0.6 * var(--grime, 1));
 }
+/* A stun (the hero's hands are tied): a slim strip across the top of the belt, filled to the moment it ends and draining; the cards stay in view */
+.belt-stun {
+  display: none;
+  position: absolute;
+  inset: 2px 8px auto;
+  z-index: var(--z-belt-window);
+  height: 13px;
+  align-items: center;
+  justify-content: space-between;
+  overflow: hidden;
+  pointer-events: none;
+  line-height: 1;
+  color: var(--k);
+  background: var(--paper);
+  border: var(--line) solid var(--k);
+  animation: stamp-in 0.15s steps(2);
+}
+.belt-stun.on { display: flex; }
+.stun-fill {
+  position: absolute;
+  inset: 0;
+  background: var(--tone);
+  transform-origin: left;
+}
+.stun-ico,
+.stun-time {
+  position: relative;
+  z-index: 1;
+  background: var(--paper);
+}
+.stun-ico { display: grid; width: 13px; font-size: 11px; color: var(--tone); --ink2: var(--k); }
+.stun-time { padding: 0 4px; font-family: var(--font-ui); font-size: 12px; font-variant-numeric: tabular-nums; }
 /* The IT guy's window: it covers the whole belt (the cards ride on underneath) until the update is done or Postpone sends it away */
 .update-popup {
   display: none;

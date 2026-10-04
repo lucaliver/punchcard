@@ -998,3 +998,13 @@ test('losing the first fight offers to beg to stay, once, and the fight goes on'
   await combat(page, "delete c.hero.statuses.dodge; c.damage('enemy', 'hero', 9999, { raw: true, ignoreBlock: true }, 'enemy');");
   await expect(page.locator('.end')).toBeVisible({ timeout: 8000 });
 });
+
+test('a stun shows one banner over the belt, not a badge on every card', async ({ page }) => {
+  await freshGame(page);
+  await startFight(page);
+  await combat(page, "c.applyStatus('hero', 'stun', 1, 6);");
+  await expect(page.locator('.belt-stun.on')).toBeVisible();
+  await expect(page.locator('.belt-cards .rule-badge')).toHaveCount(0);
+  await combat(page, 'delete c.hero.statuses.stun;');
+  await expect(page.locator('.belt-stun.on')).toHaveCount(0);
+});
