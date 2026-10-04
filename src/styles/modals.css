@@ -444,7 +444,8 @@
   background: var(--paper2);
   border: 2px solid var(--k);
 }
-.debug-cards { display: flex; flex-wrap: wrap; gap: 6px; max-height: 38vh; overflow-y: auto; }
+/* both lists keep one height whatever the search finds, so the window never jumps */
+.debug-cards { display: flex; flex-wrap: wrap; align-content: flex-start; gap: 6px; height: 38vh; overflow-y: auto; }
 .debug-pane { display: flex; flex-direction: column; gap: 10px; }
 .debug-pane[hidden] { display: none; }
 .debug-tabs { display: flex; gap: 4px; border-bottom: var(--line) solid var(--k); }
@@ -470,7 +471,7 @@
   border: 2px solid var(--k);
 }
 .debug-card b { color: var(--p); }
-.debug-foes { display: grid; grid-template-columns: repeat(auto-fill, minmax(96px, 1fr)); gap: 8px; }
+.debug-foes { display: grid; grid-template-columns: repeat(auto-fill, minmax(96px, 1fr)); align-content: start; gap: 8px; height: 38vh; overflow-y: auto; }
 .debug-foe {
   display: flex;
   flex-direction: column;
