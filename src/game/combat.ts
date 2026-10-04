@@ -1281,10 +1281,11 @@ export class Combat {
   addTempCard(id: string, to: 'belt' | 'draw' | 'discard', up = false, at = 0): void {
     // Temporary cards get negative uids so they never collide with deck cards.
     const card: CombatCard = { uid: -++this.tempUid, id, up, bonus: 0, temp: true };
-    if (to === 'belt') {
-      if (!this.spawnCard(at, card)) this.discard.push(card);
-    } else if (to === 'draw') {
-      this.draw.splice(this.rng.int(0, this.draw.length), 0, card);
+    if (to === 'belt' && this.spawnCard(at, card)) {
+      // already riding
+    } else if (to !== 'discard') {
+      // A card that finds no room on the belt is shuffled into the draw pile like any other added card.
+      this.draw.splice(this.rng.int(0, this.draw.length + 1), 0, card);
     } else {
       this.discard.push(card);
     }
