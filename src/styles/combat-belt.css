@@ -111,7 +111,7 @@
   clip-path: polygon(0 30%, 12% 30%, 12% 0, 70% 0, 70% 20%, 100% 20%, 100% 80%, 80% 80%, 80% 100%, 20% 100%, 20% 70%, 0 70%);
   opacity: calc(0.35 + 0.6 * var(--grime, 1));
 }
-/* A stun (the hero's hands are tied): a flat veil over the whole belt, cards included, that fades out in steps as the stun ends
+/* A stun (the hero's hands are tied): a sparse field of jittering dots over the whole belt, cards included, that thins out (fades) in steps as the stun ends
    (`--left` is the share still to go): the cards stay readable, to know what to play the moment it lifts. */
 .belt-stun {
   display: none;
@@ -119,10 +119,16 @@
   inset: 0;
   z-index: var(--z-belt-window);
   pointer-events: none;
-  background: var(--tone);
-  opacity: calc(var(--left, 1) * 0.5);
+  background: radial-gradient(circle at center, var(--tone) 0 1.5px, transparent 2px) 0 0 / 7px 7px;
+  opacity: calc(var(--left, 1) * 0.9);
+  animation: stun-jitter 0.3s steps(1) infinite;
 }
 .belt-stun.on { display: block; }
+@keyframes stun-jitter {
+  0% { background-position: 0 0; }
+  33% { background-position: 2px -1px; }
+  66% { background-position: -1px 2px; }
+}
 /* The IT guy's window: it covers the whole belt (the cards ride on underneath) until the update is done or Postpone sends it away */
 .update-popup {
   display: none;
