@@ -369,6 +369,9 @@ export interface RewardOffer {
   up: boolean;
 }
 
+/** One card of a reward pool: the hero's own class weighs `CONFIG.classCardWeight` against a neutral card. */
+const pickReward = (rng: Rng, hero: HeroId, pool: CardDef[]): CardDef => rng.weighted(pool, (c) => (c.cls === hero ? CONFIG.classCardWeight : 1));
+
 export function rollRewards(run: RunState, kind: RewardKind): RewardOffer[] {
   // The very first run teaches with hand-picked offers after its first fights (the win just counted is `kills`).
   const firsts = run.scripted ? HEROES[run.hero].firstRewards?.[run.stats.kills - 1] : undefined;
@@ -386,7 +389,7 @@ export function rollRewards(run: RunState, kind: RewardKind): RewardOffer[] {
   for (let tries = 0; picks.length < rewardChoices(run) && tries < 80; tries++) {
     const rarity = rng.weighted(picks.length < count ? atLeast : odds, ([, w]) => w)[0];
     const pool = rewardPool(run.hero, rarity).filter((c) => !picks.includes(c));
-    if (pool.length) picks.push(rng.pick(pool));
+    if (pool.length) picks.push(pickReward(rng, run.hero, pool));
   }
   const upgraded = picks.length && rng.next() < rewardUpgradeChance(currentNode(run).act) ? rng.int(0, picks.length - 1) : -1;
   run.rng = rng.state;
@@ -501,7 +504,7 @@ export const canVend = (run: RunState, rarity: keyof typeof CONFIG.vendingHp): b
 /** A random card of this rarity drops into the deck, for HP. Returns it. */
 export function vend(run: RunState, rarity: keyof typeof CONFIG.vendingHp): CardInst {
   const rng = rngOf(run);
-  const def = rng.pick(rewardPool(run.hero, rarity));
+  const def = pickReward(rng, run.hero, rewardPool(run.hero, rarity));
   run.rng = rng.state;
   run.hp -= vendingCost(rarity);
   discover([def.id]);

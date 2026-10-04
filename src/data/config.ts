@@ -102,6 +102,8 @@ export const CONFIG = {
   tailorMaxHp: 10,
   /** Lost & Found: how many relics lie in the box. */
   lostFoundChoices: 3,
+  /** Rewards and the Vending Machine deal a card of the hero's class this many times as likely as a neutral one (a class stays itself). */
+  classCardWeight: 2,
   /** Cross-Training: how many cards of each of the other classes are on offer. */
   crossTrainPerClass: 2,
   /** Vending Machine: the HP a card of each rarity costs (the machine takes blood). */

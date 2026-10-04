@@ -508,7 +508,7 @@ export const mageCards: CardDef[] = [
     face: '{*dmg}{chill:0}',
     cls: 'mage',
     type: 'power',
-    rarity: 'rare',
+    rarity: 'epic',
     cost: 2,
     vals: [1],
     upVals: [2],
