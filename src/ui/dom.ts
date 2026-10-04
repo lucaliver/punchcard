@@ -25,6 +25,9 @@ export function h<K extends keyof HTMLElementTagNameMap>(tag: K, attrs: Attrs | 
   return el;
 }
 
+/** Letters in the longest word of a text: a title that can't break a word sizes its font by this (`--w`), so a long word in any language fits. */
+export const longestWord = (text: string): number => Math.max(1, ...text.split(/\s+/).map((w) => [...w].length));
+
 export const $ = <T extends Element = HTMLElement>(sel: string, root: ParentNode = document): T => root.querySelector(sel) as T;
 
 /** Sets text only when it changed (cheap per-frame updates). */
