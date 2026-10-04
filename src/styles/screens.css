@@ -31,19 +31,21 @@
 /* "Your deck" and its sort line share a row */
 .swap-head { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 0 8px; }
 .swap-head .deck-sort { margin: 0; }
-/* the whole deck on top (scrolls if it grows), the offer below */
+/* the deck in a bin and the offer tray under it, both down by the buttons (the thumb's reach, a short trip for the swap); the spare height goes under the title */
 .swap-area {
   flex: 1;
   min-height: 0;
   display: flex;
   flex-direction: column;
-  justify-content: center;
+  justify-content: flex-end;
   gap: 6px;
 }
 .swap-deck-wrap {
   flex: 0 1 auto;
   min-height: 0;
-  padding: 6px 4px 8px 2px;
+  padding: 10px 8px;
+  background: var(--bg2);
+  border: var(--line) solid var(--night-dot);
 }
 .swap-deck,
 .swap-offer {
@@ -51,8 +53,16 @@
   justify-content: space-between;
   gap: 14px 8px;
 }
-/* 10-card deck = 5 × 2; the offered cards (four, `--swap-n` says when there are more) are a bit bigger */
-.swap-deck { --swap-cw: calc((min(100vw, 520px) - 32px - 4 * 8px - 10px) / 5); grid-template-columns: repeat(5, var(--swap-cw)); }
+/* the deck is five across (ten cards = two rows); tall phones have the room for four, the size of the offered cards */
+.swap-deck {
+  --deck-n: 5;
+  --swap-cw: calc((min(100vw, 520px) - 32px - 2 * var(--line) - 2 * 8px - (var(--deck-n) - 1) * 8px - 4px) / var(--deck-n));
+  grid-template-columns: repeat(var(--deck-n), var(--swap-cw));
+}
+@media (min-height: 800px) {
+  .swap-deck { --deck-n: 4; }
+}
+/* the offered cards (four, `--swap-n` says when there are more) are a bit bigger than a short phone's deck */
 .swap-offer {
   --swap-n: 4;
   --swap-cw: calc((min(100vw, 520px) - 32px - 2 * 10px - 2 * var(--line) - (var(--swap-n) - 1) * 8px) / var(--swap-n));
