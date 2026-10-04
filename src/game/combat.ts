@@ -316,7 +316,13 @@ export class Combat {
   }
 
   cardCost(card: CardInst): number {
-    return cardCostOf(card);
+    const cost = cardCostOf(card);
+    return cost > 0 && this.freeNextId() ? 0 : cost;
+  }
+
+  /** The status that makes the next paid card free (`StatusDef.freeNext`), if one is up. */
+  private freeNextId(): string | undefined {
+    return Object.keys(this.hero.statuses).find((id) => this.has('hero', id) && STATUSES[id].freeNext);
   }
 
   canAfford(card: CardInst): boolean {
@@ -907,6 +913,8 @@ export class Combat {
     // X is all the mana there is; a free card still counts it, without spending it.
     const spent = cost < 0 ? this.hero.mana : cost;
     if (!free) this.hero.mana -= spent;
+    const badge = this.freeNextId();
+    if (badge && !free && cost === 0 && cardCostOf(card) > 0) this.applyStatus('hero', badge, -1, 0, true);
     const row = beltIdx >= 0 ? this.belt[beltIdx].row : -1;
     if (beltIdx >= 0) this.belt.splice(beltIdx, 1);
     else this.sleeve[sleeveIdx] = null;

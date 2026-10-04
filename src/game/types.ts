@@ -196,6 +196,8 @@ export interface StatusDef {
   critOnDrag?: true;
   /** While active on the hero, the hero can't act: no card played by hand, no ability (stashing is still allowed). Cards still play themselves under `autoplay` (Stun). */
   handsTied?: true;
+  /** While active on the hero, the next card that costs mana is free and takes one stack with it (Lost Badge). */
+  freeNext?: true;
   /** While active on the hero, no card rule (`canPlay`) applies (Root access). */
   ignoresRules?: true;
   /** While active on the hero, a card slipping off the belt plays itself for free if it can (Autopilot). */

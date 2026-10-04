@@ -1961,6 +1961,29 @@ describe('cards that fill the classes out', () => {
     expect(c.hero.block).toBe(base + per);
   });
 
+  it('Fire Exit gives Block when it leaves the belt unplayed, Lost Badge makes the next paid card free once', () => {
+    const c = quiet();
+    c.addTempCard('fireExit', 'belt');
+    const exit = c.belt[c.belt.length - 1].card;
+    c.hero.block = 0;
+    c.belt[c.belt.length - 1].pos = EXPIRE_POS + 0.1;
+    run(c, 0.1);
+    expect(c.belt.some((b) => b.card.uid === exit.uid)).toBe(false);
+    expect(c.hero.block).toBe(CARDS.fireExit.vals[1]);
+
+    c.hero.mana = 5;
+    const hp = c.hero.hp;
+    cast(c, 'lostBadge');
+    expect(c.hero.hp).toBe(hp - CARDS.lostBadge.vals[0]);
+    c.addTempCard('punch', 'belt');
+    expect(c.playCard(c.belt[c.belt.length - 1].card.uid)).toBe(true);
+    expect(c.hero.mana).toBe(5);
+    expect(c.has('hero', 'lostBadge')).toBe(false);
+    c.addTempCard('punch', 'belt');
+    expect(c.playCard(c.belt[c.belt.length - 1].card.uid)).toBe(true);
+    expect(c.hero.mana).toBeLessThan(5);
+  });
+
   it('Sick Day gives Block and stuns the hero', () => {
     const c = quiet();
     cast(c, 'sickDay');

@@ -682,6 +682,35 @@ export const neutralCards: CardDef[] = [
     },
   },
 
+  {
+    id: 'fireExit',
+    face: '{block:0}|{?exit}{block:1}',
+    cls: 'neutral',
+    type: 'defense',
+    rarity: 'rare',
+    cost: 2,
+    vals: [10, 5],
+    upVals: [14, 7],
+    art: 'fireExit',
+    play: (c, v) => c.gainBlock('hero', v[0]),
+    onExpire: (c, v) => c.gainBlock('hero', v[1]),
+  },
+  {
+    id: 'lostBadge',
+    face: '{hp:0}|{cheaper}',
+    cls: 'neutral',
+    type: 'skill',
+    rarity: 'rare',
+    cost: 0,
+    vals: [2],
+    upVals: [1],
+    art: 'lostBadge',
+    play: (c, v) => {
+      c.loseHp(v[0]);
+      c.applyStatus('hero', 'lostBadge', 1);
+    },
+  },
+
   // Generated during a fight (never offered as rewards).
   {
     id: 'alreadyDone',

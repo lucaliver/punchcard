@@ -219,6 +219,8 @@ const defs: StatusDef[] = [
       if (n % LUNCH_EVERY === 0) c.applyStatus('enemy', 'poison', s.v);
     }),
   },
+  // Lost Badge: the next card that costs mana is free (a stack each).
+  { id: 'lostBadge', tone: 'blue', kind: 'stacks', good: true, icon: 'priceTag', freeNext: true },
   // Root access (sudo): no rule can stop the hero's cards.
   { id: 'rootAccess', tone: 'blue', kind: 'timed', good: true, icon: 'terminal', ignoresRules: true },
   { id: 'multitasking', tone: 'purple', kind: 'timed', good: true, icon: 'bolt2', showStacks: true, span: CONFIG.multitaskingWindow },

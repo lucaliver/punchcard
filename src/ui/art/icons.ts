@@ -628,6 +628,15 @@ export const ICONS: Record<string, { el: Element; svg: string }> = {
     svg: `<path d="M16 50a13 13 0 0 1 2-26 16 16 0 0 1 30-2 14 14 0 0 1 0 28z"/><path d="M32 46V28M24 35l8-8 8 8" fill="none" stroke="#16121f" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/>`,
   },
 
+  fireExit: {
+    el: 'steel',
+    svg: `<path d="M6 4h36v56H6z"/><path d="M12 10h24v44H12z" fill="#16121f"/><circle cx="24" cy="21" r="5"/><path d="M24 27v12M24 31l-8 4M24 31l8-3M24 39l-7 12M24 39l8 10" fill="none" stroke="currentColor" stroke-width="4" stroke-linecap="round"/><path d="M46 24l16 10-16 10z"/>`,
+  },
+  lostBadge: {
+    el: 'steel',
+    svg: `<rect x="14" y="14" width="36" height="46"/><rect x="26" y="4" width="12" height="10"/><circle cx="32" cy="30" r="8" fill="#16121f"/><path d="M20 46h24M20 53h16" stroke="#16121f" stroke-width="4"/><path d="M28 28l8 4M36 28l-8 4" stroke="currentColor" stroke-width="3"/>`,
+  },
+
   // ---- Rule icons: one concept each.
   overtime: {
     el: 'blood',
