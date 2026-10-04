@@ -13,7 +13,7 @@ export const TAG_ICON: Record<string, string> = {
   pending: 'pending',
   exhaust: 'spentMatch',
   consume: 'trash',
-  fleeting: 'wing',
+  fleeting: 'mouse',
   volatile: 'feather',
 };
 

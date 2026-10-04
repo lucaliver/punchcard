@@ -33,7 +33,8 @@ const crystal = `<path d="M32 4l16 18-16 38-16-38z"/><path ${HI} d="M32 4l16 18H
 const crystalSlot = `<path d="M32 4l16 18-16 38-16-38z"/><path fill="#16121f" d="M32 14l9 10-9 23-9-23z"/>`;
 const cloud = `<path d="M18 40a10 10 0 0 1 2-20 13 13 0 0 1 25-2 11 11 0 0 1 3 22z"/>`;
 const muscle = `<path d="M4 56V46C4 36 12 26 22 25c8-1 14 3 18 11V20h-4V10c0-4 3-6 7-6h10c4 0 7 2 7 6v10h-4v22c0 9-4 14-10 14z"/><path fill="none" stroke="#16121f" stroke-width="2" opacity=".45" d="M42 4v10M48 4v10M54 4v10M12 46c4-7 12-8 18-4"/>`;
-const wing = `<path d="M6 44C14 20 34 8 58 8c-6 6-8 10-9 14 3-1 6-1 9 0-5 5-10 8-15 9 3 1 6 2 8 4-9 4-19 6-28 5-6 0-12 2-17 4z"/>`;
+/** A little mouse in profile, running: it scurries off the belt (Fleeting). */
+const mouse = `<ellipse cx="29" cy="42" rx="20" ry="13"/><circle cx="48" cy="36" r="10"/><path d="M54 30l10 10-10 6z"/><circle cx="44" cy="25" r="8"/><circle cx="44" cy="25" r="4" fill="#16121f" opacity=".45"/><circle cx="51" cy="34" r="2.2" fill="#16121f"/><circle cx="62" cy="40" r="2" fill="#16121f"/><path d="M18 52h8v6h-8zM38 52h8v6h-8z"/><path ${S} stroke-width="3.5" d="M11 44C2 44 2 30 9 28"/>`;
 
 export const ICONS: Record<string, { el: Element; svg: string }> = {
   // ---- warrior
@@ -156,7 +157,7 @@ export const ICONS: Record<string, { el: Element; svg: string }> = {
     el: 'blood',
     svg: `<path d="M6 22c10 0 14-4 14-14h9c0 15-8 23-23 23zM58 22c-10 0-14-4-14-14h-9c0 15 8 23 23 23zM6 42c10 0 14 4 14 14h9c0-15-8-23-23-23zM58 42c-10 0-14 4-14 14h-9c0-15 8-23 23-23z"/>`,
   },
-  wing: { el: 'holy', svg: wing },
+  mouse: { el: 'shadow', svg: mouse },
   // A Power: lasts for the rest of the fight.
   infinity: {
     el: 'holy',
