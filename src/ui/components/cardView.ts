@@ -11,7 +11,7 @@ const KEYWORD_LINE = ['innate', 'pending', 'exhaust', 'consume', 'fleeting', 'vo
 export const TAG_ICON: Record<string, string> = {
   innate: 'flag',
   pending: 'pending',
-  exhaust: 'spentMatch',
+  exhaust: 'burntPaper',
   consume: 'trash',
   fleeting: 'mouse',
   volatile: 'feather',

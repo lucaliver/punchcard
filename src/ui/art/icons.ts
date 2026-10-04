@@ -657,10 +657,10 @@ export const ICONS: Record<string, { el: Element; svg: string }> = {
     el: 'shadow',
     svg: `<path d="M2 44h28v8H2z"/><g transform="rotate(35 30 44)"><rect x="10" y="12" width="24" height="32" rx="2"/><path fill="#16121f" d="M15 18h14v9H15z"/><path fill="#16121f" d="M15 32h9v4h-9z"/></g><path ${S} stroke-width="4" d="M44 30l4 8M54 34l3 6M46 50l3 7"/>`,
   },
-  // A spent match: burnt head, a wisp of smoke
-  spentMatch: {
+  // A sheet with its corner burnt away: the card is spent (Exhaust).
+  burntPaper: {
     el: 'shadow',
-    svg: `<g transform="rotate(32 32 36)"><rect x="29" y="24" width="6" height="36" rx="1"/><ellipse cx="32" cy="19" rx="7" ry="9" fill="#16121f"/></g><path ${S} stroke-width="3.5" d="M16 22c-5-4 4-7-1-12M26 14c-5-4 4-7-1-12"/>`,
+    svg: `<path fill-rule="evenodd" d="M10 4h22l-4 9 8 4-3 8 9 3 5 7v27H10zM17 34h30v4H17zM17 43h30v4H17zM17 52h22v4H17z"/><path d="M48 3c3 4 8 6 8 11a6 6 0 0 1-12 0c0-3 2-5 3-7 0 2 1 3 2 3-1-3-1-5-1-7z"/>`,
   },
   // A light quill feather
   feather: {
