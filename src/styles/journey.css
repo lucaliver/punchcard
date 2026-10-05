@@ -135,6 +135,8 @@
    fog over the rooms out of sight */
 .path {
   position: relative;
+  /* the stamps and rings of a room coming out of the fog grow past the walls: clipped, so the map doesn't gain a sideways scroll while they play (and slide back after) */
+  overflow-x: clip;
   margin: 8px 0 12px;
   background-image: linear-gradient(var(--white-a6) 1px, transparent 1px), linear-gradient(90deg, var(--white-a6) 1px, transparent 1px);
   background-size: 23px 23px;

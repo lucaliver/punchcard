@@ -478,6 +478,7 @@ const it: Record<EnKey, string> = {
   'deck.sort.cost': 'Costo',
   'deck.sort.type': 'Tipo',
   'deck.sort.rarity': 'Rarità',
+  'detail.related': 'Carte collegate:',
   'detail.showUpgrade': 'Mostra potenziamento',
   'detail.hideUpgrade': 'Mostra base',
 

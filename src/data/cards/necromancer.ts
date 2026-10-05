@@ -494,6 +494,7 @@ export const necromancerCards: CardDef[] = [
     cost: 2,
     vals: [3],
     art: 'oompaLoompa',
+    makes: ['loompa'],
     play: (c, v, card) => {
       for (let i = 0; i < v[0]; i++) c.addTempCard('loompa', 'draw', card.up);
     },

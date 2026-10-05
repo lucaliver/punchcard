@@ -452,6 +452,7 @@ export const warriorCards: CardDef[] = [
     vals: [],
     keywords: ['exhaust'],
     art: 'step1',
+    makes: ['step2'],
     play: (c, _v, card) => c.addTempCard('step2', 'draw', card.up),
   },
   // Filling the rares: a Block multiplier, thorns that grow, and a once-a-fight comeback
@@ -575,6 +576,7 @@ export const warriorCards: CardDef[] = [
     vals: [],
     keywords: ['exhaust'],
     art: 'step2',
+    makes: ['step3'],
     play: (c, _v, card) => c.addTempCard('step3', 'draw', card.up),
   },
   {
@@ -588,6 +590,7 @@ export const warriorCards: CardDef[] = [
     vals: [],
     keywords: ['exhaust'],
     art: 'step3',
+    makes: ['step4'],
     play: (c, _v, card) => c.addTempCard('step4', 'draw', card.up),
   },
   {

@@ -277,7 +277,7 @@
   inset: 0;
   z-index: 1;
   pointer-events: none;
-  background: repeating-linear-gradient(-45deg, var(--k-a60) 0 6px, transparent 6px 14px);
+  background: repeating-linear-gradient(-45deg, var(--k-a20) 0 4px, transparent 4px 16px);
 }
 .card.pending .c-tags { z-index: 2; background: var(--y); outline: max(2px, calc(var(--cw) * 0.02)) solid var(--k); }
 
@@ -344,6 +344,14 @@
   transition: transform var(--dur-fall) steps(5), opacity var(--dur-fall) steps(5);
   opacity: 0;
   pointer-events: none;
+}
+
+/* a card that has slipped off the end of the belt but can still be grabbed (to stash it): it tips over, in a few steps, as long as it is let */
+.card.falling {
+  animation: tip-over var(--fall-grace) steps(4) forwards;
+}
+@keyframes tip-over {
+  to { translate: calc(35% * var(--fall-side, 1)) 45%; rotate: calc(25deg * var(--fall-side, 1)); scale: 0.8; opacity: 0.4; }
 }
 
 /* a card that slips off the end of the belt tips out past it in a few quick steps, fading over the last half */

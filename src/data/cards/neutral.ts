@@ -237,6 +237,7 @@ export const neutralCards: CardDef[] = [
     upVals: [4],
     pack: 'workplace',
     art: 'followUp',
+    makes: ['alreadyDone'],
     play: (c, v) => {
       for (let i = 0; i < v[0]; i++) c.addTempCard('alreadyDone', 'draw');
     },
@@ -253,6 +254,7 @@ export const neutralCards: CardDef[] = [
     keywords: ['exhaust'],
     pack: 'workplace',
     art: 'q1',
+    makes: ['q2'],
     play: (c) => c.addTempCard('q2', 'draw'),
   },
   {
@@ -460,6 +462,7 @@ export const neutralCards: CardDef[] = [
     upVals: [40, 20],
     keywords: ['exhaust', 'pending'],
     art: 'coinStack',
+    makes: ['firstAidKit'],
     // Money now, paid in blood; the shop's first aid kit goes into your draw pile to patch you up later.
     play: (c, v) => {
       c.hit(v[0]);
@@ -606,6 +609,7 @@ export const neutralCards: CardDef[] = [
     upVals: [40, 15],
     keywords: ['exhaust'],
     art: 'creditCard',
+    makes: ['debt'],
     play: (c, v) => {
       c.gainBlock('hero', v[0]);
       c.loseHp(v[1]);
@@ -756,6 +760,7 @@ export const neutralCards: CardDef[] = [
     vals: [3],
     keywords: ['exhaust'],
     art: 'powerOff',
+    makes: ['turnItOn'],
     play: (c, v, card) => {
       c.applyStatus('hero', 'stun', 1, v[0]);
       c.addTempCard('turnItOn', 'draw', card.up);
@@ -831,6 +836,7 @@ export const neutralCards: CardDef[] = [
     vals: [],
     keywords: ['exhaust'],
     art: 'q2',
+    makes: ['q3'],
     play: (c) => c.addTempCard('q3', 'draw'),
   },
   {
@@ -843,6 +849,7 @@ export const neutralCards: CardDef[] = [
     vals: [],
     keywords: ['exhaust'],
     art: 'q3',
+    makes: ['q4'],
     play: (c) => c.addTempCard('q4', 'draw'),
   },
   {

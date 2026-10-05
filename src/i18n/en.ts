@@ -476,6 +476,7 @@ const en = {
   'deck.sort.cost': 'Cost',
   'deck.sort.type': 'Type',
   'deck.sort.rarity': 'Rarity',
+  'detail.related': 'Related cards:',
   'detail.showUpgrade': 'Show upgrade',
   'detail.hideUpgrade': 'Show base',
 

@@ -79,6 +79,8 @@ export interface BeltCard {
   pos: number;
   /** Belt row (0 = top); always 0 on a one-row belt. */
   row: number;
+  /** Seconds left before the card, which has slipped off the end of the belt, is really lost: it tips over meanwhile, and can still be grabbed. */
+  falling?: number;
   /** Pinned where it is (Team Change): it doesn't move or leave until played or stashed; other cards ride past it. */
   pinned?: boolean;
 }
@@ -143,6 +145,8 @@ export interface CardDef {
   };
   /** What the face shows in a fight, for a card whose values depend on the moment (what it would do if played now): the same maths `play` uses. */
   shown?: (c: Combat, v: number[], card: CombatCard) => number[];
+  /** Ids of the cards it adds to your piles when played: its detail lists them as related cards, each one a tap away. */
+  makes?: string[];
   play?: (c: Combat, v: number[], card: CombatCard) => void;
   /** Triggered when the card leaves the belt without being played. */
   onExpire?: (c: Combat, v: number[], card: CombatCard) => void;

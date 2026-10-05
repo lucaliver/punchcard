@@ -158,6 +158,26 @@ export function cardFace(card: CardLike, combat?: Combat | null): string {
 /** Keywords that are not statuses but still have a colour: Block is teal. */
 const KEYWORD_TONE: Record<string, Tone> = { block: 'teal' };
 
+/** Icons of keywords that have none of their own as a card tag, status or glyph. */
+const KEYWORD_ICON: Record<string, string> = {
+  power: 'infinity',
+  unplayable: 'lock',
+  strength: 'muscle',
+  thickSkin: 'thickSkin',
+  buff: 'up',
+  block: 'shield',
+  mana: 'crystal',
+  crystal: 'crystalSlot',
+};
+
+/** The small icon that goes before a keyword's explanation, in its colour (nothing for a keyword without one). */
+export function keywordIconHtml(kw: string): string {
+  const id = KEYWORD_ICON[kw] ?? TAG_ICON[kw] ?? STATUSES[kw]?.icon ?? GLYPHS[kw]?.icon;
+  if (!id) return '';
+  const tone = STATUSES[kw]?.tone ?? KEYWORD_TONE[kw];
+  return `<span class="kw-ico"${tone ? ` data-tone="${tone}"` : ''}>${icon(id)}</span>`;
+}
+
 /** Rules text with its `[keyword]` marks as bold names in the keyword's colour (`tone` in statuses.ts). */
 export function keywordHtml(text: string): string {
   return text.replace(/\[(\w+)\]/g, (_, kw: string) => {

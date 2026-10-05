@@ -237,6 +237,24 @@
   font-size: 15px;
   line-height: 1.35;
 }
+.kw-ico {
+  display: inline-block;
+  margin-right: 4px;
+  vertical-align: -3px;
+  font-size: 18px;
+  color: var(--tone, var(--k));
+  --ink2: var(--k);
+}
+/* the cards this one adds to your piles, each a button that opens its detail */
+.related {
+  width: 100%;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 6px;
+  font-family: var(--font-ui);
+  font-size: 18px;
+}
 
 .deck-grid {
   display: grid;
@@ -342,6 +360,12 @@
   padding: 1px 8px 2px;
   border: 2px solid var(--k);
 }
+.detail-meta .typ { color: var(--k); }
+.detail-meta .typ[data-type='attack'] { background: var(--cat-attack); }
+.detail-meta .typ[data-type='defense'] { background: var(--cat-defense); }
+.detail-meta .typ[data-type='skill'] { background: var(--cat-skill); }
+.detail-meta .typ[data-type='power'] { background: var(--cat-power); }
+.detail-meta .typ[data-type='curse'] { background: var(--cat-curse); }
 .detail-meta .rar.rare { color: var(--paper); background: var(--b); }
 .detail-meta .rar.epic { color: var(--paper); background: var(--p); }
 .detail-meta .rar.legendary,

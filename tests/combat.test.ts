@@ -360,7 +360,7 @@ describe('combat engine', () => {
     const lost = (): number => {
       const hp = c.hero.hp;
       c.belt[0].pos = EXPIRE_POS;
-      run(c, 0.05);
+      run(c, CONFIG.fallGrace + 0.05);
       return hp - c.hero.hp;
     };
     expect(lost()).toBe(1);
@@ -892,7 +892,7 @@ describe('combat engine', () => {
     c.startDrag(uid);
     run(c, CONFIG.beltTime);
     expect(expired).not.toContain(uid);
-    run(c, CONFIG.dragGrace + 0.2);
+    run(c, CONFIG.dragGrace + CONFIG.fallGrace + 0.2);
     expect(expired).toContain(uid);
   });
 
@@ -1339,11 +1339,11 @@ describe('pop culture cards', () => {
     const [bite, more] = CARDS.debt.vals;
     c.belt.length = 0;
     c.belt.push({ card: debt, pos: EXPIRE_POS, row: 0 });
-    run(c, 0.05);
+    run(c, CONFIG.fallGrace + 0.05);
     expect(500 - c.hero.hp).toBe(bite);
     expect(c.cardVals(debt)[0]).toBe(bite + more);
     c.belt.push({ card: debt, pos: EXPIRE_POS, row: 0 });
-    run(c, 0.05);
+    run(c, CONFIG.fallGrace + 0.05);
     expect(500 - c.hero.hp).toBe(bite + bite + more);
   });
 
@@ -1985,7 +1985,7 @@ describe('cards that fill the classes out', () => {
     const exit = c.belt[c.belt.length - 1].card;
     c.hero.block = 0;
     c.belt[c.belt.length - 1].pos = EXPIRE_POS + 0.1;
-    run(c, 0.1);
+    run(c, CONFIG.fallGrace + 0.1);
     expect(c.belt.some((b) => b.card.uid === exit.uid)).toBe(false);
     expect(c.hero.block).toBe(CARDS.fireExit.vals[1]);
 
@@ -2844,6 +2844,26 @@ describe('task batch', () => {
     c.enemy.timer = 10 - CONFIG.stealWarn + 0.05;
     const first = c.belt.reduce((a, b) => (b.pos > a.pos ? b : a));
     expect(c.stealTarget()?.uid).toBe(first.card.uid);
+  });
+
+  it('a card that slipped off the end can still be stashed while it tips over, then it is lost', () => {
+    const c = setup({ beltRows: 1, deck: deckOf(['punch', 'punch', 'punch']) });
+    c.enemy.move = { id: 'wait', intent: 'defend', windup: 999 };
+    const expired: number[] = [];
+    c.events.on((e) => {
+      if (e.type === 'cardExpired') expired.push(e.card.uid);
+    });
+    run(c, CONFIG.introTime + CONFIG.beltTime * 0.6);
+    const [first, second] = [...c.belt].sort((a, b) => b.pos - a.pos);
+    first.pos = EXPIRE_POS + 0.01;
+    second.pos = EXPIRE_POS + 0.01;
+    run(c, CONFIG.fallGrace / 2);
+    expect(first.falling).toBeDefined();
+    expect(expired).toEqual([]);
+    expect(c.stash(first.card.uid, 0)).toBe(true);
+    run(c, CONFIG.fallGrace);
+    expect(expired).toEqual([second.card.uid]);
+    expect(c.sleeve[0]?.uid).toBe(first.card.uid);
   });
 
   it('the Tailor shows up once in a whole run', () => {

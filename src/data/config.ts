@@ -32,6 +32,8 @@ export const CONFIG = {
   stealWarn: 0.5,
   /** Belt speed multiplier while rushed (Time Slip, Time Warp). */
   beltRush: 1.5,
+  /** Seconds a card that slips off the end of the belt is still within reach (it tips over meanwhile; you can stash it). */
+  fallGrace: 0.35,
   /** Seconds a card dragged at the end of the belt is still kept in the hand before it falls off. */
   dragGrace: 2,
   /** Belt speed multipliers imposed by enemies: Hurry (faster) and Slowdown. */

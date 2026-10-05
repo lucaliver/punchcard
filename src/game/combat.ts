@@ -697,7 +697,7 @@ export class Combat {
       for (const b of free) b.pos += travel;
     }
     this.beltCranked += travel;
-    this.settleBelt(travel);
+    this.settleBelt(travel, 0);
   }
 
   /** Opens every belt row (the ones an enemy kept shut). */
@@ -790,18 +790,29 @@ export class Combat {
     }
     const held = this.belt.find((b) => b.card.uid === this.dragged);
     if (held && held.pos >= EXPIRE_POS - move) this.dragEdge += dt;
-    this.settleBelt(move);
+    this.settleBelt(move, dt);
   }
 
-  /** After the belt has travelled `move` belt widths: cards that fell off the end expire and the draw clock may deal a new one. */
-  private settleBelt(move: number): void {
-    // Expire cards that fell off the left edge.
+  /** After the belt has travelled `move` belt widths (in `dt` seconds): cards that fell off the end expire and the draw clock may deal a new one. */
+  private settleBelt(move: number, dt: number): void {
+    // Expire cards that fell off the left edge: first they tip over the end for `CONFIG.fallGrace` s, still within reach (to stash them).
     for (let i = this.belt.length - 1; i >= 0; i--) {
       const b = this.belt[i];
-      if (b.card.uid === this.dragged && (CARDS[b.card.id].sweep || this.dragEdge < CONFIG.dragGrace)) b.pos = Math.min(b.pos, EXPIRE_POS - move);
-      if (b.pos < EXPIRE_POS) continue;
-      // On autopilot, a card slipping off plays itself for free if it can (rules…); otherwise it's lost as usual.
-      if (this.flag('hero', 'autoplay') && this.playCard(b.card.uid, 'auto')) continue;
+      if (b.card.uid === this.dragged && (CARDS[b.card.id].sweep || this.dragEdge < CONFIG.dragGrace)) {
+        delete b.falling;
+        b.pos = Math.min(b.pos, EXPIRE_POS - move);
+      }
+      if (b.pos < EXPIRE_POS) {
+        delete b.falling;
+        continue;
+      }
+      if (b.falling === undefined) {
+        // On autopilot, a card slipping off plays itself for free if it can (rules…); otherwise it's lost as usual.
+        if (this.flag('hero', 'autoplay') && this.playCard(b.card.uid, 'auto')) continue;
+        b.falling = CONFIG.fallGrace;
+      } else b.falling -= dt;
+      b.pos = EXPIRE_POS;
+      if (b.falling > 0) continue;
       this.belt.splice(i, 1);
       this.expire(b.card);
       if (this.result) return;

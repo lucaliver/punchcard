@@ -311,6 +311,11 @@ export function createCardLayer(v: CombatView): CardLayer {
       setTimeout(() => node.remove(), cssMs('--dur-exhaust') + SLACK_MS);
       return;
     }
+    // It has already tipped over and faded as `.falling`.
+    if (reason === 'expired' && node.classList.contains('falling')) {
+      node.remove();
+      return;
+    }
     const swept = flings.get(ce.card.uid);
     flings.delete(ce.card.uid);
     const target =
@@ -348,7 +353,8 @@ export function createCardLayer(v: CombatView): CardLayer {
     const pending = combat.isPending(card);
     const playable = combat.isPlayable(card) && !pending;
     const afford = combat.canAfford(card);
-    toggle(ce.el, 'poor', !card.hex && (!afford || !playable || !!rule));
+    // A pending card shows its stripes only: dimmed as well, it would be too heavy.
+    toggle(ce.el, 'poor', !card.hex && !pending && (!afford || !playable || !!rule));
     toggle(ce.el, 'pending', pending);
     toggle(ce.el, 'ruled', !!rule);
     const charging = !card.hex && playable && !rule && !afford;
@@ -411,6 +417,9 @@ export function createCardLayer(v: CombatView): CardLayer {
       // Blink on the way out only when leaving the belt does something (curses that explode, drain…).
       toggle(ce.el, 'leaving', !b.pinned && b.pos > 0.86 && !!CARDS[b.card.id].onExpire);
       if (refreshFaces) setHtml(ce.face, cardFace(b.card, combat));
+      // Slipping off the end: it tips over (the CSS animation) but can still be grabbed.
+      toggle(ce.el, 'falling', b.falling !== undefined);
+      if (b.falling !== undefined) ce.el.style.setProperty('--fall-side', state.ltr ? '1' : '-1');
       if (drag?.uid === b.card.uid && drag.moved) continue;
       // Snap to whole pixels: crisp pixel art and a slightly stepped, printed feel.
       // Left-to-right belt (the default): the same run mirrored, entering on the left.

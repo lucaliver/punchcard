@@ -114,19 +114,25 @@ export function combatScreen(run: RunState, combat: Combat, cb: CombatCallbacks)
       if (boss) {
         // A chain of blasts over the sprite, a white flash on the last, and the stamp slams down after.
         for (let i = 0; i < BOSS_BLASTS; i++) {
-          later(() => {
-            burst(i % 2 ? 'fire' : 'gold', p.x + (Math.random() - 0.5) * 120, p.y + (Math.random() - 0.5) * 140, 24, 1.3, 90);
-            shake(i % 3 ? 'small' : 'big');
-          }, 120 + i * BOSS_BLAST_GAP);
+          later(
+            () => {
+              burst(i % 2 ? 'fire' : 'gold', p.x + (Math.random() - 0.5) * 120, p.y + (Math.random() - 0.5) * 140, 24, 1.3, 90);
+              shake(i % 3 ? 'small' : 'big');
+            },
+            120 + i * BOSS_BLAST_GAP,
+          );
         }
-        later(() => {
-          const flash = h('div', { class: 'boss-flash' });
-          flash.addEventListener('animationend', () => flash.remove());
-          el.append(flash);
-          r.enemyArt.append(h('div', { class: 'boss-stamp' }, t('combat.bossDown')));
-          sfx('blunt');
-          sfx('bossVictory');
-        }, 120 + BOSS_BLASTS * BOSS_BLAST_GAP);
+        later(
+          () => {
+            const flash = h('div', { class: 'boss-flash' });
+            flash.addEventListener('animationend', () => flash.remove());
+            el.append(flash);
+            r.enemyArt.append(h('div', { class: 'boss-stamp' }, t('combat.bossDown')));
+            sfx('blunt');
+            sfx('bossVictory');
+          },
+          120 + BOSS_BLASTS * BOSS_BLAST_GAP,
+        );
         sfx('bossBlast');
         r.enemyArt.classList.add('boss');
       } else v.banner(t('reward.cleared'));
@@ -163,6 +169,7 @@ export function combatScreen(run: RunState, combat: Combat, cb: CombatCallbacks)
     // What `.sunk` slides away (see combat-belt.css): the action row's height, and how long the slide takes.
     el.style.setProperty('--action-h', `${$('.action-row', el).offsetHeight}px`);
     el.style.setProperty('--sink-time', `${CONFIG.sinkTime}s`);
+    el.style.setProperty('--fall-grace', `${CONFIG.fallGrace}s`);
     // Measure the enemy's room once (with the belt size applied) and lock the sprite size. The wrapper is flex: 1 with
     // min-height 0, so its box is the free room, independent of the sprite; the enemy stands lower, on its pixel shadow.
     requestAnimationFrame(() => {
