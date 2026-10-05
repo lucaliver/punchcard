@@ -1734,7 +1734,7 @@ describe('run maps', () => {
   });
 
   it('never offer two choices of the same kind of room', () => {
-    for (const nodes of [...maps, newRun('warrior', 1, true).nodes])
+    for (const nodes of [...maps, newRun('warrior', 1, [1]).nodes])
       for (const n of nodes.filter((m) => m.next.length > 1)) {
         const types = n.next.map((id) => nodes[id].type);
         expect(new Set(types).size).toBe(types.length);
@@ -1761,13 +1761,13 @@ describe('run maps', () => {
 
 describe('the very first run', () => {
   it('goes on through every act, the later ones dealt like any run', () => {
-    const run = newRun('warrior', 1, true);
+    const run = newRun('warrior', 1, [1]);
     expect(new Set(run.nodes.map((n) => n.act)).size).toBe(ACTS);
     expect(run.nodes.some((n) => n.act > 1 && SPECIALS.includes(n.type))).toBe(true);
   });
 
   it('has one enemy per floor, whichever lane it takes, and the rests are split between the lanes', () => {
-    const run = newRun('warrior', 1, true);
+    const run = newRun('warrior', 1, [1]);
     const fights = run.nodes.filter((n) => n.act === 1 && n.type === 'fight');
     const floors = [...new Set(fights.map((n) => n.floor))];
     for (const f of floors) expect(new Set(fights.filter((n) => n.floor === f).map((n) => n.enemy)).size).toBe(1);
@@ -1778,6 +1778,32 @@ describe('the very first run', () => {
       expect(types).toContain('rest');
       expect(types.some((t, i) => t === 'rest' && types[i + 1] === 'rest')).toBe(false);
     }
+  });
+});
+
+describe('act 2, the first time it is met', () => {
+  const nodes = newRun('warrior', 123, [2]).nodes.filter((n) => n.act === 2);
+
+  it('is always the same: the same rooms and enemies whatever the seed', () => {
+    const other = newRun('mage', 999, [2]).nodes.filter((n) => n.act === 2);
+    const sketch = (list: typeof nodes): string[] => list.map((n) => `${n.floor}:${n.lane}:${n.type}:${n.enemy ?? ''}`);
+    expect(sketch(other)).toEqual(sketch(nodes));
+  });
+
+  it('opens on a rule-breaker, meets one enemy per floor and has a Tailor, and every walk reaches the boss', () => {
+    expect(ENEMIES[nodes[0].enemy!].ruleBreaker).toBe(true);
+    const fights = nodes.filter((n) => n.type === 'fight');
+    for (const f of new Set(fights.map((n) => n.floor))) expect(new Set(fights.filter((n) => n.floor === f).map((n) => n.enemy)).size).toBe(1);
+    expect(nodes.some((n) => n.type === 'tailor')).toBe(true);
+    const all = newRun('warrior', 123, [2]).nodes;
+    const walk = (id: number, path: number[]): void => {
+      const options = all[id].next.filter((n) => !path.includes(n));
+      if (!options.length) expect(all[id].type).toBe('boss');
+      for (const n of options) walk(n, [...path, n]);
+    };
+    walk(0, [0]);
+    // The Tailor comes once in the whole run.
+    expect(all.filter((n) => n.type === 'tailor').length).toBeLessThanOrEqual(1);
   });
 });
 
@@ -2227,7 +2253,7 @@ describe('the Copy Room', () => {
   });
 
   it('opens on two fights, a Lost and Found, then the third scripted enemy', () => {
-    const road = newRun('warrior', 1, true).nodes.slice(0, 4);
+    const road = newRun('warrior', 1, [1]).nodes.slice(0, 4);
     expect(road.map((n) => n.type)).toEqual(['fight', 'fight', 'lostFound', 'fight']);
     expect(road.map((n) => n.enemy)).toEqual(['hrOrientationVideo', 'snitch', undefined, 'newHire']);
     expect(road.map((n) => n.lane)).toEqual([0.5, 0.5, 0.5, 0.5]);
@@ -2414,7 +2440,7 @@ describe('management memos', () => {
 
   it('toughen enemies, the belt, the hero, rests and rewards, and stack', () => {
     const plain = newRun('warrior', 7);
-    const hard = newRun('warrior', 7, false, ['quotas', 'hostile', 'speedUp', 'benefits', 'noBreaks', 'budget']);
+    const hard = newRun('warrior', 7, [], ['quotas', 'hostile', 'speedUp', 'benefits', 'noBreaks', 'budget']);
     expect(hard.maxHp).toBe(Math.round(HEROES.warrior.hp * 0.8));
     const node = currentNode(plain);
     expect(enemyScale(node, hard.mods).hp).toBeCloseTo(enemyScale(node).hp * 1.25);
@@ -2439,7 +2465,7 @@ describe('management memos', () => {
       removeItem: (k: string) => void store.delete(k),
     };
     Object.defineProperty(globalThis, 'localStorage', { value: stub, configurable: true });
-    const run = newRun('warrior', 7, false, ['quotas']);
+    const run = newRun('warrior', 7, [], ['quotas']);
     store.set('cardstone+:run', JSON.stringify({ ...run, mods: ['quotas', 'bogus'] }));
     expect(loadRun()?.mods).toEqual(['quotas']);
     store.set('cardstone+:run', JSON.stringify({ ...run, mods: undefined }));

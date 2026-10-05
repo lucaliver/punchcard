@@ -24,7 +24,7 @@ describe('analytics', () => {
   });
 
   it('keeps memo runs apart: only the tagged run result is sent', () => {
-    const run = newRun('warrior', 1, false, [MODIFIER_LIST[0].id]);
+    const run = newRun('warrior', 1, [], [MODIFIER_LIST[0].id]);
     expect(fightPaths(run, 'boss1', true)).toEqual([]);
     expect(rewardPaths(run, ['a'], null, null)).toEqual([]);
     expect(runPaths(run, 'lose')).toEqual([`${V}/run/warrior/lose-memo`]);

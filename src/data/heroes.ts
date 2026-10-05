@@ -28,11 +28,6 @@ const warrior: HeroDef = {
   // Starter decks: only basic cards (plus mana crystals); everything else comes from rewards.
   startDeck: [...rep('punch', 8), ...rep('bobTheBuilder', 7), 'bellaCiao', 'coffee', 'coffee'],
   startUpgraded: ['punch', 'bobTheBuilder'],
-  firstRewards: [
-    ['heavyLifting', 'hostileTakeover', 'wallStreet', 'macGyver'],
-    ['wrenchWhack', 'shoulderCheck', 'fika', 'grievance'],
-    ['picketDrums', 'stonks', 'secondBreakfast', 'youShallNotPass'],
-  ],
   // The simplest class: no once-per-run special. One arm left: a single sleeve slot.
   sleeve: 1,
   ink: 'var(--p)',
@@ -55,11 +50,6 @@ const mage: HeroDef = {
   blockDecay: 1.0,
   startDeck: [...rep('clippy', 8), ...rep('fireDoor', 7), 'coffee', 'italianEspresso', 'caffeineJolt'],
   startUpgraded: ['clippy', 'fireDoor'],
-  firstRewards: [
-    ['coldCall', 'flambe', 'digitalDetox', 'macGyver'],
-    ['caffeineJolt', 'staticShock', 'fika', 'burnout'],
-    ['replyAll', 'blueScreen', 'modernTimes', 'lookBusy'],
-  ],
   sleeve: 2,
   passiveStatus: 'multitasking',
   ink: 'var(--b)',
@@ -90,11 +80,6 @@ const necromancer: HeroDef = {
   blockDecay: 0.9,
   startDeck: [...rep('skeletonCrew', 6), ...rep('karlMarx', 6), ...rep('toxicMemo', 4), 'coffee', 'italianEspresso'],
   startUpgraded: ['skeletonCrew', 'karlMarx'],
-  firstRewards: [
-    ['bloodMoney', 'karoshi', 'pingPongTable', 'macGyver'],
-    ['unionDues', 'zombieShift', 'fika', 'chainSmoking'],
-    ['deadLetter', 'sickLeave', 'boris', 'waterCooler'],
-  ],
   sleeve: 3,
   ink: 'var(--green)',
   ability: {

@@ -814,6 +814,3 @@ export const enemyMoves = (e: EnemyDef): MoveDef[] => [e.main, ...e.specials];
 /** Enemies of an act and tier, easiest first. */
 export const enemiesFor = (act: number, tier: EnemyDef['tier']): EnemyDef[] =>
   ENEMY_LIST.filter((e) => e.act === act && e.tier === tier && !e.firstRunOnly);
-
-/** The enemy of the very first fight of the very first run, if any. */
-export const firstRunEnemy = (): EnemyDef | undefined => ENEMY_LIST.find((e) => e.firstRunOnly);

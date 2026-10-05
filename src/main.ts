@@ -23,6 +23,7 @@ import {
   combatSetup,
   currentNode,
   FIRST_RUN_SEED,
+  SCRIPTED_ACTS,
   finishRun,
   loadRun,
   ACTS,
@@ -38,7 +39,7 @@ import {
   type RewardOffer,
   type RunState,
 } from './game/run';
-import { chosenMemos, contractSigned, memosOpen, startingFirstRun } from './game/meta';
+import { chosenMemos, contractSigned, memosOpen, reachAct, startingFirstRun, unmetActs } from './game/meta';
 import { settings } from './game/settings';
 import type { HeroId } from './game/types';
 import { confirmModal, initApp, openModal, type Screen, show } from './ui/app';
@@ -120,9 +121,10 @@ function goHeroSelect(first?: HeroId): void {
 }
 
 function startRun(hero: HeroId): void {
-  // The very first run always has the same map and enemies.
+  // The first time an act is met its rooms and enemies are always the same (and the very first run too: seed, no memos).
   const first = startingFirstRun();
-  run = newRun(hero, first ? FIRST_RUN_SEED : randomSeed(), first, !first && memosOpen(hero) ? chosenMemos() : []);
+  const scripted = unmetActs(SCRIPTED_ACTS);
+  run = newRun(hero, first ? FIRST_RUN_SEED : randomSeed(), scripted, !first && memosOpen(hero) ? chosenMemos() : []);
   goJourney();
 }
 
@@ -141,6 +143,7 @@ function goJourney(): void {
     return;
   }
   playMusic(actDef(mapAct(run)).mapMusic);
+  reachAct(mapAct(run));
   saveRun(run);
   show(journeyScreen(run, enterNode, goTitle, debugMap, revealMap));
 }

@@ -23,7 +23,15 @@ export async function freshGame(
       if (unlocked || veteran || stamps.length || met.length)
         localStorage.setItem(
           'cardstone+:meta',
-          JSON.stringify({ discovered: [], met, heroes, fresh: [], runs: veteran || stamps.length ? 1 : 0, stamps }),
+          JSON.stringify({
+            discovered: [],
+            met,
+            heroes,
+            fresh: [],
+            runs: veteran || stamps.length ? 1 : 0,
+            stamps,
+            actsReached: veteran || stamps.length ? [1, 2] : [],
+          }),
         );
     },
     [!opts.tutorial, !opts.locked, !!opts.veteran, opts.debug ?? true, opts.stamps ?? [], opts.met ?? []] as const,

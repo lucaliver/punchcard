@@ -29,6 +29,8 @@ interface Meta {
   /** Management memos switched on for the next run (`MODIFIERS` ids); they only apply to a hero who has won a full day. */
   memos: string[];
   records: Records;
+  /** Acts whose map has been shown at least once: the first time an act is met its rooms are scripted. */
+  actsReached: number[];
   /** The runs played, newest first (`CONFIG.historyMax` of them). */
   history: RunLog[];
 }
@@ -59,6 +61,7 @@ const meta: Meta = load('meta', {
   stamps: [],
   memos: [],
   records: { ...NO_RECORDS },
+  actsReached: [],
   history: [],
 });
 // Saved data is untrusted: keep only known hero ids.
@@ -86,6 +89,11 @@ meta.memos = Array.isArray(meta.memos) ? [...new Set(meta.memos.filter((id) => t
     if (typeof v === 'number' && Number.isFinite(v)) meta.records[k] = v;
   }
 }
+
+// Acts met: a save from before this was kept has them in its furthest act record.
+meta.actsReached = Array.isArray(meta.actsReached)
+  ? [...new Set(meta.actsReached.filter((a): a is number => Number.isInteger(a) && a >= 1 && a <= ACT_DEFS.length))]
+  : Array.from({ length: Math.min(meta.records.bestAct, ACT_DEFS.length) }, (_, i) => i + 1);
 
 {
   const isNum = (x: unknown): x is number => typeof x === 'number' && Number.isFinite(x);
@@ -134,6 +142,16 @@ export function startingFirstRun(): boolean {
   meta.runs++;
   store('meta', meta);
   return first;
+}
+
+/** The acts whose first meeting is still to come, among `acts`: those are laid out by hand for the next run. */
+export const unmetActs = (acts: readonly number[]): number[] => acts.filter((a) => !meta.actsReached.includes(a));
+
+/** The map of an act is shown: the next run won't script it any more. */
+export function reachAct(act: number): void {
+  if (meta.actsReached.includes(act)) return;
+  meta.actsReached.push(act);
+  store('meta', meta);
 }
 
 export function discover(ids: Iterable<string>): void {

@@ -8,7 +8,7 @@ import zhStrings from '../src/i18n/zh';
 
 /** Indexed as a plain dictionary: these tests check keys that are built at runtime. */
 const en: Record<string, string> = enStrings;
-import { CARD_LIST, CARDS } from '../src/data/cards';
+import { CARD_LIST } from '../src/data/cards';
 import { ACT_DEFS } from '../src/data/acts';
 import { rewardOdds, rewardUpgradeChance } from '../src/data/config';
 import { DIFFICULTY, ENEMY_LIST, enemyMoves } from '../src/data/enemies';
@@ -66,13 +66,6 @@ describe('content integrity', () => {
         h.id,
       ).toEqual(h.startUpgraded);
     }
-    // The first run's hand-picked rewards: real cards the hero could be offered, four each time.
-    for (const h of HERO_LIST)
-      for (const offer of h.firstRewards ?? []) {
-        expect(offer.length, h.id).toBe(4);
-        for (const id of offer)
-          expect(CARDS[id] && (CARDS[id].cls === h.id || CARDS[id].cls === 'neutral') && !CARDS[id].pack, `${h.id}: ${id}`).toBeTruthy();
-      }
   });
 
   it('Legendary cards are offered only after elites and bosses, and every act pays better than the one before', () => {

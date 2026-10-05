@@ -7,7 +7,7 @@ import { RELIC_LIST, RELICS, relicSum } from '../data/relics';
 import { ACT_DEFS, actDef } from '../data/acts';
 import { CONFIG, type RewardKind, rewardGuarantee, rewardOdds, rewardUpgradeChance } from '../data/config';
 import { MODIFIERS, resolveMods } from '../data/modifiers';
-import { ENEMIES, enemiesFor, firstRunEnemy } from '../data/enemies';
+import { ENEMIES, enemiesFor } from '../data/enemies';
 import { HERO_LIST, HEROES, starterCards } from '../data/heroes';
 import type { Combat, CombatSetup } from './combat';
 import { discover, logRun, progress, type RunRecord, recordFight, recordRun, seeRelics, stampAct } from './meta';
@@ -40,7 +40,7 @@ export interface RunStats {
 }
 
 /** Shape of the saved run; a save of another version is dropped. */
-const SAVE_VERSION = 4;
+const SAVE_VERSION = 5;
 
 export interface RunState {
   version: number;
@@ -67,8 +67,6 @@ export interface RunState {
   uid: number;
   /** Management memos active for this run (`MODIFIERS` ids). */
   mods: string[];
-  /** The very first run: act 1's map is fixed and its first rewards are picked (`HeroDef.firstRewards`); later acts are dealt as usual. */
-  scripted?: boolean;
   /** The card reward on offer after a fight, until it is taken or skipped: kept in the save so closing the game on that screen doesn't lose it. */
   reward?: { id: string; up: boolean }[];
 }
@@ -97,29 +95,46 @@ export const ACTS = ACT_DEFS.length;
 
 /** Seed of the very first run: its map is always the same, with the enemies in order of difficulty. */
 export const FIRST_RUN_SEED = 1;
-/** The very first run's act 1 shared road, one room per floor: two fights, a gift (so the map isn't only jobs), then the third fight. */
-const FIRST_RUN_ROAD: NodeType[] = ['fight', 'fight', 'lostFound', 'fight'];
-/** The very first run's act 1 normal enemies by floor (the first floor has the orientation fight; both lanes of a floor meet the same one). */
-const FIRST_RUN_ENEMIES: Record<number, string> = {
-  2: 'snitch',
-  4: 'newHire',
-  5: 'workWife',
-  6: 'teamLeader',
-  7: 'goblinConsultant',
-  8: 'seniorBoomer',
-  9: 'hrBitch',
+/** Acts whose rooms are fixed the first time a player meets them (see `ACT_SCRIPTS`). */
+export const SCRIPTED_ACTS = [1, 2];
+
+/** An act laid out by hand: the shared road (one room per floor), the normal enemies by floor (both lanes of a floor meet the same one), and the two lanes after the road. */
+interface ActScript {
+  road: NodeType[];
+  enemies: Record<number, string>;
+  lanes: NodeType[][];
+  /** The enemy of the road's first floor, if it is not one of `enemies`. */
+  opener?: string;
+}
+
+const ACT_SCRIPTS: Record<number, ActScript> = {
+  // Act 1, the very first run: two fights, a gift (so the map isn't only jobs), then the third fight; a rest on each side, never two in a row.
+  1: {
+    road: ['fight', 'fight', 'lostFound', 'fight'],
+    opener: 'hrOrientationVideo',
+    enemies: { 2: 'snitch', 4: 'newHire', 5: 'workWife', 6: 'teamLeader', 7: 'goblinConsultant', 8: 'seniorBoomer', 9: 'hrBitch' },
+    lanes: [
+      ['fight', 'rest', 'elite', 'fight', 'fight', 'rest'],
+      ['rest', 'fight', 'fight', 'promotion', 'fight', 'rest'],
+    ],
+  },
+  // Act 2, the first time it is reached: a rule-breaker opens it, the other fights climb in difficulty, every room kind shows once, and the Tailor is on offer.
+  2: {
+    road: ['fight'],
+    opener: 'exaggeratedGirl',
+    enemies: { 2: 'happinessOfficer', 3: 'dave', 5: 'overthinker', 8: 'beanCounter' },
+    lanes: [
+      ['fight', 'copy', 'rest', 'fight', 'elite', 'tailor', 'fight', 'rest'],
+      ['promotion', 'fight', 'vending', 'fight', 'rest', 'crossTraining', 'fight', 'rest'],
+    ],
+  },
 };
-/** The very first run's lanes, as `LANES` but already past the opening: a rest on each side, never two in a row. */
-const FIRST_RUN_LANES: NodeType[][] = [
-  ['fight', 'rest', 'elite', 'fight', 'fight', 'rest'],
-  ['rest', 'fight', 'fight', 'promotion', 'fight', 'rest'],
-];
 
 /**
- * A new run; a `scripted` one (the very first) has a fixed act 1 map and enemies (`FIRST_RUN_*`) instead of shuffled ones, then
- * goes on through every act like any other. `mods` are the memos it plays under.
+ * A new run; the acts in `scripted` have the rooms and enemies of `ACT_SCRIPTS` instead of shuffled ones (the first run's act 1, and act 2 the
+ * first time it is met), the rest are dealt as usual. `mods` are the memos it plays under.
  */
-export function newRun(hero: HeroId, seed: number, scripted = false, mods: string[] = []): RunState {
+export function newRun(hero: HeroId, seed: number, scripted: readonly number[] = [], mods: string[] = []): RunState {
   resetUid(0);
   const rng = new Rng(seed);
   const def = HEROES[hero];
@@ -145,7 +160,6 @@ export function newRun(hero: HeroId, seed: number, scripted = false, mods: strin
     skips: 0,
     uid: peekUid(),
     mods,
-    scripted,
   };
 }
 
@@ -158,10 +172,10 @@ type Road = [from: Cell, to: Cell];
  * The lanes of an act and the roads between their rooms: both lanes' floors, a few one-way links between the lanes, and now and then a cut road.
  * Dealt again until no room offers two choices of the same kind (a special slot is always a different room from any other).
  */
-function dealLayout(rng: Rng, opening: number, scripted: boolean): { lanes: Slot[][]; roads: Road[] } {
+function dealLayout(rng: Rng, opening: number, script?: ActScript): { lanes: Slot[][]; roads: Road[] } {
   const deal = (): { lanes: Slot[][]; roads: Road[] } => {
-    const lanes = scripted ? FIRST_RUN_LANES : rng.shuffle(LANES.map((l) => l.slice(opening - 1)));
-    if (!scripted)
+    const lanes = script ? script.lanes.map((l) => [...l]) : rng.shuffle(LANES.map((l) => l.slice(opening - 1)));
+    if (!script)
       for (let i = 0; i < lanes[0].length - 1; i++) if (rng.next() < CONFIG.laneSwap) [lanes[0][i], lanes[1][i]] = [lanes[1][i], lanes[0][i]];
     const n = lanes[0].length;
     const roads: Road[] = [];
@@ -197,7 +211,7 @@ function dealLayout(rng: Rng, opening: number, scripted: boolean): { lanes: Slot
     }
     // Now and then one road between two floors is cut: its lane is crossed over, down the other lane and back (the long way round).
     // Both crossings are one-way, so no room is ever a dead end.
-    if (!scripted && rng.next() < CONFIG.roadCut) {
+    if (!script && rng.next() < CONFIG.roadCut) {
       const i = rng.shuffle([...Array(n - 1).keys()]).find((f) => floors.every((l) => Math.abs(l - f) > 1));
       if (i !== undefined) {
         const side = rng.next() < 0.5 ? 0 : 1;
@@ -231,8 +245,9 @@ function dealLayout(rng: Rng, opening: number, scripted: boolean): { lanes: Slot
  * One act appended to `nodes`: a shared road (one fight; three floors in act 1, four in the very first run), two lanes linked a couple of times, and the
  * boss where they meet. `last` are the nodes of the act before (they lead to its first fight). Returns the boss.
  */
-function addAct(nodes: RunNode[], rng: Rng, act: number, last: RunNode[], scripted: boolean): RunNode[] {
-  const dealt = new Set(nodes.map((n) => n.type));
+function addAct(nodes: RunNode[], rng: Rng, act: number, last: RunNode[], script?: ActScript, taken: readonly NodeType[] = []): RunNode[] {
+  // `taken`: once-per-run rooms a scripted act of this run already holds.
+  const dealt = new Set([...nodes.map((n) => n.type), ...taken]);
   // Deal normal enemies from a shuffled bag so the same one doesn't repeat back to back.
   let bag: EnemyDef[] = [];
   let specials: NodeType[] = [];
@@ -243,7 +258,7 @@ function addAct(nodes: RunNode[], rng: Rng, act: number, last: RunNode[], script
     // A set enemy (the orientation fight) takes nobody's turn.
     let enemy = fixed;
     if (!enemy && type === 'fight') {
-      if (scripted) enemy = FIRST_RUN_ENEMIES[floor];
+      if (script) enemy = script.enemies[floor];
       else {
         if (!bag.length) bag = rng.shuffle(enemiesFor(act, 'normal'));
         // Act 2 opens on a rule-breaker (the bag is fresh here, so one is always in it).
@@ -251,20 +266,21 @@ function addAct(nodes: RunNode[], rng: Rng, act: number, last: RunNode[], script
         enemy = (opener >= 0 ? bag.splice(opener, 1)[0] : bag.pop()!).id;
       }
     } else if (!enemy && (type === 'elite' || type === 'boss')) {
-      enemy = scripted ? enemiesFor(act, type)[0].id : rng.pick(enemiesFor(act, type)).id;
+      enemy = script ? enemiesFor(act, type)[0].id : rng.pick(enemiesFor(act, type)).id;
     }
     const node: RunNode = { id: nodes.length, act, floor, lane, type, next: [], enemy };
     nodes.push(node);
     return node;
   };
-  const opening = scripted ? FIRST_RUN_ROAD.length : act === 1 ? ACT1_OPENING : 1;
-  const { lanes, roads } = dealLayout(rng, opening, scripted);
+  const opening = script ? script.road.length : act === 1 ? ACT1_OPENING : 1;
+  // The links between the lanes of a scripted act are always the same ones.
+  const { lanes, roads } = dealLayout(script ? new Rng(act) : rng, opening, script);
 
   // The shared road: one fight per floor, then the two lanes. The very first run opens on its orientation fight.
-  let road = add(1, 0.5, 'fight', act === 1 && scripted ? firstRunEnemy()?.id : undefined);
+  let road = add(1, 0.5, 'fight', script?.opener);
   for (const n of last) n.next.push(road.id);
   for (let f = 2; f <= opening; f++) {
-    const n = add(f, 0.5, scripted ? FIRST_RUN_ROAD[f - 1] : 'fight');
+    const n = add(f, 0.5, script ? script.road[f - 1] : 'fight');
     road.next.push(n.id);
     road = n;
   }
@@ -276,10 +292,11 @@ function addAct(nodes: RunNode[], rng: Rng, act: number, last: RunNode[], script
   return [boss];
 }
 
-function buildNodes(rng: Rng, scripted: boolean): RunNode[] {
+function buildNodes(rng: Rng, scripted: readonly number[]): RunNode[] {
   const nodes: RunNode[] = [];
   let last: RunNode[] = [];
-  for (let act = 1; act <= ACTS; act++) last = addAct(nodes, rng, act, last, scripted && act === 1);
+  const taken = ONCE_PER_RUN.filter((type) => scripted.some((act) => [...ACT_SCRIPTS[act].road, ...ACT_SCRIPTS[act].lanes.flat()].includes(type)));
+  for (let act = 1; act <= ACTS; act++) last = addAct(nodes, rng, act, last, scripted.includes(act) ? ACT_SCRIPTS[act] : undefined, taken);
   return nodes;
 }
 
@@ -379,12 +396,6 @@ export interface RewardOffer {
 const pickReward = (rng: Rng, hero: HeroId, pool: CardDef[]): CardDef => rng.weighted(pool, (c) => (c.cls === hero ? CONFIG.classCardWeight : 1));
 
 export function rollRewards(run: RunState, kind: RewardKind): RewardOffer[] {
-  // The very first run teaches with hand-picked offers after its first fights (the win just counted is `kills`).
-  const firsts = run.scripted ? HEROES[run.hero].firstRewards?.[run.stats.kills - 1] : undefined;
-  if (firsts) {
-    discover(firsts);
-    return byRarity(firsts.map((id) => ({ def: CARDS[id], up: false })));
-  }
   const rng = rngOf(run);
   const picks: CardDef[] = [];
   const act = currentNode(run).act;
@@ -702,8 +713,7 @@ const isNode = (n: unknown, i: number, len: number): n is RunNode => {
 /** Saved data is untrusted: a run that doesn't have the exact shape (or names content that no longer exists) is dropped. */
 function parseRun(raw: unknown): RunState | null {
   if (!isObj(raw) || raw.version !== SAVE_VERSION) return null;
-  const { hero, hp, maxHp, seed, rng, uid, current, cleared, deck, relics, relicFlags, nodes, path, stats, money, skips, mods, scripted, reward } =
-    raw;
+  const { hero, hp, maxHp, seed, rng, uid, current, cleared, deck, relics, relicFlags, nodes, path, stats, money, skips, mods, reward } = raw;
   const heroId = HERO_LIST.find((hd) => hd.id === hero)?.id;
   if (!heroId || !isNum(hp) || !isNum(maxHp) || !isNum(seed) || !isNum(rng) || !isNum(uid) || typeof cleared !== 'boolean') return null;
   if (!Array.isArray(deck) || !deck.every(isCard) || !isStrings(relics)) return null;
@@ -735,7 +745,6 @@ function parseRun(raw: unknown): RunState | null {
     skips: isNum(skips) ? skips : 0,
     uid,
     mods: isStrings(mods) ? mods.filter((id) => id in MODIFIERS) : [],
-    scripted: scripted === true,
     reward: cleared && offers.length ? offers.map(({ id, up }) => ({ id, up })) : undefined,
   };
 }
