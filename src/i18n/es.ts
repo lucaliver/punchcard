@@ -55,6 +55,7 @@ const es: Record<EnKey, string> = {
   'compendium.foes': '{n}/{total} conocidos',
   'compendium.relics': 'Papelería',
   'compendium.relicsFound': '{n}/{total} encontrados',
+  'compendium.keywords': 'Palabras clave',
   'compendium.records': 'Récords',
   'compendium.history': 'Historial',
   'history.empty': 'Aún no hay jornadas archivadas.',

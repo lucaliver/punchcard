@@ -13,7 +13,7 @@ import { h, onPress, stagger } from '../dom';
 import { creature } from '../art/creatures';
 import { icon } from '../art/icons';
 import { relicArt } from '../art/relics';
-import { cardView, UNKNOWN } from '../components/cardView';
+import { cardView, KEYWORD_LIST, keywordHtml, keywordIconHtml, UNKNOWN } from '../components/cardView';
 import { foeView } from '../components/moveText';
 import { openCardAnatomy, openCardDetail, sortCards, sortControl } from '../components/modals';
 import { openRunDetail } from '../components/runDetail';
@@ -22,8 +22,8 @@ const TABS: CardClass[] = [...HERO_LIST.map((hd) => hd.id), 'neutral', 'curse'];
 
 const tabLabel = (c: CardClass): string => t(`compendium.tab.${c}`);
 
-type Section = 'cards' | 'enemies' | 'relics' | 'records' | 'history';
-const SECTIONS: Section[] = ['cards', 'enemies', 'relics', 'records', 'history'];
+type Section = 'cards' | 'enemies' | 'relics' | 'keywords' | 'records' | 'history';
+const SECTIONS: Section[] = ['cards', 'enemies', 'relics', 'keywords', 'records', 'history'];
 
 /** Every page of the handbook in the order a swipe turns through them: a class of cards, an act of enemies, then the single pages. */
 interface Page {
@@ -35,6 +35,7 @@ const PAGES: Page[] = [
   ...TABS.map((tab): Page => ({ section: 'cards', tab })),
   ...ACT_DEFS.map((_, i): Page => ({ section: 'enemies', act: i + 1 })),
   { section: 'relics' },
+  { section: 'keywords' },
   { section: 'records' },
   { section: 'history' },
 ];
@@ -145,6 +146,16 @@ export function compendiumScreen(onBack: () => void): Screen {
   const foes = h('div', { class: 'foes' });
   const foesWrap = h('div', null, actTabs, h('div', { style: { height: '12px' } }), foes);
   const relics = h('div', { class: 'relics' }, ...RELIC_LIST.map(relicView));
+  const keywords = h(
+    'div',
+    { class: 'relics' },
+    ...KEYWORD_LIST.map((kw) =>
+      h('article', {
+        class: 'relic-line kw-line',
+        html: `${keywordIconHtml(kw) || '<span class="kw-ico"></span>'}<div><b>${t(`kw.${kw}`)}</b>${keywordHtml(t(`kw.${kw}.d`))}</div>`,
+      }),
+    ),
+  );
   const cardsWrap = h('div', null);
   const sub = h('p', { class: 'sub' });
   const slip = recordSlip();
@@ -177,10 +188,11 @@ export function compendiumScreen(onBack: () => void): Screen {
           : section === 'relics'
             ? t('compendium.relicsFound', { n: relicsSeen, total: RELIC_LIST.length })
             : '';
-    sub.hidden = section === 'records' || section === 'history';
+    sub.hidden = section === 'records' || section === 'history' || section === 'keywords';
     cardsWrap.hidden = section !== 'cards';
     foesWrap.hidden = section !== 'enemies';
     relics.hidden = section !== 'relics';
+    keywords.hidden = section !== 'keywords';
     slip.hidden = section !== 'records';
     history.hidden = section !== 'history';
     if (section === 'history') history.replaceChildren(historyList());
@@ -255,7 +267,7 @@ export function compendiumScreen(onBack: () => void): Screen {
   cardsWrap.append(tabs, h('div', { style: { height: '12px' } }), sortControl(render), grid);
   render();
 
-  const scroller = h('div', { class: 'scroll', style: { flex: '1' } }, sub, cardsWrap, foesWrap, relics, slip, history);
+  const scroller = h('div', { class: 'scroll', style: { flex: '1' } }, sub, cardsWrap, foesWrap, relics, keywords, slip, history);
   const el = h(
     'div',
     { class: 'screen compendium' },

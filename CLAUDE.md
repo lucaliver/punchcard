@@ -99,7 +99,7 @@ tests/         combat, content, balance.sim (+ bot), balance.stats, e2e/
   `RelicHooks` extend behaviour. Card numbers live once in `vals`/`upVals`; face, text, previews and logic all read them.
 - **A run is a graph drawn as an office floor plan.** `RunNode.next[]` + `lane`; per act (`ACT_DEFS`): a shared opening, two
   lanes linked a couple of times and now and then with one road cut (`LANES`, `LINKS`, `CONFIG.roadCut` in `run.ts`), then the boss, which leads to the next act. Rooms beyond
-  `VISION` doors are fogged. The first run has a scripted act 1 (`newRun(…, scripted)`, `FIRST_RUN_*`); its later acts are dealt like any run's. Only the rooms reachable next are in sight (`VISION`, `journey.ts`; the boss always is). The Tailor is dealt once per run (`ONCE_PER_RUN`, `run.ts`). Room types (`NodeType`):
+  `VISION` doors are fogged. The first time a player meets an act its rooms and enemies are fixed (`ACT_SCRIPTS`, `SCRIPTED_ACTS` in `run.ts`: act 1 on the very first run, act 2 the first time it is reached; `meta.actsReached`, `newRun(…, scripted)` takes the acts to script); rewards are never scripted, and the other acts are dealt like any run's. Only the rooms reachable next are in sight (`VISION`, `journey.ts`; the boss always is). The Tailor is dealt once per run (`ONCE_PER_RUN`, `run.ts`). Room types (`NodeType`):
   fight, elite, boss, rest, promotion, copy, each a screen in `ROOMS` (`main.ts`). A new room = `NodeType`, `LANES` entry,
   `ROOMS` screen, `NODE_ICON`, `journey.node.*`/`journey.info.*` strings, and a picture: a sprite `room.<type>` in `art/rooms.ts` plus a `ROOM_SCENE` entry (its motion is a class in `rooms.css`) that the screen shows with `roomScene(type)`.
 - **Falling cards**: a belt card past the end gets `BeltCard.falling` (`CONFIG.fallGrace` s, also the CSS `--fall-grace`): it tips over (`.falling`) but can still be grabbed and stashed; only then is it lost (`expire`). **Steal warning**: `Combat.stealTarget()` marks the card an enemy's steal move is about to take for the last `CONFIG.stealWarn` s (a yellow hand over it).
@@ -124,6 +124,8 @@ tests/         combat, content, balance.sim (+ bot), balance.stats, e2e/
   belt card, chipped away by taps).
 - A card whose numbers move with the fight (Dress Code's Block, Raise Denied's damage) gives `CardDef.shown` (the same maths its `play` uses): the belt and sleeve faces read `Combat.shownVals`, so they show what the card would do right now.
 - `CardDef.makes` lists the cards it adds to your piles: its detail shows them as "Related cards" buttons (a test checks the ids exist).
+- Rarities are common, rare, epic and legendary (`special` only for cards a fight generates); basic cards of the starter decks are common with `starterOnly` (never a reward, a vending drop or a cross-training offer).
+- Keywords `echo` (a played card stays where it is: `cardEchoed`) and `anchor` (it stops pinned at `ANCHOR_POS` instead of falling) are engine ones; the handbook's Keywords page lists `KEYWORD_LIST` (a test keeps it equal to the `kw.*` strings).
 - A fight can give a copy something its deck card doesn't have: `CombatCard.fleeting` (Krusty Krab's copies), read through `cardKeywordsOf`; `addTempCard(…, extra)` carries it.
 - Every card has its own art; rule icons (glyphs, statuses, intents, map nodes) are shared only within one concept.
 

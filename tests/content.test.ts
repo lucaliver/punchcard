@@ -9,6 +9,7 @@ import zhStrings from '../src/i18n/zh';
 /** Indexed as a plain dictionary: these tests check keys that are built at runtime. */
 const en: Record<string, string> = enStrings;
 import { CARD_LIST } from '../src/data/cards';
+import { KEYWORD_LIST } from '../src/ui/components/cardView';
 import { ACT_DEFS } from '../src/data/acts';
 import { rewardOdds, rewardUpgradeChance } from '../src/data/config';
 import { DIFFICULTY, ENEMY_LIST, enemyMoves } from '../src/data/enemies';
@@ -72,6 +73,13 @@ describe('content integrity', () => {
         h.id,
       ).toEqual(h.startUpgraded);
     }
+  });
+
+  it('the handbook lists every keyword the game explains', () => {
+    const explained = Object.keys(en)
+      .filter((k) => /^kw\.\w+$/.test(k))
+      .map((k) => k.slice(3));
+    expect([...KEYWORD_LIST].sort()).toEqual(explained.sort());
   });
 
   it('Legendary cards are offered only after elites and bosses, and every act pays better than the one before', () => {

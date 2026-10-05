@@ -54,6 +54,7 @@ const en = {
   'compendium.foes': '{n}/{total} met',
   'compendium.relics': 'Stationery',
   'compendium.relicsFound': '{n}/{total} found',
+  'compendium.keywords': 'Keywords',
   'compendium.records': 'Records',
   'compendium.history': 'History',
   'history.empty': 'No workdays on file yet.',

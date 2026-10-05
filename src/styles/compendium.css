@@ -38,10 +38,9 @@
 }
 .section-switch::-webkit-scrollbar { display: none; }
 .section-switch button {
-  /* the five sections fit a phone's width in either language: each as wide as its word, a size down from the settings' switch */
-  flex: 1 1 auto;
-  min-width: 0;
-  padding: 0 5px;
+  /* each as wide as its word, a size down from the settings' switch: six sections can be wider than a phone, then the switch scrolls */
+  flex: 1 0 auto;
+  padding: 0 8px;
   font-size: 14px;
   color: var(--k);
 }
@@ -244,6 +243,7 @@
   font-size: 18px;
   text-transform: uppercase;
 }
+.kw-line .kw-ico { flex: none; width: 40px; margin: 0; font-size: 40px; text-align: center; }
 .relic-line.undiscovered .riso { filter: grayscale(0.7); }
 /* the service record's stamps: a row per hero, a column per act; ink is the act's palette (`--stamp-ink`), like a time card's rubber stamps */
 .stamps { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px 6px; padding: 8px 0 4px; }

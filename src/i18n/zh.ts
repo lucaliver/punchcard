@@ -53,6 +53,7 @@ const zh: Record<EnKey, string> = {
   'compendium.foes': '已遇见 {n}/{total}',
   'compendium.relics': '文具',
   'compendium.relicsFound': '已找到 {n}/{total}',
+  'compendium.keywords': '关键词',
   'compendium.records': '纪录',
   'compendium.history': '履历',
   'history.empty': '暂无工作日记录。',

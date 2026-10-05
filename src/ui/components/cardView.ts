@@ -180,6 +180,41 @@ export function keywordIconHtml(kw: string): string {
   return `<span class="kw-ico"${tone ? ` data-tone="${tone}"` : ''}>${icon(id)}</span>`;
 }
 
+/** Every keyword the game explains (`kw.<id>` and `kw.<id>.d`), card modifiers first, then the statuses and terms the texts use: the handbook lists them. */
+export const KEYWORD_LIST = [
+  'exhaust',
+  'consume',
+  'fleeting',
+  'volatile',
+  'innate',
+  'pending',
+  'large',
+  'bulky',
+  'echo',
+  'anchor',
+  'unplayable',
+  'power',
+  'x',
+  'block',
+  'mana',
+  'crystal',
+  'strength',
+  'regen',
+  'thorns',
+  'multitasking',
+  'thickSkin',
+  'dodge',
+  'parry',
+  'rush',
+  'poison',
+  'burn',
+  'chill',
+  'stun',
+  'weak',
+  'vulnerable',
+  'buff',
+];
+
 /** Rules text with its `[keyword]` marks as bold names in the keyword's colour (`tone` in statuses.ts). */
 export function keywordHtml(text: string): string {
   return text.replace(/\[(\w+)\]/g, (_, kw: string) => {
