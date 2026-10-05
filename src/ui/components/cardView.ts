@@ -267,13 +267,14 @@ interface CardViewOpts {
 export function cardView(card: CardLike, opts: CardViewOpts = {}): HTMLDivElement {
   const def = CARDS[card.id];
   const el = h('div', {
-    class: `card ${opts.cls ?? ''} ${card.up ? 'is-up' : ''} ${cardKeywordsOf(card).includes('echo') ? 'has-echo' : ''}`,
+    class: `card ${opts.cls ?? ''} ${card.up ? 'is-up' : ''}`,
     'data-cls': def.cls,
     'data-type': def.type,
     'data-rarity': def.rarity,
     'data-uid': card.uid,
     'aria-label': cardName(card),
   });
+  const echo = cardKeywordsOf(card).includes('echo');
   const tags = [...(def.type === 'power' ? ['infinity'] : []), ...cardKeywordsOf(card).flatMap((k) => TAG_ICON[k] ?? [])]
     .map((id) => icon(id))
     .join('');
@@ -281,7 +282,7 @@ export function cardView(card: CardLike, opts: CardViewOpts = {}): HTMLDivElemen
   el.innerHTML = `
     <div class="c-top"><div class="c-cost ${card.perks?.some((p) => PERKS[p]?.costDelta) ? 'cheap' : ''}">${cardCostLabel(card)}</div><div class="c-name ${nameFit(cardName(card))}">${cardName(card)}</div></div>
     <div class="c-art">${icon(def.art)}</div>
-    <div class="c-face ${lines > 1 ? 'two' : ''}">${cardFace(card, opts.combat)}</div>
+    <div class="c-face ${lines > 1 ? 'two' : ''}">${echo ? `<i class="c-wave l">${icon('echoWave')}</i><i class="c-wave r">${icon('echoWave')}</i>` : ''}<div class="c-body">${cardFace(card, opts.combat)}</div></div>
     ${tags ? `<div class="c-tags">${tags}</div>` : ''}
     <div class="c-gem"></div>`;
   return el;

@@ -97,6 +97,8 @@
   padding: 1cqw 2cqw 3cqw;
 }
 .gl {
+/* the face's text, apart from the Echo waves: the combat layer rewrites it as the numbers move */
+.c-body { display: contents; }
   display: flex;
   align-items: center;
   justify-content: center;

@@ -1325,6 +1325,11 @@ export const ICONS: Record<string, { el: Element; svg: string }> = {
     el: 'arcane',
     svg: `<rect x="4" y="14" width="26" height="36"/><rect x="34" y="14" width="14" height="36" opacity=".6"/><rect x="52" y="14" width="8" height="36" opacity=".3"/><rect x="10" y="22" width="14" height="6" fill="#16121f"/><rect x="10" y="34" width="10" height="4" fill="#16121f"/>`,
   },
+  // Echo waves: three sound arcs, drawn at the edges of an Echo card's effect (mirrored for the left edge)
+  echoWave: {
+    el: 'arcane',
+    svg: `<path d="M4 20Q20 32 4 44V35Q10 32 4 29z"/><path d="M20 10Q44 32 20 54V43Q31 32 20 21z"/><path d="M38 0Q74 32 38 64V51Q58 32 38 13z"/>`,
+  },
   // Anchor: it holds the card at the end of the belt
   anchor: {
     el: 'steel',

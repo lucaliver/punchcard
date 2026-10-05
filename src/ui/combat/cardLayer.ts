@@ -132,7 +132,7 @@ export function createCardLayer(v: CombatView): CardLayer {
     return {
       el: cardEl,
       card,
-      face: cardEl.querySelector('.c-face')!,
+      face: cardEl.querySelector('.c-body') ?? cardEl.querySelector('.c-face')!,
       cost: cardEl.querySelector('.c-cost')!,
       span,
       over: (span > 1 && !isLarge(def)) || !!def.lockRow,

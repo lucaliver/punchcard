@@ -346,25 +346,20 @@
   pointer-events: none;
 }
 
-/* an Echo card: sound waves at both edges of its effect, so it reads at a glance on the belt */
-.card.has-echo .c-face::before,
-.card.has-echo .c-face::after {
-  content: '';
+/* an Echo card: big sound waves at both edges of its effect, so it reads at a glance on the belt */
+.c-wave {
   position: absolute;
-  top: 18%;
-  bottom: 24%;
-  width: 7cqw;
-  border: 0 solid var(--k);
-  border-radius: 50%;
+  top: 0;
+  bottom: 8%;
+  width: 26cqw;
+  font-size: 26cqw;
+  display: flex;
+  align-items: center;
   pointer-events: none;
-  animation: echo-wave 0.9s steps(3) infinite;
 }
-.card.has-echo .c-face::before { left: 3cqw; border-left-width: 2.2cqw; }
-.card.has-echo .c-face::after { right: 3cqw; border-right-width: 2.2cqw; }
-@keyframes echo-wave {
-  from { opacity: 1; }
-  to { opacity: 0.2; transform: scaleX(1.5); }
-}
+.c-wave.l { left: 0; transform: scaleX(-1); }
+.c-wave.r { right: 0; }
+
 /* an Echo card, played and still there: it pulses */
 .card.echoed { animation: echo-pulse 0.2s steps(2); }
 @keyframes echo-pulse {
@@ -541,8 +536,8 @@
 }
 .c-dark .pico { font-size: 22cqw; color: var(--paper); --ink2: transparent; }
 .combat.blackout .card .c-dark { display: grid; }
-.combat.blackout .belt-cards .card :is(.c-face > :not(.c-dark), .c-tags, .rule-badge),
-.combat.blackout .sleeve .card :is(.c-face > :not(.c-dark), .c-tags, .rule-badge) { visibility: hidden; }
+.combat.blackout .belt-cards .card :is(.c-face > :not(.c-dark, .c-body), .c-body > :not(.c-dark), .c-tags, .rule-badge),
+.combat.blackout .sleeve .card :is(.c-face > :not(.c-dark, .c-body), .c-body > :not(.c-dark), .c-tags, .rule-badge) { visibility: hidden; }
 
 /* a belt row an enemy keeps shut: barred with hazard stripes; when it opens, the shutter grinds slowly off towards the
    exit (the stripes crawl as it goes), so the row's first cards show first */
