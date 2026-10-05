@@ -117,7 +117,7 @@
   flex: none;
   width: 76px;
   height: 76px;
-  background: var(--paper-dim);
+  background: var(--foe-bg);
   border: 2px solid var(--void);
 }
 .foe-art .riso { width: 100%; height: 100%; }
