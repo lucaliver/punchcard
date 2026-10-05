@@ -1302,6 +1302,15 @@ export const ICONS: Record<string, { el: Element; svg: string }> = {
     el: 'holy',
     svg: `<path d="M4 60V46h16v14z"/>`,
   },
+  // A smoking potato, and a hand shoving a banknote away
+  hotPotato: {
+    el: 'fire',
+    svg: `<path d="M10 40c0-12 10-20 24-20s22 8 20 20c-2 12-12 18-24 18S10 52 10 40z"/><g fill="#16121f"><circle cx="24" cy="38" r="2.5"/><circle cx="38" cy="46" r="2.5"/><circle cx="42" cy="32" r="2"/></g><path d="M22 14c-3-4 3-6 0-11M34 14c-3-4 3-6 0-11M46 14c-3-4 3-6 0-11" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"/>`,
+  },
+  passTheBuck: {
+    el: 'steel',
+    svg: `<rect x="4" y="18" width="38" height="26"/><circle cx="23" cy="31" r="7" fill="#16121f"/><path d="M8 22h6M32 40h6" stroke="#16121f" stroke-width="3"/><path d="M40 28h14V18l10 14-10 14V36H40z"/>`,
+  },
   step2: {
     el: 'holy',
     svg: `<path d="M4 60V46h16V32h16v28z"/>`,

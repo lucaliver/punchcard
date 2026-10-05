@@ -459,6 +459,24 @@ export const warriorCards: CardDef[] = [
     makes: ['step2'],
     play: (c, _v, card) => c.addTempCard('step2', 'draw', card.up),
   },
+  // A pair that passes the blame back and forth: each one is used up and brings the other back into the draw pile.
+  {
+    id: 'hotPotato',
+    face: '{dmg:0}|{addCard}',
+    cls: 'warrior',
+    type: 'attack',
+    rarity: 'rare',
+    cost: 2,
+    vals: [12],
+    upVals: [16],
+    keywords: ['exhaust'],
+    art: 'hotPotato',
+    makes: ['passTheBuck'],
+    play: (c, v, card) => {
+      c.hit(v[0]);
+      c.addTempCard('passTheBuck', 'draw', card.up);
+    },
+  },
   // Filling the rares: a Block multiplier, thorns that grow, and a once-a-fight comeback
   {
     id: 'pyramidScheme',
@@ -568,6 +586,24 @@ export const warriorCards: CardDef[] = [
     keywords: ['fleeting'],
     art: 'mushroom',
     play: (c, v) => c.gainMaxHp(v[0]),
+  },
+
+  {
+    id: 'passTheBuck',
+    face: '{block:0}|{addCard}',
+    cls: 'warrior',
+    type: 'defense',
+    rarity: 'special',
+    cost: 1,
+    vals: [8],
+    upVals: [12],
+    keywords: ['exhaust'],
+    art: 'passTheBuck',
+    makes: ['hotPotato'],
+    play: (c, v, card) => {
+      c.gainBlock('hero', v[0]);
+      c.addTempCard('hotPotato', 'draw', card.up);
+    },
   },
 
   // Generated during a fight (never offered as rewards).

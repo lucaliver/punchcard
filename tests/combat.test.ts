@@ -2875,6 +2875,26 @@ describe('task batch', () => {
     expect(log.relics).toEqual(r.relics);
   });
 
+  it('Hot Potato and Pass the Buck bring each other back into the draw pile, upgrades kept', () => {
+    const c = setup({ deck: deckOf(['punch', 'punch']) });
+    c.enemy.move = { id: 'wait', intent: 'defend', windup: 999 };
+    c.enemy.hp = c.enemy.maxHp = 500;
+    run(c, CONFIG.introTime + 0.01);
+    c.hero.mana = c.hero.maxMana = 10;
+    const play = (id: string, up: boolean): void => {
+      c.addTempCard(id, 'belt', up);
+      expect(c.playCard(c.belt[c.belt.length - 1].card.uid, 'auto')).toBe(true);
+    };
+    play('hotPotato', true);
+    const buck = c.draw.find((x) => x.id === 'passTheBuck');
+    expect(buck?.up).toBe(true);
+    c.hero.block = 0;
+    play('passTheBuck', true);
+    expect(c.hero.block).toBe(CARDS.passTheBuck.upVals![0]);
+    expect(c.draw.some((x) => x.id === 'hotPotato' && x.up)).toBe(true);
+    expect(c.exhaust.filter((x) => x.id === 'hotPotato' || x.id === 'passTheBuck')).toHaveLength(2);
+  });
+
   it('the Tailor shows up once in a whole run', () => {
     for (let seed = 1; seed <= 20; seed++) {
       expect(newRun('warrior', seed).nodes.filter((n) => n.type === 'tailor').length).toBeLessThanOrEqual(1);
