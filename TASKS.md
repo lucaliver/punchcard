@@ -54,8 +54,8 @@
 
 - [x] nella tab history dell'handbook: permetti di tappare sulle run per aprire un dettaglio con tutte le carte e statistiche (un po' come la payslip)
 
-- Aggiungi lo spagnolo e il cinese alle lingue supportate
-- prima della schermata di sign contract metti una schermata di selezione della lingua
+- [x] Aggiungi lo spagnolo e il cinese alle lingue supportate
+- [x] prima della schermata di sign contract metti una schermata di selezione della lingua
 
 - Cerchiamo di bilanciare le stationery:
 - [x] stressball: 20 blocco

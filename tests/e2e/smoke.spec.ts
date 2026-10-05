@@ -776,7 +776,10 @@ test('once signed, the contract is never shown again: the game opens on the titl
 
 test('signing the contract leads to the studio card, then to the title', async ({ page }) => {
   await page.goto('/');
-  await page.evaluate(() => localStorage.clear());
+  await page.evaluate(() => {
+    localStorage.clear();
+    localStorage.setItem('cardstone+:settings', JSON.stringify({ localeChosen: true }));
+  });
   await page.reload();
   await signAndStart(page);
   await expect(page.locator('.studio')).toBeVisible();
@@ -789,7 +792,8 @@ test('reset progress wipes saves after a confirmation', async ({ page }) => {
   await page.getByRole('button', { name: /debug/i }).click();
   await page.getByRole('button', { name: /reset progress/i }).click();
   await page.getByRole('button', { name: 'Confirm' }).click();
-  await expect(page.locator('.splash')).toBeVisible();
+  // Everything is gone, the language too: the first launch starts over.
+  await expect(page.locator('.language')).toBeVisible();
   expect(await page.evaluate("Object.keys(localStorage).filter((k) => k.startsWith('cardstone+:')).length")).toBe(0);
 });
 
@@ -838,7 +842,7 @@ test('holding the version in Settings opens the reset confirmation', async ({ pa
   await page.mouse.up();
   await expect(page.getByText(/erase everything/i)).toBeVisible();
   await page.getByRole('button', { name: 'Confirm' }).click();
-  await expect(page.locator('.splash')).toBeVisible();
+  await expect(page.locator('.language')).toBeVisible();
 });
 
 test('handbook: enemies not met yet are silhouettes with no move pattern', async ({ page }) => {
