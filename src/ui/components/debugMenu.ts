@@ -123,7 +123,7 @@ export function openDebugFight(onPick: (hero: HeroId, enemy: string, cards: stri
   const cardsPane = h('div', { class: 'debug-pane' }, search, cardList);
   const foeSearch = h('input', { class: 'debug-search', type: 'search', placeholder: t('debug.foes'), 'aria-label': t('debug.foes') });
   const foesPane = h('div', { class: 'debug-pane' }, foeSearch);
-  let tab: 'foes' | 'cards' = 'foes';
+  let tab: 'foes' | 'cards' = 'cards';
   const renderTabs = (): void => {
     const tabBtn = (id: 'foes' | 'cards', label: string): HTMLButtonElement =>
       h(
@@ -139,7 +139,7 @@ export function openDebugFight(onPick: (hero: HeroId, enemy: string, cards: stri
         },
         label,
       );
-    tabs.replaceChildren(tabBtn('foes', t('debug.tab.foes')), tabBtn('cards', t('debug.tab.cards', { n: extra.length })));
+    tabs.replaceChildren(tabBtn('cards', t('debug.tab.cards', { n: extra.length })), tabBtn('foes', t('debug.tab.foes')));
     foesPane.hidden = tab !== 'foes';
     cardsPane.hidden = tab !== 'cards';
   };
