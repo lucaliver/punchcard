@@ -7,7 +7,7 @@ import type { CardInst, CardLike, Tone } from '../../game/types';
 import { h } from '../dom';
 import { icon } from '../art/icons';
 
-const KEYWORD_LINE = ['innate', 'pending', 'exhaust', 'consume', 'fleeting', 'volatile', 'unplayable', 'large', 'echo', 'anchor'];
+const KEYWORD_LINE = ['innate', 'pending', 'exhaust', 'consume', 'fleeting', 'volatile', 'unplayable', 'large', 'echo', 'anchor', 'credit'];
 export const TAG_ICON: Record<string, string> = {
   innate: 'flag',
   pending: 'pending',
@@ -18,6 +18,7 @@ export const TAG_ICON: Record<string, string> = {
   large: 'large',
   echo: 'echoKw',
   anchor: 'anchor',
+  credit: 'creditCard',
 };
 
 /** Glyph kind → icon and the unit shown after its value. */
@@ -104,6 +105,7 @@ export function cardName(card: CardInst): string {
   return t(`card.${card.id}.name`);
 }
 
+/** The cost number on a card face (for a card On Credit, what it will owe). */
 export function cardCostLabel(card: CardLike): string {
   const cost = cardCostOf(card);
   return cost < 0 ? 'X' : String(cost);
@@ -192,6 +194,7 @@ export const KEYWORD_LIST = [
   'bulky',
   'echo',
   'anchor',
+  'credit',
   'unplayable',
   'power',
   'x',
@@ -264,7 +267,7 @@ interface CardViewOpts {
 export function cardView(card: CardLike, opts: CardViewOpts = {}): HTMLDivElement {
   const def = CARDS[card.id];
   const el = h('div', {
-    class: `card ${opts.cls ?? ''} ${card.up ? 'is-up' : ''}`,
+    class: `card ${opts.cls ?? ''} ${card.up ? 'is-up' : ''} ${cardKeywordsOf(card).includes('echo') ? 'has-echo' : ''}`,
     'data-cls': def.cls,
     'data-type': def.type,
     'data-rarity': def.rarity,
