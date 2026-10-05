@@ -6,7 +6,7 @@ export type CardClass = HeroId | 'neutral' | 'curse';
 /** A card's type is the colour of its background: attack pink, defense blue, skill yellow, power grey, curse green. */
 export type CardType = 'attack' | 'defense' | 'skill' | 'power' | 'curse';
 export type Rarity = 'common' | 'rare' | 'epic' | 'legendary' | 'special';
-export type Keyword = 'exhaust' | 'consume' | 'fleeting' | 'unplayable' | 'volatile' | 'innate' | 'pending' | 'bulky' | 'large';
+export type Keyword = 'exhaust' | 'consume' | 'fleeting' | 'unplayable' | 'volatile' | 'innate' | 'pending' | 'bulky' | 'large' | 'echo' | 'anchor';
 export type Side = 'hero' | 'enemy';
 
 /** A card in the run deck. */
@@ -492,6 +492,8 @@ export type CombatEvent =
   | { type: 'text'; target: Side; key: TKey; tone: 'good' | 'bad' | 'neutral' }
   | { type: 'cardSpawn'; card: CombatCard }
   | { type: 'cardPlayed'; card: CombatCard; from: 'belt' | 'sleeve' }
+  /** An Echo card was played and stays where it is. */
+  | { type: 'cardEchoed'; card: CombatCard }
   | { type: 'cardExpired'; card: CombatCard }
   | { type: 'cardStashed'; card: CombatCard; slot: number }
   | { type: 'cardStolen'; card: CombatCard }

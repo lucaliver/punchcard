@@ -1,6 +1,6 @@
 import { Emitter } from '../core/emitter';
 import { Rng } from '../core/rng';
-import { BEG_FLAG, CONFIG, EXPIRE_POS } from '../data/config';
+import { ANCHOR_POS, BEG_FLAG, CONFIG, EXPIRE_POS } from '../data/config';
 import { STATUSES } from '../data/statuses';
 import { CARDS, CLASS_HIT, cardCostOf, cardKeywordsOf, cardValsOf, isLarge } from '../data/cards';
 import { HEXES } from '../data/hexes';
@@ -802,13 +802,21 @@ export class Combat {
         delete b.falling;
         b.pos = Math.min(b.pos, EXPIRE_POS - move);
       }
+      // An Anchor card never falls: where the belt ends it stays, pinned.
+      if (!b.pinned && b.pos >= ANCHOR_POS && this.keywords(b.card).includes('anchor')) {
+        b.pos = ANCHOR_POS;
+        b.pinned = true;
+        delete b.falling;
+        this.events.emit({ type: 'beltPinned' });
+        continue;
+      }
       if (b.pos < EXPIRE_POS) {
         delete b.falling;
         continue;
       }
       if (b.falling === undefined) {
         // On autopilot, a card slipping off plays itself for free if it can (rules…); otherwise it's lost as usual.
-        if (this.flag('hero', 'autoplay') && this.playCard(b.card.uid, 'auto')) continue;
+        if (this.flag('hero', 'autoplay') && this.playCard(b.card.uid, 'auto') && this.beltIndex(b.card.uid) < 0) continue;
         b.falling = CONFIG.fallGrace;
       } else b.falling -= dt;
       b.pos = EXPIRE_POS;
@@ -951,11 +959,17 @@ export class Combat {
     const badge = this.freeNextId();
     if (badge && !free && cost === 0 && cardCostOf(card) > 0) this.applyStatus('hero', badge, -1, 0, true);
     const row = beltIdx >= 0 ? this.belt[beltIdx].row : -1;
-    if (beltIdx >= 0) this.belt.splice(beltIdx, 1);
-    else this.sleeve[sleeveIdx] = null;
+    // An Echo card is played again and again: it stays where it is (unless it is used up some other way).
+    const kws = this.keywords(card);
+    const echoes = kws.includes('echo') && !kws.includes('exhaust') && !kws.includes('consume') && def.type !== 'power';
+    if (echoes) this.events.emit({ type: 'cardEchoed', card });
+    else {
+      if (beltIdx >= 0) this.belt.splice(beltIdx, 1);
+      else this.sleeve[sleeveIdx] = null;
+    }
 
     this.cardsPlayed++;
-    this.events.emit({ type: 'cardPlayed', card, from: beltIdx >= 0 ? 'belt' : 'sleeve' });
+    if (!echoes) this.events.emit({ type: 'cardPlayed', card, from: beltIdx >= 0 ? 'belt' : 'sleeve' });
     const vals = this.cardVals(card);
     if (cost < 0) vals.push(spent);
     // Statuses react to cards played after them: one this card applies doesn't see the card itself.
@@ -984,7 +998,8 @@ export class Combat {
     delete card.virus;
     // Played, a Pending card is back in the approval queue: it must ride the whole belt again before it can be played.
     delete card.passed;
-    const kw = this.keywords(card);
+    if (echoes) return;
+    const kw = kws;
     if (kw.includes('consume')) {
       if (!card.temp) this.consumed.push(card.uid);
       this.exhaust.push(card);

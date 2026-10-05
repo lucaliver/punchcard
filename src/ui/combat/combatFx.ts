@@ -174,6 +174,13 @@ export function bindCombatFx(v: CombatView, cards: CardLayer, onEnd: (result: 'w
         sfx('cardPlay');
         haptic('play');
         break;
+      case 'cardEchoed': {
+        const el = cards.elementOf(e.card.uid);
+        if (el) v.retrigger(el, 'echoed');
+        sfx('cardPlay');
+        haptic('play');
+        break;
+      }
       case 'cardExpired':
         cards.markRemoval(e.card.uid, 'expired');
         sfx('cardExpire');

@@ -112,7 +112,16 @@ export function createCardLayer(v: CombatView): CardLayer {
       cardEl.style.setProperty('--span', String(span));
       cardEl.style.setProperty('--join', String(((span - 1) * CONFIG.spacing) / CONFIG.cardWidth));
       cardEl.append(
-        isLarge(def) ? h('div', { class: 'c-join' }, h('div', { class: 'c-top' }), h('div', { class: 'c-art' })) : h('div', { class: 'c-gate' }),
+        isLarge(def)
+          ? h(
+              'div',
+              { class: 'c-join' },
+              h('div', { class: 'c-top' }),
+              h('div', { class: 'c-art' }),
+              // The welded body has a face zone of its own, to go dark in a blackout like the card's.
+              h('div', { class: 'c-face' }, h('div', { class: 'c-dark', html: icon('bulbOff') })),
+            )
+          : h('div', { class: 'c-gate' }),
       );
     }
     // A lane lock pulls caution tape across its whole row.

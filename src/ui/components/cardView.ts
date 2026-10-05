@@ -7,7 +7,7 @@ import type { CardInst, CardLike, Tone } from '../../game/types';
 import { h } from '../dom';
 import { icon } from '../art/icons';
 
-const KEYWORD_LINE = ['innate', 'pending', 'exhaust', 'consume', 'fleeting', 'volatile', 'unplayable', 'large'];
+const KEYWORD_LINE = ['innate', 'pending', 'exhaust', 'consume', 'fleeting', 'volatile', 'unplayable', 'large', 'echo', 'anchor'];
 export const TAG_ICON: Record<string, string> = {
   innate: 'flag',
   pending: 'pending',
@@ -16,6 +16,8 @@ export const TAG_ICON: Record<string, string> = {
   fleeting: 'mouse',
   volatile: 'feather',
   large: 'large',
+  echo: 'echoKw',
+  anchor: 'anchor',
 };
 
 /** Glyph kind → icon and the unit shown after its value. */

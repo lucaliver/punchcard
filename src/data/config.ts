@@ -186,6 +186,9 @@ export const rewardGuarantee = (kind: RewardKind, act: number): { rarity: Rarity
 /** The per-run flag (`CombatSetup.relicFlags`) set once the hero has begged to stay. */
 export const BEG_FLAG = 'begToStay';
 
+/** Where an Anchor card stops: right at the end of the belt, the whole card still in view. */
+export const ANCHOR_POS = 1;
+
 export const EXPIRE_POS = 1 + CONFIG.cardWidth * CONFIG.expireOverhang;
 
 export const GAME_SPEEDS = [1, 1.5, 2] as const;

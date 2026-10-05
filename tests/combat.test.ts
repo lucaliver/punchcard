@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
 import { Combat, type CombatSetup } from '../src/game/combat';
-import { CONFIG, EXPIRE_POS, rewardUpgradeChance } from '../src/data/config';
+import { ANCHOR_POS, CONFIG, EXPIRE_POS, rewardUpgradeChance } from '../src/data/config';
 import { ENEMIES, enemiesFor } from '../src/data/enemies';
 import { HEROES, VIRULENCE_START } from '../src/data/heroes';
 import {
@@ -2930,6 +2930,49 @@ describe('task batch', () => {
     expect(c.playCard(c.belt[c.belt.length - 1].card.uid, 'auto')).toBe(true);
     expect(c.has('enemy', 'stun')).toBe(true);
     expect(c.hero.hp).toBe(10 + CARDS.mayFirst.vals[1]);
+  });
+
+  it('an Echo card is played again and again and stays on the belt', () => {
+    const def = CARDS.punch;
+    const saved = def.keywords;
+    def.keywords = ['echo'];
+    try {
+      const c = setup({ beltRows: 1, deck: deckOf(['punch', 'punch']) });
+      c.enemy.move = { id: 'wait', intent: 'defend', windup: 999 };
+      c.enemy.hp = c.enemy.maxHp = 500;
+      run(c, CONFIG.introTime + 0.01);
+      c.hero.mana = c.hero.maxMana = 10;
+      const card = c.belt[0].card;
+      const hp = c.enemy.hp;
+      expect(c.playCard(card.uid)).toBe(true);
+      expect(c.playCard(card.uid)).toBe(true);
+      expect(c.belt.some((b) => b.card.uid === card.uid)).toBe(true);
+      expect(c.discard).not.toContain(card);
+      expect(hp - c.enemy.hp).toBe(2 * CARDS.punch.vals[0]);
+    } finally {
+      def.keywords = saved;
+    }
+  });
+
+  it('an Anchor card stops pinned at the end of the belt and never falls', () => {
+    const def = CARDS.bobTheBuilder;
+    const saved = def.keywords;
+    def.keywords = ['anchor'];
+    try {
+      const c = setup({ beltRows: 1, deck: deckOf(['bobTheBuilder', 'punch', 'punch']) });
+      c.enemy.move = { id: 'wait', intent: 'defend', windup: 999 };
+      run(c, CONFIG.introTime + 0.01);
+      c.addTempCard('bobTheBuilder', 'belt');
+      const anchored = c.belt[c.belt.length - 1];
+      anchored.pos = ANCHOR_POS - 0.01;
+      run(c, CONFIG.beltTime);
+      expect(anchored.pinned).toBe(true);
+      expect(anchored.pos).toBe(ANCHOR_POS);
+      expect(c.belt).toContain(anchored);
+      expect(c.discard).not.toContain(anchored.card);
+    } finally {
+      def.keywords = saved;
+    }
   });
 
   it('the Tailor shows up once in a whole run', () => {

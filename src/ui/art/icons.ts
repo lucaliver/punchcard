@@ -1316,6 +1316,16 @@ export const ICONS: Record<string, { el: Element; svg: string }> = {
     el: 'holy',
     svg: `<rect x="6" y="10" width="52" height="48"/><rect x="6" y="10" width="52" height="12" fill="#16121f"/><rect x="16" y="4" width="6" height="12"/><rect x="42" y="4" width="6" height="12"/><path d="M28 28h8v24h-8z" fill="#16121f"/><path d="M22 34l6-6v6z" fill="#16121f"/><rect x="22" y="50" width="20" height="4" fill="#16121f"/>`,
   },
+  // Echo keyword: a card and its fading copies, side by side
+  echoKw: {
+    el: 'arcane',
+    svg: `<rect x="4" y="14" width="26" height="36"/><rect x="34" y="14" width="14" height="36" opacity=".6"/><rect x="52" y="14" width="8" height="36" opacity=".3"/><rect x="10" y="22" width="14" height="6" fill="#16121f"/><rect x="10" y="34" width="10" height="4" fill="#16121f"/>`,
+  },
+  // Anchor: it holds the card at the end of the belt
+  anchor: {
+    el: 'steel',
+    svg: `<circle cx="32" cy="12" r="6" fill="none" stroke="currentColor" stroke-width="4"/><path d="M30 18h4v32h-4zM16 30h32v4H16z"/><path d="M8 36c0 14 10 22 24 22s24-8 24-22h-6c0 10-8 16-18 16s-18-6-18-16z"/>`,
+  },
   step2: {
     el: 'holy',
     svg: `<path d="M4 60V46h16V32h16v28z"/>`,

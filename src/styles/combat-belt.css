@@ -346,6 +346,12 @@
   pointer-events: none;
 }
 
+/* an Echo card, played and still there: it pulses */
+.card.echoed { animation: echo-pulse 0.2s steps(2); }
+@keyframes echo-pulse {
+  50% { scale: 1.1; }
+}
+
 /* a card that has slipped off the end of the belt but can still be grabbed (to stash it): it tips over, in a few steps, as long as it is let */
 .card.falling {
   animation: tip-over var(--fall-grace) steps(4) forwards;
