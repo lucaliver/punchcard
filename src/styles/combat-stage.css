@@ -263,6 +263,21 @@
 @keyframes ink-off-P { 25% { translate: 16px -8px; } 55% { opacity: 1; translate: 34px 14px; } to { opacity: 0; translate: 50px 96px; } }
 @keyframes ink-off-B { 25% { translate: -8px 8px; } 55% { opacity: 1; translate: -18px 34px; } to { opacity: 0; translate: -24px 110px; } }
 @keyframes ink-off-K { 25% { translate: 4px 10px; } 55% { opacity: 1; translate: 8px 40px; } to { opacity: 0; translate: 10px 120px; } }
+/* the last blast of a boss: the whole screen blanks out in paper for a moment */
+.boss-flash {
+  position: absolute;
+  inset: 0;
+  z-index: var(--z-danger);
+  pointer-events: none;
+  background: var(--paper);
+  animation: boss-flash 0.36s steps(1) forwards;
+}
+@keyframes boss-flash {
+  0% { opacity: 1; }
+  33% { opacity: 0; }
+  50% { opacity: 0.8; }
+  75%, 100% { opacity: 0; }
+}
 .boss-stamp {
   position: absolute;
   left: 50%;
@@ -467,7 +482,7 @@
 .bar {
   position: relative;
   flex: 1;
-  height: 28px;
+  height: 38px;
   background-color: var(--paper);
   background-image: radial-gradient(circle, var(--paper-dot-light) 30%, transparent 33%);
   background-size: 5px 5px;
@@ -502,7 +517,7 @@
   display: grid;
   place-items: center;
   font-family: var(--font-ui);
-  font-size: 18px;
+  font-size: 26px;
   line-height: 1;
   color: var(--k);
   text-shadow: 2px 0 0 var(--paper), -2px 0 0 var(--paper), 0 2px 0 var(--paper), 0 -2px 0 var(--paper);

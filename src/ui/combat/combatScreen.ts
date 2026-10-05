@@ -53,7 +53,10 @@ const TRACK_PERIOD = 26;
 /** Most simulation steps run in one frame; past that the fight drops the lag instead of spiralling. */
 const MAX_STEPS = 12;
 /** Milliseconds between the end of the fight and leaving it (the enemy finishes dying). */
-const END_MS = { lose: 1500, win: 2200, boss: 3000 };
+const END_MS = { lose: 1500, win: 2200, boss: 3400 };
+/** A boss goes down in this many blasts, this far apart (ms). */
+const BOSS_BLASTS = 7;
+const BOSS_BLAST_GAP = 140;
 
 /** The combat screen: wires the view, HUD, card layer and FX together and owns pause and the game loop. */
 export function combatScreen(run: RunState, combat: Combat, cb: CombatCallbacks): Screen {
@@ -109,13 +112,27 @@ export function combatScreen(run: RunState, combat: Combat, cb: CombatCallbacks)
       haptic('kill');
       sfx('enemyDown');
       if (boss) {
+        // A chain of blasts over the sprite, a white flash on the last, and the stamp slams down after.
+        for (let i = 0; i < BOSS_BLASTS; i++) {
+          later(() => {
+            burst(i % 2 ? 'fire' : 'gold', p.x + (Math.random() - 0.5) * 120, p.y + (Math.random() - 0.5) * 140, 24, 1.3, 90);
+            shake(i % 3 ? 'small' : 'big');
+          }, 120 + i * BOSS_BLAST_GAP);
+        }
+        later(() => {
+          const flash = h('div', { class: 'boss-flash' });
+          flash.addEventListener('animationend', () => flash.remove());
+          el.append(flash);
+          r.enemyArt.append(h('div', { class: 'boss-stamp' }, t('combat.bossDown')));
+          sfx('blunt');
+          sfx('bossVictory');
+        }, 120 + BOSS_BLASTS * BOSS_BLAST_GAP);
+        sfx('bossBlast');
         r.enemyArt.classList.add('boss');
-        r.enemyArt.append(h('div', { class: 'boss-stamp' }, t('combat.bossDown')));
-        sfx('blunt');
       } else v.banner(t('reward.cleared'));
       // Clocking out when the next floor starts (the end of the shift after a boss).
       timeCard('out', clockText(clockAt(run, { ...currentNode(run), floor: currentNode(run).floor + 1 })));
-      sfx(boss ? 'bossVictory' : 'victory');
+      if (!boss) sfx('victory');
     } else {
       // Fired: the payslip on the end screen says the rest.
       sfx('defeat');

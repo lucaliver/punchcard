@@ -45,7 +45,8 @@
   /* the sleeve grows less here: the enemy needs the room */
   .action-row { --cw: calc(var(--cw-belt) * 0.85); }
   .sleeve-slot .card { --cw: calc(var(--cw-belt) * 0.85 - 8px); }
-  .bar { height: 24px; }
+  .bar { height: 30px; }
+  .bar .txt { font-size: 21px; }
   /* no room for the cooler on very short screens */
   .stage .cooler { display: none; }
   .mop { min-width: 64px; min-height: 64px; font-size: 64px; }

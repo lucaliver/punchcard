@@ -289,6 +289,15 @@ const SOUNDS = {
     tone(233, 0.9, { type: 'sawtooth', vol: 0.08, to: 42, attack: 0.02 });
     noise(0.8, { freq: 800, to: 150, vol: 0.3, type: 'lowpass', delay: 0.5 });
   },
+  /** A boss blows apart: a chain of ever bigger booms (a low drop under a rumble of noise), then one last heavy one. */
+  bossBlast: () => {
+    [0, 0.15, 0.31, 0.46, 0.64, 0.84].forEach((d, i) => {
+      tone(150 - i * 14, 0.35, { type: 'sawtooth', vol: 0.1 + i * 0.015, to: 35, delay: d });
+      noise(0.3 + i * 0.04, { freq: 1400 - i * 120, to: 120, vol: 0.28 + i * 0.03, type: 'lowpass', delay: d });
+    });
+    tone(70, 0.9, { type: 'sine', vol: 0.5, to: 28, delay: 1.0 });
+    noise(0.9, { freq: 700, to: 90, vol: 0.4, type: 'lowpass', delay: 1.0 });
+  },
   /** The boss is in: a factory steam whistle (a sour chord that slides up, plus the hiss). */
   siren: () => {
     [370, 440, 523].forEach((f) => {
