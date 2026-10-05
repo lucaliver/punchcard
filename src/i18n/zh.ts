@@ -486,7 +486,6 @@ const zh: Record<EnKey, string> = {
   'type.skill': '技能',
   'type.power': '能力',
   'type.curse': '诅咒',
-  'rarity.starter': '初始',
   'rarity.common': '普通',
   'rarity.rare': '稀有',
   'rarity.epic': '史诗',

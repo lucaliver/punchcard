@@ -5,7 +5,7 @@ export type HeroId = 'warrior' | 'mage' | 'necromancer';
 export type CardClass = HeroId | 'neutral' | 'curse';
 /** A card's type is the colour of its background: attack pink, defense blue, skill yellow, power grey, curse green. */
 export type CardType = 'attack' | 'defense' | 'skill' | 'power' | 'curse';
-export type Rarity = 'starter' | 'common' | 'rare' | 'epic' | 'legendary' | 'special';
+export type Rarity = 'common' | 'rare' | 'epic' | 'legendary' | 'special';
 export type Keyword = 'exhaust' | 'consume' | 'fleeting' | 'unplayable' | 'volatile' | 'innate' | 'pending' | 'bulky' | 'large';
 export type Side = 'hero' | 'enemy';
 
@@ -90,6 +90,8 @@ export interface CardDef {
   cls: CardClass;
   type: CardType;
   rarity: Rarity;
+  /** Only in a hero's starting deck: never a reward, a vending drop or a cross-training offer. */
+  starterOnly?: true;
   /** -1 = X cost (spends all mana). */
   cost: number;
   upCost?: number;
@@ -456,7 +458,7 @@ export interface RelicHooks {
 
 export interface RelicDef {
   id: string;
-  rarity: 'common' | 'rare' | 'epic' | 'boss' | 'starter' | 'special';
+  rarity: 'common' | 'rare' | 'epic' | 'boss' | 'special';
   cls?: HeroId;
   pack?: string;
   /** The number its text shows (`{n}`). */

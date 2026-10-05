@@ -555,7 +555,7 @@ export function rollCrossTraining(run: RunState): CardDef[] {
     const own: CardDef[] = [];
     for (let tries = 0; own.length < CONFIG.crossTrainPerClass && tries < 80; tries++) {
       const rarity = rng.weighted(odds, ([, w]) => w)[0];
-      const pool = CARD_LIST.filter((c) => c.cls === hero.id && c.rarity === rarity && !c.pack && !own.includes(c));
+      const pool = CARD_LIST.filter((c) => c.cls === hero.id && c.rarity === rarity && !c.pack && !c.starterOnly && !own.includes(c));
       if (pool.length) own.push(rng.pick(pool));
     }
     offer.push(...own);

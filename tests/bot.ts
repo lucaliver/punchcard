@@ -174,7 +174,7 @@ export function simulateRun(hero: HeroId, seed: number, opts: BotOpts): RunOutco
       run.cleared = true;
     } else if (node.type === 'copy') {
       // Thin the deck: shred a plain starter card (never a mana crystal).
-      const weak = run.deck.find((c) => CARDS[c.id].rarity === 'starter');
+      const weak = run.deck.find((c) => CARDS[c.id].starterOnly);
       if (weak && canShred(run)) shredCard(run, weak.uid);
       run.cleared = true;
     } else if (node.type === 'rest') {
@@ -195,7 +195,7 @@ export function simulateRun(hero: HeroId, seed: number, opts: BotOpts): RunOutco
         const picks = rollRewards(run, node.type === 'elite' ? 'elite' : 'fight');
         // Swap the best offer in for a plain starter card (never a mana crystal).
         const pick = picks.find((p) => p.def.rarity !== 'common') ?? picks[0];
-        const out = run.deck.find((d) => CARDS[d.id].rarity === 'starter');
+        const out = run.deck.find((d) => CARDS[d.id].starterOnly);
         if (pick && out) swapCard(run, out.uid, pick.def.id, pick.up);
       }
     }

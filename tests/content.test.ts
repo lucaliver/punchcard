@@ -58,6 +58,7 @@ describe('content integrity', () => {
     for (const h of HERO_LIST) for (const id of h.startDeck) expect(ids.has(id), id).toBe(true);
     for (const c of CARD_LIST) for (const id of c.makes ?? []) expect(ids.has(id) && id !== c.id, `${c.id} makes ${id}`).toBe(true);
     for (const h of HERO_LIST) expect(h.startDeck, h.id).toHaveLength(18);
+    for (const c of CARD_LIST) if (c.starterOnly) expect(HERO_LIST.some((h) => h.startDeck.includes(c.id)), c.id).toBe(true);
     for (const h of HERO_LIST) {
       // A single copy of each listed starter starts upgraded.
       const up = starterCards(h).filter((c) => c.up);

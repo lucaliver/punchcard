@@ -487,7 +487,6 @@ const en = {
   'type.skill': 'Skill',
   'type.power': 'Power',
   'type.curse': 'Curse',
-  'rarity.starter': 'Starter',
   'rarity.common': 'Common',
   'rarity.rare': 'Rare',
   'rarity.epic': 'Epic',

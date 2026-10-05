@@ -489,7 +489,6 @@ const it: Record<EnKey, string> = {
   'type.skill': 'Abilità',
   'type.power': 'Potere',
   'type.curse': 'Maledizione',
-  'rarity.starter': 'Iniziale',
   'rarity.common': 'Comune',
   'rarity.rare': 'Rara',
   'rarity.epic': 'Epica',

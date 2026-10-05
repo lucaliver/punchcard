@@ -84,7 +84,7 @@ const pct = (n: number): string => `${n >= 0 ? '+' : ''}${Math.round(n * 100)}%`
 const table = (head: string[], rows: string[][]): string =>
   [`| ${head.join(' | ')} |`, `|${head.map(() => '---').join('|')}|`, ...rows.map((r) => `| ${r.join(' | ')} |`)].join('\n');
 
-const RARITY = ['starter', 'common', 'rare', 'epic', 'legendary', 'special'];
+const RARITY = ['common', 'rare', 'epic', 'legendary', 'special'];
 const extrasOf = (r: CardRead, skip: string): string =>
   [
     ...Object.entries(r.v)
