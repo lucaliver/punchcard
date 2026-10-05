@@ -353,7 +353,7 @@ describe('combat engine', () => {
     expect(c.playCard(under!.card.uid)).toBe(true);
   });
 
-  it("the Senior Boomer's paper cuts deal 2 damage for every card that slips off the belt, at any HP", () => {
+  it("the Senior Boomer's paper cuts deal 1 damage for every card that slips off the belt, at any HP", () => {
     const c = setup({ enemy: ENEMIES.seniorBoomer, deck: deckOf(new Array(8).fill('punch')) });
     run(c, CONFIG.introTime + 0.01);
     c.enemy.move = { id: 'wait', intent: 'defend', windup: 999 };
@@ -363,9 +363,9 @@ describe('combat engine', () => {
       run(c, 0.05);
       return hp - c.hero.hp;
     };
-    expect(lost()).toBe(2);
+    expect(lost()).toBe(1);
     c.damage('hero', 'enemy', Math.ceil(c.enemy.maxHp / 2), { raw: true }, 'hero');
-    expect(lost()).toBe(2);
+    expect(lost()).toBe(1);
   });
 
   it('the Goblin Consultant stops the belt for a moment, then reverses it, for every quarter of its HP you take, cards keeping their place', () => {
@@ -1947,7 +1947,10 @@ describe('cards that fill the classes out', () => {
     expect(c.stash(c.belt[c.belt.length - 1].card.uid, 0)).toBe(true);
     c.hero.block = 0;
     const mana = c.hero.mana;
-    cast(c, 'crunchTime');
+    c.addTempCard('crunchTime', 'belt');
+    const crunch = c.belt[c.belt.length - 1].card;
+    crunch.passed = true;
+    expect(c.playCard(crunch.uid, 'auto')).toBe(true);
     expect(c.sleeve.every((x) => x === null)).toBe(true);
     expect(c.hero.block).toBe(CARDS.bobTheBuilder.vals[0]);
     expect(c.hero.mana).toBe(mana);
@@ -2294,9 +2297,9 @@ describe('relics', () => {
     expect(m.hero.mana).toBeGreaterThan(0);
   });
 
-  it('Inbox Zero adds a crystal and opens the fight with the mana full', () => {
+  it('Inbox Zero opens the fight with the mana full', () => {
     const c = setup({ relics: ['inboxZero'] });
-    expect(c.hero.maxMana).toBe(setup().hero.maxMana + 1);
+    expect(c.hero.maxMana).toBe(setup().hero.maxMana);
     expect(c.hero.mana).toBe(c.hero.maxMana);
   });
 
@@ -2462,15 +2465,15 @@ describe('act 3 rules', () => {
     expect(c.has('enemy', 'stun')).toBe(false);
   });
 
-  it('the Assembly Line only lets the front card of each belt row be played', () => {
+  it('the Assembly Line only lets a card be played once it has passed the middle of the belt', () => {
     const c = setup({ enemy: ENEMIES.lineLead });
     run(c, 8);
-    for (const row of [0, 1]) {
-      const cards = c.belt.filter((b) => b.row === row).sort((a, b) => b.pos - a.pos);
-      expect(cards.length).toBeGreaterThan(1);
-      expect(c.ruleBlock(cards[0].card)).toBeNull();
-      expect(c.ruleBlock(cards[1].card)?.status).toBe('assemblyLine');
-    }
+    const early = c.belt.filter((b) => b.pos < 0.5);
+    const late = c.belt.filter((b) => b.pos >= 0.5);
+    expect(early.length).toBeGreaterThan(0);
+    expect(late.length).toBeGreaterThan(0);
+    for (const b of early) expect(c.ruleBlock(b.card)?.status).toBe('assemblyLine');
+    for (const b of late) expect(c.ruleBlock(b.card)).toBeNull();
   });
 
   it('Machine Learning: every third card you let slip makes the enemy stronger', () => {
@@ -2778,5 +2781,45 @@ describe("Eight Hours, Krusty Krab, It's-a Me, Tip Jar, Raise Denied, CC the Bos
     run(c, (CONFIG.beltTime * EXPIRE_POS) / c.beltRate() + 0.5);
     expect(c.hero.hp).toBe(50 + CARDS.loompa.upVals![1]);
     expect(c.exhaust.some((x) => x.uid === lost.uid)).toBe(true);
+  });
+});
+
+describe('task batch', () => {
+  it('Thick Skin: Block under the threshold fades slower, a bigger one at the normal pace', () => {
+    const fade = (block: number, hero = HEROES.warrior): number => {
+      const c = setup({ hero });
+      c.enemy.move = { id: 'wait', intent: 'defend', windup: 999 };
+      run(c, CONFIG.introTime + 0.01);
+      c.hero.block = block;
+      c.hero.blockTimer = 0;
+      run(c, hero.blockDecay * 1.1);
+      return block - c.hero.block;
+    };
+    // Under the threshold the first step takes longer than the base pace; over it, not.
+    expect(fade(5)).toBe(0);
+    expect(fade(40)).toBeGreaterThan(0);
+  });
+
+  it('Voodoo Pin petrifies cards of the piles, never one on the belt', () => {
+    const c = setup({ deck: deckOf(new Array(12).fill('punch')) });
+    c.enemy.move = { id: 'wait', intent: 'defend', windup: 999 };
+    run(c, CONFIG.introTime + 0.01);
+    c.pinCards('petrify', 20, 0, { deckOnly: true });
+    expect(c.belt.some((b) => b.card.hex)).toBe(false);
+    expect([...c.draw, ...c.discard].some((x) => x.hex)).toBe(true);
+  });
+
+  it("HP gained in a fight (It's-a Me) never leaves the run above its max HP", () => {
+    const run1 = newRun('warrior', 3);
+    const c = setup({ hp: run1.hp, maxHp: run1.maxHp });
+    c.gainMaxHp(8);
+    applyCombat(run1, c);
+    expect(run1.hp).toBeLessThanOrEqual(run1.maxHp);
+  });
+
+  it('the Tailor shows up once in a whole run', () => {
+    for (let seed = 1; seed <= 20; seed++) {
+      expect(newRun('warrior', seed).nodes.filter((n) => n.type === 'tailor').length).toBeLessThanOrEqual(1);
+    }
   });
 });

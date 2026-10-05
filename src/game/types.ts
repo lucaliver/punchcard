@@ -409,6 +409,8 @@ export interface HeroDef {
   regen: number;
   /** Seconds per point of Block lost. */
   blockDecay: number;
+  /** Block below `below` fades `mul` times slower (Thick Skin). */
+  slowBlock?: { below: number; mul: number };
   startDeck: string[];
   /** Card ids of which one copy (the first in `startDeck`) starts upgraded: an attack and a defense. */
   startUpgraded: string[];

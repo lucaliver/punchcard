@@ -72,7 +72,7 @@ export const CONFIG = {
   /** Share of a fighter's current Block lost per decay step (at least 1), and the seconds between steps for an enemy (the hero's is on its `HeroDef`). */
   blockDecayShare: 0.1,
   enemyBlockDecay: 0.6,
-  /** The seconds between Block decay steps a hero starts from: a hero's own pace (`HeroDef.blockDecay`) is measured against it (Thick Skin). */
+  /** The seconds between Block decay steps a hero starts from: a hero's own pace (`HeroDef.blockDecay`) starts from it. */
   heroBlockDecay: 1,
   /** Mana more a card costs for each Inflation it carries, and while it is infected with a Virus. */
   inflationCost: 1,

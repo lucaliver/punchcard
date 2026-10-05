@@ -4,17 +4,17 @@ import type { RelicDef } from '../game/types';
 /** A relic shows itself in the fight: a floating name over the hero. */
 const proc = (c: Combat, id: string): void => c.events.emit({ type: 'relic', id });
 
-const STRESS_BALL_BLOCK = 12;
+const STRESS_BALL_BLOCK = 20;
 const THERMOS_HEAL = 5;
 const STAPLER_EVERY = 6;
 export const STAPLER_DAMAGE = 6;
-const MUG_EVERY = 5;
+const MUG_EVERY = 4;
 export const MUG_MANA = 1;
 const CLOCK_EVERY = 10;
 export const CLOCK_BLOCK = 4;
 /** How far in the belt has run when a fight with Sticky Notes starts (belt widths): most of its length, so it opens full. */
 const STICKY_BELT = 0.8;
-const DUCK_BLOCK = 18;
+const DUCK_BLOCK = 25;
 /** Share of max HP the Rubber Duck squeaks at. */
 const DUCK_HP = 0.5;
 const SHREDDER_BLOCK = 2;
@@ -47,7 +47,7 @@ const defs: RelicDef[] = [
     n: THERMOS_HEAL,
     hooks: { onCombatEnd: (c) => void (c.heal('hero', THERMOS_HEAL) > 0 && proc(c, 'thermos')) },
   },
-  { id: 'ergoChair', rarity: 'common', n: 12, mods: { regen: 1.12 } },
+  { id: 'ergoChair', rarity: 'common', n: 20, mods: { regen: 1.2 } },
   {
     id: 'coffeeMug',
     rarity: 'common',
@@ -92,7 +92,6 @@ const defs: RelicDef[] = [
     id: 'inboxZero',
     rarity: 'rare',
     n: 1,
-    mods: { maxMana: 1 },
     hooks: {
       onCombatStart: (c) => {
         c.gainMana(c.hero.maxMana);
@@ -161,7 +160,7 @@ const defs: RelicDef[] = [
     hooks: {
       // The cards are upgraded for this fight only (combat cards are copies), but each must be chipped free first.
       onCombatStart: (c) => {
-        c.pinCards('petrify', STATUETTE_CARDS, 0, true);
+        c.pinCards('petrify', STATUETTE_CARDS, 0, { upgrade: true });
         proc(c, 'statuette');
       },
     },

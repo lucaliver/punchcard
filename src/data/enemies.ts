@@ -63,7 +63,7 @@ const defs: EnemyDef[] = [
       { id: 'gatekeep', intent: 'curse', windup: 4, curse: [{ id: 'gatekeeping', n: 2, to: 'belt' }], status: [gainStrength] },
     ],
     // Paper cuts: every card you let slip off the belt hurts.
-    start: [{ id: 'paperCuts', v: 2 }],
+    start: [{ id: 'paperCuts', v: 1 }],
   },
   {
     id: 'toxicCoworker',
@@ -419,12 +419,12 @@ const defs: EnemyDef[] = [
     id: 'powerSocket',
     act: 2,
     tier: 'normal',
-    hp: 85,
+    hp: 110,
     art: 'powerSocket',
     main: atk('shortCircuit', 6, 6),
     every: 2,
     specials: [
-      { id: 'surge', intent: 'buff', windup: 5, status: [gainStrength] },
+      { id: 'surge', intent: 'buff', windup: 5, block: 12, status: [gainStrength] },
       { id: 'brownout', intent: 'drain', windup: 5, drainMana: 2 },
       atk('overload', 14, 10, { intent: 'charge' }),
     ],

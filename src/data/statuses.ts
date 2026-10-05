@@ -5,9 +5,11 @@ import { CONFIG } from './config';
 /** How long every card played brings the Light Sleeper's hit closer (seconds). */
 export const WAKE_PER_CARD = 1;
 /** The No Repeats Policy only covers cards played this close together (s), so a one-type deck is slowed, never locked. */
-export const POLICY_WINDOW = 3;
+export const POLICY_WINDOW = 2;
 /** Meticulous: two cards from the same belt row can't be played this close together (s), so an empty row never locks you. */
 export const LANE_WINDOW = 4;
+/** Assembly Line: how far along the belt a card must have ridden to be played (a share of its length). */
+const ASSEMBLY_FROM = 0.5;
 /** Chill Out: seconds between two cards. */
 export const CHILL_GAP = 2;
 /** Micromanagement: seconds without playing a card before he cuts in. */
@@ -537,7 +539,7 @@ const defs: StatusDef[] = [
   },
   // Rate limit: `v` is the most one hit of your cards can deal.
   { id: 'rateLimit', tone: 'teal', kind: 'stacks', good: true, passive: true, icon: 'funnel', capsHits: true },
-  // Assembly line: only the card at the front of its belt row can be played (curses can always be paid off).
+  // Assembly line: a card can only be played once its front has passed the middle of the belt (curses can always be paid off).
   {
     id: 'assemblyLine',
     tone: 'purple',
@@ -548,7 +550,7 @@ const defs: StatusDef[] = [
     canPlay: (c, side, def, uid) => {
       const me = c.belt.find((b) => b.card.uid === uid);
       if (side !== 'enemy' || def.type === 'curse' || !me || me.pinned) return null;
-      return c.belt.some((b) => b.row === me.row && !b.pinned && b.pos > me.pos) ? 'combat.assemblyLine' : null;
+      return me.pos < ASSEMBLY_FROM ? 'combat.assemblyLine' : null;
     },
   },
   // VIP treatment: the client wants to be served in person, so an attack dragged onto the stage is critical (`Combat.playCard`).

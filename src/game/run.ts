@@ -85,6 +85,8 @@ const LANES: Slot[][] = [
 ];
 /** A `special` slot of a lane becomes one of these when the act is built; one act never deals the same room twice. */
 export const SPECIALS: NodeType[] = ['copy', 'tailor', 'lostFound', 'vending', 'crossTraining'];
+/** Rooms that show up once in a whole run, however many acts it has. */
+const ONCE_PER_RUN: NodeType[] = ['tailor'];
 /** Floors on a single road at the start of act 1, before the map splits in two (then the lanes skip as many floors). */
 const ACT1_OPENING = 3;
 /** Links between the lanes per act: diagonal (to the other lane one floor up) or flat (across the same floor, both ways). */
@@ -230,12 +232,14 @@ function dealLayout(rng: Rng, opening: number, scripted: boolean): { lanes: Slot
  * boss where they meet. `last` are the nodes of the act before (they lead to its first fight). Returns the boss.
  */
 function addAct(nodes: RunNode[], rng: Rng, act: number, last: RunNode[], scripted: boolean): RunNode[] {
+  const dealt = new Set(nodes.map((n) => n.type));
   // Deal normal enemies from a shuffled bag so the same one doesn't repeat back to back.
   let bag: EnemyDef[] = [];
   let specials: NodeType[] = [];
   const add = (floor: number, lane: number, slot: Slot, fixed?: string): RunNode => {
-    if (slot === 'special' && !specials.length) specials = rng.shuffle([...SPECIALS]);
+    if (slot === 'special' && !specials.length) specials = rng.shuffle(SPECIALS.filter((s) => !(ONCE_PER_RUN.includes(s) && dealt.has(s))));
     const type = slot === 'special' ? specials.pop()! : slot;
+    dealt.add(type);
     // A set enemy (the orientation fight) takes nobody's turn.
     let enemy = fixed;
     if (!enemy && type === 'fight') {
@@ -338,8 +342,10 @@ export function fightPay(tier: EnemyDef['tier'], seconds: number): number {
 
 /** Copies the combat outcome back into the run. */
 export function applyCombat(run: RunState, combat: Combat): void {
-  run.stats.damageTaken += Math.max(0, run.hp - combat.hero.hp);
-  run.hp = Math.max(0, combat.hero.hp);
+  // Max HP gained in the fight (It's-a Me) is only for the fight: HP never stays above the run's max.
+  const hp = Math.min(Math.max(0, combat.hero.hp), run.maxHp);
+  run.stats.damageTaken += Math.max(0, run.hp - hp);
+  run.hp = hp;
   run.stats.cardsPlayed += combat.cardsPlayed;
   const node = currentNode(run);
   recordFight({

@@ -76,7 +76,7 @@
 }
 .card[data-type='attack'] { --art-bg: var(--cat-attack); --art-dot: var(--cat-attack-dot); --art-ink2: var(--y); --rule-ink: var(--p); }
 .card[data-type='defense'] { --art-bg: var(--cat-defense); --art-dot: var(--cat-defense-dot); --art-ink2: var(--y); --rule-ink: var(--b); }
-.card[data-type='skill'] { --art-bg: var(--cat-skill); --art-dot: var(--cat-skill-dot); --art-ink2: var(--b); --rule-ink: var(--cat-skill-ink); }
+.card[data-type='skill'] { --art-ray: var(--y); --art-bg: var(--cat-skill); --art-dot: var(--cat-skill-dot); --art-ink2: var(--b); --rule-ink: var(--cat-skill-ink); }
 .card[data-type='power'] { --art-bg: var(--cat-power); --art-dot: var(--cat-power-dot); --art-ink2: var(--y); --rule-ink: var(--k); }
 .card[data-type='curse'] { --art-bg: var(--cat-curse); --art-dot: var(--cat-curse-dot); --art-ink2: var(--p); --rule-ink: var(--green); }
 .c-art .pico {
@@ -209,9 +209,9 @@
 /* ...but a legendary waiting for mana still shows its charge veil (combat-belt.css), without the foil */
 .combat .card[data-rarity='legendary'].charging::after { opacity: 1; background-image: none; animation: none; }
 
-/* legendary: sunburst rays behind the picture, under the dots */
+/* legendary: sunburst rays behind the picture, under the dots (a skill's yellow needs a stronger ray than paper) */
 .card[data-rarity='legendary'] .c-art {
-  background-image: radial-gradient(circle, var(--art-dot) 22%, transparent 25%), repeating-conic-gradient(from 0deg at 50% 50%, transparent 0 7.5deg, var(--paper) 7.5deg 15deg);
+  background-image: radial-gradient(circle, var(--art-dot) 22%, transparent 25%), repeating-conic-gradient(from 0deg at 50% 50%, transparent 0 7.5deg, var(--art-ray, var(--paper)) 7.5deg 15deg);
   background-size: 7cqw 7cqw, 100% 100%;
 }
 

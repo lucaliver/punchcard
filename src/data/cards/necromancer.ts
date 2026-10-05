@@ -36,7 +36,7 @@ export const necromancerCards: CardDef[] = [
     cls: 'necromancer',
     type: 'attack',
     rarity: 'starter',
-    cost: 3,
+    cost: 2,
     vals: [2, 4],
     upVals: [3, 6],
     art: 'toxicMemo',
@@ -420,7 +420,7 @@ export const necromancerCards: CardDef[] = [
     keywords: ['exhaust'],
     art: 'voodooPin',
     // The petrified cards cost less for this fight, but they have to be chipped free first.
-    play: (c, v) => c.pinCards('petrify', v[0], v[1]),
+    play: (c, v) => c.pinCards('petrify', v[0], v[1], { deckOnly: true }),
   },
   {
     id: 'passiveAggressive',

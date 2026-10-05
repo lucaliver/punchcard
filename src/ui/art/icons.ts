@@ -478,6 +478,11 @@ export const ICONS: Record<string, { el: Element; svg: string }> = {
     el: 'arcane',
     svg: `<path d="M3 28h24v14c0 7-5 12-12 12S3 49 3 42z"/><path d="M35 28h24v14c0 7-5 12-12 12s-12-5-12-12z"/><rect x="1" y="56" width="62" height="5"/><g ${S} stroke-width="4"><path d="M13 22c-3-4 3-6 0-11M45 22c-3-4 3-6 0-11"/></g>`,
   },
+  // Moka pot: a faceted aluminium pot with a spout, a black handle and a lid knob
+  moka: {
+    el: 'arcane',
+    svg: `<path d="M20 4h22l2 6H18z"/><rect x="29" y="1" width="6" height="5" fill="#16121f"/><path d="M16 12h32l-6 20H22z"/><path d="M22 32h20l8 26H14z"/><rect x="16" y="30" width="32" height="4" fill="#16121f"/><path d="M48 14h8c4 0 6 4 6 10s-2 10-6 10h-6v-5h4c1 0 2-2 2-5s-1-5-2-5h-4z" fill="#16121f"/><path d="M12 12l-6-4v8z"/>`,
+  },
   // Swedish flag on a pole: a Nordic cross, off-centre towards the pole
   flagSweden: {
     el: 'nature',
@@ -617,7 +622,7 @@ export const ICONS: Record<string, { el: Element; svg: string }> = {
 
   quickReboot: {
     el: 'arcane',
-    svg: `<g ${S} stroke-width="7"><path d="M32 4v28M17 13a24 24 0 1 0 30 0"/></g>`,
+    svg: `<rect x="4" y="6" width="56" height="40"/><rect x="10" y="12" width="44" height="28" fill="#16121f"/><path d="M26 46h12l3 10H23z"/><rect x="16" y="56" width="32" height="5"/><g fill="none" stroke="currentColor" stroke-width="4" stroke-linecap="square"><path d="M41 22a10 10 0 1 0 2 8"/><path d="M42 16v7h-7"/></g>`,
   },
   twoFactorAuth: {
     el: 'arcane',

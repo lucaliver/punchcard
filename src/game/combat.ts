@@ -36,6 +36,8 @@ export interface Fighter {
   dotTimer: number;
   /** Seconds per decay step of Block. */
   blockDecay: number;
+  /** Block below `below` decays `mul` times slower (the hero's passive). */
+  slowBlock?: { below: number; mul: number };
 }
 
 export interface HeroState extends Fighter {
@@ -207,6 +209,7 @@ export class Combat {
       blockTimer: 0,
       dotTimer: 0,
       blockDecay: h.blockDecay,
+      slowBlock: h.slowBlock,
       mana: Math.min(CONFIG.startMana, maxMana),
       maxMana: Math.min(maxMana, CONFIG.maxManaCap),
       regen: h.regen,
@@ -502,8 +505,8 @@ export class Combat {
   }
 
   /** `n` random cards that fit: the belt's first, then the rest of the deck (draw and discard piles). */
-  private pickCards(fits: (c: CombatCard) => boolean, n: number): CombatCard[] {
-    const onBelt = this.rng.shuffle(this.belt.map((b) => b.card).filter(fits));
+  private pickCards(fits: (c: CombatCard) => boolean, n: number, deckOnly = false): CombatCard[] {
+    const onBelt = deckOnly ? [] : this.rng.shuffle(this.belt.map((b) => b.card).filter(fits));
     const rest = this.rng.shuffle([...this.draw, ...this.discard].filter(fits));
     return [...onBelt, ...rest].slice(0, n);
   }
@@ -513,13 +516,18 @@ export class Combat {
     return [...this.draw, ...this.discard, ...this.exhaust, ...this.belt.map((b) => b.card), ...this.sleeve.filter((c) => c !== null)];
   }
 
+  /** Seconds until Block next decays: a hero with a slow-fade passive keeps a small Block longer. */
+  private blockStep(f: Fighter): number {
+    return f.slowBlock && f.block < f.slowBlock.below ? f.blockDecay * f.slowBlock.mul : f.blockDecay;
+  }
+
   private tickFighter(side: Side, dt: number): void {
     const f = this.fighter(side);
     // Block decays in steps: a share of the current block (at least 1) per interval, unless a status holds it.
     if (f.block > 0 && !this.flag(side, 'holdsBlock')) {
       f.blockTimer += dt;
-      while (f.blockTimer >= f.blockDecay && f.block > 0) {
-        f.blockTimer -= f.blockDecay;
+      for (let step = this.blockStep(f); f.blockTimer >= step && f.block > 0; step = this.blockStep(f)) {
+        f.blockTimer -= step;
         f.block = Math.max(0, f.block - Math.max(1, Math.ceil(f.block * CONFIG.blockDecayShare)));
       }
     } else {
@@ -1620,13 +1628,13 @@ export class Combat {
     }
   }
 
-  /** Voodoo Pin: `n` random cards (belt first, then the rest of the deck) are hexed, and cost `cheaper` less for the rest of the fight. */
-  pinCards(id: string, n: number, cheaper: number, upgrade = false): void {
+  /** `n` random cards (belt first, then the rest of the deck; `deckOnly`: just the piles) are hexed, and cost `cheaper` less for the rest of the fight (Voodoo Pin); `upgrade` upgrades them for it too (Statuette). */
+  pinCards(id: string, n: number, cheaper: number, opts: { upgrade?: boolean; deckOnly?: boolean } = {}): void {
     const hex = HEXES[id];
-    for (const card of this.pickCards((c) => !isCurse(c) && !c.hex && this.cardCost(c) > 0, n)) {
+    for (const card of this.pickCards((c) => !isCurse(c) && !c.hex && this.cardCost(c) > 0, n, opts.deckOnly)) {
       card.hex = { id, left: hex.taps, t: hex.thaw };
       card.cut = (card.cut ?? 0) + cheaper;
-      if (upgrade) card.up = true;
+      if (opts.upgrade) card.up = true;
       this.events.emit({ type: 'hexed', card });
     }
   }

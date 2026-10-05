@@ -547,7 +547,7 @@ export const warriorCards: CardDef[] = [
     face: '{maxHp:0}',
     cls: 'warrior',
     type: 'defense',
-    rarity: 'rare',
+    rarity: 'legendary',
     cost: 3,
     vals: [5],
     upVals: [8],

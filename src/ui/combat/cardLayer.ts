@@ -267,8 +267,8 @@ export function createCardLayer(v: CombatView): CardLayer {
     if (!drag || ev.pointerId !== drag.pointerId) return;
     const d = drag;
     clearTimeout(d.timer);
-    // A card that sweeps the belt is played the moment it is let go, wherever that is.
-    if (!d.moved || sweepOf(d.uid)) {
+    // A card that sweeps the belt is played the moment it is let go, wherever that is (except over a sleeve slot: that stashes it).
+    if (!d.moved || (sweepOf(d.uid) && (d.from !== 'belt' || slotAt(ev.clientX, ev.clientY) < 0))) {
       cancelDrag();
       playUid(d.uid, d.moved);
       return;

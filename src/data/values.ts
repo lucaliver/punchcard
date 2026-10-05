@@ -2,7 +2,7 @@ import { ENEMIES, HALF } from './enemies';
 import { CONFIG } from './config';
 import { CARDS } from './cards';
 import { HARDSHIP_HP, JUST_CAUSE_HP } from './cards/warrior';
-import { HEROES, OVERTIME_MULT, OVERTIME_TIME, TIME_THEFT, VIRULENCE_START } from './heroes';
+import { OVERTIME_MULT, OVERTIME_TIME, THICK_SKIN, TIME_THEFT, VIRULENCE_START } from './heroes';
 import { PERKS } from './perks';
 import { CLOCK_BLOCK, MUG_MANA, STAPLER_DAMAGE } from './relics';
 import {
@@ -98,7 +98,8 @@ export const VALUES = {
   slavesStall: HALF.slavesStall,
   complianceSlow: HALF.complianceSlow,
   // Heroes
-  thickSkinPct: pct(HEROES.warrior.blockDecay / CONFIG.heroBlockDecay - 1),
+  thickSkinPct: pct(THICK_SKIN.mul - 1),
+  thickSkinBelow: THICK_SKIN.below,
   overtimeMult: OVERTIME_MULT,
   overtimeTime: OVERTIME_TIME,
   timeTheft: TIME_THEFT,

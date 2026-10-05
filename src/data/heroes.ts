@@ -1,3 +1,4 @@
+import { CONFIG } from './config';
 import type { HeroDef, HeroId } from '../game/types';
 
 const rep = (id: string, n: number): string[] => new Array(n).fill(id);
@@ -7,6 +8,8 @@ export function starterCards(hero: HeroDef): { id: string; up: boolean }[] {
   const pending = new Set(hero.startUpgraded);
   return hero.startDeck.map((id) => ({ id, up: pending.delete(id) }));
 }
+/** Thick Skin (Warrior passive): Block under this much fades this many times slower. */
+export const THICK_SKIN = { below: 15, mul: 1.3 };
 /** Virulence (Necromancer passive): every enemy starts the fight with this much Poison. */
 export const VIRULENCE_START = 3;
 /** Overtime (Warrior ability): attacks deal this many times as much, for this long (s). */
@@ -20,7 +23,8 @@ const warrior: HeroDef = {
   hp: 60,
   maxMana: 3,
   regen: 1.25,
-  blockDecay: 1.2,
+  blockDecay: CONFIG.heroBlockDecay,
+  slowBlock: THICK_SKIN,
   // Starter decks: only basic cards (plus mana crystals); everything else comes from rewards.
   startDeck: [...rep('punch', 6), ...rep('bobTheBuilder', 6), 'bellaCiao', 'coffee', 'coffee'],
   startUpgraded: ['punch', 'bobTheBuilder'],
