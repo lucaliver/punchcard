@@ -1,4 +1,4 @@
-# Builds the game with Vite and publishes it to GitHub Pages on every push to master.
+# Builds the game with Vite and publishes it to GitHub Pages on every push to master. The `beta` branch is built as it is and served at /beta.
 name: Deploy to GitHub Pages
 
 on:
@@ -29,6 +29,13 @@ jobs:
         env:
           # Count endpoint of the stats service (repository variable); empty = no stats.
           VITE_STATS_URL: ${{ vars.STATS_URL }}
+      - uses: actions/checkout@v4
+        with:
+          ref: beta
+          path: beta
+      - run: npm ci && npm run build
+        working-directory: beta
+      - run: mv beta/dist dist/beta
       - uses: actions/upload-pages-artifact@v3
         with:
           path: dist
