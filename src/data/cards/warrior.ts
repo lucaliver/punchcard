@@ -144,6 +144,8 @@ export const warriorCards: CardDef[] = [
     cost: -1,
     vals: [4],
     upVals: [6],
+    span: 2,
+    keywords: ['large'],
     art: 'bankrupt',
     // X cost: the engine appends the mana spent as the last value.
     play: (c, v) => void c.hit(v[0], { hits: v[v.length - 1] }),
@@ -186,7 +188,8 @@ export const warriorCards: CardDef[] = [
     cost: 4,
     vals: [10],
     upVals: [16],
-    keywords: ['pending'],
+    span: 2,
+    keywords: ['pending', 'large'],
     art: 'fang',
     play: (c, v) => {
       const dealt = c.hit(v[0]);
@@ -248,7 +251,8 @@ export const warriorCards: CardDef[] = [
     upCost: 5,
     vals: [20, 5],
     upVals: [25, 7],
-    keywords: ['pending'],
+    span: 2,
+    keywords: ['pending', 'large'],
     art: 'quake',
     play: (c, v) => {
       c.hit(v[0], { kind: 'blunt' });
@@ -465,6 +469,8 @@ export const warriorCards: CardDef[] = [
     cost: 2,
     upCost: 1,
     vals: [2, 24],
+    span: 2,
+    keywords: ['large'],
     art: 'pyramidScheme',
     play: (c, v) => c.gainBlock('hero', Math.min(v[1], c.hero.block * (v[0] - 1))),
   },
