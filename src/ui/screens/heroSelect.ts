@@ -2,7 +2,7 @@ import { t } from '../../core/i18n';
 import { sfx } from '../../audio/sfx';
 import { haptic } from '../fx/fx';
 import { HERO_LIST, starterCards } from '../../data/heroes';
-import { chosenMemos, heroFresh, heroUnlocked, markHeroSeen, memosOpen } from '../../game/meta';
+import { chosenMemos, heroFresh, heroHidden, heroUnlocked, markHeroSeen, memosOpen } from '../../game/meta';
 import type { HeroDef, HeroId, HeroUnlock } from '../../game/types';
 import type { Screen } from '../app';
 import { creature } from '../art/creatures';
@@ -13,8 +13,13 @@ import { openMemos } from '../components/memos';
 import { openDeck, openStatInfo } from '../components/modals';
 import { h, onPress, retrigger, stagger } from '../dom';
 
+/** How to unlock a hero (a hero hired only by the debug menu is not on this screen until then). */
 const unlockText = (u: HeroUnlock): string =>
-  'finishRun' in u ? t('hero.unlock.finishRun', { hero: t(`hero.${u.finishRun}.name`) }) : t('hero.unlock.reachBoss', { n: u.reachBoss });
+  'finishRun' in u
+    ? t('hero.unlock.finishRun', { hero: t(`hero.${u.finishRun}.name`) })
+    : 'reachBoss' in u
+      ? t('hero.unlock.reachBoss', { n: u.reachBoss })
+      : '';
 
 function slide(hero: HeroDef, index: number): HTMLElement {
   const id = hero.id;
@@ -82,13 +87,14 @@ function slide(hero: HeroDef, index: number): HTMLElement {
 
 /** Game-style hero select: one hero per screen, swipe or use the arrows; the hero in view is the one chosen. */
 export function heroSelectScreen(onStart: (hero: HeroId) => void, onBack: () => void, first?: HeroId): Screen {
+  const heroes = HERO_LIST.filter((hd) => !heroHidden(hd.id));
   let index = Math.max(
     0,
-    HERO_LIST.findIndex((hd) => hd.id === first),
+    heroes.findIndex((hd) => hd.id === first),
   );
-  const slides = HERO_LIST.map(slide);
+  const slides = heroes.map(slide);
   const track = h('div', { class: 'hero-track', role: 'region', 'aria-label': t('hero.select') }, ...slides);
-  const dots = HERO_LIST.map((hd, i) =>
+  const dots = heroes.map((hd, i) =>
     h('button', {
       class: `hero-dot ${heroUnlocked(hd.id) ? '' : 'locked'}`,
       'data-hero': hd.id,
@@ -105,10 +111,10 @@ export function heroSelectScreen(onStart: (hero: HeroId) => void, onBack: () => 
       class: 'btn block',
       onclick: () => {
         // The Locked button does what the padlock does.
-        if (!heroUnlocked(HERO_LIST[index].id)) return void slides[index].querySelector<HTMLElement>('.hero-lock')?.click();
+        if (!heroUnlocked(heroes[index].id)) return void slides[index].querySelector<HTMLElement>('.hero-lock')?.click();
         sfx('button');
         haptic('tap');
-        onStart(HERO_LIST[index].id);
+        onStart(heroes[index].id);
       },
     },
     t('hero.start'),
@@ -125,7 +131,7 @@ export function heroSelectScreen(onStart: (hero: HeroId) => void, onBack: () => 
   });
 
   const sync = (): void => {
-    const hero = HERO_LIST[index];
+    const hero = heroes[index];
     const memos = memosOpen(hero.id);
     memoBtn.hidden = !memos;
     memoBtn.innerHTML = `${icon('clipboard')}${memos && chosenMemos().length ? `<b>${chosenMemos().length}</b>` : ''}`;
@@ -143,11 +149,11 @@ export function heroSelectScreen(onStart: (hero: HeroId) => void, onBack: () => 
       d.setAttribute('aria-current', String(i === index));
     });
     prev.disabled = index === 0;
-    next.disabled = index === HERO_LIST.length - 1;
+    next.disabled = index === heroes.length - 1;
   };
 
   function goTo(i: number): void {
-    const target = Math.max(0, Math.min(HERO_LIST.length - 1, i));
+    const target = Math.max(0, Math.min(heroes.length - 1, i));
     // Instant: the browser's smooth scroll takes ~half a second and crawls through every hero in between.
     track.scrollTo({ left: target * track.clientWidth, behavior: 'instant' });
   }
@@ -157,7 +163,7 @@ export function heroSelectScreen(onStart: (hero: HeroId) => void, onBack: () => 
     'scroll',
     () => {
       const i = Math.round(track.scrollLeft / Math.max(1, track.clientWidth));
-      if (i === index || i < 0 || i >= HERO_LIST.length) return;
+      if (i === index || i < 0 || i >= heroes.length) return;
       index = i;
       sfx('tap');
       sync();

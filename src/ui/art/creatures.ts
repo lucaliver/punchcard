@@ -539,6 +539,25 @@ ${shadow}
 <rect x="68" y="124" width="64" height="6" fill="#1b1830"/>
 <rect x="144" y="104" width="14" height="44" fill="#f6f0e4" ${OUT}/><path d="M144 116h14M144 128h14" stroke="#1b1830" stroke-width="3"/>`;
 
+/** The Rogue: the temp in a hi-vis rust hoodie and a bandit mask, a lanyard badge reading TEMP, a tote bag full of other people's stationery, a stolen stapler in one hand. */
+const rogue = `
+<defs>${lg('ro-h', '#f2a05a', '#c25a1c')}${lg('ro-f', '#ffb4d4', '#ff86bc')}${lg('ro-b', '#fbf4df', '#d8d0c0')}</defs>
+<path d="M18 200c0-44 34-66 82-66s82 22 82 66z" fill="url(#ro-h)" ${OUT}/>
+<path d="M80 134l20 42 20-42" stroke="#ff3d9a" stroke-width="5" fill="none"/>
+<rect x="88" y="170" width="24" height="22" fill="#f6f0e4" ${OUT}/><rect x="92" y="175" width="16" height="5" fill="#1c5fd0"/><rect x="92" y="184" width="10" height="3" fill="#1b1830"/>
+<path d="M30 146l-6-30M42 146l2-34M54 146l10-28" stroke="#1c5fd0" stroke-width="5" stroke-linecap="round"/>
+<path d="M18 150h50l6 46H12z" fill="url(#ro-b)" ${OUT}/>
+<path d="M32 150c0-26 22-26 22 0" stroke="#120e18" stroke-width="5" fill="none"/>
+<rect x="24" y="168" width="38" height="8" fill="#ff3d9a"/>
+<path d="M100 8c-32 6-52 34-52 66 0 22 8 44 14 56h76c6-12 14-34 14-56 0-32-20-60-52-66z" fill="url(#ro-h)" ${OUT}/>
+<path d="M72 76c0-18 12-30 28-30s28 12 28 30v18c0 16-12 28-28 28s-28-12-28-28z" fill="#1b1830"/>
+<path d="M78 82c0-14 10-22 22-22s22 8 22 22v12c0 12-10 20-22 20s-22-8-22-20z" fill="url(#ro-f)" ${OUT}/>
+<path d="M76 78h48v16H76z" fill="#1b1830"/>
+<g class="eye"><rect x="82" y="83" width="12" height="6" fill="#f6f0e4"/><rect x="106" y="83" width="12" height="6" fill="#f6f0e4"/><rect x="87" y="83" width="5" height="6" fill="#c85a20"/><rect x="111" y="83" width="5" height="6" fill="#c85a20"/></g>
+<path d="M86 104c8 7 20 7 28 0" stroke="#1b1830" stroke-width="3.5" fill="none"/><path d="M100 109l3-5" stroke="#f6f0e4" stroke-width="3"/>
+<g class="limb"><path d="M128 140c14 2 22 12 22 22l-16 4z" fill="url(#ro-h)" ${OUT}/><circle cx="144" cy="164" r="9" fill="url(#ro-f)" ${OUT}/>
+<g transform="rotate(-18 150 150)"><rect x="132" y="148" width="46" height="12" fill="#ff3d9a" ${OUT}/><path d="M132 148c0-10 8-14 20-16l26-4v20z" fill="#d03a8a" ${OUT}/><rect x="170" y="140" width="6" height="6" fill="#f6f0e4"/></g></g>`;
+
 const warrior = `
 <defs>${lg('wa-h', '#9ac0f8', '#1c5fd0', 1, 1)}${lg('wa-s', '#ffb4d4', '#ff86bc')}${lg('wa-a', '#ff8ac8', '#d03a8a')}${lg('wa-y', '#ffc890', '#ffbc80')}</defs>
 <path d="M14 200c0-46 36-70 86-70 34 0 58 10 70 30l6 40z" fill="url(#wa-a)" ${OUT}/>
@@ -1299,6 +1318,7 @@ export const CREATURES: Record<string, string> = {
   warrior,
   mage,
   necromancer,
+  rogue,
 };
 
 /** Riso-pixel sprite of a creature (see riso.ts). */

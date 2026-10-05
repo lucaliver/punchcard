@@ -5,7 +5,7 @@ import { CONFIG } from '../../data/config';
 import { DEBUG_ENEMY, ENEMY_LIST } from '../../data/enemies';
 import { HERO_LIST } from '../../data/heroes';
 import { RELIC_LIST } from '../../data/relics';
-import { unlockAll } from '../../game/meta';
+import { heroHidden, unlockAll } from '../../game/meta';
 import { settings } from '../../game/settings';
 import type { HeroId } from '../../game/types';
 import { openModal, type ModalHandle } from '../app';
@@ -102,7 +102,7 @@ export function openDebugFight(onPick: (hero: HeroId, enemy: string, cards: stri
   const options = h('div', { class: 'debug-options' }, hpBtn, allBtn);
   const renderHeroes = (): void => {
     heroSeg.replaceChildren(
-      ...HERO_LIST.map((hd) =>
+      ...HERO_LIST.filter((hd) => !heroHidden(hd.id)).map((hd) =>
         h('button', {
           'aria-pressed': String(hd.id === hero),
           onclick: () => {

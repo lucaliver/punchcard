@@ -18,7 +18,7 @@ export const TAG_ICON: Record<string, string> = {
   large: 'large',
   echo: 'echoKw',
   anchor: 'anchor',
-  credit: 'creditCard',
+  credit: 'debt',
 };
 
 /** Glyph kind → icon and the unit shown after its value. */

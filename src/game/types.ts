@@ -1,12 +1,24 @@
 import type { TKey } from '../core/i18n';
 import type { Combat } from './combat';
 
-export type HeroId = 'warrior' | 'mage' | 'necromancer';
+export type HeroId = 'warrior' | 'mage' | 'necromancer' | 'rogue';
 export type CardClass = HeroId | 'neutral' | 'curse';
 /** A card's type is the colour of its background: attack pink, defense blue, skill yellow, power grey, curse green. */
 export type CardType = 'attack' | 'defense' | 'skill' | 'power' | 'curse';
 export type Rarity = 'common' | 'rare' | 'epic' | 'legendary' | 'special';
-export type Keyword = 'exhaust' | 'consume' | 'fleeting' | 'unplayable' | 'volatile' | 'innate' | 'pending' | 'bulky' | 'large' | 'echo' | 'anchor';
+export type Keyword =
+  | 'exhaust'
+  | 'consume'
+  | 'fleeting'
+  | 'unplayable'
+  | 'volatile'
+  | 'innate'
+  | 'pending'
+  | 'bulky'
+  | 'large'
+  | 'echo'
+  | 'anchor'
+  | 'credit';
 export type Side = 'hero' | 'enemy';
 
 /** A card in the run deck. */
@@ -60,6 +72,8 @@ export interface CombatCard extends CardInst {
   cut?: number;
   /** A copy made this fight with the Fleeting keyword on top of its own (Krusty Krab). */
   fleeting?: true;
+  /** Mana the cards falling into a full sleeve have taken off its cost, until the card is next played (the Rogue's passive). */
+  disc?: number;
 }
 
 /** A card as the rules and the UI read it: a deck copy, with the combat state (bonus, tax…) when it is in a fight. */
@@ -213,6 +227,8 @@ export interface StatusDef {
   handsTied?: true;
   /** A debuff that hurts whoever carries it the same way, so the hero can hand it to the enemy (CC the Boss). */
   passable?: true;
+  /** While active on the hero, its amount (`v`) adds to the discount a card falling into a full sleeve gives (Light Fingers). */
+  catchBonus?: true;
   /** While active on the hero, the next card that costs mana is free and takes one stack with it (Lost Badge). */
   freeNext?: true;
   /** While active on the hero, no card rule (`canPlay`) applies (Root access). */
@@ -389,8 +405,8 @@ export interface RunLog {
   at: number;
 }
 
-/** How a hero is unlocked: finish a run (win or lose) with another hero, or reach the boss of an act. */
-export type HeroUnlock = { finishRun: HeroId } | { reachBoss: number };
+/** How a hero is unlocked: finish a run (win or lose) with another hero, reach the boss of an act, or (a hero still in the works) only through the debug menu's unlock-all. */
+export type HeroUnlock = { finishRun: HeroId } | { reachBoss: number } | { debug: true };
 
 /**
  * A management memo: an optional handicap for a run, open to a hero that has won a full day. Several can be active at once;
@@ -431,6 +447,8 @@ export interface HeroDef {
   startUpgraded: string[];
   /** Sleeve slots. */
   sleeve: number;
+  /** Every card (but a curse) falling off the belt lands in the sleeve instead of being lost; with the sleeve full, every card in it costs `discount` less until played (Sticky Fingers). */
+  catchesFalls?: { discount: number };
   starterRelic?: string;
   /** The status that is this hero's passive: it leads the hero's status row (empty too) in place of a passive icon. */
   passiveStatus?: string;
@@ -496,6 +514,10 @@ export type CombatEvent =
   | { type: 'cardEchoed'; card: CombatCard }
   | { type: 'cardExpired'; card: CombatCard }
   | { type: 'cardStashed'; card: CombatCard; slot: number }
+  /** The sleeve grew a slot for the rest of the fight. */
+  | { type: 'sleeveGrew' }
+  /** Cards in the sleeve got cheaper (a full sleeve caught a falling card, a card cut their cost). */
+  | { type: 'sleeveCheaper' }
   | { type: 'cardStolen'; card: CombatCard }
   | { type: 'cantAfford'; card: CombatCard }
   | { type: 'cardAdded'; card: CombatCard; to: 'belt' | 'draw' | 'discard' }

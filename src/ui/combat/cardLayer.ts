@@ -1,7 +1,7 @@
 import { t } from '../../core/i18n';
 import { sfx } from '../../audio/sfx';
 import { CONFIG } from '../../data/config';
-import { CARDS, cardValsOf, isLarge } from '../../data/cards';
+import { CARDS, cardKeywordsOf, cardValsOf, isLarge } from '../../data/cards';
 import { STATUSES, statusIcon } from '../../data/statuses';
 import type { CombatCard } from '../../game/types';
 import { icon } from '../art/icons';
@@ -80,10 +80,12 @@ export function createCardLayer(v: CombatView): CardLayer {
   const removals = new Map<number, Removal>();
   const sleeveEls: (CardEl | null)[] = combat.sleeve.map(() => null);
   const slotHint = `${icon('hand')}<span>${t('combat.sleeveHint')}</span>`;
-  const slotEls: HTMLElement[] = combat.sleeve.map((_, i) => h('div', { class: 'sleeve-slot', 'data-slot': i, html: slotHint }));
-  r.sleeve.append(...slotEls);
-  // An empty slot explains the sleeve on a hold (a card in it has its own inspect); a tap does nothing.
-  for (const slot of slotEls) {
+  const slotEls: HTMLElement[] = [];
+  /** One more empty slot at the end of the sleeve (the sleeve can grow mid-fight). An empty slot explains the sleeve on a hold (a card in it has its own inspect); a tap does nothing. */
+  const addSlot = (): void => {
+    const slot = h('div', { class: 'sleeve-slot', 'data-slot': slotEls.length, html: slotHint });
+    slotEls.push(slot);
+    r.sleeve.append(slot);
     onTapOrHold(
       slot,
       () => {},
@@ -97,7 +99,8 @@ export function createCardLayer(v: CombatView): CardLayer {
         );
       },
     );
-  }
+  };
+  combat.sleeve.forEach(addSlot);
   let drag: Drag | null = null;
 
   const makeCardEl = (card: CombatCard): CardEl => {
@@ -377,6 +380,9 @@ export function createCardLayer(v: CombatView): CardLayer {
     // Inflation raises the cost mid-fight: the label follows, in red.
     setText(ce.cost, cardCostLabel(card));
     toggle(ce.cost, 'taxed', !!card.tax || !!card.virus);
+    // The sleeve's discount shows in yellow; a card On Credit shows what it will owe, not what it costs now.
+    toggle(ce.cost, 'sale', !!card.disc);
+    toggle(ce.cost, 'credit', cardKeywordsOf(card).includes('credit'));
     toggle(ce.el, 'sick', !!card.virus);
     if (!card.virus !== !ce.virusEl) {
       ce.virusEl?.remove();
@@ -449,6 +455,10 @@ export function createCardLayer(v: CombatView): CardLayer {
   };
 
   const renderSleeve = (): void => {
+    while (slotEls.length < combat.sleeve.length) {
+      addSlot();
+      sleeveEls.push(null);
+    }
     combat.sleeve.forEach((card, i) => {
       const cur = sleeveEls[i];
       if (cur?.card.uid === card?.uid) {

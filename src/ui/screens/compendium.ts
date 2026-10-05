@@ -6,7 +6,7 @@ import { ENEMY_LIST } from '../../data/enemies';
 import type { EnemyDef, RelicDef } from '../../game/types';
 import { HERO_LIST } from '../../data/heroes';
 import { RELIC_LIST } from '../../data/relics';
-import { enemyMet, hasStamp, isDiscovered, records, relicSeen, runHistory } from '../../game/meta';
+import { cardHidden, enemyMet, hasStamp, heroHidden, isDiscovered, records, relicSeen, runHistory } from '../../game/meta';
 import type { CardClass, RunLog } from '../../game/types';
 import type { Screen } from '../app';
 import { h, onPress, stagger } from '../dom';
@@ -18,7 +18,8 @@ import { foeView } from '../components/moveText';
 import { openCardAnatomy, openCardDetail, sortCards, sortControl } from '../components/modals';
 import { openRunDetail } from '../components/runDetail';
 
-const TABS: CardClass[] = [...HERO_LIST.map((hd) => hd.id), 'neutral', 'curse'];
+/** The class tabs of the handbook (a hero still in the works has none). */
+const tabsNow = (): CardClass[] => [...HERO_LIST.filter((hd) => !heroHidden(hd.id)).map((hd) => hd.id), 'neutral', 'curse'];
 
 const tabLabel = (c: CardClass): string => t(`compendium.tab.${c}`);
 
@@ -31,8 +32,8 @@ interface Page {
   tab?: CardClass;
   act?: number;
 }
-const PAGES: Page[] = [
-  ...TABS.map((tab): Page => ({ section: 'cards', tab })),
+const pagesNow = (): Page[] => [
+  ...tabsNow().map((tab): Page => ({ section: 'cards', tab })),
   ...ACT_DEFS.map((_, i): Page => ({ section: 'enemies', act: i + 1 })),
   { section: 'relics' },
   { section: 'keywords' },
@@ -58,7 +59,7 @@ function stampGrid(): HTMLElement {
   return h(
     'div',
     { class: 'stamps' },
-    ...HERO_LIST.flatMap((hd) =>
+    ...HERO_LIST.filter((hd) => !heroHidden(hd.id)).flatMap((hd) =>
       ACT_DEFS.map((_, i) =>
         hasStamp(hd.id, i + 1)
           ? h(
@@ -127,11 +128,14 @@ function recordSlip(): HTMLElement {
 
 /** Every card in the game by class, every enemy and its moves, the relics, and the player's records. */
 export function compendiumScreen(onBack: () => void): Screen {
-  let tab: CardClass = TABS[0];
+  const classes = tabsNow();
+  const pages = pagesNow();
+  const cardList = CARD_LIST.filter((c) => !cardHidden(c.id));
+  let tab: CardClass = classes[0];
   let act = 1;
   let section: Section = 'cards';
-  const total = CARD_LIST.length;
-  const found = CARD_LIST.filter((c) => isDiscovered(c.id)).length;
+  const total = cardList.length;
+  const found = cardList.filter((c) => isDiscovered(c.id)).length;
   const met = ENEMY_LIST.filter((e) => enemyMet(e.id)).length;
   const relicsSeen = RELIC_LIST.filter((r) => relicSeen(r.id)).length;
 
@@ -217,7 +221,7 @@ export function compendiumScreen(onBack: () => void): Screen {
     );
     foes.replaceChildren(...foeViews.filter((f) => f.act === act).map((f) => f.el));
     tabs.replaceChildren(
-      ...TABS.map((c) =>
+      ...classes.map((c) =>
         h(
           'button',
           {
@@ -233,7 +237,7 @@ export function compendiumScreen(onBack: () => void): Screen {
         ),
       ),
     );
-    const cards = sortCards(CARD_LIST.filter((c) => c.cls === tab).map((c) => ({ uid: -1, id: c.id, up: false })));
+    const cards = sortCards(cardList.filter((c) => c.cls === tab).map((c) => ({ uid: -1, id: c.id, up: false })));
     grid.replaceChildren(
       ...stagger(
         cards.map((card) => {
@@ -254,8 +258,8 @@ export function compendiumScreen(onBack: () => void): Screen {
   };
   /** A swipe turns the page: along the tabs of the section, then on to the next section. */
   const turn = (by: number): void => {
-    const now = PAGES.findIndex((p) => p.section === section && (p.tab ?? tab) === tab && (p.act ?? act) === act);
-    const page = PAGES[now + by];
+    const now = pages.findIndex((p) => p.section === section && (p.tab ?? tab) === tab && (p.act ?? act) === act);
+    const page = pages[now + by];
     if (!page) return;
     sfx('tap');
     section = page.section;

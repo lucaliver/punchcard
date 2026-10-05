@@ -22,6 +22,7 @@
 .card[data-cls='neutral'] { --band: var(--band-neutral); }
 .card[data-cls='curse'] { --band: var(--band-curse); }
 .card[data-cls='necromancer'] { --band: var(--band-necro); }
+.card[data-cls='rogue'] { --band: var(--band-rogue); }
 
 .c-top {
   flex: none;
@@ -96,9 +97,9 @@
   gap: 1.5cqw;
   padding: 1cqw 2cqw 3cqw;
 }
-.gl {
 /* the face's text, apart from the Echo waves: the combat layer rewrites it as the numbers move */
 .c-body { display: contents; }
+.gl {
   display: flex;
   align-items: center;
   justify-content: center;
@@ -221,5 +222,8 @@
 .card[data-cls='curse'] .c-top { background: var(--k); }
 .card[data-cls='curse'] .c-name { color: var(--band); }
 
-/* cost lowered by a perk (Budget Cut) */
-.card .c-cost.cheap { color: var(--y); }
+/* cost lowered by a perk (Budget Cut) or by the sleeve's discount */
+.card .c-cost.cheap,
+.card .c-cost.sale { color: var(--y); }
+/* On Credit: what it will owe, not what it costs now: a dashed ring around the number */
+.card .c-cost.credit { outline: max(1px, 0.8cqw) dashed var(--paper); outline-offset: -2.5cqw; }

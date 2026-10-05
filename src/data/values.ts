@@ -2,7 +2,7 @@ import { ENEMIES, HALF } from './enemies';
 import { CONFIG } from './config';
 import { CARDS } from './cards';
 import { HARDSHIP_HP, JUST_CAUSE_HP } from './cards/warrior';
-import { OVERTIME_MULT, OVERTIME_TIME, THICK_SKIN, TIME_THEFT, VIRULENCE_START } from './heroes';
+import { OVERTIME_MULT, OVERTIME_TIME, STICKY_FINGERS, THICK_SKIN, TIME_THEFT, VIRULENCE_START } from './heroes';
 import { PERKS } from './perks';
 import { CLOCK_BLOCK, MUG_MANA, STAPLER_DAMAGE } from './relics';
 import {
@@ -105,6 +105,7 @@ export const VALUES = {
   timeTheft: TIME_THEFT,
   multitaskingMax: CONFIG.multitaskingMax,
   virulenceStart: VIRULENCE_START,
+  stickyDiscount: STICKY_FINGERS.discount,
   // Relics, perks, cards
   mugMana: MUG_MANA,
   clockBlock: CLOCK_BLOCK,

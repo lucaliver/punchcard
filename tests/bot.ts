@@ -45,6 +45,9 @@ const BLOCKISH = [
   'youShallNotPass',
   'secondBreakfast',
   'lookBusy',
+  'hideTheEvidence',
+  'plausibleDeniability',
+  'hushMoney',
 ];
 const DEBUFFS = ['karoshi', 'chainSmoking', 'waterCooler', 'blackFriday', 'walkout'];
 

@@ -151,6 +151,7 @@ export function combatScreen(run: RunState, combat: Combat, cb: CombatCallbacks)
   // The belt has grown into the room the lower part left: the enemy's room changed, so it is measured again once the row is in.
   const unsubRow = combat.events.on((e) => {
     if (e.type === 'rowAdded') later(layout, cssMs('--dur-row-grow') + SLACK_MS);
+    if (e.type === 'sleeveGrew') fitSleeve();
   });
   const unsubscribe = (): void => {
     unsubFx();
@@ -158,6 +159,12 @@ export function combatScreen(run: RunState, combat: Combat, cb: CombatCallbacks)
   };
 
   // ------------------------------------------------------------------ layout
+  /** The sleeve's slots shrink to share the room left of the ability button, if there are more of them than fit. */
+  const fitSleeve = (): void => {
+    const n = combat.sleeve.length;
+    const gap = Number.parseFloat(getComputedStyle(r.sleeve).columnGap) || 0;
+    r.sleeve.style.setProperty('--fit', `${Math.floor((r.sleeve.clientWidth - gap * (n - 1)) / n)}px`);
+  };
   const layout = (): void => {
     state.beltW = r.belt.clientWidth || el.clientWidth;
     // Cards follow the belt width, but shrink on short screens so the layout always fits (more with two rows).
@@ -166,6 +173,7 @@ export function combatScreen(run: RunState, combat: Combat, cb: CombatCallbacks)
     state.rowH = Math.round(cw * 1.4) + BELT_ROW_GAP;
     el.style.setProperty('--cw-belt', `${cw}px`);
     el.style.setProperty('--belt-row-h', `${state.rowH}px`);
+    fitSleeve();
     // What `.sunk` slides away (see combat-belt.css): the action row's height, and how long the slide takes.
     el.style.setProperty('--action-h', `${$('.action-row', el).offsetHeight}px`);
     el.style.setProperty('--sink-time', `${CONFIG.sinkTime}s`);

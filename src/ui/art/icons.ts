@@ -1372,6 +1372,100 @@ export const ICONS: Record<string, { el: Element; svg: string }> = {
     svg: `<g ${S} stroke-width="5"><path d="M32 6l22 8c0 20-7 34-22 44C17 48 10 34 10 14z"/><path d="M12 8l42 48"/></g>`,
   },
   // ---- stationery: the plain versions of the relics' sprites, small enough for a status chip
+  // ---- rogue
+  /** On Credit: the receipt of what is owed. */
+  debt: {
+    el: 'steel',
+    svg: `<path d="M12 4h40v54l-5-4-5 4-5-4-5 4-5-4-5 4-5-4z"/><path fill="#16121f" d="M20 14h24v4H20zM20 24h24v4H20zM20 34h12v4H20z"/><path fill="#16121f" d="M36 40h12v5H36z"/>`,
+  },
+  borrowedStapler: {
+    el: 'steel',
+    svg: `<path d="M4 44h56v10H4z"/><path d="M4 44c0-8 8-14 20-18l32-10c4-1 6 2 6 5v23z"/><path ${HI} d="M12 40c4-5 10-8 16-10l22-8-26 12z"/><path fill="#16121f" d="M50 36h10v3H50zM8 48h20v3H8z"/>`,
+  },
+  hideTheEvidence: {
+    el: 'shadow',
+    svg: `<path d="M14 4h28l12 12v44H14z"/><path ${HI} d="M42 4v12h12z"/><path fill="#16121f" d="M20 24h28v6H20zM20 36h20v6H20zM20 48h24v6H20z"/>`,
+  },
+  shoplifting: {
+    el: 'shadow',
+    svg: `<path d="M10 22h44l4 38H6z"/><path ${S} stroke-width="4.5" d="M22 22v-6a10 10 0 0 1 20 0v6"/><path ${HI} d="M14 26h12l-2 28h-8z"/><path fill="#16121f" d="M38 36h12v4H38zM38 44h8v4h-8z"/>`,
+  },
+  plausibleDeniability: {
+    el: 'holy',
+    svg: `<ellipse cx="32" cy="9" rx="15" ry="5" fill="none" stroke="currentColor" stroke-width="4"/><circle cx="32" cy="38" r="22"/><circle cx="24" cy="34" r="4" fill="#16121f"/><circle cx="40" cy="34" r="4" fill="#16121f"/><ellipse cx="32" cy="48" rx="4" ry="5" fill="#16121f"/><path ${HI} d="M16 30c2-8 8-13 15-14-7 3-11 8-12 16z"/>`,
+  },
+  lostProperty: {
+    el: 'shadow',
+    svg: `<path d="M4 30C6 14 20 6 32 6s26 8 28 24c-5-4-9-4-14 0-5-4-9-4-14 0-5-4-9-4-14 0-5-4-9-4-14 0z"/><path ${S} stroke-width="4.5" d="M32 30v22a7 7 0 0 1-14 0"/><path fill="#16121f" d="M31 2h2v6h-2z"/><path ${HI} d="M12 26c1-8 7-14 15-16-6 4-9 10-9 16z"/>`,
+  },
+  dumpsterDive: {
+    el: 'nature',
+    svg: `<path d="M4 14h56v10H4z"/><path d="M8 28h48l-6 30H14z"/><path ${HI} d="M12 30h8l-3 26h-4z"/><path fill="#16121f" d="M26 32h4v22h-4zM36 32h4v22h-4zM46 32h4v22h-4z" opacity=".5"/><path d="M42 2l8 8-10 2z"/>`,
+  },
+  salaryAdvance: {
+    el: 'holy',
+    svg: `<rect x="3" y="14" width="58" height="34" rx="3"/><circle cx="32" cy="31" r="10" fill="#16121f" opacity=".45"/><path fill="#16121f" d="M10 20h8v4h-8zM46 38h8v4h-8z"/><circle cx="32" cy="31" r="4"/><circle cx="52" cy="52" r="10"/><path fill="none" stroke="#16121f" stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M52 46v6l4 3"/>`,
+  },
+  pocketLint: {
+    el: 'shadow',
+    svg: `<path d="M8 6h48v28c0 14-10 24-24 24S8 48 8 34z"/><path fill="#16121f" opacity=".5" d="M8 6h48v6H8z"/><path fill="none" stroke="#16121f" stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" stroke-dasharray="4 3" d="M14 18v16c0 10 8 18 18 18s18-8 18-18V18"/><g fill="#16121f"><circle cx="26" cy="42" r="4"/><circle cx="36" cy="46" r="3"/><circle cx="31" cy="36" r="2.5"/></g>`,
+  },
+  cleanGetaway: {
+    el: 'steel',
+    svg: `<path d="M4 24h34l14 14h8v14H4z"/><path ${HI} d="M10 28h22l10 10H10z"/><path fill="#16121f" d="M14 29h10v8H14zM28 29h8l6 8H28z"/><circle cx="18" cy="53" r="7"/><circle cx="46" cy="53" r="7"/><circle cx="18" cy="53" r="3" fill="#16121f"/><circle cx="46" cy="53" r="3" fill="#16121f"/><path d="M0 18h14v3H0zM2 12h10v3H2z"/>`,
+  },
+  fenceIt: {
+    el: 'steel',
+    svg: `<path d="M6 16l6-6 6 6v42H6zM22 16l6-6 6 6v42H22zM38 16l6-6 6 6v42H38z"/><path fill="#16121f" opacity=".6" d="M2 28h60v6H2zM2 44h60v6H2z"/><path d="M50 2h12v12L50 14z" fill="#fff" opacity=".0"/>`,
+  },
+  hushMoney: {
+    el: 'holy',
+    svg: `<path d="M24 6h16l-4 10c12 6 20 16 20 28 0 10-8 14-24 14S8 54 8 44c0-12 8-22 20-28z"/><path ${HI} d="M16 42c0-8 4-14 10-18-4 6-6 12-5 20z"/><path fill="#16121f" d="M22 38h20v5H22z"/><path fill="none" stroke="#16121f" stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M26 38v5M32 38v5M38 38v5"/>`,
+  },
+  employeeDiscount: {
+    el: 'holy',
+    svg: `<path d="M4 30L30 4h28v28L32 58z"/><circle cx="46" cy="16" r="4.5" fill="#16121f"/><path fill="#16121f" d="M22 38l18-18 5 5-18 18z"/><circle cx="26" cy="22" r="3.5" fill="#16121f"/><circle cx="38" cy="38" r="3.5" fill="#16121f"/>`,
+  },
+  grandLarceny: {
+    el: 'shadow',
+    svg: `<path d="M4 22c8-6 16-6 28-2 12-4 20-4 28 2-2 14-8 22-18 20-6-2-8-6-10-6s-4 4-10 6C12 44 6 36 4 22z"/><ellipse cx="20" cy="30" rx="6" ry="4" fill="#16121f"/><ellipse cx="44" cy="30" rx="6" ry="4" fill="#16121f"/><path ${HI} d="M10 24c6-3 12-3 18-1-6 0-12 2-17 6z"/>`,
+  },
+  lightFingers: {
+    el: 'holy',
+    svg: `<path d="M14 58V34l-6-6 4-4 8 8V10h6v18V6h6v22V10h6v20V16h6v32c0 8-6 12-14 12z"/><path ${HI} d="M18 34l-4-4v8z"/><path d="M52 6l2 5 5 2-5 2-2 5-2-5-5-2 5-2z"/>`,
+  },
+  lostAndFound: {
+    el: 'shadow',
+    svg: `<path d="M4 12h56v12H4z"/><path d="M8 24h48v34H8z"/><path ${HI} d="M10 26h6v30h-6z"/><path fill="none" stroke="#16121f" stroke-linecap="round" stroke-linejoin="round" stroke-width="4.5" d="M26 36c0-9 14-9 14 0 0 6-8 6-8 12"/><rect x="29" y="51" width="6" height="5" fill="#16121f"/>`,
+  },
+  insideJob: {
+    el: 'shadow',
+    svg: `<rect x="10" y="28" width="44" height="32" rx="3"/><path ${S} stroke-width="5" d="M20 28v-8a12 12 0 0 1 24 0v8"/><circle cx="32" cy="41" r="5" fill="#16121f"/><path fill="#16121f" d="M30 43h4l2 11h-8z"/><path ${HI} d="M14 32h6v24h-6z"/>`,
+  },
+  identityTheft: {
+    el: 'shadow',
+    svg: `<rect x="4" y="14" width="56" height="38" rx="3"/><circle cx="20" cy="30" r="7" fill="#16121f"/><path fill="#16121f" d="M8 48c0-9 24-9 24 0zM36 24h18v4H36zM36 32h18v4H36zM36 40h12v4H36z"/><path ${HI} d="M6 16h52v4H6z"/><path d="M12 24c4-3 12-3 16 0-2 2-4 3-8 3s-6-1-8-3z" fill="currentColor"/><path fill="#16121f" d="M14 25h12v3H14z"/>`,
+  },
+  fireSale: {
+    el: 'fire',
+    svg: `<path d="M4 40L24 20h26v26L30 62z"/><circle cx="42" cy="30" r="3.5" fill="#16121f"/><g transform="translate(24 -2) scale(.55)">${flame}</g>`,
+  },
+  restructuring: {
+    el: 'steel',
+    svg: `<rect x="22" y="4" width="20" height="12"/><path ${S} stroke-width="4" d="M32 16v10M12 26h40M12 26v10M32 26v10M52 26v10"/><rect x="4" y="36" width="16" height="12"/><rect x="24" y="36" width="16" height="12"/><rect x="44" y="36" width="16" height="12"/><path fill="#16121f" d="M2 56L62 50l0 5L2 61z"/>`,
+  },
+  inventoryShrinkage: {
+    el: 'steel',
+    svg: `<path d="M8 22l8-14h32l8 14z"/><path d="M8 24h48v34H8z"/><path ${HI} d="M10 26h6v30h-6z"/><path fill="#16121f" d="M24 30h16v10h8L32 54 16 40h8z"/>`,
+  },
+  stocktake: {
+    el: 'steel',
+    svg: `<rect x="10" y="10" width="44" height="50" rx="3"/><rect x="22" y="3" width="20" height="11" rx="2"/><path fill="#16121f" d="M17 24h7v7h-7zM28 25h19v5H28zM17 37h7v7h-7zM28 38h19v5H28zM17 50h7v7h-7zM28 51h13v5H28z"/><path ${HI} d="M12 12h4v46h-4z"/>`,
+  },
+  stickyFingers: {
+    el: 'holy',
+    svg: `<path d="M8 8h48v36L44 56H8z"/><path ${HI} d="M10 10h6v44h-6z"/><path fill="#16121f" opacity=".4" d="M44 56V44h12z"/><path fill="#16121f" d="M16 18h32v4H16zM16 28h32v4H16zM16 38h20v4H16z"/>`,
+  },
   'relic.stressBall': {
     el: 'steel',
     svg: `<circle cx="32" cy="33" r="26"/><path fill="none" stroke="#16121f" stroke-width="3" stroke-linecap="round" opacity=".5" d="M10 26c6 4 8 10 6 18M54 26c-6 4-8 10-6 18"/><path ${HI} d="M18 18c4-5 10-8 16-8-8 2-12 8-13 14z"/>`,

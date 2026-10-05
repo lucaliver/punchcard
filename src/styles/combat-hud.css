@@ -96,17 +96,19 @@
   50% { color: var(--y); }
 }
 .sleeve {
-  /* centred in the room left of the ability button */
+  /* centred in the room left of the ability button; with more slots than fit they shrink to share it (`--fit`, measured in combatScreen.ts) */
   flex: 1;
+  min-width: 0;
   display: flex;
   justify-content: center;
+  --slot: min(var(--cw), var(--fit, var(--cw)));
   gap: 12px;
 }
 .sleeve-slot {
   position: relative;
   flex: none;
-  width: var(--cw);
-  height: calc(var(--cw) * 1.4);
+  width: var(--slot);
+  height: calc(var(--slot) * 1.4);
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -128,7 +130,7 @@
   color: var(--k);
 }
 .sleeve-slot .card {
-  --cw: calc(var(--cw-belt) * 0.95 - 8px);
+  --cw: calc(var(--slot) - 8px);
   color: var(--k);
   position: absolute;
   left: 50%;

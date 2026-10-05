@@ -15,6 +15,8 @@ export const VIRULENCE_START = 3;
 /** Overtime (Warrior ability): attacks deal this many times as much, for this long (s). */
 export const OVERTIME_MULT = 2;
 export const OVERTIME_TIME = 10;
+/** Sticky Fingers (Rogue passive): with the sleeve full, a card falling off the belt takes this much off the cost of every card in it, until played. */
+export const STICKY_FINGERS = { discount: 1 };
 /** Time Theft (Mage ability): the enemy is stunned and the belt rushed for this long (s). */
 export const TIME_THEFT = 5;
 
@@ -101,5 +103,27 @@ const necromancer: HeroDef = {
   },
 };
 
-export const HEROES: Record<HeroId, HeroDef> = { warrior, mage, necromancer };
-export const HERO_LIST: HeroDef[] = [warrior, mage, necromancer];
+const rogue: HeroDef = {
+  id: 'rogue',
+  // Still in the works: only the debug menu's unlock-all hires them, and until then none of their cards turns up anywhere.
+  unlock: { debug: true },
+  hp: 50,
+  maxMana: 3,
+  regen: 1.25,
+  blockDecay: 1.0,
+  startDeck: [...rep('borrowedStapler', 8), ...rep('hideTheEvidence', 7), 'coffee', 'coffee', 'italianEspresso'],
+  startUpgraded: ['borrowedStapler', 'hideTheEvidence'],
+  sleeve: 4,
+  catchesFalls: STICKY_FINGERS,
+  ink: 'var(--rust)',
+  ability: {
+    id: 'stocktake',
+    cost: 6,
+    // Everything on the belt falls at once: the sleeve fills up, and what doesn't fit makes it cheaper.
+    use: (c) => void c.dropBelt(),
+  },
+  hooks: {},
+};
+
+export const HEROES: Record<HeroId, HeroDef> = { warrior, mage, necromancer, rogue };
+export const HERO_LIST: HeroDef[] = [warrior, mage, necromancer, rogue];

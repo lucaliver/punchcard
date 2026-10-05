@@ -8,12 +8,13 @@ import zhStrings from '../src/i18n/zh';
 
 /** Indexed as a plain dictionary: these tests check keys that are built at runtime. */
 const en: Record<string, string> = enStrings;
-import { CARD_LIST } from '../src/data/cards';
+import { CARD_LIST, CARDS } from '../src/data/cards';
+import { cardHidden, heroHidden, heroUnlocked, progress, unlockAll } from '../src/game/meta';
 import { KEYWORD_LIST } from '../src/ui/components/cardView';
 import { ACT_DEFS } from '../src/data/acts';
 import { rewardOdds, rewardUpgradeChance } from '../src/data/config';
 import { DIFFICULTY, ENEMY_LIST, enemyMoves } from '../src/data/enemies';
-import { HERO_LIST, starterCards } from '../src/data/heroes';
+import { HERO_LIST, HEROES, starterCards } from '../src/data/heroes';
 import { VALUES } from '../src/data/values';
 import { PERK_LIST } from '../src/data/perks';
 import { STATUS_ORDER, STATUSES } from '../src/data/statuses';
@@ -265,4 +266,32 @@ describe('translations', () => {
       for (const [key, text] of Object.entries(en)) expect(holes(dict[key]), `${code} ${key}`).toEqual(holes(text));
     });
   }
+});
+
+describe('a hero still in the works', () => {
+  it('stays hidden, with all its cards, until the debug unlock-all hires them', () => {
+    expect(HEROES.rogue.unlock).toEqual({ debug: true });
+    expect(heroUnlocked('rogue')).toBe(false);
+    expect(heroHidden('rogue')).toBe(true);
+    const own = CARD_LIST.filter((c) => c.cls === 'rogue');
+    expect(own.length).toBeGreaterThan(0);
+    for (const c of own) expect(cardHidden(c.id), c.id).toBe(true);
+    expect(cardHidden('punch')).toBe(false);
+    // No progress can hire them: only unlock-all does.
+    progress(() => true);
+    expect(heroHidden('rogue')).toBe(true);
+    unlockAll([], [], []);
+    expect(heroHidden('rogue')).toBe(false);
+    for (const c of own) expect(cardHidden(c.id), c.id).toBe(false);
+  });
+
+  it('has a full set of cards: every rarity, and a starter deck of only basic cards', () => {
+    const own = CARD_LIST.filter((c) => c.cls === 'rogue' && !c.starterOnly);
+    for (const rarity of ['common', 'rare', 'epic', 'legendary'] as const)
+      expect(
+        own.some((c) => c.rarity === rarity),
+        rarity,
+      ).toBe(true);
+    for (const id of HEROES.rogue.startDeck) expect(CARDS[id].starterOnly || CARDS[id].cls === 'neutral', id).toBeTruthy();
+  });
 });

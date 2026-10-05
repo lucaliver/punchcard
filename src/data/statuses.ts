@@ -255,6 +255,31 @@ const defs: StatusDef[] = [
       c.applyStatus(side, 'krustyKrab', -1, 0, true);
     },
   },
+  // Overdrawn (the debt of a card On Credit): no mana comes back while it lasts, one second per mana the card cost.
+  { id: 'overdrawn', tone: 'blue', kind: 'timed', good: false, icon: 'debt', regenMul: 0 },
+  // Pocket Lint and Clean Getaway (Rogue powers): every card slipping off the belt (caught in the sleeve or not) deals damage / gives Block for `v`.
+  {
+    id: 'pocketLint',
+    tone: 'red',
+    kind: 'stacks',
+    good: true,
+    icon: 'sword',
+    onExpire: (c, side, s) => {
+      if (side === 'hero') c.damage('hero', 'enemy', s.v, { raw: true, kind: 'slash' }, 'hero');
+    },
+  },
+  {
+    id: 'cleanGetaway',
+    tone: 'teal',
+    kind: 'stacks',
+    good: true,
+    icon: 'shield',
+    onExpire: (c, side, s) => {
+      if (side === 'hero') c.gainBlock('hero', s.v);
+    },
+  },
+  // Light Fingers: a card falling into a full sleeve cuts `v` more mana off every card in it.
+  { id: 'lightFingers', tone: 'amber', kind: 'stacks', good: true, icon: 'priceTag', catchBonus: true },
   // Lost Badge: the next card that costs mana is free (a stack each).
   { id: 'lostBadge', tone: 'blue', kind: 'stacks', good: true, icon: 'priceTag', freeNext: true },
   // Root access (sudo): no rule can stop the hero's cards.

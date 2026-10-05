@@ -10,7 +10,7 @@ import { MODIFIERS, resolveMods } from '../data/modifiers';
 import { ENEMIES, enemiesFor } from '../data/enemies';
 import { HERO_LIST, HEROES, starterCards } from '../data/heroes';
 import type { Combat, CombatSetup } from './combat';
-import { discover, logRun, progress, type RunRecord, recordFight, recordRun, seeRelics, stampAct } from './meta';
+import { discover, heroHidden, logRun, progress, type RunRecord, recordFight, recordRun, seeRelics, stampAct } from './meta';
 import type { CardDef, CardInst, EnemyDef, HeroId, RunLog } from './types';
 
 export const NODE_TYPES = ['fight', 'elite', 'rest', 'promotion', 'copy', 'tailor', 'lostFound', 'vending', 'crossTraining', 'boss'] as const;
@@ -551,7 +551,7 @@ export function rollCrossTraining(run: RunState): CardDef[] {
   const odds = rewardOdds('fight', currentNode(run).act);
   const offer: CardDef[] = [];
   for (const hero of HERO_LIST) {
-    if (hero.id === run.hero) continue;
+    if (hero.id === run.hero || heroHidden(hero.id)) continue;
     const own: CardDef[] = [];
     for (let tries = 0; own.length < CONFIG.crossTrainPerClass && tries < 80; tries++) {
       const rarity = rng.weighted(odds, ([, w]) => w)[0];

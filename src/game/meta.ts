@@ -195,6 +195,16 @@ export function unlockAll(cards: Iterable<string>, enemies: Iterable<string>, re
 }
 
 export const heroUnlocked = (id: HeroId): boolean => !HEROES[id].unlock || meta.heroes.includes(id);
+/** A hero still in the works (`unlock: { debug: true }`) leaves no trace until the debug menu's unlock-all hires them: not on the hero select, and none of their cards anywhere. */
+export const heroHidden = (id: HeroId): boolean => {
+  const u = HEROES[id].unlock;
+  return !!u && 'debug' in u && !heroUnlocked(id);
+};
+/** Whether a card belongs to a hero that is hidden (see `heroHidden`): such a card is never offered, listed or counted. */
+export const cardHidden = (id: string): boolean => {
+  const cls = CARDS[id].cls;
+  return cls !== 'neutral' && cls !== 'curse' && heroHidden(cls);
+};
 export const heroFresh = (id: HeroId): boolean => meta.fresh.includes(id);
 
 export function markHeroSeen(id: HeroId): void {
@@ -277,7 +287,7 @@ export function setMemo(id: string, on: boolean): void {
 
 /** Records progress that can unlock heroes (a run finished with a hero, an act boss reached). Returns the heroes it unlocked. */
 export function progress(met: (u: HeroUnlock) => boolean): HeroId[] {
-  const unlocked = HERO_LIST.filter((hd) => hd.unlock && !heroUnlocked(hd.id) && met(hd.unlock)).map((hd) => hd.id);
+  const unlocked = HERO_LIST.filter((hd) => hd.unlock && !('debug' in hd.unlock) && !heroUnlocked(hd.id) && met(hd.unlock)).map((hd) => hd.id);
   if (!unlocked.length) return unlocked;
   meta.heroes.push(...unlocked);
   meta.fresh.push(...unlocked);

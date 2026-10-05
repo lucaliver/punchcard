@@ -2,7 +2,7 @@ import { Emitter } from '../core/emitter';
 import { Rng } from '../core/rng';
 import { ANCHOR_POS, BEG_FLAG, CONFIG, EXPIRE_POS } from '../data/config';
 import { STATUSES } from '../data/statuses';
-import { CARDS, CLASS_HIT, cardCostOf, cardKeywordsOf, cardValsOf, isLarge } from '../data/cards';
+import { CARDS, CLASS_HIT, cardCostOf, cardKeywordsOf, cardValsOf, fullCostOf, isLarge } from '../data/cards';
 import { HEXES } from '../data/hexes';
 import { RELICS } from '../data/relics';
 import type { TKey } from '../core/i18n';
@@ -330,8 +330,10 @@ export class Combat {
     return CARDS[card.id].shown?.(this, vals, card as CombatCard) ?? vals;
   }
 
+  /** What playing the card takes from the mana now: nothing for a card On Credit (its cost becomes a debt, see `resolvePlay`), or when a badge makes the next one free. */
   cardCost(card: CardInst): number {
     const cost = cardCostOf(card);
+    if (cost > 0 && this.keywords(card).includes('credit')) return 0;
     return cost > 0 && this.freeNextId() ? 0 : cost;
   }
 
@@ -879,6 +881,7 @@ export class Combat {
       c = this.draw.pop()!;
       // A fresh draw starts its ride from zero (a card back from the sleeve keeps its age).
       c.age = 0;
+      delete c.disc;
     }
     this.belt.push({ card: c, pos, row });
     this.events.emit({ type: 'cardSpawn', card: c });
@@ -891,15 +894,43 @@ export class Combat {
     this.shedHex(card);
     card.passed = true;
     if (def.sweep) card.bonus = 0;
-    this.events.emit({ type: 'cardExpired', card });
+    const caught = this.catchesFalls(card);
+    if (caught) {
+      // Caught on the way down: it waits in the sleeve, or, with no room, makes every card there cheaper and is lost.
+      if (!this.pocket(card)) this.cheapenSleeve(this.catchDiscount());
+    } else this.events.emit({ type: 'cardExpired', card });
     this.withCard(card, def, () => def.onExpire?.(this, this.cardVals(card), card));
     this.heroDef.hooks.onCardExpired?.(this, card);
     for (const id of this.relics) RELICS[id]?.hooks?.onCardExpired?.(this, card);
     for (const side of ['hero', 'enemy'] as const) {
       for (const [id, s] of Object.entries(this.fighter(side).statuses)) if (this.has(side, id)) STATUSES[id].onExpire?.(this, side, s);
     }
+    if (caught && this.sleeveIndex(card.uid) >= 0) return;
+    delete card.disc;
+    if (caught) this.events.emit({ type: 'cardExpired', card });
     if (this.keywords(card).includes('fleeting')) this.exhaust.push(card);
     else this.discard.push(card);
+  }
+
+  /** Whether the hero's passive catches this card as it falls (everything but a curse). */
+  private catchesFalls(card: CombatCard): boolean {
+    return !!this.heroDef.catchesFalls && !isCurse(card);
+  }
+
+  /** The mana a card falling into a full sleeve takes off every card in it: the passive's, and what powers add (`StatusDef.catchBonus`). */
+  private catchDiscount(): number {
+    let n = this.heroDef.catchesFalls?.discount ?? 0;
+    for (const [id, s] of Object.entries(this.hero.statuses)) if (STATUSES[id].catchBonus && this.has('hero', id)) n += s.v;
+    return n;
+  }
+
+  /** Puts the card into the first free sleeve slot. Returns false when the sleeve is full. */
+  private pocket(card: CombatCard): boolean {
+    const slot = this.sleeve.indexOf(null);
+    if (slot < 0) return false;
+    this.sleeve[slot] = card;
+    this.events.emit({ type: 'cardStashed', card, slot });
+    return true;
   }
 
   // --------------------------------------------------------- player actions
@@ -958,10 +989,15 @@ export class Combat {
     // X is all the mana there is; a free card still counts it, without spending it.
     const spent = cost < 0 ? this.hero.mana : cost;
     if (!free) this.hero.mana -= spent;
-    const badge = this.freeNextId();
-    if (badge && !free && cost === 0 && cardCostOf(card) > 0) this.applyStatus('hero', badge, -1, 0, true);
+    const nominal = cardCostOf(card);
+    // On Credit: no mana now, but the regeneration stops for as many seconds as the card costs.
+    if (!free && nominal > 0 && this.keywords(card).includes('credit')) this.applyStatus('hero', 'overdrawn', 1, nominal);
+    else {
+      const badge = this.freeNextId();
+      if (badge && !free && cost === 0 && nominal > 0) this.applyStatus('hero', badge, -1, 0, true);
+    }
     const row = beltIdx >= 0 ? this.belt[beltIdx].row : -1;
-    // An Echo card is played again and again: it stays where it is (unless it is used up some other way).
+    // An Echo card on the belt is played again and again: it stays where it is (unless it is used up some other way); from the sleeve it is spent as usual.
     const kws = this.keywords(card);
     const echoes = beltIdx >= 0 && kws.includes('echo') && !kws.includes('exhaust') && !kws.includes('consume') && def.type !== 'power';
     if (echoes) this.events.emit({ type: 'cardEchoed', card });
@@ -998,6 +1034,7 @@ export class Combat {
     // Inflation lasts until the card is paid for once.
     delete card.tax;
     delete card.virus;
+    delete card.disc;
     // Played, a Pending card is back in the approval queue: it must ride the whole belt again before it can be played.
     delete card.passed;
     if (echoes) return;
@@ -1050,6 +1087,145 @@ export class Combat {
     else this.belt.splice(beltIdx, 1);
     this.events.emit({ type: 'cardStashed', card: b.card, slot: target });
     return true;
+  }
+
+  /** The cards waiting in the sleeve (leaving out `except`, the one being played). */
+  sleeveCards(except?: number): CombatCard[] {
+    return this.sleeve.filter((c): c is CombatCard => c !== null && c.uid !== except);
+  }
+
+  /** The sleeve gets one more slot for the rest of the fight (Lost & Found Box). */
+  addSleeveSlot(): void {
+    this.sleeve.push(null);
+    this.events.emit({ type: 'sleeveGrew' });
+  }
+
+  /** Every card in the sleeve costs `n` mana less until it is next played (never below 0). */
+  cheapenSleeve(n: number, except?: number): void {
+    if (n <= 0) return;
+    for (const card of this.sleeveCards(except)) {
+      if (isCurse(card)) continue;
+      card.disc = Math.min((card.disc ?? 0) + n, Math.max(0, fullCostOf(card)));
+    }
+    this.events.emit({ type: 'sleeveCheaper' });
+  }
+
+  /** Every belt card slips off at once, the one nearest the exit first, as if it had fallen off the end. Returns how many. */
+  dropBelt(): number {
+    const cards = [...this.belt].sort((a, b) => b.pos - a.pos);
+    let n = 0;
+    for (const b of cards) {
+      if (this.result) break;
+      const i = this.belt.indexOf(b);
+      if (i < 0) continue;
+      this.belt.splice(i, 1);
+      this.expire(b.card);
+      n++;
+    }
+    return n;
+  }
+
+  /** Uses up these sleeve cards (they leave the fight). Returns what they were worth: their costs without the sleeve's discount. */
+  private scrap(cards: CombatCard[]): number {
+    let worth = 0;
+    for (const card of cards) {
+      const i = this.sleeveIndex(card.uid);
+      if (i < 0) continue;
+      this.sleeve[i] = null;
+      worth += Math.max(0, fullCostOf(card));
+      delete card.disc;
+      this.exhaust.push(card);
+      this.events.emit({ type: 'cardDiscarded', card });
+    }
+    return worth;
+  }
+
+  /** Uses up every card in the sleeve (but `except`, the card being played). Returns what they were worth (Fire Sale). */
+  scrapSleeve(except?: number): number {
+    return this.scrap(this.sleeveCards(except));
+  }
+
+  /** Uses up one random card of the sleeve. Returns what it was worth, or -1 when the sleeve is empty (Fence It). */
+  scrapOne(except?: number): number {
+    const cards = this.sleeveCards(except);
+    return cards.length ? this.scrap([this.rng.pick(cards)]) : -1;
+  }
+
+  /** What a card of the sleeve is worth to `scrapSleeve`, for the card faces that show the damage. */
+  sleeveWorth(except?: number): number {
+    return this.sleeveCards(except).reduce((n, card) => n + Math.max(0, fullCostOf(card)), 0);
+  }
+
+  /** `n` random cards of the discard pile (never curses) come back: into the free slots of the sleeve, or onto the entry of the belt. Returns how many made it. */
+  retrieve(n: number, to: 'sleeve' | 'belt'): number {
+    let got = 0;
+    for (const card of this.rng.shuffle(this.discard.filter((c) => !isCurse(c)))) {
+      if (got >= n) break;
+      const gap = (CONFIG.spacing * (CARDS[card.id].span ?? 1)) / this.rowsOpen;
+      if (!(to === 'sleeve' ? this.pocket(card) : this.spawnCard(-got * gap, card))) continue;
+      this.discard.splice(this.discard.indexOf(card), 1);
+      if (to === 'belt') card.age = 0;
+      got++;
+    }
+    return got;
+  }
+
+  /** A temporary copy of a card goes into the sleeve, or, with no room, into the discard pile. */
+  addToSleeve(id: string, up = false, extra: Partial<CombatCard> = {}): void {
+    const card: CombatCard = { uid: -++this.tempUid, id, up, bonus: 0, temp: true, ...extra };
+    if (this.pocket(card)) return;
+    this.discard.push(card);
+    this.events.emit({ type: 'cardAdded', card, to: 'discard' });
+  }
+
+  /** Plays, for free, the playable belt card nearest the exit. Returns it, or null when none can be played (Inside Job). */
+  playNextBelt(): CombatCard | null {
+    const next = [...this.belt]
+      .sort((a, b) => b.pos - a.pos)
+      .find(({ card }) => !card.hex && !this.isCovered(card.uid) && !this.isPending(card) && this.isPlayable(card) && !this.ruleBlock(card));
+    if (!next) return null;
+    this.resolvePlay(next.card, true);
+    return next.card;
+  }
+
+  /** Shuffles the draw pile, then stacks it so the dearest cards are drawn first (X cards count as the most mana the hero has). */
+  sortDrawByCost(): void {
+    const worth = (c: CombatCard): number => (fullCostOf(c) < 0 ? this.hero.maxMana : fullCostOf(c));
+    // The pile is drawn from its end.
+    this.draw = this.rng.shuffle(this.draw).sort((a, b) => worth(a) - worth(b));
+    this.events.emit({ type: 'reshuffle' });
+  }
+
+  /** The enemy's current move is stolen: the hero does it to the enemy (damage, Block, healing and statuses with the sides swapped) and the enemy loses it. False when the move does nothing of those. */
+  stealMove(): boolean {
+    const m = this.enemy.move;
+    const scale = this.enemy.dmgScale;
+    if (!m.dmg && !m.block && !m.heal && !m.status?.length) return false;
+    for (let i = 0; i < (m.hits ?? 1) && m.dmg && !this.result; i++)
+      this.damage('hero', 'enemy', Math.round(m.dmg * scale), { kind: 'claw' }, 'hero', i);
+    if (this.result) return true;
+    if (m.block) this.gainBlock('hero', Math.round(m.block * scale));
+    if (m.heal) this.heal('hero', Math.round(m.heal * scale));
+    for (const st of m.status ?? []) this.applyStatus(st.target === 'hero' ? 'enemy' : 'hero', st.id, st.v ?? 1, st.t ?? 0);
+    this.skipEnemyMove();
+    return true;
+  }
+
+  /** Takes the enemy's Block and its buffs (`strippable`): the Block becomes the hero's, every buff is put on the hero as it was. Returns how many things it took. */
+  stealBuffs(): number {
+    const found = this.strippable();
+    for (const id of found) {
+      if (id === 'block') {
+        const n = this.enemy.block;
+        this.breakBlock('enemy');
+        this.gainBlock('hero', n);
+        continue;
+      }
+      const { v, t } = this.enemy.statuses[id];
+      this.removeStatus('enemy', id);
+      this.applyStatus('hero', id, v, STATUSES[id].kind === 'timed' ? t : 0);
+    }
+    return found.length;
   }
 
   abilityCost(): number {
