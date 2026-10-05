@@ -498,6 +498,7 @@ test('debug button: pick a hero and an enemy, the fight starts against it', asyn
   const problems = await freshGame(page);
   await page.getByRole('button', { name: /debug/i }).click();
   await page.locator('.debug-fight .seg button').nth(1).click();
+  await page.locator('.debug-tabs button').last().click();
   const foe = page.locator('.debug-foe').last();
   const enemy = await foe.getAttribute('data-enemy');
   await foe.click();
@@ -510,6 +511,7 @@ test('debug button: pick a hero and an enemy, the fight starts against it', asyn
 test("the Boss's Son's weak spot: a touch on the target makes your next attack critical", async ({ page }) => {
   const problems = await freshGame(page);
   await page.getByRole('button', { name: /debug/i }).click();
+  await page.locator('.debug-tabs button').last().click();
   await page.locator('.debug-foe[data-enemy="bossSon"]').click();
   await expect(page.locator('.combat')).toBeVisible();
   const start = page.locator('.js-start');
@@ -560,6 +562,7 @@ test('Mr. Roboto: dragging it over the belt knocks the other cards off and grows
 test("the Sick Coworker's virus shows on the cards it infects and goes away when they are played", async ({ page }) => {
   const problems = await freshGame(page);
   await page.getByRole('button', { name: /debug/i }).click();
+  await page.locator('.debug-tabs button').last().click();
   await page.locator('.debug-foe[data-enemy="sickCoworker"]').click();
   await expect(page.locator('.combat')).toBeVisible();
   const start = page.locator('.js-start');
@@ -580,6 +583,7 @@ test("the Sick Coworker's virus shows on the cards it infects and goes away when
 test("the Night Janitor's rust spots slow the belt, and only dragging the mop over a spot scrubs it off", async ({ page }) => {
   const problems = await freshGame(page);
   await page.getByRole('button', { name: /debug/i }).click();
+  await page.locator('.debug-tabs button').last().click();
   await page.locator('.debug-foe[data-enemy="nightJanitor"]').click();
   await expect(page.locator('.combat')).toBeVisible();
   const start = page.locator('.js-start');
@@ -626,6 +630,7 @@ test("the Nerd's update window covers the belt: Postpone sends it away for a few
 }) => {
   const problems = await freshGame(page);
   await page.getByRole('button', { name: /debug/i }).click();
+  await page.locator('.debug-tabs button').last().click();
   await page.locator('.debug-foe[data-enemy="theNerd"]').click();
   await expect(page.locator('.combat')).toBeVisible();
   const start = page.locator('.js-start');
