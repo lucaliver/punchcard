@@ -97,7 +97,25 @@ meta.memos = Array.isArray(meta.memos) ? [...new Set(meta.memos.filter((id) => t
     l.hero in HEROES &&
     'result' in l &&
     (l.result === 'win' || l.result === 'lose' || l.result === 'abandon') &&
-    ['act', 'floor', 'kills', 'cards', 'pay', 'at'].every((k) => k in l && isNum((l as Record<string, unknown>)[k]));
+    ['act', 'floor', 'kills', 'cards', 'pay', 'elites', 'damageTaken', 'memos', 'at'].every(
+      (k) => k in l && isNum((l as Record<string, unknown>)[k]),
+    ) &&
+    'deck' in l &&
+    Array.isArray(l.deck) &&
+    l.deck.every(
+      (c: unknown) =>
+        typeof c === 'object' &&
+        c !== null &&
+        'id' in c &&
+        typeof c.id === 'string' &&
+        c.id in CARDS &&
+        'up' in c &&
+        typeof c.up === 'boolean' &&
+        (!('perks' in c) || (Array.isArray(c.perks) && c.perks.every((p: unknown) => typeof p === 'string'))),
+    ) &&
+    'relics' in l &&
+    Array.isArray(l.relics) &&
+    l.relics.every((id: unknown) => typeof id === 'string' && id in RELICS);
   meta.history = Array.isArray(meta.history) ? meta.history.filter(valid).slice(0, CONFIG.historyMax) : [];
 }
 

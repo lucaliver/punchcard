@@ -16,7 +16,7 @@ import {
 } from '../src/data/statuses';
 import { CARD_LIST, CARDS, RARITY_ORDER, cardCostOf } from '../src/data/cards';
 import { RELICS } from '../src/data/relics';
-import { hasStamp, memosOpen, stampAct } from '../src/game/meta';
+import { hasStamp, memosOpen, runHistory, stampAct } from '../src/game/meta';
 import { ACT_DEFS } from '../src/data/acts';
 import {
   applyCombat,
@@ -43,6 +43,7 @@ import {
   crossTrain,
   ACTS,
   SPECIALS,
+  abandonRun,
   vend,
   vendingCost,
 } from '../src/game/run';
@@ -2864,6 +2865,14 @@ describe('task batch', () => {
     run(c, CONFIG.fallGrace);
     expect(expired).toEqual([second.card.uid]);
     expect(c.sleeve[0]?.uid).toBe(first.card.uid);
+  });
+
+  it('a run in the history keeps its deck and stationery for the detail', () => {
+    const r = newRun('warrior', 4);
+    abandonRun(r);
+    const log = runHistory()[0];
+    expect(log.deck).toHaveLength(r.deck.length);
+    expect(log.relics).toEqual(r.relics);
   });
 
   it('the Tailor shows up once in a whole run', () => {

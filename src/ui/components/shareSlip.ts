@@ -1,4 +1,4 @@
-import { t } from '../../core/i18n';
+import { type TKey, t } from '../../core/i18n';
 import { CARDS } from '../../data/cards';
 import type { CardInst, HeroId } from '../../game/types';
 import { drawIcon, drawSprite } from '../art/riso';
@@ -24,6 +24,35 @@ export interface ShareSlip {
   stamp: string;
   /** The final deck, identical copies grouped. */
   deck: { card: CardInst; n: number }[];
+}
+
+/** What a payslip counts: the end of a run, or a run of the history. */
+export interface SlipStats {
+  floor: number;
+  kills: number;
+  elites: number;
+  cards: number;
+  memos: number;
+  pay: number;
+  damage: number;
+}
+
+/** The payslip's lines for a run; `isRecord` stamps the ones that beat a one-run record. */
+export function slipRows(s: SlipStats, isRecord: (k: TKey) => boolean = () => false): SlipRow[] {
+  const row = (k: TKey, v: number | string, kind: SlipRow['kind'] = 'row'): SlipRow => ({ label: t(k), value: String(v), kind, record: isRecord(k) });
+  return [
+    row('end.slip.earnings', '', 'section'),
+    row('end.slip.floors', s.floor),
+    row('end.slip.kills', s.kills),
+    row('end.slip.overtime', s.elites),
+    row('end.slip.cards', s.cards),
+    ...(s.memos ? [row('end.slip.memos', s.memos)] : []),
+    row('end.slip.gross', s.pay),
+    row('end.slip.deductions', '', 'section'),
+    row('end.slip.injuries', `-${s.damage}`),
+    row('end.slip.ceoBonus', `-${s.pay}`),
+    row('end.slip.net', t('end.slip.netValue'), 'net'),
+  ];
 }
 
 const W = 1080;

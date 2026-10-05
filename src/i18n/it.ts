@@ -60,6 +60,7 @@ const it: Record<EnKey, string> = {
   'history.empty': 'Nessuna giornata in archivio, per ora.',
   'history.where': 'Atto {a} · piano {n}',
   'history.stats': '{k} nemici · {c} carte',
+  'history.deck': 'Mazzo ({n})',
   'history.win': "Timbrato l'uscita",
   'history.lose': 'Licenziato',
   'history.abandon': 'Dimissioni',

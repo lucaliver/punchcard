@@ -639,6 +639,11 @@ const runLog = (run: RunState, result: RunLog['result']): RunLog => {
     kills: run.stats.kills,
     cards: run.stats.cardsPlayed,
     pay: run.money,
+    elites: run.stats.elites,
+    damageTaken: run.stats.damageTaken,
+    memos: run.mods.length,
+    deck: run.deck.map(({ id, up, perks }) => (perks?.length ? { id, up, perks } : { id, up })),
+    relics: [...run.relics],
     at: Date.now(),
   };
 };

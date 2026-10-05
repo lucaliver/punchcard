@@ -59,6 +59,7 @@ const en = {
   'history.empty': 'No workdays on file yet.',
   'history.where': 'Act {a} · floor {n}',
   'history.stats': '{k} kills · {c} cards',
+  'history.deck': 'Deck ({n})',
   'history.win': 'Clocked out',
   'history.lose': 'Fired',
   'history.abandon': 'Walked out',

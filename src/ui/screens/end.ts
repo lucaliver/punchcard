@@ -8,7 +8,7 @@ import { h } from '../dom';
 import { creature } from '../art/creatures';
 import { icon } from '../art/icons';
 import { groupCopies, sortCards } from '../components/modals';
-import { payslipImage, type ShareSlip, type SlipRow, shareImage } from '../components/shareSlip';
+import { payslipImage, type ShareSlip, shareImage, slipRows } from '../components/shareSlip';
 import { dropLetters, motes } from '../components/decor';
 import { burst, haptic } from '../fx/fx';
 import { playMusic } from '../../audio/music';
@@ -26,23 +26,21 @@ export function endScreen(run: RunState, won: boolean, end: RunEnd, onAgain: (he
   const node = currentNode(run);
   const title = won ? t('end.victory') : t('end.defeat');
   let confetti = 0;
-  const row = (k: TKey, v: number | string, kind: SlipRow['kind'] = 'row'): SlipRow => {
-    const rec = ROW_RECORD[k];
-    return { label: t(k), value: String(v), kind, record: !!rec && end.beaten.includes(rec) };
-  };
-  const rows: SlipRow[] = [
-    row('end.slip.earnings', '', 'section'),
-    row('end.slip.floors', node.floor),
-    row('end.slip.kills', run.stats.kills),
-    row('end.slip.overtime', run.stats.elites),
-    row('end.slip.cards', run.stats.cardsPlayed),
-    ...(run.mods.length ? [row('end.slip.memos', run.mods.length)] : []),
-    row('end.slip.gross', run.money),
-    row('end.slip.deductions', '', 'section'),
-    row('end.slip.injuries', `-${run.stats.damageTaken}`),
-    row('end.slip.ceoBonus', `-${run.money}`),
-    row('end.slip.net', t('end.slip.netValue'), 'net'),
-  ];
+  const rows = slipRows(
+    {
+      floor: node.floor,
+      kills: run.stats.kills,
+      elites: run.stats.elites,
+      cards: run.stats.cardsPlayed,
+      memos: run.mods.length,
+      pay: run.money,
+      damage: run.stats.damageTaken,
+    },
+    (k) => {
+      const rec = ROW_RECORD[k];
+      return !!rec && end.beaten.includes(rec);
+    },
+  );
   const slip: ShareSlip = {
     hero: run.hero,
     title,

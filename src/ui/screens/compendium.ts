@@ -16,6 +16,7 @@ import { relicArt } from '../art/relics';
 import { cardView, UNKNOWN } from '../components/cardView';
 import { foeView } from '../components/moveText';
 import { openCardAnatomy, openCardDetail, sortCards, sortControl } from '../components/modals';
+import { openRunDetail } from '../components/runDetail';
 
 const TABS: CardClass[] = [...HERO_LIST.map((hd) => hd.id), 'neutral', 'curse'];
 
@@ -77,8 +78,8 @@ function historyList(): HTMLElement {
   if (!runs.length) return h('p', { class: 'sub' }, t('history.empty'));
   const line = (r: RunLog): HTMLElement =>
     h(
-      'article',
-      { class: `run-log ${r.result}` },
+      'button',
+      { class: `run-log ${r.result}`, onclick: () => openRunDetail(r) },
       h('div', { class: 'rl-art', html: creature(r.hero) }),
       h(
         'div',

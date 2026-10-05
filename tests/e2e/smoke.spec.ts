@@ -662,6 +662,40 @@ test("the Nerd's update window covers the belt: Postpone sends it away for a few
   expect(problems).toEqual([]);
 });
 
+test('handbook history: tapping a run opens its payslip, stationery and deck', async ({ page }) => {
+  const problems = await freshGame(page);
+  await page.evaluate(() => {
+    const meta = JSON.parse(localStorage.getItem('cardstone+:meta') ?? '{}');
+    const deck = [...Array(3).fill({ id: 'punch', up: false }), { id: 'bobTheBuilder', up: true }];
+    meta.history = [
+      {
+        hero: 'warrior',
+        result: 'win',
+        act: 2,
+        floor: 9,
+        kills: 7,
+        cards: 80,
+        pay: 300,
+        elites: 1,
+        damageTaken: 40,
+        memos: 0,
+        deck,
+        relics: ['stressBall'],
+        at: Date.now(),
+      },
+    ];
+    localStorage.setItem('cardstone+:meta', JSON.stringify(meta));
+  });
+  await page.reload();
+  await page.getByRole('button', { name: /handbook/i }).click();
+  await page.getByRole('tab', { name: /history/i }).click();
+  await page.locator('.run-log').first().click();
+  await expect(page.locator('.run-detail .payslip')).toBeVisible();
+  await expect(page.locator('.run-detail .hero-feature')).toHaveCount(1);
+  await expect(page.locator('.run-detail .deck-grid .card')).toHaveCount(2);
+  expect(problems).toEqual([]);
+});
+
 test('debug: Unlock all hires every hero and reveals every card and enemy in the handbook', async ({ page }) => {
   await freshGame(page, { locked: true });
   await page.getByRole('button', { name: /debug/i }).click();

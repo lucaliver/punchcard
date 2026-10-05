@@ -376,6 +376,13 @@ export interface RunLog {
   kills: number;
   cards: number;
   pay: number;
+  /** Elites beaten, damage taken and memos pinned: the rest of the payslip. */
+  elites: number;
+  damageTaken: number;
+  memos: number;
+  /** The deck and relics it ended with (the detail a tap on the history line opens). */
+  deck: { id: string; up: boolean; perks?: string[] }[];
+  relics: string[];
   /** When the run ended (ms since the epoch). */
   at: number;
 }
