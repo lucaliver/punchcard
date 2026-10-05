@@ -2967,6 +2967,7 @@ describe('task batch', () => {
       anchored.pos = ANCHOR_POS - 0.01;
       run(c, CONFIG.beltTime);
       expect(anchored.pinned).toBe(true);
+      expect(anchored.card.passed).toBe(true);
       expect(anchored.pos).toBe(ANCHOR_POS);
       expect(c.belt).toContain(anchored);
       expect(c.discard).not.toContain(anchored.card);

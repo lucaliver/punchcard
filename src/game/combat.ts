@@ -806,6 +806,8 @@ export class Combat {
       if (!b.pinned && b.pos >= ANCHOR_POS && this.keywords(b.card).includes('anchor')) {
         b.pos = ANCHOR_POS;
         b.pinned = true;
+        // It has ridden the whole belt: a Pending card is approved.
+        b.card.passed = true;
         delete b.falling;
         this.events.emit({ type: 'beltPinned' });
         continue;
