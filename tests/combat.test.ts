@@ -2967,6 +2967,25 @@ describe('task batch', () => {
     }
   });
 
+  it('an Echo card played from the sleeve is spent as usual', () => {
+    const def = CARDS.punch;
+    const saved = def.keywords;
+    def.keywords = ['echo'];
+    try {
+      const c = setup({ beltRows: 1, deck: deckOf(['punch', 'punch']) });
+      c.enemy.move = { id: 'wait', intent: 'defend', windup: 999 };
+      run(c, CONFIG.introTime + 0.01);
+      c.hero.mana = c.hero.maxMana = 10;
+      const card = { uid: 9100, id: 'punch', up: false, bonus: 0, temp: false };
+      c.sleeve[0] = card;
+      expect(c.playCard(card.uid)).toBe(true);
+      expect(c.sleeve[0]).toBeNull();
+      expect(c.playCard(card.uid)).toBe(false);
+    } finally {
+      def.keywords = saved;
+    }
+  });
+
   it('an Anchor card stops pinned at the end of the belt and never falls', () => {
     const def = CARDS.bobTheBuilder;
     const saved = def.keywords;

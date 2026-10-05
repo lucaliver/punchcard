@@ -359,6 +359,8 @@
 }
 .c-wave.l { left: 0; transform: scaleX(-1); }
 .c-wave.r { right: 0; }
+/* only the belt repeats an Echo card: from the sleeve it is spent as usual */
+.sleeve .c-wave { display: none; }
 
 /* an Echo card, played and still there: it pulses */
 .card.echoed { animation: echo-pulse 0.2s steps(2); }

@@ -963,7 +963,7 @@ export class Combat {
     const row = beltIdx >= 0 ? this.belt[beltIdx].row : -1;
     // An Echo card is played again and again: it stays where it is (unless it is used up some other way).
     const kws = this.keywords(card);
-    const echoes = kws.includes('echo') && !kws.includes('exhaust') && !kws.includes('consume') && def.type !== 'power';
+    const echoes = beltIdx >= 0 && kws.includes('echo') && !kws.includes('exhaust') && !kws.includes('consume') && def.type !== 'power';
     if (echoes) this.events.emit({ type: 'cardEchoed', card });
     else {
       if (beltIdx >= 0) this.belt.splice(beltIdx, 1);
