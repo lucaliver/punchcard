@@ -492,6 +492,10 @@ export const ICONS: Record<string, { el: Element; svg: string }> = {
     el: 'steel',
     svg: `<path d="M4 44h56v12H4z"/><path d="M6 40l40-22c6-3 14 0 14 8v10H6z"/><rect x="10" y="47" width="30" height="4" fill="#16121f"/>`,
   },
+  stapleRemover: {
+    el: 'steel',
+    svg: `<path d="M4 40l30-18c4-2 8 0 8 4v6L12 52H4z"/><path d="M4 52h44l12-8v8c0 4-3 8-8 8H4z"/><path fill="#16121f" d="M40 30l14 6-2 4-14-6z"/>`,
+  },
   // Sleeve cards
   toolBelt: {
     el: 'steel',
@@ -1419,6 +1423,10 @@ export const ICONS: Record<string, { el: Element; svg: string }> = {
   'relic.statuette': {
     el: 'steel',
     svg: `<path d="M6 54h52l3 8H3z"/><path d="M18 52c-4-14-3-26 4-34 4-6 16-6 20 0 7 8 8 20 4 34z"/><path fill="#16121f" d="M26 30h4v4h-4zM36 30h4v4h-4zM28 40h8v3h-8z"/>`,
+  },
+  'relic.paperClip': {
+    el: 'steel',
+    svg: `<path fill="none" stroke="#16121f" stroke-width="7" stroke-linecap="round" stroke-linejoin="round" d="M42 50V18c0-8-5-12-11-12S20 10 20 18v30c0 8 5 12 11 12s11-4 11-12V22c0-3-2-5-5-5s-5 2-5 5v22"/>`,
   },
   'relic.lanyard': {
     el: 'steel',

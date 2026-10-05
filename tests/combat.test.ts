@@ -2330,6 +2330,15 @@ describe('relics', () => {
     expect(c.hero.mana).toBe(c.hero.maxMana);
   });
 
+  it('a Paper Clip starts Pending cards already approved', () => {
+    const deck = deckOf(['macGyver', 'macGyver', 'macGyver', 'macGyver']);
+    const all = (c: Combat) => [...c.draw, ...c.belt.map((b) => b.card)];
+    expect(all(setup({ deck })).some((card) => card.passed)).toBe(false);
+    const c = setup({ deck, relics: ['paperClip'] });
+    expect(all(c).every((card) => card.passed)).toBe(true);
+    expect(all(c).some((card) => c.isPending(card))).toBe(false);
+  });
+
   it('Sticky Notes fill the belt, a Lanyard speeds it up and a Company Card adds a reward card', () => {
     expect(setup({ relics: ['stickyNotes'] }).belt.length).toBeGreaterThan(setup().belt.length + 3);
     expect(setup({ relics: ['lanyard'] }).beltRate()).toBeCloseTo(setup().beltRate() * 1.15);
@@ -2700,9 +2709,13 @@ describe("Eight Hours, Krusty Krab, It's-a Me, Tip Jar, Raise Denied, CC the Bos
     expect(play(c, 'eightHours')).toBe(true);
     expect(c.stacks('hero', 'eightHours')).toBe(CARDS.eightHours.vals[0]);
     const damage = (): number => c.enemy.maxHp - c.enemy.hp;
-    for (let i = 0; i < 7; i++) play(c, 'redStapler');
+    for (let i = 0; i < 7; i++) {
+      c.hero.mana = c.hero.maxMana;
+      play(c, 'redStapler');
+    }
     expect(damage()).toBe(7 * CARDS.redStapler.vals[0]);
     expect(STATUSES.eightHours.progress?.(c, 'hero', c.hero.statuses.eightHours)).toBeCloseTo(7 / 8);
+    c.hero.mana = c.hero.maxMana;
     play(c, 'redStapler');
     expect(damage()).toBe(9 * CARDS.redStapler.vals[0]);
     // The count starts over, and the upgrade shortens the shift.

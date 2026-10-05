@@ -117,6 +117,11 @@ const cargoPants = `
 <path d="M116 96h46v52h-46z" fill="#6a7626" ${OUT}/><path d="M116 96h46v16h-46z" fill="#5e6a22" ${OUT}/><circle cx="139" cy="112" r="4.5" fill="#ffd900" ${OUT}/>
 <path d="M44 168h34M122 168h34" stroke="#ff3d9a" stroke-width="5" stroke-linecap="round"/>`;
 
+const paperClip = `
+<path d="M128 150V62c0-22-12-34-32-34S64 40 64 62v84c0 14 10 24 24 24s24-10 24-24V76c0-8-6-14-12-14s-12 6-12 14v62" fill="none" stroke="${INK}" stroke-width="20" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M128 150V62c0-22-12-34-32-34S64 40 64 62v84c0 14 10 24 24 24s24-10 24-24V76c0-8-6-14-12-14s-12 6-12 14v62" fill="none" stroke="#9aa3b5" stroke-width="12" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M72 60c2-12 10-20 22-22" stroke="#e8ecf4" stroke-width="5" fill="none" stroke-linecap="round"/>`;
+
 const stickyNotes = `
 <path d="M42 40h118v132H42z" fill="#e0a800" ${OUT} transform="rotate(6 100 106)"/>
 <path d="M36 34h118v132H36z" fill="#ffe45a" ${OUT} transform="rotate(-5 100 100)"/>
@@ -190,6 +195,7 @@ export const RELIC_SPRITES: Record<string, string> = Object.fromEntries(
     paperShredder,
     statuette,
     lanyard,
+    paperClip,
     companyCard,
   }).map(([id, svg]) => [`relic.${id}`, svg]),
 );

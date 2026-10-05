@@ -172,7 +172,7 @@ export function bindMoveDetails(root: HTMLElement): void {
 export function foeView(e: EnemyDef, met: boolean): HTMLElement {
   const el = h('article', {
     class: `foe${met ? '' : ' undiscovered'}`,
-    html: `<div class="foe-head"><div class="foe-art" data-act="${e.act}">${creature(e.art)}</div><div class="foe-id"><h3>${met ? t(`enemy.${e.id}.name`) : UNKNOWN}</h3>${
+    html: `<div class="foe-head"><div class="foe-art">${creature(e.art)}</div><div class="foe-id"><h3>${met ? t(`enemy.${e.id}.name`) : UNKNOWN}</h3>${
       e.tier !== 'normal' ? `<span class="tier ${e.tier}">${t(`journey.node.${e.tier}`)}</span>` : ''
     }<span class="foe-hp">${icon('heart')}${Math.round(e.hp * CONFIG.enemyHp)}${e.block ? `<i class="foe-block">${icon('shield')}${e.block}</i>` : ''}</span></div></div>${met ? movePattern(e) : ''}`,
   });

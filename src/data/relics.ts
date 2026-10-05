@@ -165,6 +165,18 @@ const defs: RelicDef[] = [
       },
     },
   },
+  {
+    id: 'paperClip',
+    rarity: 'rare',
+    n: 1,
+    hooks: {
+      // Every Pending card of the deck starts the fight already approved (it is still pending again after each play).
+      onCombatStart: (c) => {
+        for (const card of c.draw) if (c.keywords(card).includes('pending')) card.passed = true;
+        proc(c, 'paperClip');
+      },
+    },
+  },
   { id: 'lanyard', rarity: 'rare', n: Math.round((LANYARD_SPEED - 1) * 100), mods: { beltSpeed: LANYARD_SPEED } },
   { id: 'companyCard', rarity: 'epic', n: 1, mods: { rewardCards: 1 } },
   // The Tailor's: not found in the Lost & Found.
