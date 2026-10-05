@@ -861,6 +861,8 @@ const en = {
   'card.redStapler.desc': 'Deal {0} damage.',
   'card.fireDrill.name': 'Fire Drill',
   'card.fireDrill.desc': '[stun] for {0}s.',
+  'card.mayFirst.name': 'May 1st',
+  'card.mayFirst.desc': '[stun] for {0}s. Heal {1} HP.',
   'card.energyDrink.name': 'Energy Drink',
   'card.energyDrink.desc': 'Gain {0} [mana].',
   'card.fika.name': 'Fika',

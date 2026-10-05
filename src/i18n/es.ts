@@ -866,6 +866,8 @@ const es: Record<EnKey, string> = {
   'card.redStapler.desc': 'Haz {0} de daño.',
   'card.fireDrill.name': 'Simulacro de incendio',
   'card.fireDrill.desc': '[stun] durante {0}s.',
+  'card.mayFirst.name': '1 de mayo',
+  'card.mayFirst.desc': '[stun] durante {0}s. Cura {1} PV.',
   'card.energyDrink.name': 'Bebida energética',
   'card.energyDrink.desc': 'Gana {0} de [mana].',
   'card.fika.name': 'Fika',

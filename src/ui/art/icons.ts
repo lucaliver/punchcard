@@ -1311,6 +1311,11 @@ export const ICONS: Record<string, { el: Element; svg: string }> = {
     el: 'steel',
     svg: `<rect x="4" y="18" width="38" height="26"/><circle cx="23" cy="31" r="7" fill="#16121f"/><path d="M8 22h6M32 40h6" stroke="#16121f" stroke-width="3"/><path d="M40 28h14V18l10 14-10 14V36H40z"/>`,
   },
+  // A tear-off calendar page showing a big 1, with a red flag on top
+  mayFirst: {
+    el: 'holy',
+    svg: `<rect x="6" y="10" width="52" height="48"/><rect x="6" y="10" width="52" height="12" fill="#16121f"/><rect x="16" y="4" width="6" height="12"/><rect x="42" y="4" width="6" height="12"/><path d="M28 28h8v24h-8z" fill="#16121f"/><path d="M22 34l6-6v6z" fill="#16121f"/><rect x="22" y="50" width="20" height="4" fill="#16121f"/>`,
+  },
   step2: {
     el: 'holy',
     svg: `<path d="M4 60V46h16V32h16v28z"/>`,

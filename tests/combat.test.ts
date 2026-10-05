@@ -2895,6 +2895,17 @@ describe('task batch', () => {
     expect(c.exhaust.filter((x) => x.id === 'hotPotato' || x.id === 'passTheBuck')).toHaveLength(2);
   });
 
+  it('May 1st stuns the enemy and heals the hero', () => {
+    const c = setup({ deck: deckOf(['punch', 'punch']) });
+    c.enemy.move = { id: 'wait', intent: 'defend', windup: 999 };
+    run(c, CONFIG.introTime + 0.01);
+    c.hero.hp = 10;
+    c.addTempCard('mayFirst', 'belt');
+    expect(c.playCard(c.belt[c.belt.length - 1].card.uid, 'auto')).toBe(true);
+    expect(c.has('enemy', 'stun')).toBe(true);
+    expect(c.hero.hp).toBe(10 + CARDS.mayFirst.vals[1]);
+  });
+
   it('the Tailor shows up once in a whole run', () => {
     for (let seed = 1; seed <= 20; seed++) {
       expect(newRun('warrior', seed).nodes.filter((n) => n.type === 'tailor').length).toBeLessThanOrEqual(1);

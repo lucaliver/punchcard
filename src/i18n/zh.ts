@@ -856,6 +856,8 @@ const zh: Record<EnKey, string> = {
   'card.redStapler.desc': '造成 {0} 点伤害。',
   'card.fireDrill.name': '消防演习',
   'card.fireDrill.desc': '[stun] {0} 秒。',
+  'card.mayFirst.name': '五一劳动节',
+  'card.mayFirst.desc': '[stun] {0} 秒。恢复 {1} 点生命。',
   'card.energyDrink.name': '能量饮料',
   'card.energyDrink.desc': '获得 {0} 点[mana]。',
   'card.fika.name': '瑞典咖啡时间',

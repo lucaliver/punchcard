@@ -113,6 +113,22 @@ export const neutralCards: CardDef[] = [
     play: (c, v) => c.applyStatus('enemy', 'stun', 1, v[0]),
   },
   {
+    id: 'mayFirst',
+    face: '{stun:0}|{heal:1}',
+    cls: 'neutral',
+    type: 'skill',
+    rarity: 'epic',
+    cost: 3,
+    vals: [5, 10],
+    upVals: [7, 14],
+    keywords: ['exhaust'],
+    art: 'mayFirst',
+    play: (c, v) => {
+      c.applyStatus('enemy', 'stun', 1, v[0]);
+      c.heal('hero', v[1]);
+    },
+  },
+  {
     id: 'energyDrink',
     face: '{mana:0}',
     cls: 'neutral',
