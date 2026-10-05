@@ -77,7 +77,7 @@
 
 - [x] mentre una carta sta facendo l'animazione della caduta a fine belt, dovrebbe essere ancora grabbabile (per poterla mettere nella sleeve)
 
-- proponimi delle altre carte forti a cui dare il modifier "large"
+- [x] proponimi delle altre carte forti a cui dare il modifier "large"
 
 
 # Miei appunti (ignore for now)

@@ -403,6 +403,9 @@
 .card.hexed[data-hex-left='2'] .hex-cover { opacity: 0.75; }
 .card.hex-in { animation: hex-in 0.3s steps(3); }
 .card.hex-hit { animation: hex-hit 0.16s steps(2); }
+/* a large card is covered whole: the stone and the stealing hand stretch over the body welded behind it too */
+.card.joined :is(.hex-cover, .steal-hand) { right: calc(var(--cw) * var(--join) * -1); }
+.belt.ltr .card.joined :is(.hex-cover, .steal-hand) { right: 0; left: calc(var(--cw) * var(--join) * -1); }
 .card.thawing { opacity: 0.5; }
 @keyframes hex-in {
   from { filter: brightness(2); }
@@ -441,7 +444,9 @@
   border-left: 0;
   box-shadow: var(--sh) var(--sh) 0 var(--shadow);
 }
-.sleeve-slot .c-join { display: none; }
+/* in the sleeve a large card is one normal card: no welded body (the rule that shows it is more specific, so this one is too) */
+.sleeve-slot .card.joined .c-join { display: none; }
+.sleeve-slot .card.joined :is(.hex-cover, .steal-hand) { left: 0; right: 0; }
 
 /* Lockout: the gate hangs over the lane below too (tall cards always ride the top lane). */
 .card.wide.tall .c-gate { bottom: calc(var(--bw) * -1 - var(--belt-row-h)); }
