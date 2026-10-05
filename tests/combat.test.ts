@@ -2835,6 +2835,17 @@ describe('task batch', () => {
     expect(c.shownVals(raise)[0]).toBe(base + per * c.strippable().length);
   });
 
+  it('a card about to be stolen is marked for the last half second of the wind-up', () => {
+    const c = setup();
+    run(c, CONFIG.introTime + 3);
+    c.enemy.move = { id: 'grab', intent: 'steal', windup: 10, steal: 1 };
+    c.enemy.timer = 10 - CONFIG.stealWarn - 0.1;
+    expect(c.stealTarget()).toBeNull();
+    c.enemy.timer = 10 - CONFIG.stealWarn + 0.05;
+    const first = c.belt.reduce((a, b) => (b.pos > a.pos ? b : a));
+    expect(c.stealTarget()?.uid).toBe(first.card.uid);
+  });
+
   it('the Tailor shows up once in a whole run', () => {
     for (let seed = 1; seed <= 20; seed++) {
       expect(newRun('warrior', seed).nodes.filter((n) => n.type === 'tailor').length).toBeLessThanOrEqual(1);

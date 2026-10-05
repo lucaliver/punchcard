@@ -353,6 +353,22 @@
   pointer-events: none;
 }
 
+/* The enemy is about to steal this card: a yellow hand, half see-through, closes over it. */
+.steal-hand {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  pointer-events: none;
+  color: var(--y);
+  opacity: 0.7;
+  animation: steal-grab 0.5s steps(4) forwards;
+}
+.steal-hand .pico { font-size: 70cqw; }
+@keyframes steal-grab {
+  from { translate: 0 -30%; opacity: 0; }
+}
+
 /* Hexed card (petrified): stone over the card, a tap counter, a knock on each tap; then it thaws half-transparent. */
 .hex-cover {
   position: absolute;

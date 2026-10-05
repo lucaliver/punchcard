@@ -1693,11 +1693,25 @@ export class Combat {
     e.timer = Math.min(e.move.windup, e.timer + s);
   }
 
-  /** The enemy steals the belt card closest to the exit; it's gone for this fight. */
-  private stealCard(): void {
-    if (!this.belt.length) return;
+  /** The belt card closest to the exit: the one a steal takes. */
+  private stealIndex(): number {
     let idx = 0;
     for (let i = 1; i < this.belt.length; i++) if (this.belt[i].pos > this.belt[idx].pos) idx = i;
+    return this.belt.length ? idx : -1;
+  }
+
+  /** The card a steal is about to take: marked for the last `CONFIG.stealWarn` seconds of the wind-up. */
+  stealTarget(): CombatCard | null {
+    const e = this.enemy;
+    if (!e.move.steal || this.result || e.move.windup - e.timer > CONFIG.stealWarn) return null;
+    const idx = this.stealIndex();
+    return idx < 0 ? null : this.belt[idx].card;
+  }
+
+  /** The enemy steals the belt card closest to the exit; it's gone for this fight. */
+  private stealCard(): void {
+    const idx = this.stealIndex();
+    if (idx < 0) return;
     const [b] = this.belt.splice(idx, 1);
     this.exhaust.push(b.card);
     this.events.emit({ type: 'cardStolen', card: b.card });

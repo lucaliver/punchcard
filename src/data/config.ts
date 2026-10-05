@@ -28,6 +28,8 @@ export const CONFIG = {
   beltTurnPause: 0.5,
   /** A card expires once its left edge is this far past the belt's left edge (fraction of card width). */
   expireOverhang: 0.1,
+  /** Seconds before an enemy steals a card that a hand is shown over it. */
+  stealWarn: 0.5,
   /** Belt speed multiplier while rushed (Time Slip, Time Warp). */
   beltRush: 1.5,
   /** Seconds a card dragged at the end of the belt is still kept in the hand before it falls off. */

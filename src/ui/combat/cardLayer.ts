@@ -29,6 +29,8 @@ interface CardEl {
   over: boolean;
   /** Stone cover with the taps left, while the card is petrified. */
   hexEl?: HTMLElement;
+  /** The yellow hand over the card an enemy is about to steal. */
+  stealEl?: HTMLElement;
   /** The virus on an infected card. */
   virusEl?: HTMLElement;
   /** The pushpin on a card pinned where it is (Team Change). */
@@ -399,6 +401,12 @@ export function createCardLayer(v: CombatView): CardLayer {
       } else if (ce.hexEl) {
         ce.hexEl.remove();
         ce.hexEl = undefined;
+      }
+      const stealing = combat.stealTarget()?.uid === b.card.uid;
+      if (stealing) ce.stealEl ??= ce.el.appendChild(h('div', { class: 'steal-hand', html: icon('hand') }));
+      else if (ce.stealEl) {
+        ce.stealEl.remove();
+        ce.stealEl = undefined;
       }
       // Blink on the way out only when leaving the belt does something (curses that explode, drain…).
       toggle(ce.el, 'leaving', !b.pinned && b.pos > 0.86 && !!CARDS[b.card.id].onExpire);
