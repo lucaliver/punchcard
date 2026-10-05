@@ -324,6 +324,12 @@ export class Combat {
     return cardValsOf(card);
   }
 
+  /** The values a card's face shows now (`CardDef.shown`): live while it waits on the belt or in the sleeve. */
+  shownVals(card: CardLike): number[] {
+    const vals = this.cardVals(card);
+    return CARDS[card.id].shown?.(this, vals, card as CombatCard) ?? vals;
+  }
+
   cardCost(card: CardInst): number {
     const cost = cardCostOf(card);
     return cost > 0 && this.freeNextId() ? 0 : cost;
@@ -1363,20 +1369,24 @@ export class Combat {
     return gone.length;
   }
 
-  /** Strips the enemy of its Block and of every buff (a good status that isn't one of its permanent traits). Returns how many things it lost. */
-  stripBuffs(): number {
-    let n = 0;
-    if (this.enemy.block > 0) {
-      this.breakBlock('enemy');
-      n++;
-    }
+  /** What `stripBuffs` would take off the enemy now: its Block (as `'block'`) and every buff (a good status that isn't one of its permanent traits). */
+  strippable(): string[] {
+    const found = this.enemy.block > 0 ? ['block'] : [];
     for (const id of Object.keys(this.enemy.statuses)) {
       const def = STATUSES[id];
-      if (!this.has('enemy', id) || !def.good || def.passive || def.hidden) continue;
-      this.removeStatus('enemy', id);
-      n++;
+      if (this.has('enemy', id) && def.good && !def.passive && !def.hidden) found.push(id);
     }
-    return n;
+    return found;
+  }
+
+  /** Strips the enemy of its Block and of every buff. Returns how many things it lost. */
+  stripBuffs(): number {
+    const found = this.strippable();
+    for (const id of found) {
+      if (id === 'block') this.breakBlock('enemy');
+      else this.removeStatus('enemy', id);
+    }
+    return found.length;
   }
 
   /** Hands every debuff the hero carries that can hurt the enemy too (`StatusDef.passable`) over to it, as it was. Returns how many. */

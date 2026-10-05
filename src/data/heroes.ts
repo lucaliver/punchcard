@@ -26,7 +26,7 @@ const warrior: HeroDef = {
   blockDecay: CONFIG.heroBlockDecay,
   slowBlock: THICK_SKIN,
   // Starter decks: only basic cards (plus mana crystals); everything else comes from rewards.
-  startDeck: [...rep('punch', 6), ...rep('bobTheBuilder', 6), 'bellaCiao', 'coffee', 'coffee'],
+  startDeck: [...rep('punch', 8), ...rep('bobTheBuilder', 7), 'bellaCiao', 'coffee', 'coffee'],
   startUpgraded: ['punch', 'bobTheBuilder'],
   firstRewards: [
     ['heavyLifting', 'hostileTakeover', 'wallStreet', 'macGyver'],
@@ -53,7 +53,7 @@ const mage: HeroDef = {
   maxMana: 3,
   regen: 1.25,
   blockDecay: 1.0,
-  startDeck: [...rep('clippy', 7), ...rep('fireDoor', 5), 'coffee', 'italianEspresso', 'caffeineJolt'],
+  startDeck: [...rep('clippy', 8), ...rep('fireDoor', 7), 'coffee', 'italianEspresso', 'caffeineJolt'],
   startUpgraded: ['clippy', 'fireDoor'],
   firstRewards: [
     ['coldCall', 'flambe', 'digitalDetox', 'macGyver'],
@@ -88,7 +88,7 @@ const necromancer: HeroDef = {
   maxMana: 2,
   regen: 1.25,
   blockDecay: 0.9,
-  startDeck: [...rep('skeletonCrew', 5), ...rep('karlMarx', 5), ...rep('toxicMemo', 3), 'coffee', 'italianEspresso'],
+  startDeck: [...rep('skeletonCrew', 6), ...rep('karlMarx', 6), ...rep('toxicMemo', 4), 'coffee', 'italianEspresso'],
   startUpgraded: ['skeletonCrew', 'karlMarx'],
   firstRewards: [
     ['bloodMoney', 'karoshi', 'pingPongTable', 'macGyver'],

@@ -141,6 +141,8 @@ export interface CardDef {
     /** An enemy hit got through to the hero. */
     onHeroHit?: (c: Combat, v: number[], card: CombatCard, lost: number) => void;
   };
+  /** What the face shows in a fight, for a card whose values depend on the moment (what it would do if played now): the same maths `play` uses. */
+  shown?: (c: Combat, v: number[], card: CombatCard) => number[];
   play?: (c: Combat, v: number[], card: CombatCard) => void;
   /** Triggered when the card leaves the belt without being played. */
   onExpire?: (c: Combat, v: number[], card: CombatCard) => void;

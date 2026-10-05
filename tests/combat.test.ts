@@ -2817,6 +2817,24 @@ describe('task batch', () => {
     expect(run1.hp).toBeLessThanOrEqual(run1.maxHp);
   });
 
+  it('Dress Code and Raise Denied show what they would do right now', () => {
+    const c = setup({ deck: deckOf(['dressCode', 'punch', 'punch', 'punch']) });
+    c.enemy.move = { id: 'wait', intent: 'defend', windup: 999 };
+    run(c, CONFIG.introTime + 0.01);
+    c.belt.length = 0;
+    c.addTempCard('punch', 'belt');
+    c.addTempCard('dressCode', 'belt');
+    const dress = c.belt[c.belt.length - 1].card;
+    const [block, shrink] = CARDS.dressCode.vals;
+    expect(c.shownVals(dress)[0]).toBe(block - shrink);
+    c.enemy.block = 10;
+    c.applyStatus('enemy', 'strength', 2);
+    c.addTempCard('raiseDenied', 'belt');
+    const raise = c.belt[c.belt.length - 1].card;
+    const [base, per] = CARDS.raiseDenied.vals;
+    expect(c.shownVals(raise)[0]).toBe(base + per * c.strippable().length);
+  });
+
   it('the Tailor shows up once in a whole run', () => {
     for (let seed = 1; seed <= 20; seed++) {
       expect(newRun('warrior', seed).nodes.filter((n) => n.type === 'tailor').length).toBeLessThanOrEqual(1);

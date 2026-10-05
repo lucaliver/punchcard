@@ -112,12 +112,15 @@ function valueHtml(card: CardLike, idx: number, combat?: Combat | null): string 
   const def = CARDS[card.id];
   const base = cardValsOf(card)[idx];
   const upgraded = card.up && def.upVals && def.upVals[idx] !== def.vals[idx];
+  // A value that moves with the fight (`CardDef.shown`) is read live, and tinted when it differs from the card's own.
+  const now = combat ? combat.shownVals(card)[idx] : base;
   if (combat && def.dmg?.includes(idx)) {
-    const v = combat.previewHeroDamage(base, def);
+    const v = combat.previewHeroDamage(now, def);
     const cls = v > base ? 'buff' : v < base ? 'nerf' : upgraded ? 'upg' : '';
     return `<b class="${cls}">${v}</b>`;
   }
-  return `<b class="${upgraded ? 'upg' : ''}">${base}</b>`;
+  const cls = now > base ? 'buff' : now < base ? 'nerf' : upgraded ? 'upg' : '';
+  return `<b class="${cls}">${now}</b>`;
 }
 
 /**

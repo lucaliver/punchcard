@@ -1,3 +1,4 @@
+import type { Combat } from '../../game/combat';
 import type { CardDef } from '../../game/types';
 
 /** Just Cause hits harder once the enemy is at or under this share of its max HP. */
@@ -5,6 +6,9 @@ export const JUST_CAUSE_HP = 0.3;
 
 /** Hardship Case gives its bigger Block at or under this share of the hero's max HP. */
 export const HARDSHIP_HP = 0.5;
+
+/** Dress Code's Block: it shrinks by `v[1]` for every other card on the belt. */
+const dressBlock = (c: Combat, v: number[], self: number): number => Math.max(0, v[0] - v[1] * c.belt.filter((b) => b.card.uid !== self).length);
 
 export const warriorCards: CardDef[] = [
   // Starters
@@ -499,7 +503,9 @@ export const warriorCards: CardDef[] = [
     vals: [18, 2],
     upVals: [24, 2],
     art: 'dressCode',
-    play: (c, v) => c.gainBlock('hero', Math.max(0, v[0] - v[1] * c.belt.length)),
+    // The card itself counts for nothing: on the belt or just played, only the others do.
+    shown: (c, v, card) => [dressBlock(c, v, card.uid), v[1]],
+    play: (c, v, card) => c.gainBlock('hero', dressBlock(c, v, card.uid)),
   },
   {
     id: 'skillIssue',
@@ -539,6 +545,7 @@ export const warriorCards: CardDef[] = [
     vals: [5, 8],
     upVals: [7, 11],
     art: 'raiseDenied',
+    shown: (c, v) => [v[0] + v[1] * c.strippable().length, v[1]],
     // Stripped first, so the Block it takes away doesn't soak the hit.
     play: (c, v) => void c.hit(v[0] + v[1] * c.stripBuffs()),
   },
