@@ -1,5 +1,7 @@
 import en, { type EnKey } from '../i18n/en';
+import es from '../i18n/es';
 import it from '../i18n/it';
+import zh from '../i18n/zh';
 
 export type Dict = Record<string, string>;
 
@@ -32,12 +34,23 @@ export type Params = Record<string, string | number>;
 const locales: Record<string, { name: string; dict: Dict }> = {
   en: { name: 'English', dict: en as Dict },
   it: { name: 'Italiano', dict: it },
+  es: { name: 'Español', dict: es },
+  zh: { name: '中文', dict: zh },
 };
 
 let current = 'en';
 const fallback = 'en';
 
 export const availableLocales = (): { code: string; name: string }[] => Object.entries(locales).map(([code, l]) => ({ code, name: l.name }));
+
+/** The registered language the browser prefers (its first language that is one of ours), or the default one. */
+export function detectLocale(): string {
+  for (const tag of navigator.languages ?? [navigator.language]) {
+    const code = tag.toLowerCase().split('-')[0];
+    if (locales[code]) return code;
+  }
+  return fallback;
+}
 
 export function setLocale(code: string): void {
   if (locales[code]) {

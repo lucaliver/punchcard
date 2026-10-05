@@ -9,6 +9,8 @@ export interface Settings {
   reduceMotion: boolean;
   haptics: boolean;
   locale: string;
+  /** The language screen of the first launch has been answered. */
+  localeChosen: boolean;
   seenTutorial: boolean;
   /** Cards whose first-time tip (`CardDef.tip`) has been shown. */
   seenTips: string[];
@@ -25,6 +27,7 @@ const defaults: Settings = {
   reduceMotion: typeof matchMedia !== 'undefined' && matchMedia('(prefers-reduced-motion: reduce)').matches,
   haptics: true,
   locale: 'en',
+  localeChosen: false,
   seenTutorial: false,
   seenTips: [],
   debugMenus: false,
@@ -38,7 +41,7 @@ for (const k of ['sfxVolume', 'musicVolume'] as const) {
   settings[k] = typeof v === 'number' && Number.isFinite(v) ? Math.min(1, Math.max(0, v)) : defaults[k];
 }
 
-for (const k of ['reduceMotion', 'haptics', 'seenTutorial', 'debugMenus', 'analytics'] as const)
+for (const k of ['reduceMotion', 'haptics', 'localeChosen', 'seenTutorial', 'debugMenus', 'analytics'] as const)
   if (typeof settings[k] !== 'boolean') settings[k] = defaults[k];
 if (!GAME_SPEEDS.some((s) => s === settings.speed)) settings.speed = defaults.speed;
 if (typeof settings.locale !== 'string') settings.locale = defaults.locale;

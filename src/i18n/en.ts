@@ -989,7 +989,7 @@ const en = {
   'card.passiveAggressive.desc': 'The enemy is [weak] for {0}s [x] times.',
   'card.coldOpen.name': 'Cold Open',
   'card.coldOpen.desc': 'Whenever you play an attack, also [chill] the enemy for {0}s.',
-  'card.fortyTabs.name': 'Forty Tabs Open',
+  'card.fortyTabs.name': '40 Tabs Open',
   'card.fortyTabs.desc': 'Every {$tabsEvery}s, gain a charge of [multitasking].',
   'card.freeCoffee.name': 'Free Coffee',
   'card.freeCoffee.desc': 'Every {$coffeeEvery}s, gain {0} [mana].',

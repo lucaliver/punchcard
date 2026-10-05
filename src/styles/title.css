@@ -271,6 +271,12 @@
   z-index: var(--z-debug);
 }
 
+/* ------------------------------------------------------------------ language (first launch, before the contract) */
+.language { background: var(--void); align-items: center; justify-content: center; gap: 18px; padding: 24px 16px; text-align: center; }
+.language-mark { font-size: 72px; color: var(--p); --ink2: var(--paper); }
+.language .h1 { margin: 0; color: var(--paper); }
+.language-list { width: min(100%, 300px); display: flex; flex-direction: column; gap: 12px; }
+
 /* ------------------------------------------------------------------ studio card (shown once, right after the contract is signed) */
 .studio { background: var(--void); align-items: center; justify-content: center; gap: 14px; text-align: center; cursor: pointer; }
 .studio-mark { width: clamp(120px, 42vw, 180px); aspect-ratio: 1; animation: studio-pop 0.4s steps(5) both; }

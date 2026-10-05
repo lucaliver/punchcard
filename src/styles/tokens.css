@@ -145,9 +145,11 @@
   --line: 3px;
   --off: 4px;
   /* Silkscreen for words in titles only; anything with numbers uses Jersey 10 (--font-ui): clearer digits. */
-  --font-display: 'Silkscreen', monospace;
-  --font-ui: 'Pixel UI', 'Silkscreen', monospace;
-  --font: 'Chakra Petch', system-ui, sans-serif;
+  /* the pixel fonts have no Chinese: the phone's own CJK font stands in (system fonts, nothing to download) */
+  --font-cjk: 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', 'Noto Sans CJK SC', 'Noto Sans SC';
+  --font-display: 'Silkscreen', var(--font-cjk), monospace;
+  --font-ui: 'Pixel UI', 'Silkscreen', var(--font-cjk), monospace;
+  --font: 'Chakra Petch', system-ui, var(--font-cjk), sans-serif;
   --safe-t: env(safe-area-inset-top, 0px);
   --safe-b: env(safe-area-inset-bottom, 0px);
   --app-w: min(100vw, 520px);

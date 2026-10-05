@@ -995,7 +995,7 @@ const it: Record<EnKey, string> = {
   'card.passiveAggressive.desc': 'Il nemico è [weak] per {0}s [x] volte.',
   'card.coldOpen.name': 'Cold Open',
   'card.coldOpen.desc': 'Ogni volta che giochi un attacco, applica anche [chill] al nemico per {0}s.',
-  'card.fortyTabs.name': 'Quaranta Schede Aperte',
+  'card.fortyTabs.name': '40 Schede Aperte',
   'card.fortyTabs.desc': 'Ogni {$tabsEvery}s, ottieni una carica di [multitasking].',
   'card.freeCoffee.name': 'Caffè Gratis',
   'card.freeCoffee.desc': 'Ogni {$coffeeEvery}s, ottieni {0} di [mana].',

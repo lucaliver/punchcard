@@ -63,6 +63,7 @@ import { vendingScreen } from './ui/screens/vending';
 import { crossTrainingScreen } from './ui/screens/crossTraining';
 import { rewardScreen } from './ui/screens/reward';
 import { studioScreen } from './ui/screens/studio';
+import { languageScreen } from './ui/screens/language';
 import { splashScreen, titleScreen } from './ui/screens/title';
 import { compendiumScreen } from './ui/screens/compendium';
 
@@ -333,6 +334,7 @@ async function boot(): Promise<void> {
   await preloadArt({ creatures: { ...CREATURES, ...RELIC_SPRITES, ...ROOM_SPRITES, ...PROP_SPRITES }, icons: ICONS });
   // The employment contract only until it's signed (then the studio's card); afterwards the game opens on the title.
   if (contractSigned()) goTitle();
+  else if (!settings.localeChosen) show(languageScreen());
   else show(splashScreen(() => show(studioScreen(goTitle))));
   if (import.meta.env.DEV)
     Object.assign(window, {

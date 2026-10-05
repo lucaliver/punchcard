@@ -18,7 +18,7 @@ export async function freshGame(
   await page.evaluate(
     ([seen, unlocked, veteran, debug, stamps, met]) => {
       localStorage.clear();
-      localStorage.setItem('cardstone+:settings', JSON.stringify({ seenTutorial: seen, debugMenus: debug }));
+      localStorage.setItem('cardstone+:settings', JSON.stringify({ seenTutorial: seen, debugMenus: debug, localeChosen: true }));
       const heroes = unlocked ? ['mage', 'necromancer'] : [];
       if (unlocked || veteran || stamps.length || met.length)
         localStorage.setItem(

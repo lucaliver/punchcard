@@ -156,7 +156,7 @@ New enemy rules are statuses (`statuses.ts`): `microsleep`, `rateLimit` (`capsHi
 ### i18n
 
 `t(key)` is typed: literal ids must exist in `en.ts`. Runtime-built keys use known prefixes (`card.`, `enemy.`, `move.`,
-`status.`, `kw.`, `hero.`…), covered by the content test. Plurals: `{n|one|other}`. Languages: `en` (default) and `it`, picked in Settings (`settings.locale`, reloads the page). A new string goes in **both** files (a test checks same keys and placeholders: `{n}`, `{$name}`, `[kw]`); a new language: copy `en.ts`, register in `core/i18n.ts`. Italian keeps game words translated (Blocco, Veleno, Forza…) and the workplace-satire tone.
+`status.`, `kw.`, `hero.`…), covered by the content test. Plurals: `{n|one|other}`. Languages: `en` (default), `it`, `es` and `zh` (Simplified Chinese: no plural forms, `{n|a|a}` repeats one; its text falls back on the system CJK font, `--font-cjk`), picked in Settings (`settings.locale`, reloads the page) or on the language screen of a first launch, before the contract (`settings.localeChosen`). A new string goes in **all** the language files (a test checks same keys and placeholders: `{n}`, `{$name}`, `[kw]`); a new language: copy `en.ts`, register in `core/i18n.ts`. Italian keeps game words translated (Blocco, Veleno, Forza…) and the workplace-satire tone.
 
 **Never type a game number in a string.** A number rules text quotes (a duration, a percentage, a threshold) goes in as `{$name}`, read from `VALUES` in `data/values.ts`, which takes it from the constant, status or record that makes the rule work (export the constant, don't copy it). Card values stay `{0}`/`{1}`, relic/perk numbers `{n}`. A test checks every `{$name}` has a value and every value is used.
 

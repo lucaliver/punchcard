@@ -2,7 +2,9 @@ import { readFileSync, readdirSync } from 'node:fs';
 import { describe, expect, it } from 'vitest';
 import { CREATURES } from '../src/ui/art/creatures';
 import enStrings from '../src/i18n/en';
+import esStrings from '../src/i18n/es';
 import itStrings from '../src/i18n/it';
+import zhStrings from '../src/i18n/zh';
 
 /** Indexed as a plain dictionary: these tests check keys that are built at runtime. */
 const en: Record<string, string> = enStrings;
@@ -94,7 +96,7 @@ describe('content integrity', () => {
     expect(ENEMIES[DEBUG_ENEMY.id]).toBe(DEBUG_ENEMY);
     expect(ENEMY_LIST).not.toContain(DEBUG_ENEMY);
     expect(DIFFICULTY).not.toContain(DEBUG_ENEMY.id);
-    for (const strings of [enStrings, itStrings] as Record<string, string>[]) {
+    for (const strings of [enStrings, itStrings, esStrings, zhStrings] as Record<string, string>[]) {
       expect(strings[`enemy.${DEBUG_ENEMY.id}.name`]).toBeTruthy();
       expect(strings[`move.${DEBUG_ENEMY.main.id}`]).toBeTruthy();
     }
@@ -249,9 +251,11 @@ describe('numbers in rules text', () => {
 describe('translations', () => {
   const holes = (text: string): string[] => [...text.matchAll(/\{\$?\w+(?=[|}])|\[\w+\]/g)].map((m) => m[0]).sort();
 
-  it('Italian has the same keys and the same placeholders, values and keywords as English', () => {
-    const it: Record<string, string> = itStrings;
-    expect(Object.keys(it).sort()).toEqual(Object.keys(en).sort());
-    for (const [key, text] of Object.entries(en)) expect(holes(it[key]), key).toEqual(holes(text));
-  });
+  const others: Record<string, Record<string, string>> = { it: itStrings, es: esStrings, zh: zhStrings };
+  for (const [code, dict] of Object.entries(others)) {
+    it(`${code} has the same keys and the same placeholders, values and keywords as English`, () => {
+      expect(Object.keys(dict).sort()).toEqual(Object.keys(en).sort());
+      for (const [key, text] of Object.entries(en)) expect(holes(dict[key]), `${code} ${key}`).toEqual(holes(text));
+    });
+  }
 });
