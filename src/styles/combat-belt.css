@@ -428,11 +428,11 @@
 .hex-cover span { font-size: 42cqw; }
 .card.hexed[data-hex-left='1'] .hex-cover,
 .card.hexed[data-hex-left='2'] .hex-cover { opacity: 0.75; }
-/* a hex with stages (a crumpled ball of paper, a suitcase) shows the card as a picture: the card's own paper, border and face go, the cover's picture stays */
+/* a hex with stages (a crumpled ball of paper, a suitcase) shows the card as a picture: the card's own paper, border and face go, the cover's picture stays, inked like the card's own art (its type colour) */
 .card.pictured { background: transparent; border-color: transparent; box-shadow: none; }
 .card.pictured > :not(.hex-cover) { visibility: hidden; }
 .card.pictured.hexed .hex-cover { background: none; opacity: 1; justify-content: flex-end; padding-bottom: 12cqw; }
-.card.pictured.hexed .hex-cover .pico { position: absolute; inset: 0; margin: auto; font-size: 90cqw; color: var(--paper); --ink2: var(--k); }
+.card.pictured.hexed .hex-cover .pico { position: absolute; inset: 0; margin: auto; font-size: 90cqw; color: var(--art-bg); --ink2: var(--k); }
 .card.pictured.hexed .hex-cover span { position: relative; font-size: 30cqw; }
 .card.hex-in { animation: hex-in 0.3s steps(3); }
 .card.hex-hit { animation: hex-hit 0.16s steps(2); }
