@@ -1199,55 +1199,46 @@ ${shadow}
 <g fill="#ffd900" ${OUT}><rect x="148" y="94" width="12" height="9"/><rect x="162" y="94" width="12" height="9"/></g><g fill="#2a8ae8" ${OUT}><rect x="148" y="108" width="12" height="9"/><rect x="162" y="108" width="12" height="9"/></g><g fill="#ff3d9a" ${OUT}><rect x="148" y="122" width="12" height="9"/><rect x="162" y="122" width="12" height="9"/></g>
 <circle cx="161" cy="152" r="10" fill="#8a94a8" ${OUT}/><path d="M161 144v8" stroke="#120e18" stroke-width="3"/>`;
 
-/** The Withered Ficus: a big dried-out office plant in a sour pink pot, drooping brown leaves, thorny spikes and a few dead leaves falling. */
+/** The Withered Ficus: a big dried-out office plant in a pink pot, drooping brown leaves, spikes and a sour face. */
 const witheredFicus = `
-<defs>${rg('wf-p', '#ffb0dc', '#c0206a')}${rg('wf-l', '#d8e070', '#5a7a18')}${rg('wf-d', '#c8864a', '#6a3a1a')}</defs>
+<defs>${glow('wf-g', '#ff3d9a')}${rg('wf-p', '#ff8ac8', '#d4287a')}</defs>
 ${shadow}
-<g class="limb"><path d="M40 28l6 12-8 2z" fill="url(#wf-d)" ${OUT}/><path d="M164 52l8 10-10 2z" fill="url(#wf-d)" ${OUT}/><path d="M150 18l6 10-8 0z" fill="url(#wf-d)" ${OUT}/></g>
-<!-- leaves: some green, some withered and drooping -->
-<path d="M100 104C76 60 70 28 84 8c20 18 24 56 16 96z" fill="url(#wf-l)" ${OUT}/>
-<path d="M100 104c4-44 20-76 44-86 4 26-10 62-44 86z" fill="url(#wf-l)" ${OUT}/>
-<path d="M96 108C60 96 34 72 28 48c26 2 58 22 68 60z" fill="url(#wf-d)" ${OUT}/><path d="M28 48c-6 14-6 30 2 44 4-6 4-12 0-16 4-4 6-10 4-16z" fill="url(#wf-d)" ${OUT}/>
-<path d="M104 108c36-12 62-36 68-60-26 2-58 22-68 60z" fill="url(#wf-d)" ${OUT}/><path d="M172 48c6 14 6 30-2 44-4-6-4-12 0-16-4-4-6-10-4-16z" fill="url(#wf-d)" ${OUT}/>
-<path d="M92 80c-8-10-12-20-12-30M110 76c6-10 12-20 18-30M60 70l20 20M140 70l-20 20" stroke="#5a3a10" stroke-width="3" fill="none" opacity=".7"/>
-<g fill="#120e18"><path d="M92 20l-3-8 7 4zM130 30l6-6 0 8zM44 70l-8-2 6-5zM156 74l8-2-6-5z"/></g>
-<!-- pot with a sour face -->
-<path d="M52 114h96l-12 66c-2 8-8 10-16 10H80c-8 0-14-2-16-10z" fill="url(#wf-p)" ${OUT}/>
-<path d="M46 108h108c4 0 6 4 6 8s-2 8-6 8H46c-4 0-6-4-6-8s2-8 6-8z" fill="url(#wf-p)" ${OUT}/>
-<ellipse cx="100" cy="112" rx="46" ry="4" fill="#4a2a10" opacity=".8"/>
-<g ${OUT}><ellipse cx="80" cy="144" rx="12" ry="9" fill="#f6f0e4"/><ellipse cx="120" cy="144" rx="12" ry="9" fill="#f6f0e4"/></g>
-<g class="eye" fill="#120e18"><circle cx="82" cy="146" r="4.5"/><circle cx="118" cy="146" r="4.5"/></g>
-<path d="M66 128l28 10M134 128l-28 10" stroke="#120e18" stroke-width="7" stroke-linecap="round"/>
-<path d="M82 168c6-8 30-8 36 0" stroke="#120e18" stroke-width="5" fill="none" stroke-linecap="round"/>
-<g fill="url(#wf-d)" ${OUT}><path d="M20 160l8-4 6 6-8 6z"/><path d="M164 176l8-4 6 6-8 6z"/></g>`;
+<path d="M100 120C80 90 50 80 24 92c8 6 12 14 12 24-8-2-14 2-18 8 22 6 52 4 82-4zM100 120c20-30 50-40 76-28-8 6-12 14-12 24 8-2 14 2 18 8-22 6-52 4-82-4z" fill="#8a6a2a" ${OUT}/>
+<path d="M100 120C86 84 72 54 76 22c14 18 22 38 24 98zM100 120c14-36 28-66 24-98-14 18-22 38-24 98z" fill="#5a8a3a" ${OUT}/>
+<path d="M100 120c-4-30-2-60 0-88 2 28 4 58 0 88z" fill="#8aaa4a" ${OUT}/>
+<g class="limb" fill="#8a6a2a" ${OUT}><path d="M22 150l24-10-4 14zM178 150l-24-10 4 14zM62 100l-8-14 12 4zM138 100l8-14-12 4z"/></g>
+<path d="M54 126h92l-10 54c-1 6-6 8-12 8H76c-6 0-11-2-12-8z" fill="url(#wf-p)" ${OUT}/>
+<rect x="48" y="118" width="104" height="16" rx="3" fill="#ff3d9a" ${OUT}/>
+<path d="M76 138l-4 40M124 138l4 40" stroke="#d4287a" stroke-width="3" opacity=".6"/>
+<path d="M76 146l20 8M124 146l-20 8" stroke="#120e18" stroke-width="7" stroke-linecap="round"/>
+${eyes(82, 118, 160, 6, '#ffd900', 'wf-g')}
+<path d="M84 176c10-8 22-8 32 0" fill="none" stroke="#120e18" stroke-width="5" stroke-linecap="round"/>
+<g fill="none" stroke="#120e18" stroke-width="3" stroke-linecap="round"><path d="M30 92l-8-6M170 92l8-6M84 52l-6-8M116 52l6-8"/></g>`;
 
-/** The Factory Siren: a mermaid with an alarm beacon for a crown and loudspeaker horns for ears, singing the end-of-shift song through a megaphone with wide eyes. */
+/** The Factory Siren: a mermaid with an alarm beacon for a crown and loudspeaker horns for ears, singing the end-of-shift song through a megaphone. */
 const factorySiren = `
-<defs>${rg('fs-t', '#8ae8e0', '#0a6a8a')}${rg('fs-f', '#fff0e0', '#e0a890')}${rg('fs-h', '#8a4ad0', '#1a0a50')}${rg('fs-r', '#ff7a7a', '#a00a0a')}</defs>
+<defs>${rg('fs-b', '#5ad0e0', '#1c5fd0')}${glow('fs-g', '#ff3b3b')}</defs>
 ${shadow}
-<g class="limb" fill="none" stroke="#120e18" stroke-width="5" stroke-linecap="round"><path d="M12 80c-8 8-8 22 0 30M22 74c-12 12-12 30 0 44M188 80c8 8 8 22 0 30M178 74c12 12 12 30 0 44"/></g>
-<!-- tail -->
-<path d="M66 124c-6 30 0 50 26 56-14 4-30 6-44 0 10-8 12-18 10-26-4 10-12 16-12 16s0-16 8-26zM134 124c6 30 0 50-26 56 14 4 30 6 44 0-10-8-12-18-10-26 4 10 12 16 12 16s0-16-8-26z" fill="url(#fs-t)" ${OUT}/>
-<path d="M62 118c-4 36 6 52 38 62 32-10 42-26 38-62z" fill="url(#fs-t)" ${OUT}/>
-<path d="M72 140c8 6 16 6 24 0M104 150c8 6 16 6 24 0M78 160c8 6 16 6 24 0" stroke="#0a6a8a" stroke-width="3" fill="none"/>
-<!-- body: a uniform top -->
-<ellipse cx="100" cy="112" rx="42" ry="30" fill="url(#fs-r)" ${OUT}/>
-<path d="M62 106h76M64 120h72" stroke="#f6f0e4" stroke-width="5"/>
-<!-- arms with the megaphone -->
-<path d="M62 108c-8 6-10 16-6 24l10-4z" fill="url(#fs-f)" ${OUT}/>
-<g class="limb"><path d="M138 100l36-20v52l-36-14z" fill="#ffd900" ${OUT}/><path d="M170 78v56" stroke="#120e18" stroke-width="5"/><rect x="124" y="104" width="18" height="22" rx="3" fill="#2a2640" ${OUT}/></g>
-<path d="M138 108c-8 4-12 12-10 20l10-2z" fill="url(#fs-f)" ${OUT}/>
-<!-- head -->
-<path d="M52 74c0-34 20-52 48-52s48 18 48 52l4 44c-8 8-18 8-24 0V80H72v38c-6 8-16 8-24 0z" fill="url(#fs-h)" ${OUT}/>
-<circle cx="100" cy="74" r="34" fill="url(#fs-f)" ${OUT}/>
-<path d="M66 62c4-22 18-32 34-32s30 10 34 32c-10-12-20-16-34-16s-24 4-34 16z" fill="url(#fs-h)" ${OUT}/>
-<!-- loudspeaker horns for ears, beacon crown -->
-<path d="M62 62l-26-10v38l26-10z" fill="#c8c0d8" ${OUT}/><path d="M138 62l26-10v38l-26-10z" fill="#c8c0d8" ${OUT}/><path d="M36 52v38M164 52v38" stroke="#120e18" stroke-width="4"/>
-<path d="M82 34h36v-12c0-10-8-14-18-14s-18 4-18 14z" fill="url(#fs-r)" ${OUT}/><path d="M82 34h36v6H82z" fill="#3a3450" ${OUT}/><path d="M92 18c0-6 4-8 8-8" stroke="#fff" stroke-width="3" fill="none" stroke-linecap="round" opacity=".8"/>
-<g ${OUT}><ellipse cx="86" cy="72" rx="9" ry="10" fill="#f6f0e4"/><ellipse cx="114" cy="72" rx="9" ry="10" fill="#f6f0e4"/></g>
-<g class="eye" fill="#120e18"><circle cx="86" cy="74" r="4.5"/><circle cx="114" cy="74" r="4.5"/></g>
-<path d="M74 58l20 4M126 58l-20 4" stroke="#120e18" stroke-width="4" stroke-linecap="round"/>
-<ellipse cx="100" cy="94" rx="10" ry="8" fill="#120e18" ${OUT}/><ellipse cx="100" cy="97" rx="5" ry="3" fill="#ff3d9a"/>`;
+<path d="M64 120h72c6 26-2 44-24 54-8 4-16 6-24 6z" fill="url(#fs-b)" ${OUT}/>
+<path d="M92 180c-12 4-32 12-54 6 12-8 14-20 12-34 16 8 34 14 42 28z" fill="#ff3d9a" ${OUT}/>
+<path d="M76 132q8 8 16 0M104 132q8 8 16 0M88 148q8 8 16 0M112 150q8 8 14 0M96 164q8 8 14 0" stroke="#120e18" stroke-width="2.5" fill="none" stroke-linecap="round"/>
+<path d="M66 124c-2-26 10-42 34-42s36 16 34 42z" fill="#d8c8f8" ${OUT}/>
+<path d="M68 106h64v16H68z" fill="#8a84a0" ${OUT}/><circle cx="78" cy="114" r="3" fill="#f6f0e4"/><circle cx="100" cy="114" r="3" fill="#f6f0e4"/><circle cx="122" cy="114" r="3" fill="#f6f0e4"/>
+<path d="M66 54c-12 30-8 62 4 76 2-14 4-28 8-40zM134 54c12 30 8 62-4 76-2-14-4-28-8-40z" fill="#1b1830" ${OUT}/>
+<path d="M70 70c-4 18-2 36 2 50M130 70c4 18 2 36-2 50" stroke="#ff3d9a" stroke-width="4" fill="none" stroke-linecap="round"/>
+<g class="limb"><path d="M132 108c14 2 22 10 26 20l-10 8c-4-8-10-12-18-14z" fill="#d8c8f8" ${OUT}/><path d="M148 122l38-26v52z" fill="#ffd900" ${OUT}/><path d="M158 118l14-8M158 128l16-2" stroke="#e0a800" stroke-width="3" stroke-linecap="round"/><rect x="142" y="116" width="10" height="16" rx="2" fill="#3a3450" ${OUT}/></g>
+<path d="M68 108c-12 4-14 16-10 26l12-4z" fill="#d8c8f8" ${OUT}/>
+<path d="M62 52l-30-14v46l30-14z" fill="#8a84a0" ${OUT}/><path d="M50 50q-6 8 0 16M42 46q-12 14 0 28" stroke="#3a3450" stroke-width="3" fill="none" stroke-linecap="round"/>
+<path d="M138 52l30-14v46l-30-14z" fill="#8a84a0" ${OUT}/><path d="M150 50q6 8 0 16M158 46q12 14 0 28" stroke="#3a3450" stroke-width="3" fill="none" stroke-linecap="round"/>
+<path d="M66 60c0-22 14-34 34-34s34 12 34 34c0 22-14 38-34 38S66 82 66 60z" fill="#d8c8f8" ${OUT}/>
+<path d="M62 52c4-24 22-34 38-34s34 10 38 34c-12-10-24-14-38-14s-26 4-38 14z" fill="#1b1830" ${OUT}/>
+<g class="eye"><circle cx="100" cy="10" r="30" fill="url(#fs-g)"/></g>
+<path d="M80 30c0-16 8-24 20-24s20 8 20 24z" fill="#ff3b3b" ${OUT}/><rect x="74" y="28" width="52" height="9" fill="#3a3450" ${OUT}/><path d="M90 14c2-4 6-6 10-6" stroke="#ffd0d0" stroke-width="4" stroke-linecap="round" fill="none"/>
+<path d="M76 56q8-8 16 0M108 56q8-8 16 0" stroke="#120e18" stroke-width="4" fill="none" stroke-linecap="round"/>
+<path d="M74 46l18 6M126 46l-18 6" stroke="#120e18" stroke-width="5" stroke-linecap="round"/>
+<ellipse cx="78" cy="72" rx="7" ry="4.5" fill="#ff3d9a" opacity=".6"/><ellipse cx="122" cy="72" rx="7" ry="4.5" fill="#ff3d9a" opacity=".6"/>
+<ellipse cx="100" cy="80" rx="10" ry="12" fill="#120e18" ${OUT}/><ellipse cx="100" cy="86" rx="6" ry="5" fill="#ff3d9a"/>
+<g fill="none" stroke="#ff3d9a" stroke-width="4" stroke-linecap="round"><path d="M22 100q-8 10 0 20M10 92q-14 18 0 36"/></g>`;
 
 /** The Tourist: a round, tanned, sunglassed dude in a loud Hawaiian shirt, socks and flip-flops, a selfie stick held high and a suitcase he swears is his rolling behind. */
 const tourist = `
