@@ -714,7 +714,7 @@ export const ICONS: Record<string, { el: Element; svg: string }> = {
   },
   luggageOpen: {
     el: 'steel',
-    svg: `<rect x="4" y="32" width="56" height="26" rx="4"/><path d="M10 29l6-24h32l6 24z"/><path fill="none" stroke="#16121f" stroke-width="3" d="M4 31h56M26 36v8M38 36v8"/>`,
+    svg: `<path d="M20 0h24v9h-6V5H26v4h-6z"/><rect x="6" y="9" width="52" height="19" rx="5"/><path fill="#16121f" d="M6 17h52v3H6zM14 22h8v4h-8zM42 22h8v4h-8z"/><rect x="4" y="34" width="56" height="24" rx="6"/><path fill="#16121f" d="M10 38h44v6H10zM4 51h56v3H4z"/>`,
   },
   carryOn: {
     el: 'steel',
