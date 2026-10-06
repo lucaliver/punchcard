@@ -1143,211 +1143,227 @@ ${shadow}
 <!-- little arms -->
 <path d="M30 126c-12 2-16 12-8 20l12-6z" fill="url(#hd-b)" ${OUT}/><path d="M170 126c12 2 16 12 8 20l-12-6z" fill="url(#hd-b)" ${OUT}/>`;
 
-/** The Punch Clock: a wall clock-in machine with a dial for a forehead, a time-card slot for a mouth and a lever for an arm. */
+/** The Punch Clock: a chunky wall clock-in machine with a clock dial for a forehead, a time-card slot for a mouth, a lever for an arm and a card poking out like a tongue. */
 const punchClock = `
-<defs>${glow('pc-g', '#ff3d9a')}${lg('pc-b', '#c9c4d6', '#8a84a0')}</defs>
+<defs>${rg('pc-b', '#c8d8f0', '#3a56a0')}${rg('pc-d', '#ffffff', '#c8c0d8')}${glow('pc-g', '#ff3d9a')}</defs>
 ${shadow}
-<path d="M62 186l4-14h20l4 14zM110 186l4-14h20l4 14z" fill="#1b1830" ${OUT}/>
-<rect x="40" y="36" width="120" height="140" rx="12" fill="url(#pc-b)" ${OUT}/>
-<circle cx="100" cy="62" r="30" fill="#f6f0e4" ${OUT}/><circle cx="100" cy="62" r="23" fill="none" stroke="#1b1830" stroke-width="2.5"/>
-<path d="M100 62V44M100 62l14 8" stroke="#1b1830" stroke-width="5" stroke-linecap="round"/><circle cx="100" cy="62" r="4" fill="#ff3d9a"/>
-<path d="M100 34v5M100 85v5M72 62h5M123 62h5" stroke="#1b1830" stroke-width="3"/>
-<rect x="56" y="102" width="88" height="26" rx="4" fill="#120e18" ${OUT}/>
-${eyes(80, 120, 115, 6, '#ff3d9a', 'pc-g')}
-<path d="M72 104l16 8M128 104l-16 8" stroke="#8a84a0" stroke-width="5" stroke-linecap="round"/>
-<rect x="60" y="140" width="80" height="14" rx="3" fill="#120e18" ${OUT}/>
-<path d="M66 140v8M78 140v10M90 140v8M110 140v8M122 140v10M134 140v8" stroke="#f6f0e4" stroke-width="4"/>
-<rect x="76" y="132" width="48" height="30" fill="#f6f0e4" ${OUT}/><path d="M82 142h36M82 150h36M82 156h20" stroke="#1c5fd0" stroke-width="3"/>
-<g class="limb"><path d="M160 100h20v-26" stroke="#1b1830" stroke-width="8" fill="none" stroke-linecap="round" stroke-linejoin="round"/><circle cx="180" cy="68" r="10" fill="#ffd900" ${OUT}/></g>
-<path d="M40 112H24v44h16" fill="#3a3450" ${OUT}/><path d="M28 120h8M28 130h8M28 140h8M28 150h8" stroke="#f6f0e4" stroke-width="3"/>`;
+<path d="M62 176l-8 14h28l-2-14zM118 176l-2 14h28l-6-14z" fill="#3a3450" ${OUT}/>
+<rect x="30" y="22" width="140" height="160" rx="20" fill="url(#pc-b)" ${OUT}/>
+<g fill="#120e18"><circle cx="42" cy="34" r="3"/><circle cx="158" cy="34" r="3"/><circle cx="42" cy="170" r="3"/><circle cx="158" cy="170" r="3"/></g>
+<!-- clock dial forehead -->
+<circle cx="100" cy="62" r="30" fill="url(#pc-d)" ${OUT}/><circle cx="100" cy="62" r="24" fill="none" stroke="#120e18" stroke-width="2" stroke-dasharray="2 6"/>
+<path d="M100 62V44M100 62l14 8" stroke="#120e18" stroke-width="4" stroke-linecap="round"/><circle cx="100" cy="62" r="4" fill="#ff3d9a" ${OUT}/>
+<!-- eyes as little displays -->
+<rect x="48" y="104" width="38" height="28" rx="6" fill="#120e18" ${OUT}/><rect x="114" y="104" width="38" height="28" rx="6" fill="#120e18" ${OUT}/>
+<g class="eye"><circle cx="67" cy="118" r="14" fill="url(#pc-g)"/><circle cx="133" cy="118" r="14" fill="url(#pc-g)"/><circle cx="67" cy="118" r="8" fill="#ff3d9a"/><circle cx="133" cy="118" r="8" fill="#ff3d9a"/><circle cx="67" cy="118" r="3.5" fill="#120e18"/><circle cx="133" cy="118" r="3.5" fill="#120e18"/></g>
+<path d="M44 96l38 10M156 96l-38 10" stroke="#120e18" stroke-width="6" stroke-linecap="round"/>
+<!-- time-card slot mouth with a card -->
+<rect x="56" y="148" width="88" height="18" rx="4" fill="#120e18" ${OUT}/><path d="M64 148l4 8 4-8 4 8 4-8 4 8 4-8 4 8 4-8 4 8 4-8 4 8 4-8" stroke="#f6f0e4" stroke-width="3" fill="none"/>
+<g class="limb"><rect x="76" y="150" width="46" height="34" fill="#f6f0e4" ${OUT}/><path d="M82 158h34M82 166h34M82 174h20" stroke="#1c5fd0" stroke-width="2.5"/><rect x="82" y="152" width="12" height="4" fill="#ff3d9a"/></g>
+<!-- lever arm -->
+<g class="limb"><path d="M172 96c14 0 22-8 24-22" stroke="#120e18" stroke-width="14" fill="none" stroke-linecap="round"/><path d="M172 96c14 0 22-8 24-22" stroke="#8a94a8" stroke-width="8" fill="none" stroke-linecap="round"/><circle cx="196" cy="70" r="9" fill="#ff3d9a" ${OUT}/></g>`;
 
-/** The Smoke Detector: a ceiling disc dangling by its wires, one big red eye, a nine-volt battery swinging from a lead. */
+/** The Smoke Detector: a ceiling disc dangling by its wires, one big red eye, vents like a ring of teeth and a nine-volt battery swinging from a lead, beeping. */
 const smokeDetector = `
-<defs>${glow('sd-g', '#ff3b3b')}${rg('sd-b', '#ffffff', '#c8c4d8')}</defs>
-<rect x="0" y="0" width="200" height="22" fill="#3a3450" ${OUT}/><path d="M20 22v-4M60 22v-4M100 22v-4M140 22v-4M180 22v-4" stroke="#120e18" stroke-width="2"/>
-<path d="M76 22c-6 20 10 26 6 40M124 22c6 20-10 26-6 40" fill="none" stroke="#1b1830" stroke-width="5" stroke-linecap="round"/>
-<ellipse cx="100" cy="176" rx="50" ry="8" fill="#000" opacity=".3"/>
-<ellipse cx="100" cy="104" rx="72" ry="62" fill="url(#sd-b)" ${OUT}/>
-<ellipse cx="100" cy="104" rx="58" ry="48" fill="none" stroke="#9a94ac" stroke-width="3"/>
-<path d="M54 84c10-8 24-12 46-12s36 4 46 12M48 100h104M54 118c10 8 24 12 46 12s36-4 46-12" fill="none" stroke="#9a94ac" stroke-width="4" stroke-dasharray="10 6"/>
-<circle cx="100" cy="100" r="26" fill="#120e18" ${OUT}/>
-<g class="eye"><circle cx="100" cy="100" r="30" fill="url(#sd-g)"/><circle cx="100" cy="100" r="14" fill="#ff3b3b"/><circle cx="95" cy="95" r="5" fill="#fff"/></g>
-<path d="M70 70l22 14M130 70l-22 14" stroke="#120e18" stroke-width="7" stroke-linecap="round"/>
-<path d="M40 140c-10 6-14 14-12 24M160 140c10 6 14 14 12 24" fill="none" stroke="#1b1830" stroke-width="6" stroke-linecap="round"/>
-<g class="limb"><path d="M168 128c14 6 18 18 14 32" fill="none" stroke="#1b1830" stroke-width="5"/><rect x="170" y="156" width="22" height="30" rx="3" fill="#1c5fd0" ${OUT}/><rect x="174" y="150" width="14" height="8" fill="#ffd900" ${OUT}/><path d="M176 166h10M176 174h6" stroke="#f6f0e4" stroke-width="3"/></g>
-<g fill="none" stroke="#ff3d9a" stroke-width="4" stroke-linecap="round"><path d="M24 64q-8 10 0 20M12 56q-14 18 0 36"/><path d="M176 64q8 10 0 20M188 56q14 18 0 36"/></g>`;
+<defs>${rg('sd-b', '#ffffff', '#a8b0d0')}${glow('sd-g', '#ff3b3b')}</defs>
+<rect x="0" y="0" width="200" height="18" fill="#3a3450" ${OUT}/><path d="M0 8h200" stroke="#6d6680" stroke-width="3" stroke-dasharray="14 6"/>
+${shadow}
+<path d="M84 18c-6 14 6 22-2 38M100 18v34M116 18c6 14-6 22 2 38" stroke="#120e18" stroke-width="7" fill="none" stroke-linecap="round"/><path d="M84 18c-6 14 6 22-2 38M100 18v34M116 18c6 14-6 22 2 38" stroke="#ff3d9a" stroke-width="3" fill="none" stroke-linecap="round"/>
+<g class="limb" fill="none" stroke="#120e18" stroke-width="4" stroke-linecap="round"><path d="M22 60c-8 6-8 14 0 20M12 54c-14 10-14 28 0 38M178 60c8 6 8 14 0 20M188 54c14 10 14 28 0 38"/></g>
+<!-- the disc -->
+<ellipse cx="100" cy="104" rx="74" ry="62" fill="url(#sd-b)" ${OUT}/>
+<ellipse cx="100" cy="104" rx="56" ry="46" fill="none" stroke="#8a94b8" stroke-width="3" stroke-dasharray="10 6"/>
+<ellipse cx="100" cy="104" rx="38" ry="31" fill="#120e18" ${OUT}/>
+<g class="eye"><circle cx="100" cy="104" r="30" fill="url(#sd-g)"/><circle cx="100" cy="104" r="19" fill="#ff3b3b" ${OUT}/><circle cx="100" cy="104" r="8" fill="#120e18"/><circle cx="94" cy="98" r="4" fill="#fff"/></g>
+<path d="M54 76l32 14M146 76l-32 14" stroke="#120e18" stroke-width="7" stroke-linecap="round"/>
+<path d="M60 150c14 10 66 10 80 0" stroke="#120e18" stroke-width="4" fill="none"/><path d="M70 152v8M82 156v8M94 158v8M106 158v8M118 156v8M130 152v8" stroke="#120e18" stroke-width="4" stroke-linecap="round"/>
+<circle cx="150" cy="140" r="6" fill="#ff3b3b" ${OUT}/><circle cx="50" cy="140" r="6" fill="#ffd900" ${OUT}/>
+<!-- swinging 9V battery -->
+<g class="limb"><path d="M152 162c10 6 14 14 12 22" stroke="#120e18" stroke-width="3" fill="none"/><g transform="rotate(16 168 178)"><rect x="154" y="176" width="28" height="22" rx="3" fill="#2a2a48" ${OUT}/><rect x="154" y="176" width="28" height="8" fill="#ffd900" ${OUT}/><circle cx="162" cy="172" r="3.5" fill="#c8c0d8" ${OUT}/><circle cx="174" cy="172" r="3.5" fill="#c8c0d8" ${OUT}/><path d="M162 190h12" stroke="#f6f0e4" stroke-width="3"/></g></g>`;
 
-/** The Microwave: an old break-room microwave, its window a dark mouth with hungry eyes, sparks in the corners. */
+/** The Microwave: an old break-room microwave, its window a dark mouth full of fangs with hungry eyes, a smear of old lasagna on the door and sparks in the corners. */
 const microwave = `
-<defs>${glow('mw-g', '#ffd900')}${lg('mw-b', '#f6f0e4', '#b8b0c8')}</defs>
+<defs>${rg('mw-b', '#fbf6e6', '#a89f84')}${rg('mw-w', '#4a3a6a', '#0a0818')}${glow('mw-g', '#ffd900')}</defs>
 ${shadow}
-<path d="M42 186v-10h20v10zM138 186v-10h20v10z" fill="#1b1830" ${OUT}/>
-<rect x="20" y="52" width="160" height="126" rx="10" fill="url(#mw-b)" ${OUT}/>
-<rect x="32" y="64" width="100" height="100" rx="6" fill="#120e18" ${OUT}/>
-<circle cx="82" cy="116" r="40" fill="url(#mw-g)" opacity=".5"/>
-${eyes(66, 98, 96, 6, '#ffd900', 'mw-g')}
-<path d="M44 124h76l-6 14-8-8-8 10-8-10-8 10-8-10-8 10-8-10-8 8z" fill="#f6f0e4" ${OUT}/>
-<path d="M52 72l22 14M112 72L90 86" stroke="#ff3d9a" stroke-width="6" stroke-linecap="round"/>
-<rect x="142" y="64" width="30" height="22" rx="3" fill="#120e18" ${OUT}/><path d="M148 70h6v10h-6zM158 70h8v4h-8zM158 77h8v3h-8z" fill="#ff3d9a"/>
-<g ${OUT}><rect x="146" y="94" width="22" height="12" rx="3" fill="#ffd900"/><rect x="146" y="112" width="22" height="12" rx="3" fill="#1c5fd0"/><rect x="146" y="130" width="22" height="12" rx="3" fill="#ff3d9a"/></g>
-<rect x="136" y="64" width="4" height="100" fill="#8a84a0" ${OUT}/>
-<g class="limb" fill="none" stroke="#ffd900" stroke-width="4" stroke-linecap="round"><path d="M10 46l10 8-6 8 10 6M188 46l-8 10 8 6-6 8"/></g>
-<path d="M178 150c14 4 16 16 10 26" fill="none" stroke="#1b1830" stroke-width="6" stroke-linecap="round"/>`;
+<path d="M44 176l-6 14h26l-2-14zM136 176l-2 14h26l-6-14z" fill="#3a3450" ${OUT}/>
+<g class="eye" fill="#ffd900" ${OUT}><path d="M24 28l12 8-6 4 12 10-14-4 4-4-10-6z"/><path d="M178 20l-12 10 6 2-10 12 14-6-4-4 10-6z"/><path d="M178 148l-10 6 6 4-10 8 14-4-4-4 8-4z"/></g>
+<rect x="14" y="52" width="172" height="130" rx="22" fill="url(#mw-b)" ${OUT}/>
+<!-- door window as a mouth -->
+<rect x="26" y="64" width="108" height="106" rx="16" fill="#120e18" ${OUT}/><rect x="32" y="70" width="96" height="94" rx="12" fill="url(#mw-w)"/>
+<g class="eye"><circle cx="64" cy="100" r="16" fill="url(#mw-g)"/><circle cx="102" cy="100" r="16" fill="url(#mw-g)"/><circle cx="64" cy="100" r="9" fill="#ffd900"/><circle cx="102" cy="100" r="9" fill="#ffd900"/><circle cx="64" cy="100" r="3.5" fill="#120e18"/><circle cx="102" cy="100" r="3.5" fill="#120e18"/></g>
+<path d="M44 86l32 10M120 86l-32 10" stroke="#120e18" stroke-width="6" stroke-linecap="round"/>
+<path d="M40 124c14 14 62 14 76 0v26c-14 10-62 10-76 0z" fill="#120e18" ${OUT}/><path d="M44 126l6 12 6-10 6 12 6-10 6 12 6-10 6 12 6-10 6 12 6-10 6 12" fill="#f6f0e4" stroke="#120e18" stroke-width="2" stroke-linejoin="round"/>
+<path d="M50 148l8-8 8 8 8-8 8 8 8-8 8 8 8-8" stroke="#f6f0e4" stroke-width="3" fill="none"/>
+<path d="M36 74c6-4 14-4 20 0" stroke="#fff" stroke-width="3" fill="none" stroke-linecap="round" opacity=".6"/>
+<!-- lasagna smear -->
+<path d="M110 150c8-6 16-2 14 6s-12 8-14 2z" fill="#e0502a" ${OUT}/>
+<!-- control panel -->
+<rect x="142" y="64" width="38" height="106" rx="8" fill="#c8c0a8" ${OUT}/>
+<rect x="148" y="72" width="26" height="14" fill="#120e18" ${OUT}/><path d="M152 79h8" stroke="#ff3b3b" stroke-width="3"/>
+<g fill="#ffd900" ${OUT}><rect x="148" y="94" width="12" height="9"/><rect x="162" y="94" width="12" height="9"/></g><g fill="#2a8ae8" ${OUT}><rect x="148" y="108" width="12" height="9"/><rect x="162" y="108" width="12" height="9"/></g><g fill="#ff3d9a" ${OUT}><rect x="148" y="122" width="12" height="9"/><rect x="162" y="122" width="12" height="9"/></g>
+<circle cx="161" cy="152" r="10" fill="#8a94a8" ${OUT}/><path d="M161 144v8" stroke="#120e18" stroke-width="3"/>`;
 
-/** The Withered Ficus: a big dried-out office plant in a pink pot, drooping brown leaves, spikes and a sour face. */
+/** The Withered Ficus: a big dried-out office plant in a sour pink pot, drooping brown leaves, thorny spikes and a few dead leaves falling. */
 const witheredFicus = `
-<defs>${glow('wf-g', '#ff3d9a')}${rg('wf-p', '#ff8ac8', '#d4287a')}</defs>
+<defs>${rg('wf-p', '#ffb0dc', '#c0206a')}${rg('wf-l', '#d8e070', '#5a7a18')}${rg('wf-d', '#c8864a', '#6a3a1a')}</defs>
 ${shadow}
-<path d="M100 120C80 90 50 80 24 92c8 6 12 14 12 24-8-2-14 2-18 8 22 6 52 4 82-4zM100 120c20-30 50-40 76-28-8 6-12 14-12 24 8-2 14 2 18 8-22 6-52 4-82-4z" fill="#8a6a2a" ${OUT}/>
-<path d="M100 120C86 84 72 54 76 22c14 18 22 38 24 98zM100 120c14-36 28-66 24-98-14 18-22 38-24 98z" fill="#5a8a3a" ${OUT}/>
-<path d="M100 120c-4-30-2-60 0-88 2 28 4 58 0 88z" fill="#8aaa4a" ${OUT}/>
-<g class="limb" fill="#8a6a2a" ${OUT}><path d="M22 150l24-10-4 14zM178 150l-24-10 4 14zM62 100l-8-14 12 4zM138 100l8-14-12 4z"/></g>
-<path d="M54 126h92l-10 54c-1 6-6 8-12 8H76c-6 0-11-2-12-8z" fill="url(#wf-p)" ${OUT}/>
-<rect x="48" y="118" width="104" height="16" rx="3" fill="#ff3d9a" ${OUT}/>
-<path d="M76 138l-4 40M124 138l4 40" stroke="#d4287a" stroke-width="3" opacity=".6"/>
-<path d="M76 146l20 8M124 146l-20 8" stroke="#120e18" stroke-width="7" stroke-linecap="round"/>
-${eyes(82, 118, 160, 6, '#ffd900', 'wf-g')}
-<path d="M84 176c10-8 22-8 32 0" fill="none" stroke="#120e18" stroke-width="5" stroke-linecap="round"/>
-<g fill="none" stroke="#120e18" stroke-width="3" stroke-linecap="round"><path d="M30 92l-8-6M170 92l8-6M84 52l-6-8M116 52l6-8"/></g>`;
+<g class="limb"><path d="M40 28l6 12-8 2z" fill="url(#wf-d)" ${OUT}/><path d="M164 52l8 10-10 2z" fill="url(#wf-d)" ${OUT}/><path d="M150 18l6 10-8 0z" fill="url(#wf-d)" ${OUT}/></g>
+<!-- leaves: some green, some withered and drooping -->
+<path d="M100 104C76 60 70 28 84 8c20 18 24 56 16 96z" fill="url(#wf-l)" ${OUT}/>
+<path d="M100 104c4-44 20-76 44-86 4 26-10 62-44 86z" fill="url(#wf-l)" ${OUT}/>
+<path d="M96 108C60 96 34 72 28 48c26 2 58 22 68 60z" fill="url(#wf-d)" ${OUT}/><path d="M28 48c-6 14-6 30 2 44 4-6 4-12 0-16 4-4 6-10 4-16z" fill="url(#wf-d)" ${OUT}/>
+<path d="M104 108c36-12 62-36 68-60-26 2-58 22-68 60z" fill="url(#wf-d)" ${OUT}/><path d="M172 48c6 14 6 30-2 44-4-6-4-12 0-16-4-4-6-10-4-16z" fill="url(#wf-d)" ${OUT}/>
+<path d="M92 80c-8-10-12-20-12-30M110 76c6-10 12-20 18-30M60 70l20 20M140 70l-20 20" stroke="#5a3a10" stroke-width="3" fill="none" opacity=".7"/>
+<g fill="#120e18"><path d="M92 20l-3-8 7 4zM130 30l6-6 0 8zM44 70l-8-2 6-5zM156 74l8-2-6-5z"/></g>
+<!-- pot with a sour face -->
+<path d="M52 114h96l-12 66c-2 8-8 10-16 10H80c-8 0-14-2-16-10z" fill="url(#wf-p)" ${OUT}/>
+<path d="M46 108h108c4 0 6 4 6 8s-2 8-6 8H46c-4 0-6-4-6-8s2-8 6-8z" fill="url(#wf-p)" ${OUT}/>
+<ellipse cx="100" cy="112" rx="46" ry="4" fill="#4a2a10" opacity=".8"/>
+<g ${OUT}><ellipse cx="80" cy="144" rx="12" ry="9" fill="#f6f0e4"/><ellipse cx="120" cy="144" rx="12" ry="9" fill="#f6f0e4"/></g>
+<g class="eye" fill="#120e18"><circle cx="82" cy="146" r="4.5"/><circle cx="118" cy="146" r="4.5"/></g>
+<path d="M66 128l28 10M134 128l-28 10" stroke="#120e18" stroke-width="7" stroke-linecap="round"/>
+<path d="M82 168c6-8 30-8 36 0" stroke="#120e18" stroke-width="5" fill="none" stroke-linecap="round"/>
+<g fill="url(#wf-d)" ${OUT}><path d="M20 160l8-4 6 6-8 6z"/><path d="M164 176l8-4 6 6-8 6z"/></g>`;
 
-/** The Factory Siren: a mermaid with an alarm beacon for a crown and loudspeaker horns for ears, singing the end-of-shift song through a megaphone. */
+/** The Factory Siren: a mermaid with an alarm beacon for a crown and loudspeaker horns for ears, singing the end-of-shift song through a megaphone with wide eyes. */
 const factorySiren = `
-<defs>${rg('fs-b', '#5ad0e0', '#1c5fd0')}${glow('fs-g', '#ff3b3b')}</defs>
+<defs>${rg('fs-t', '#8ae8e0', '#0a6a8a')}${rg('fs-f', '#fff0e0', '#e0a890')}${rg('fs-h', '#8a4ad0', '#1a0a50')}${rg('fs-r', '#ff7a7a', '#a00a0a')}</defs>
 ${shadow}
-<path d="M64 120h72c6 26-2 44-24 54-8 4-16 6-24 6z" fill="url(#fs-b)" ${OUT}/>
-<path d="M92 180c-12 4-32 12-54 6 12-8 14-20 12-34 16 8 34 14 42 28z" fill="#ff3d9a" ${OUT}/>
-<path d="M76 132q8 8 16 0M104 132q8 8 16 0M88 148q8 8 16 0M112 150q8 8 14 0M96 164q8 8 14 0" stroke="#120e18" stroke-width="2.5" fill="none" stroke-linecap="round"/>
-<path d="M66 124c-2-26 10-42 34-42s36 16 34 42z" fill="#d8c8f8" ${OUT}/>
-<path d="M68 106h64v16H68z" fill="#8a84a0" ${OUT}/><circle cx="78" cy="114" r="3" fill="#f6f0e4"/><circle cx="100" cy="114" r="3" fill="#f6f0e4"/><circle cx="122" cy="114" r="3" fill="#f6f0e4"/>
-<path d="M66 54c-12 30-8 62 4 76 2-14 4-28 8-40zM134 54c12 30 8 62-4 76-2-14-4-28-8-40z" fill="#1b1830" ${OUT}/>
-<path d="M70 70c-4 18-2 36 2 50M130 70c4 18 2 36-2 50" stroke="#ff3d9a" stroke-width="4" fill="none" stroke-linecap="round"/>
-<g class="limb"><path d="M132 108c14 2 22 10 26 20l-10 8c-4-8-10-12-18-14z" fill="#d8c8f8" ${OUT}/><path d="M148 122l38-26v52z" fill="#ffd900" ${OUT}/><path d="M158 118l14-8M158 128l16-2" stroke="#e0a800" stroke-width="3" stroke-linecap="round"/><rect x="142" y="116" width="10" height="16" rx="2" fill="#3a3450" ${OUT}/></g>
-<path d="M68 108c-12 4-14 16-10 26l12-4z" fill="#d8c8f8" ${OUT}/>
-<path d="M62 52l-30-14v46l30-14z" fill="#8a84a0" ${OUT}/><path d="M50 50q-6 8 0 16M42 46q-12 14 0 28" stroke="#3a3450" stroke-width="3" fill="none" stroke-linecap="round"/>
-<path d="M138 52l30-14v46l-30-14z" fill="#8a84a0" ${OUT}/><path d="M150 50q6 8 0 16M158 46q12 14 0 28" stroke="#3a3450" stroke-width="3" fill="none" stroke-linecap="round"/>
-<path d="M66 60c0-22 14-34 34-34s34 12 34 34c0 22-14 38-34 38S66 82 66 60z" fill="#d8c8f8" ${OUT}/>
-<path d="M62 52c4-24 22-34 38-34s34 10 38 34c-12-10-24-14-38-14s-26 4-38 14z" fill="#1b1830" ${OUT}/>
-<g class="eye"><circle cx="100" cy="10" r="30" fill="url(#fs-g)"/></g>
-<path d="M80 30c0-16 8-24 20-24s20 8 20 24z" fill="#ff3b3b" ${OUT}/><rect x="74" y="28" width="52" height="9" fill="#3a3450" ${OUT}/><path d="M90 14c2-4 6-6 10-6" stroke="#ffd0d0" stroke-width="4" stroke-linecap="round" fill="none"/>
-<path d="M76 56q8-8 16 0M108 56q8-8 16 0" stroke="#120e18" stroke-width="4" fill="none" stroke-linecap="round"/>
-<path d="M74 46l18 6M126 46l-18 6" stroke="#120e18" stroke-width="5" stroke-linecap="round"/>
-<ellipse cx="78" cy="72" rx="7" ry="4.5" fill="#ff3d9a" opacity=".6"/><ellipse cx="122" cy="72" rx="7" ry="4.5" fill="#ff3d9a" opacity=".6"/>
-<ellipse cx="100" cy="80" rx="10" ry="12" fill="#120e18" ${OUT}/><ellipse cx="100" cy="86" rx="6" ry="5" fill="#ff3d9a"/>
-<g fill="none" stroke="#ff3d9a" stroke-width="4" stroke-linecap="round"><path d="M22 100q-8 10 0 20M10 92q-14 18 0 36"/></g>`;
+<g class="limb" fill="none" stroke="#120e18" stroke-width="5" stroke-linecap="round"><path d="M12 80c-8 8-8 22 0 30M22 74c-12 12-12 30 0 44M188 80c8 8 8 22 0 30M178 74c12 12 12 30 0 44"/></g>
+<!-- tail -->
+<path d="M66 124c-6 30 0 50 26 56-14 4-30 6-44 0 10-8 12-18 10-26-4 10-12 16-12 16s0-16 8-26zM134 124c6 30 0 50-26 56 14 4 30 6 44 0-10-8-12-18-10-26 4 10 12 16 12 16s0-16-8-26z" fill="url(#fs-t)" ${OUT}/>
+<path d="M62 118c-4 36 6 52 38 62 32-10 42-26 38-62z" fill="url(#fs-t)" ${OUT}/>
+<path d="M72 140c8 6 16 6 24 0M104 150c8 6 16 6 24 0M78 160c8 6 16 6 24 0" stroke="#0a6a8a" stroke-width="3" fill="none"/>
+<!-- body: a uniform top -->
+<ellipse cx="100" cy="112" rx="42" ry="30" fill="url(#fs-r)" ${OUT}/>
+<path d="M62 106h76M64 120h72" stroke="#f6f0e4" stroke-width="5"/>
+<!-- arms with the megaphone -->
+<path d="M62 108c-8 6-10 16-6 24l10-4z" fill="url(#fs-f)" ${OUT}/>
+<g class="limb"><path d="M138 100l36-20v52l-36-14z" fill="#ffd900" ${OUT}/><path d="M170 78v56" stroke="#120e18" stroke-width="5"/><rect x="124" y="104" width="18" height="22" rx="3" fill="#2a2640" ${OUT}/></g>
+<path d="M138 108c-8 4-12 12-10 20l10-2z" fill="url(#fs-f)" ${OUT}/>
+<!-- head -->
+<path d="M52 74c0-34 20-52 48-52s48 18 48 52l4 44c-8 8-18 8-24 0V80H72v38c-6 8-16 8-24 0z" fill="url(#fs-h)" ${OUT}/>
+<circle cx="100" cy="74" r="34" fill="url(#fs-f)" ${OUT}/>
+<path d="M66 62c4-22 18-32 34-32s30 10 34 32c-10-12-20-16-34-16s-24 4-34 16z" fill="url(#fs-h)" ${OUT}/>
+<!-- loudspeaker horns for ears, beacon crown -->
+<path d="M62 62l-26-10v38l26-10z" fill="#c8c0d8" ${OUT}/><path d="M138 62l26-10v38l-26-10z" fill="#c8c0d8" ${OUT}/><path d="M36 52v38M164 52v38" stroke="#120e18" stroke-width="4"/>
+<path d="M82 34h36v-12c0-10-8-14-18-14s-18 4-18 14z" fill="url(#fs-r)" ${OUT}/><path d="M82 34h36v6H82z" fill="#3a3450" ${OUT}/><path d="M92 18c0-6 4-8 8-8" stroke="#fff" stroke-width="3" fill="none" stroke-linecap="round" opacity=".8"/>
+<g ${OUT}><ellipse cx="86" cy="72" rx="9" ry="10" fill="#f6f0e4"/><ellipse cx="114" cy="72" rx="9" ry="10" fill="#f6f0e4"/></g>
+<g class="eye" fill="#120e18"><circle cx="86" cy="74" r="4.5"/><circle cx="114" cy="74" r="4.5"/></g>
+<path d="M74 58l20 4M126 58l-20 4" stroke="#120e18" stroke-width="4" stroke-linecap="round"/>
+<ellipse cx="100" cy="94" rx="10" ry="8" fill="#120e18" ${OUT}/><ellipse cx="100" cy="97" rx="5" ry="3" fill="#ff3d9a"/>`;
 
-/** The Tourist: a handsome sunglassed dude in a Hawaiian shirt, selfie stick up, rolling a suitcase he swears is his. */
+/** The Tourist: a round, tanned, sunglassed dude in a loud Hawaiian shirt, socks and flip-flops, a selfie stick held high and a suitcase he swears is his rolling behind. */
 const tourist = `
+<defs>${rg('to-s', '#ff8ac8', '#b0105a')}${rg('to-f', '#ffd0a0', '#c88050')}${rg('to-c', '#6a9af8', '#1c3a98')}${rg('to-k', '#fff08a', '#e0a800')}</defs>
 ${shadow}
-<g ${OUT}><rect x="136" y="104" width="50" height="68" rx="6" fill="#1c5fd0"/></g>
-<path d="M150 104V90h22v14" fill="none" stroke="#120e18" stroke-width="5" stroke-linecap="round"/>
-<path d="M146 112v52M176 112v52" stroke="#0d3c8a" stroke-width="4"/>
-<rect x="154" y="126" width="18" height="12" fill="#ffd900" ${OUT}/><circle cx="163" cy="132" r="3" fill="#ff3d9a"/>
-<circle cx="150" cy="176" r="6" fill="#120e18"/><circle cx="174" cy="176" r="6" fill="#120e18"/>
-<path d="M84 142v32M116 142v32" stroke="#f2b88a" stroke-width="14" stroke-linecap="round"/>
-<g ${OUT}><path d="M70 176h28v10H66z" fill="#8a5a2a"/><path d="M102 176h28l4 10h-32z" fill="#8a5a2a"/></g>
-<path d="M68 124h64l4 28h-30l-6-10-6 10H64z" fill="#f2e2a0" ${OUT}/>
-<path d="M62 64c8-8 20-12 38-12s30 4 38 12l6 64H56z" fill="#ff3d9a" ${OUT}/>
-<path d="M100 56l-13 28 13 38 13-38z" fill="#f2b88a"/>
-<path d="M82 54l18 22-6 6-22-20zM118 54l-18 22 6 6 22-20z" fill="#ff8ac8" ${OUT}/>
-<g fill="#ffd900"><circle cx="72" cy="96" r="6"/><circle cx="128" cy="100" r="6"/><circle cx="66" cy="116" r="5"/><circle cx="134" cy="118" r="5"/></g>
-<g fill="#1c5fd0"><circle cx="76" cy="112" r="4"/><circle cx="124" cy="90" r="4"/></g>
-<g fill="#f6f0e4"><circle cx="86" cy="104" r="3.5"/><circle cx="118" cy="112" r="3.5"/></g>
-<ellipse cx="100" cy="32" rx="24" ry="26" fill="#f2b88a" ${OUT}/>
-<path d="M75 28c-2-20 12-28 26-28s26 8 24 28c-4-10-12-14-26-14s-20 4-24 14z" fill="#120e18" ${OUT}/>
-<g ${OUT}><rect x="77" y="25" width="21" height="13" rx="3" fill="#120e18"/><rect x="102" y="25" width="21" height="13" rx="3" fill="#120e18"/></g>
-<path d="M98 30h4" stroke="#120e18" stroke-width="4"/>
-<path d="M81 28l6 0M106 28l6 0" stroke="#fff" stroke-width="2.5" opacity=".7"/>
-<path d="M86 46q14 14 28 0z" fill="#fff" ${OUT}/>
-<g class="limb"><path d="M62 72L44 96L36 70" fill="none" stroke="#f2b88a" stroke-width="12" stroke-linecap="round" stroke-linejoin="round"/>
-<path d="M34 72L24 20" stroke="#3a3450" stroke-width="5" stroke-linecap="round"/>
-<g ${OUT}><rect x="12" y="4" width="18" height="26" rx="3" fill="#120e18"/></g><rect x="15" y="8" width="12" height="16" fill="#6a98ea"/></g>
-<path d="M138 72L158 96L156 106" fill="none" stroke="#f2b88a" stroke-width="12" stroke-linecap="round" stroke-linejoin="round"/>
-<circle cx="156" cy="106" r="7" fill="#f2b88a" ${OUT}/>`;
+<!-- suitcase -->
+<rect x="128" y="120" width="52" height="60" rx="8" fill="url(#to-c)" ${OUT}/><path d="M142 120V108c0-4 4-6 12-6s12 2 12 6v12" fill="none" stroke="#120e18" stroke-width="5"/><path d="M128 140h52M128 160h52" stroke="#120e18" stroke-width="3"/>
+<g ${OUT}><circle cx="144" cy="132" r="6" fill="#ffd900"/><circle cx="164" cy="150" r="6" fill="#ff3d9a"/><rect x="138" y="164" width="12" height="10" fill="#f6f0e4"/></g>
+<circle cx="140" cy="184" r="5" fill="#120e18"/><circle cx="168" cy="184" r="5" fill="#120e18"/>
+<!-- legs, socks and flip-flops -->
+<path d="M68 150h20v22H68zM100 150h20v22h-20z" fill="url(#to-f)" ${OUT}/><path d="M68 170h20v8H68zM100 170h20v8h-20z" fill="#f6f0e4" ${OUT}/><path d="M68 174h20M100 174h20" stroke="#ff3d9a" stroke-width="2.5"/>
+<path d="M62 182l28 0 0 8H58zM96 182h28l4 8H92z" fill="#2ac8b8" ${OUT}/>
+<path d="M62 142h66l4 12H58z" fill="url(#to-k)" ${OUT}/>
+<!-- shirt -->
+<ellipse cx="94" cy="118" rx="52" ry="40" fill="url(#to-s)" ${OUT}/>
+<path d="M76 84l18 22 18-22" fill="url(#to-f)" ${OUT}/><path d="M94 106v50" stroke="#120e18" stroke-width="3"/>
+<g fill="#ffd900" ${OUT}><circle cx="70" cy="122" r="7"/><circle cx="116" cy="128" r="7"/><circle cx="82" cy="146" r="6"/></g><g fill="#2ac8b8" ${OUT}><circle cx="108" cy="108" r="6"/><circle cx="62" cy="106" r="5"/><circle cx="120" cy="148" r="5"/></g>
+<path d="M70 122l-10-6M70 122l8-8M116 128l8-4" stroke="#2a8a3a" stroke-width="3"/>
+<!-- left arm: selfie stick -->
+<path d="M52 112c-8 8-8 18-4 26l12-2z" fill="url(#to-s)" ${OUT}/>
+<g class="limb"><path d="M38 144L14 36" stroke="#120e18" stroke-width="7" stroke-linecap="round"/><path d="M38 144L14 36" stroke="#8a94a8" stroke-width="3" stroke-linecap="round"/><rect x="2" y="6" width="22" height="34" rx="4" fill="#120e18" ${OUT}/><rect x="6" y="11" width="14" height="24" fill="#9ab8f0"/><circle cx="13" cy="23" r="4" fill="#ff3d9a"/></g>
+<circle cx="46" cy="140" r="8" fill="url(#to-f)" ${OUT}/>
+<!-- right arm pulling the suitcase -->
+<path d="M138 108c10 4 14 12 12 22l-10 0c2-6 0-10-6-12z" fill="url(#to-s)" ${OUT}/><circle cx="148" cy="130" r="8" fill="url(#to-f)" ${OUT}/>
+<!-- head: shades, huge grin, slicked hair -->
+<circle cx="94" cy="62" r="36" fill="url(#to-f)" ${OUT}/>
+<path d="M60 52c2-22 18-34 34-34s32 12 34 34c-8-10-18-14-34-14s-26 4-34 14z" fill="#6a3a1a" ${OUT}/>
+<g ${OUT}><rect x="66" y="56" width="26" height="16" rx="6" fill="#120e18"/><rect x="96" y="56" width="26" height="16" rx="6" fill="#120e18"/></g><path d="M92 62h4" stroke="#120e18" stroke-width="4"/>
+<path d="M70 60h8M100 60h8" stroke="#fff" stroke-width="3" stroke-linecap="round" opacity=".7"/>
+<path d="M68 82c8 14 36 14 44 0z" fill="#120e18" ${OUT}/><path d="M72 84h36v5H74z" fill="#f6f0e4"/>
+<circle cx="66" cy="78" r="5" fill="#ff8ac8" opacity=".6"/><circle cx="122" cy="78" r="5" fill="#ff8ac8" opacity=".6"/>
+<g class="eye" fill="#120e18"><circle cx="0" cy="0" r="0"/></g>`;
 
-/** Conveyor Sis: a belt standing up on its rollers, a furious face on the top one, fists up, a box riding her front. */
+/** Conveyor Sis: a conveyor belt standing up on its rollers, a furious face on the top roller, boxing gloves up and a box riding her front. */
 const conveyorSis = `
-<defs>${glow('cs-g', '#ff3b3b')}</defs>
+<defs>${rg('cs-r', '#e0e8f8', '#4a5a98')}${rg('cs-b', '#5a5a78', '#14142a')}${rg('cs-g', '#ff7a8a', '#a0102a')}${glow('cs-e', '#ffd900')}</defs>
 ${shadow}
-<path d="M72 178l-8 12M128 178l8 12" stroke="#5a5470" stroke-width="10" stroke-linecap="round"/>
-<g ${OUT}><rect x="54" y="186" width="24" height="8" rx="3" fill="#3a3450"/><rect x="122" y="186" width="24" height="8" rx="3" fill="#3a3450"/></g>
-<rect x="52" y="34" width="96" height="148" rx="46" fill="#3a3450" ${OUT}/>
-<rect x="62" y="44" width="76" height="128" rx="36" fill="#2a2640"/>
-<g stroke="#5a5470" stroke-width="4"><path d="M62 100h76M62 120h76M62 140h76M62 160h76"/></g>
-<g fill="#ffd900"><path d="M92 112l8-8 8 8v8l-8-8-8 8zM92 144l8-8 8 8v8l-8-8-8 8z"/></g>
-<g ${OUT}><rect x="82" y="118" width="36" height="26" fill="#c98a4a"/></g>
-<path d="M82 128h36M100 118v26" stroke="#8a5a2a" stroke-width="3"/>
-<circle cx="100" cy="164" r="22" fill="#9a94ac" ${OUT}/><circle cx="100" cy="164" r="7" fill="#3a3450"/>
-<circle cx="100" cy="64" r="38" fill="#c9c4d6" ${OUT}/>
-<circle cx="100" cy="64" r="30" fill="#f6f0e4"/>
-<g ${OUT}><path d="M80 48l12 8M120 48l-12 8" stroke-width="5"/></g>
-<g fill="#120e18"><circle cx="86" cy="62" r="6"/><circle cx="114" cy="62" r="6"/></g>
-<g fill="#fff"><circle cx="84" cy="60" r="2"/><circle cx="112" cy="60" r="2"/></g>
-<ellipse cx="76" cy="74" rx="7" ry="4.5" fill="#ff3d9a" opacity=".6"/><ellipse cx="124" cy="74" rx="7" ry="4.5" fill="#ff3d9a" opacity=".6"/>
-<ellipse cx="100" cy="82" rx="11" ry="9" fill="#120e18" ${OUT}/><ellipse cx="100" cy="86" rx="6" ry="4" fill="#ff3d9a"/>
-<g class="limb"><path d="M62 70L34 62L22 30" fill="none" stroke="#ffd900" stroke-width="11" stroke-linecap="round" stroke-linejoin="round"/>
-<circle cx="22" cy="28" r="10" fill="#ffd900" ${OUT}/></g>
-<path d="M138 70L168 76L180 100" fill="none" stroke="#ffd900" stroke-width="11" stroke-linecap="round" stroke-linejoin="round"/>
-<circle cx="181" cy="102" r="10" fill="#ffd900" ${OUT}/>
-<path d="M170 60q10 6 6 18" fill="none" stroke="#ff3d9a" stroke-width="4" stroke-linecap="round"/>`;
+<!-- the belt loop standing up -->
+<path d="M56 56c-14 4-22 16-22 32v62c0 16 8 28 22 32h88c14-4 22-16 22-32V88c0-16-8-28-22-32z" fill="url(#cs-b)" ${OUT}/>
+<path d="M46 96h108M44 116h112M44 136h112M44 156h112" stroke="#8a94b8" stroke-width="4" stroke-dasharray="10 8"/>
+<path d="M62 104l8 8-8 8M62 128l8 8-8 8M130 104l8 8-8 8M130 128l8 8-8 8" stroke="#ffd900" stroke-width="4" fill="none" stroke-linejoin="round"/>
+<!-- bottom roller as the feet -->
+<ellipse cx="100" cy="178" rx="60" ry="14" fill="url(#cs-r)" ${OUT}/><path d="M60 178h80" stroke="#4a5a98" stroke-width="3" stroke-dasharray="6 6"/>
+<circle cx="52" cy="184" r="8" fill="#3a3450" ${OUT}/><circle cx="148" cy="184" r="8" fill="#3a3450" ${OUT}/>
+<!-- a box riding her front -->
+<rect x="66" y="120" width="68" height="46" fill="#d8b070" ${OUT}/><path d="M66 134h68M100 120v14" stroke="#8a5a2a" stroke-width="4"/><path d="M76 146h22" stroke="#120e18" stroke-width="3"/><circle cx="116" cy="150" r="5" fill="#ff3d9a" ${OUT}/>
+<!-- top roller with her face -->
+<ellipse cx="100" cy="58" rx="62" ry="40" fill="url(#cs-r)" ${OUT}/>
+<path d="M46 58c0-20 24-34 54-34" stroke="#fff" stroke-width="4" fill="none" stroke-linecap="round" opacity=".7"/>
+<path d="M62 42l30 12M138 42l-30 12" stroke="#120e18" stroke-width="8" stroke-linecap="round"/>
+<g ${OUT}><ellipse cx="82" cy="62" rx="12" ry="10" fill="#f6f0e4"/><ellipse cx="118" cy="62" rx="12" ry="10" fill="#f6f0e4"/></g>
+<g class="eye"><circle cx="84" cy="64" r="8" fill="url(#cs-e)"/><circle cx="84" cy="64" r="4" fill="#120e18"/><circle cx="116" cy="64" r="8" fill="url(#cs-e)"/><circle cx="116" cy="64" r="4" fill="#120e18"/></g>
+<path d="M76 80c8 10 40 10 48 0z" fill="#120e18" ${OUT}/><path d="M80 82h40v5H82z" fill="#f6f0e4"/>
+<!-- boxing gloves up -->
+<g class="limb"><path d="M34 100c-14 0-22-8-24-22" stroke="#120e18" stroke-width="12" fill="none" stroke-linecap="round"/><path d="M34 100c-14 0-22-8-24-22" stroke="#5a5a78" stroke-width="6" fill="none" stroke-linecap="round"/><circle cx="12" cy="66" r="15" fill="url(#cs-g)" ${OUT}/><path d="M4 62c2-6 8-8 14-6" stroke="#fff" stroke-width="3" fill="none" stroke-linecap="round" opacity=".7"/></g>
+<g class="limb"><path d="M166 100c14 0 22-8 24-22" stroke="#120e18" stroke-width="12" fill="none" stroke-linecap="round"/><path d="M166 100c14 0 22-8 24-22" stroke="#5a5a78" stroke-width="6" fill="none" stroke-linecap="round"/><circle cx="188" cy="66" r="15" fill="url(#cs-g)" ${OUT}/><path d="M180 62c2-6 8-8 14-6" stroke="#fff" stroke-width="3" fill="none" stroke-linecap="round" opacity=".7"/></g>`;
 
-/** The Board: three porcelain-masked directors on one brass-and-steel chassis, ticker tape pouring from its chest. */
+/** The Board: three porcelain-masked directors in hats on one brass-and-steel chassis, a silent grin, a frown and a monocle, ticker tape pouring from its chest. */
 const theBoard = `
-<defs>${glow('tb-g', '#ffd900')}${glow('tb-r', '#ff3d9a')}${rg('tb-s', '#4a64c8', '#1b2a70')}</defs>
+<defs>${rg('tb-m', '#ffffff', '#b8b0d0')}${rg('tb-b', '#ffe8a0', '#8a5a10')}${rg('tb-s', '#6a76c8', '#141c60')}</defs>
 ${shadow}
-<g transform="translate(8 18) scale(.9)">
-<g fill="#e0a800" ${OUT}><circle cx="42" cy="120" r="22"/><circle cx="160" cy="124" r="26"/></g>
-<g fill="#3a3450"><circle cx="42" cy="120" r="8"/><circle cx="160" cy="124" r="9"/></g>
-<path d="M48 186c-4-46 4-84 20-92h64c16 8 24 46 20 92z" fill="url(#tb-s)" ${OUT}/>
-<path d="M88 94l12 24 12-24" fill="#f6f0e4" ${OUT}/><path d="M100 118v56" stroke="#ff3d9a" stroke-width="7"/>
-<circle cx="100" cy="146" r="14" fill="#e0a800" ${OUT}/><circle cx="100" cy="146" r="5" fill="#3a3450"/><path d="M100 130v6M100 156v6M84 146h6M110 146h6" stroke="#3a3450" stroke-width="4"/>
-<path d="M64 112c-18 6-26 28-14 46l20-8c-6-10-4-20 6-26zM136 112c18 6 26 28 14 46l-20-8c6-10 4-20-6-26z" fill="#1c5fd0" ${OUT}/>
-<g class="limb"><rect x="146" y="152" width="40" height="14" rx="3" fill="#8a5a2a" ${OUT}/><rect x="138" y="140" width="22" height="38" rx="3" fill="#8a5a2a" ${OUT}/><circle cx="148" cy="160" r="9" fill="#f6f0e4" ${OUT}/></g>
-<path d="M44 168c-6 8-4 14 2 18M30 176c-8 4-8 12-2 14" fill="none" stroke="#f6f0e4" stroke-width="5" stroke-linecap="round" stroke-dasharray="6 4"/>
-<path d="M72 86L50 66M128 86l22-20M100 92V66" stroke="#3a3450" stroke-width="12" stroke-linecap="round"/>
-<g ${OUT}>
-<path d="M22 56c0-20 12-32 28-32s28 12 28 32c0 16-12 30-28 34-16-4-28-18-28-34z" fill="#f6f0e4"/>
-<path d="M122 56c0-20 12-32 28-32s28 12 28 32c0 16-12 30-28 34-16-4-28-18-28-34z" fill="#f6f0e4"/>
-<path d="M66 44c0-24 14-38 34-38s34 14 34 38c0 20-14 38-34 42-20-4-34-22-34-42z" fill="#f6f0e4"/>
-<rect x="76" y="-2" width="48" height="12" rx="2" fill="#1b1830"/><rect x="84" y="-14" width="32" height="20" fill="#1b1830"/><path d="M84 -6h32" stroke="#ff3d9a" stroke-width="5"/>
-</g>
-<g class="eye"><circle cx="88" cy="40" r="10" fill="url(#tb-g)"/><circle cx="112" cy="40" r="10" fill="url(#tb-g)"/>
-<g fill="#ffd900" stroke="#120e18" stroke-width="3.5"><circle cx="87" cy="40" r="8"/><circle cx="113" cy="40" r="8"/></g>
-<path d="M87 34v12M113 34v12" stroke="#120e18" stroke-width="4.5" stroke-linecap="round"/></g>
-<path d="M86 64q14 8 28 0" fill="none" stroke="#120e18" stroke-width="4" stroke-linecap="round"/>
-${eyes(38, 62, 52, 3, '#ff3d9a', 'tb-r')}
-<path d="M38 70h24" stroke="#120e18" stroke-width="4" stroke-linecap="round"/>
-${eyes(138, 162, 52, 3, '#ff3d9a', 'tb-r')}
-<path d="M138 74q12-8 24 0" fill="none" stroke="#120e18" stroke-width="4" stroke-linecap="round"/>
-<path d="M30 40l16 4M70 40l-16 4M130 40l16 4M170 40l-16 4" stroke="#120e18" stroke-width="3" stroke-linecap="round"/>
-</g>`;
+<!-- ticker tape pouring out -->
+<path d="M82 130c-8 20 6 30-6 44s-4 18 6 16" fill="none" stroke="#120e18" stroke-width="14" stroke-linecap="round"/><path d="M82 130c-8 20 6 30-6 44s-4 18 6 16" fill="none" stroke="#f6f0e4" stroke-width="9" stroke-linecap="round" stroke-dasharray="8 3"/>
+<!-- chassis on wheels -->
+<circle cx="52" cy="176" r="14" fill="#3a3450" ${OUT}/><circle cx="52" cy="176" r="5" fill="#ffd900"/><circle cx="148" cy="176" r="14" fill="#3a3450" ${OUT}/><circle cx="148" cy="176" r="5" fill="#ffd900"/>
+<ellipse cx="100" cy="140" rx="68" ry="40" fill="url(#tb-b)" ${OUT}/>
+<g fill="#8a5a10" ${OUT}><circle cx="46" cy="130" r="3.5"/><circle cx="154" cy="130" r="3.5"/><circle cx="60" cy="158" r="3.5"/><circle cx="140" cy="158" r="3.5"/></g>
+<path d="M62 126c10 14 66 14 76 0v10c-10 14-66 14-76 0z" fill="#120e18"/><path d="M70 130h60" stroke="#ffd900" stroke-width="3" stroke-dasharray="6 4"/>
+<g class="limb" fill="url(#tb-b)" ${OUT}><circle cx="100" cy="150" r="16"/><path d="M100 138v24M88 150h24M92 140l16 20M108 140l-16 20" stroke="#8a5a10" stroke-width="3" fill="none"/></g>
+<!-- three necks and three porcelain masks -->
+<path d="M66 108c0-10-4-20-8-28M134 108c0-10 4-20 8-28M100 104V84" stroke="#120e18" stroke-width="13" fill="none" stroke-linecap="round"/><path d="M66 108c0-10-4-20-8-28M134 108c0-10 4-20 8-28M100 104V84" stroke="url(#tb-s)" stroke-width="8" fill="none" stroke-linecap="round"/>
+<!-- left: bowler, calm smile -->
+<ellipse cx="46" cy="64" rx="26" ry="28" fill="url(#tb-m)" ${OUT}/>
+<path d="M28 46c0-14 8-20 18-20s18 6 18 20z" fill="url(#tb-s)" ${OUT}/><path d="M22 46h48" stroke="#120e18" stroke-width="5"/>
+<path d="M34 62c3-4 7-4 10 0M50 62c3-4 7-4 10 0" stroke="#120e18" stroke-width="3.5" fill="none" stroke-linecap="round"/><path d="M36 76c6 8 16 8 22 0" stroke="#120e18" stroke-width="3.5" fill="none" stroke-linecap="round"/><circle cx="32" cy="72" r="4" fill="#ff8ac8" opacity=".7"/><circle cx="62" cy="72" r="4" fill="#ff8ac8" opacity=".7"/>
+<!-- right: crown, frown -->
+<ellipse cx="154" cy="64" rx="26" ry="28" fill="url(#tb-m)" ${OUT}/>
+<path d="M134 40l8 10 6-12 6 12 6-12 8 14z" fill="url(#tb-b)" ${OUT}/>
+<g class="eye" fill="#120e18"><circle cx="144" cy="64" r="4"/><circle cx="164" cy="64" r="4"/></g><path d="M136 56l16 6M172 56l-16 6" stroke="#120e18" stroke-width="3.5" stroke-linecap="round"/><path d="M142 80c6-6 16-6 22 0" stroke="#120e18" stroke-width="3.5" fill="none" stroke-linecap="round"/>
+<!-- middle: top hat, monocle, deadpan -->
+<ellipse cx="100" cy="52" rx="28" ry="30" fill="url(#tb-m)" ${OUT}/>
+<path d="M80 26V4h40v22z" fill="url(#tb-s)" ${OUT}/><rect x="80" y="16" width="40" height="6" fill="#ff3d9a"/><path d="M72 28h56" stroke="#120e18" stroke-width="5" stroke-linecap="round"/>
+<g ${OUT}><ellipse cx="88" cy="50" rx="6" ry="5" fill="#120e18"/></g><circle cx="112" cy="50" r="10" fill="none" stroke="#ffd900" stroke-width="3"/><g class="eye" fill="#120e18"><circle cx="112" cy="50" r="4"/></g><path d="M112 60c2 12 4 18 8 26" stroke="#ffd900" stroke-width="2" fill="none"/>
+<path d="M86 68h28" stroke="#120e18" stroke-width="3.5" stroke-linecap="round"/><path d="M90 64l4 0M106 64h4" stroke="#120e18" stroke-width="0"/>`;
 
-/** Power Socket: a cheeky two-prong plug with a rubber cable tail, cream body, big eyes, stubby arms, yellow sparks arcing all around it. */
+/** Power Socket: a cheeky two-prong plug with a rubber cable tail, a cream round body, big eyes, stubby arms and yellow sparks arcing all around it. */
 const powerSocket = `
-<defs>${lg('ps-b', '#fff0e0', '#d8c8b0')}${lg('ps-m', '#e8e4f0', '#8a84a0')}${glow('ps-g', '#ffd900')}${glow('ps-e', '#ff3d9a')}</defs>
+<defs>${rg('ps-b', '#fffbe8', '#c8bc98')}${rg('ps-m', '#e8f0f8', '#6a7ea0')}${glow('ps-e', '#ffd900')}</defs>
 ${shadow}
-<!-- rubber cable tail -->
-<path d="M100 150c0 22-30 20-30 34 0 8 22 6 40 4" fill="none" stroke="#120e18" stroke-width="14" stroke-linecap="round"/><path d="M100 150c0 22-30 20-30 34 0 8 22 6 40 4" fill="none" stroke="#1b1830" stroke-width="8" stroke-linecap="round"/>
+<!-- cable tail -->
+<path d="M100 150c0 24-34 20-34 34 0 8 22 6 44 4" fill="none" stroke="#120e18" stroke-width="16" stroke-linecap="round"/><path d="M100 150c0 24-34 20-34 34 0 8 22 6 44 4" fill="none" stroke="#2a2a48" stroke-width="9" stroke-linecap="round"/>
 <!-- prongs -->
-<rect x="72" y="14" width="14" height="34" fill="url(#ps-m)" ${OUT}/><rect x="114" y="14" width="14" height="34" fill="url(#ps-m)" ${OUT}/>
-<rect x="76" y="20" width="6" height="8" fill="#120e18"/><rect x="118" y="20" width="6" height="8" fill="#120e18"/>
-<!-- plug body -->
-<path d="M56 56c0-8 6-12 14-12h60c8 0 14 4 14 12v70c0 14-10 26-24 26H80c-14 0-24-12-24-26z" fill="url(#ps-b)" ${OUT}/>
-<path d="M66 134h68" stroke="#120e18" stroke-width="3"/><rect x="82" y="148" width="36" height="12" fill="#1b1830" ${OUT}/>
+<rect x="68" y="10" width="16" height="40" rx="3" fill="url(#ps-m)" ${OUT}/><rect x="116" y="10" width="16" height="40" rx="3" fill="url(#ps-m)" ${OUT}/>
+<rect x="72" y="18" width="8" height="9" fill="#120e18"/><rect x="120" y="18" width="8" height="9" fill="#120e18"/>
+<!-- round plug body -->
+<ellipse cx="100" cy="100" rx="58" ry="56" fill="url(#ps-b)" ${OUT}/>
+<path d="M54 142h92" stroke="#120e18" stroke-width="3" opacity=".5"/><rect x="82" y="152" width="36" height="12" rx="3" fill="#2a2a48" ${OUT}/>
 <!-- stubby arms -->
-<g class="limb"><path d="M58 90c-14 2-26 10-30 22 4 2 8 0 10-4 4 4 10 4 14 0 8-6 12-12 12-18z" fill="url(#ps-b)" ${OUT}/></g>
-<g class="limb"><path d="M142 90c14 2 26 10 30 22-4 2-8 0-10-4-4 4-10 4-14 0-8-6-12-12-12-18z" fill="url(#ps-b)" ${OUT}/></g>
+<g class="limb"><path d="M50 96c-14 2-26 10-30 22 4 2 8 0 10-4 4 4 10 4 14 0 8-6 12-12 12-18z" fill="url(#ps-b)" ${OUT}/></g>
+<g class="limb"><path d="M150 96c14 2 26 10 30 22-4 2-8 0-10-4-4 4-10 4-14 0-8-6-12-12-12-18z" fill="url(#ps-b)" ${OUT}/></g>
 <!-- face -->
-${eyes(82, 118, 80, 8, '#ffd900', 'ps-e')}
-<circle cx="82" cy="81" r="3.5" fill="#120e18"/><circle cx="118" cy="81" r="3.5" fill="#120e18"/>
-<path d="M72 64l16 6M128 64l-16 6" stroke="#120e18" stroke-width="4" stroke-linecap="round"/>
-<path d="M86 108c8 8 20 8 28 0" fill="none" stroke="#120e18" stroke-width="4" stroke-linecap="round"/><path d="M92 110v5M100 112v6M108 110v5" stroke="#120e18" stroke-width="3"/>
+<g ${OUT}><circle cx="78" cy="86" r="15" fill="#f6f0e4"/><circle cx="122" cy="86" r="15" fill="#f6f0e4"/></g>
+<g class="eye"><circle cx="78" cy="86" r="10" fill="url(#ps-e)"/><circle cx="122" cy="86" r="10" fill="url(#ps-e)"/><circle cx="80" cy="88" r="5" fill="#120e18"/><circle cx="124" cy="88" r="5" fill="#120e18"/><circle cx="82" cy="85" r="2" fill="#fff"/><circle cx="126" cy="85" r="2" fill="#fff"/></g>
+<path d="M62 68l24 8M138 68l-24 8" stroke="#120e18" stroke-width="5" stroke-linecap="round"/>
+<path d="M76 112c10 14 38 14 48 0z" fill="#120e18" ${OUT}/><path d="M84 114v6M94 116v7M106 116v7M116 114v6" stroke="#f6f0e4" stroke-width="3"/>
+<circle cx="66" cy="106" r="5" fill="#ff8ac8" opacity=".7"/><circle cx="134" cy="106" r="5" fill="#ff8ac8" opacity=".7"/>
 <!-- electricity -->
 <g class="eye" fill="#ffd900" ${OUT}>
-<path d="M32 40l14 10-8 4 14 12-6 2 10 10-18-8 6-4-12-10 8-2z"/>
-<path d="M168 36l-14 12 8 2-14 12 6 2-10 10 18-10-6-2 12-10-8-2z"/>
-<path d="M170 128l-12 6 6 4-12 8 16-4-4-4 10-4z"/>
-<path d="M30 132l12 6-6 4 12 8-16-4 4-4-10-4z"/>
-<path d="M92 4l-8 10 6 2-8 10 14-8-6-2 8-6z"/>
+<path d="M28 40l14 10-8 4 14 12-6 2 10 10-18-8 6-4-12-10 8-2z"/>
+<path d="M172 36l-14 12 8 2-14 12 6 2-10 10 18-10-6-2 12-10-8-2z"/>
+<path d="M172 138l-12 6 6 4-12 8 16-4-4-4 10-4z"/>
+<path d="M28 140l12 6-6 4 12 8-16-4 4-4-10-4z"/>
 </g>`;
 
 /** The Debug Enemy: an empty square, nothing in it. */
