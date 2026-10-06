@@ -1565,6 +1565,34 @@ export const ICONS: Record<string, { el: Element; svg: string }> = {
     el: 'steel',
     svg: `<path d="M12 2h10l14 26-6 4zM52 2H42L28 28l6 4z"/><rect x="26" y="28" width="12" height="8" rx="2"/><rect x="16" y="38" width="32" height="24" rx="3"/><path fill="#16121f" d="M28 42h8v3h-8zM24 52h16v3H24z"/>`,
   },
+  'relic.deskPlant': {
+    el: 'steel',
+    svg: `<path d="M32 36C32 22 22 14 8 16c0 14 10 22 24 20zM32 36c2-18 14-30 28-28-1 18-13 30-28 28z"/><path d="M14 40h36l-4 22H18z"/>`,
+  },
+  'relic.highlighter': {
+    el: 'steel',
+    svg: `<path d="M44 4l16 16-30 30-10-2-2-10z"/><path fill="#16121f" d="M12 52l-8 8 12-2z"/><path fill="none" stroke="#16121f" stroke-width="3" d="M36 12l16 16"/>`,
+  },
+  'relic.holePunch': {
+    el: 'steel',
+    svg: `<path d="M6 44h52v14H6z"/><path d="M8 20c0-6 4-8 10-8h28c8 0 12 6 12 14v14H8z"/><path fill="#16121f" d="M18 20h12v4H18zM40 30h6v6h-6z"/>`,
+  },
+  'relic.rubberStamp': {
+    el: 'steel',
+    svg: `<rect x="24" y="4" width="16" height="16" rx="4"/><path d="M28 20h8v14h-8z"/><path d="M10 34h44c4 0 6 3 6 6v8H4v-8c0-3 2-6 6-6z"/><path fill="#16121f" d="M4 50h56v4H4z"/><path d="M6 58h52v4H6z"/>`,
+  },
+  'relic.nameTag': {
+    el: 'steel',
+    svg: `<rect x="8" y="8" width="48" height="48" rx="5"/><path fill="#16121f" d="M8 14c0-3 2-6 6-6h36c4 0 6 3 6 6v14H8zM16 40h32v4H16z"/>`,
+  },
+  'relic.fireDrillBell': {
+    el: 'steel',
+    svg: `<path d="M32 6c-14 0-20 10-20 22v12L6 50h52l-6-10V28C52 16 46 6 32 6z"/><circle cx="32" cy="56" r="6"/>`,
+  },
+  'relic.outOfOffice': {
+    el: 'steel',
+    svg: `<path d="M12 2h40v60H12z"/><circle cx="32" cy="14" r="7" fill="#16121f"/><path fill="#16121f" d="M18 28h28v18H18zM22 52h20v4H22z"/>`,
+  },
   'relic.companyCard': {
     el: 'steel',
     svg: `<rect x="4" y="12" width="56" height="40" rx="5"/><path fill="#16121f" d="M4 20h56v8H4z"/><rect x="10" y="36" width="14" height="10" rx="2" fill="#16121f"/><path fill="#16121f" d="M30 40h24v3H30z"/>`,

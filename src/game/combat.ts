@@ -1319,6 +1319,7 @@ export class Combat {
       dmg += this.heroDef.hooks.bonusDamage?.(this, def) ?? 0;
       for (const [held, hd] of this.held()) dmg += hd.inSleeve?.bonusDamage?.(this, this.cardVals(held), def) ?? 0;
       dmg *= this.heroDef.hooks.damageMult?.(this, def) ?? 1;
+      for (const id of this.relics) dmg *= RELICS[id]?.hooks?.damageMult?.(this, def) ?? 1;
       if (def?.type === 'attack' && this.has('hero', 'crit')) dmg *= CONFIG.critMult;
     } else {
       dmg += this.strengthOf('enemy');
@@ -1352,6 +1353,14 @@ export class Combat {
     if (this.flag(to, 'immune')) {
       if (to === 'hero' && source === 'enemy') this.events.emit({ type: 'text', target: 'hero', key: 'combat.dodged', tone: 'good' });
       return 0;
+    }
+
+    if (to === 'hero' && source === 'enemy') {
+      const id = this.relics.find((r) => RELICS[r]?.hooks?.cancelHit?.(this, dmg));
+      if (id) {
+        this.events.emit({ type: 'relic', id });
+        return 0;
+      }
     }
 
     const blocked = opts.ignoreBlock ? 0 : Math.min(target.block, dmg);

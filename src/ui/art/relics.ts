@@ -158,6 +158,71 @@ const quillPen = `
 <path d="M50 168h116" stroke="#6a98ea" stroke-width="5" stroke-linecap="round" opacity=".7"/>
 ${face(108, 168, 18, 5)}`;
 
+const deskPlant = `
+<path d="M100 120C96 90 70 70 40 76c0 28 26 46 60 44z" fill="#2e8a4a" ${OUT}/>
+<path d="M100 120c4-40 30-70 66-68-2 40-30 70-66 68z" fill="#3cb05c" ${OUT}/>
+<path d="M100 120c-2-30 4-58 22-80-24 6-34 44-22 80z" fill="#2e8a4a" ${OUT}/>
+<path d="M54 84c14 6 28 18 38 32M146 62c-12 14-30 34-42 54" stroke="#9be0a8" stroke-width="4" fill="none" stroke-linecap="round"/>
+<path d="M58 118h84l-10 62H68z" fill="#1c5fd0" ${OUT}/>
+<path d="M52 112h96v14H52z" fill="#6a98ea" ${OUT}/>
+${face(100, 150, 20, 5)}`;
+
+const highlighter = `
+<g transform="rotate(-38 100 100)">
+<rect x="70" y="20" width="60" height="30" rx="6" fill="#120e18"/>
+<path d="M64 46h72v102H64z" fill="#ffd900" ${OUT}/>
+<path d="M64 148h72l-14 28H78z" fill="#fff2a0" ${OUT}/>
+<path d="M92 176h16v14H92z" fill="#e0a800" ${OUT}/>
+<path d="M76 56v82" stroke="#fff2a0" stroke-width="6" stroke-linecap="round"/>
+${face(100, 94, 14, 4.5)}
+</g>
+<path d="M26 184c30-8 60-8 90 0" stroke="#ffd900" stroke-width="14" fill="none" stroke-linecap="round" opacity=".8"/>`;
+
+const holePunch = `
+<path d="M26 138h148v32c0 8-6 14-14 14H40c-8 0-14-6-14-14z" fill="#3a3450" ${OUT}/>
+<path d="M36 70c0-14 12-22 28-22h72c20 0 32 14 32 34v56H36z" fill="#d6283a" ${OUT}/>
+<path d="M44 62c4-6 10-8 20-8h60" stroke="#ff8a9a" stroke-width="6" fill="none" stroke-linecap="round"/>
+<path d="M120 52l36-26 12 14-34 28z" fill="#9aa3b5" ${OUT}/>
+<circle cx="52" cy="176" r="7" fill="${PAPER}" ${OUT}/><circle cx="76" cy="180" r="7" fill="${PAPER}" ${OUT}/>
+${face(100, 108, 22, 5.5)}`;
+
+const rubberStamp = `
+<rect x="78" y="14" width="44" height="40" rx="10" fill="#a8683a" ${OUT}/>
+<path d="M90 22c4-4 10-6 18-4" stroke="#d8a070" stroke-width="5" fill="none" stroke-linecap="round"/>
+<path d="M88 54h24v36H88z" fill="#8a5028" ${OUT}/>
+<path d="M44 90h112c10 0 14 6 14 14v22H30v-22c0-8 4-14 14-14z" fill="#3a3450" ${OUT}/>
+<path d="M30 126h140v22H30z" fill="#d6283a" ${OUT}/>
+<path d="M30 152h140v8H30z" fill="${INK}"/>
+${face(100, 108, 22, 5)}
+<path d="M40 186h120" stroke="#d6283a" stroke-width="8" stroke-linecap="round" stroke-dasharray="22 8"/>`;
+
+const nameTag = `
+<g transform="rotate(-6 100 100)">
+<rect x="26" y="34" width="148" height="132" rx="10" fill="${PAPER}" ${OUT}/>
+<path d="M26 44c0-6 4-10 10-10h128c6 0 10 4 10 10v38H26z" fill="#d6283a" ${OUT}/>
+<path d="M52 56h96M72 70h56" stroke="${PAPER}" stroke-width="7" stroke-linecap="round"/>
+<path d="M44 128h112" stroke="#1c5fd0" stroke-width="6" stroke-linecap="round"/>
+${face(100, 108, 24, 5)}
+<circle cx="100" cy="148" r="5" fill="none"/>
+</g>`;
+
+const fireDrillBell = `
+<path d="M100 28c-36 0-52 28-52 62v32l-16 26h136l-16-26V90c0-34-16-62-52-62z" fill="#d6283a" ${OUT}/>
+<path d="M66 70c6-18 18-28 34-30" stroke="#ff8a9a" stroke-width="8" fill="none" stroke-linecap="round"/>
+<rect x="88" y="10" width="24" height="22" rx="5" fill="#3a3450" ${OUT}/>
+<circle cx="100" cy="168" r="14" fill="#ffd900" ${OUT}/>
+<path d="M26 60c-8 14-8 28 0 42M174 60c8 14 8 28 0 42" stroke="${INK}" stroke-width="5" fill="none" stroke-linecap="round"/>
+${face(100, 100, 22, 5.5)}`;
+
+const outOfOffice = `
+<path d="M34 8h132v184H34z" fill="#ff3d9a" ${OUT}/>
+<circle cx="100" cy="40" r="20" fill="#f6f0e4" ${OUT}/>
+<path d="M34 8h132v18H34z" fill="#c42a78" ${OUT}/>
+<rect x="52" y="76" width="96" height="76" rx="6" fill="${PAPER}" ${OUT}/>
+<path d="M66 176h68" stroke="${PAPER}" stroke-width="7" stroke-linecap="round"/>
+<path d="M70 100h60M70 112h42" stroke="${INK}" stroke-width="5" stroke-linecap="round"/>
+${face(100, 134, 18, 4.5)}`;
+
 const statuette = `
 <path d="M34 164h132l8 20H26z" fill="#6c6880" ${OUT}/>
 <path d="M44 140h112v26H44z" fill="#8a8798" ${OUT}/>
@@ -208,6 +273,13 @@ export const RELIC_SPRITES: Record<string, string> = Object.fromEntries(
     lanyard,
     paperClip,
     companyCard,
+    deskPlant,
+    highlighter,
+    holePunch,
+    rubberStamp,
+    nameTag,
+    fireDrillBell,
+    outOfOffice,
   }).map(([id, svg]) => [`relic.${id}`, svg]),
 );
 

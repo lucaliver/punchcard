@@ -28,6 +28,17 @@ const EXIT_HP = 0.35;
 const QUILL_RARITIES: readonly Rarity[] = ['common', 'rare'];
 /** Cards the Statuette petrifies at the start of a fight. */
 const STATUETTE_CARDS = 5;
+const PLANT_EVERY = 15;
+export const PLANT_HEAL = 2;
+export const HIGHLIGHTER_MULT = 2;
+export const PUNCH_DAMAGE = 3;
+/** How long the Name Tag leaves the enemy Vulnerable at the start of a fight (s). */
+export const NAME_TAG_TIME = 8;
+/** Share of max HP the Fire Drill Bell rings at. */
+const BELL_HP = 0.3;
+export const BELL_STUN = 5;
+/** The smallest hit the Out-of-Office Sign turns away. */
+const OOO_MIN_HIT = 15;
 
 /**
  * Relics found in the Lost & Found (and one sold by the Tailor). `n` is the number their text shows (`{n}`); the hooks and
@@ -198,6 +209,95 @@ const defs: RelicDef[] = [
   },
   { id: 'lanyard', rarity: 'rare', n: Math.round((LANYARD_SPEED - 1) * 100), mods: { beltSpeed: LANYARD_SPEED } },
   { id: 'companyCard', rarity: 'epic', n: 1, mods: { rewardCards: 1 } },
+  {
+    id: 'deskPlant',
+    rarity: 'common',
+    n: PLANT_EVERY,
+    progress: (c) => (c.mem.plant ?? 0) / PLANT_EVERY,
+    hooks: {
+      tick: (c, dt) => {
+        c.mem.plant = (c.mem.plant ?? 0) + dt;
+        if (c.mem.plant < PLANT_EVERY) return;
+        c.mem.plant -= PLANT_EVERY;
+        if (c.heal('hero', PLANT_HEAL) > 0) proc(c, 'deskPlant');
+      },
+    },
+  },
+  {
+    id: 'highlighter',
+    rarity: 'common',
+    n: HIGHLIGHTER_MULT,
+    hooks: {
+      // The first attack of the fight: its previews are doubled too, until it is played.
+      damageMult: (c, def) => (def?.type === 'attack' && !c.mem.highlighter ? HIGHLIGHTER_MULT : 1),
+      onCardPlayed: (c, _card, def) => {
+        if (def.type !== 'attack' || c.mem.highlighter) return;
+        c.mem.highlighter = 1;
+        proc(c, 'highlighter');
+      },
+    },
+  },
+  {
+    id: 'holePunch',
+    rarity: 'common',
+    n: PUNCH_DAMAGE,
+    hooks: {
+      onCardExpired: (c) => {
+        c.damage('hero', 'enemy', PUNCH_DAMAGE, { raw: true, kind: 'blunt' }, 'hero');
+        proc(c, 'holePunch');
+      },
+    },
+  },
+  {
+    id: 'rubberStamp',
+    rarity: 'rare',
+    n: 1,
+    hooks: {
+      // The Lost Badge status: the first card that costs mana is free.
+      onCombatStart: (c) => {
+        c.applyStatus('hero', 'lostBadge', 1);
+        proc(c, 'rubberStamp');
+      },
+    },
+  },
+  {
+    id: 'nameTag',
+    rarity: 'rare',
+    n: NAME_TAG_TIME,
+    hooks: {
+      onCombatStart: (c) => {
+        c.applyStatus('enemy', 'vulnerable', 1, NAME_TAG_TIME);
+        proc(c, 'nameTag');
+      },
+    },
+  },
+  {
+    id: 'fireDrillBell',
+    rarity: 'epic',
+    n: Math.round(BELL_HP * 100),
+    hooks: {
+      // Once per fight, the first time the hero is under the threshold.
+      tick: (c) => {
+        if (c.mem.bell || c.hero.hp > c.hero.maxHp * BELL_HP) return;
+        c.mem.bell = 1;
+        c.applyStatus('enemy', 'stun', 1, BELL_STUN);
+        proc(c, 'fireDrillBell');
+      },
+    },
+  },
+  {
+    id: 'outOfOffice',
+    rarity: 'legendary',
+    n: OOO_MIN_HIT,
+    hooks: {
+      // Once per fight: the first big hit never lands.
+      cancelHit: (c, dmg) => {
+        if (c.mem.ooo || dmg < OOO_MIN_HIT) return false;
+        c.mem.ooo = 1;
+        return true;
+      },
+    },
+  },
   // The Tailor's: not found in the Lost & Found.
   { id: 'cargoPants', rarity: 'special', n: 1, mods: { sleeve: 1 } },
 ];

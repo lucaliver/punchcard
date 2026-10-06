@@ -1,6 +1,6 @@
 import { getLocale, type TKey, t } from '../../core/i18n';
 import { sfx } from '../../audio/sfx';
-import { CARD_LIST } from '../../data/cards';
+import { CARD_LIST, RARITY_ORDER } from '../../data/cards';
 import { ACT_DEFS } from '../../data/acts';
 import { ENEMY_LIST } from '../../data/enemies';
 import type { EnemyDef, RelicDef } from '../../game/types';
@@ -46,11 +46,15 @@ const SWIPE_SLOPE = 1.5;
 
 const TIERS: EnemyDef['tier'][] = ['normal', 'elite', 'boss'];
 
+/** The stationery page lists the common ones first, the rarest last (a stable sort: the data's order breaks ties). */
+const RELICS_BY_RARITY = [...RELIC_LIST].sort((a, b) => RARITY_ORDER.indexOf(a.rarity) - RARITY_ORDER.indexOf(b.rarity));
+
 function relicView(r: RelicDef): HTMLElement {
   const seen = relicSeen(r.id);
   return h('article', {
     class: `relic-line${seen ? '' : ' undiscovered'}`,
-    html: `${relicArt(r.id)}<div><b>${seen ? t(`relic.${r.id}.name`) : UNKNOWN}</b>${seen ? t(`relic.${r.id}.d`, { n: r.n }) : UNKNOWN}</div>`,
+    'data-rarity': seen ? r.rarity : 'unknown',
+    html: `<i class="relic-gem"></i>${relicArt(r.id)}<div><b>${seen ? t(`relic.${r.id}.name`) : UNKNOWN}</b>${seen ? t(`relic.${r.id}.d`, { n: r.n }) : UNKNOWN}</div>`,
   });
 }
 
@@ -149,7 +153,7 @@ export function compendiumScreen(onBack: () => void): Screen {
   const actTabs = h('div', { class: 'tabs', role: 'tablist' });
   const foes = h('div', { class: 'foes' });
   const foesWrap = h('div', null, actTabs, h('div', { style: { height: '12px' } }), foes);
-  const relics = h('div', { class: 'relics' }, ...RELIC_LIST.map(relicView));
+  const relics = h('div', { class: 'relics' }, ...RELICS_BY_RARITY.map(relicView));
   const keywords = h(
     'div',
     { class: 'relics' },

@@ -482,11 +482,15 @@ export interface RelicHooks {
   onDeath?: (c: Combat) => boolean;
   /** A card of the hero's just left the belt unplayed. */
   onCardExpired?: (c: Combat, card: CombatCard) => void;
+  /** Multiplies the damage the hero's cards deal (previews included); `def` is null for damage that comes from no card. */
+  damageMult?: (c: Combat, def: CardDef | null) => number;
+  /** An enemy hit of `dmg` is about to land: return true to cancel it (the relic flags itself, the engine shows its name). */
+  cancelHit?: (c: Combat, dmg: number) => boolean;
 }
 
 export interface RelicDef {
   id: string;
-  rarity: 'common' | 'rare' | 'epic' | 'boss' | 'special';
+  rarity: Rarity;
   cls?: HeroId;
   pack?: string;
   /** The number its text shows (`{n}`). */

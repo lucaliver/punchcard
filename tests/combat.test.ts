@@ -2391,6 +2391,76 @@ describe('relics', () => {
     expect(c.hero.block).toBeGreaterThan(0);
   });
 
+  it('the Highlighter doubles the first attack of a fight only, the Rubber Stamp makes the first paid card free', () => {
+    const plain = setup({ enemy: { ...plainBoomer, block: undefined } });
+    const lit = setup({ relics: ['highlighter', 'rubberStamp'], enemy: { ...plainBoomer, block: undefined } });
+    for (const c of [plain, lit]) {
+      c.enemy.move = { id: 'wait', intent: 'defend', windup: 999 };
+      run(c, CONFIG.introTime + 0.01);
+      c.belt.length = 0;
+      c.addTempCard('punch', 'belt');
+      c.addTempCard('punch', 'belt');
+    }
+    const dealt = (c: Combat): number => {
+      const before = c.enemy.hp;
+      const mana = c.hero.mana;
+      c.playCard(c.belt[0].card.uid);
+      return before - c.enemy.hp + (mana - c.hero.mana) * 1000;
+    };
+    const base = dealt(plain);
+    const first = dealt(lit);
+    expect(first).toBeGreaterThanOrEqual((base % 1000) * 2 - 1);
+    expect(first).toBeLessThan(1000);
+    const second = dealt(lit);
+    expect(second % 1000).toBe(base % 1000);
+  });
+
+  it('the Hole Punch hurts the enemy for every card that slips off, the Name Tag opens the fight Vulnerable', () => {
+    const c = setup({ relics: ['holePunch', 'nameTag'] });
+    c.enemy.move = { id: 'wait', intent: 'defend', windup: 999 };
+    expect(c.has('enemy', 'vulnerable')).toBe(true);
+    run(c, CONFIG.introTime + 0.01);
+    const hp = c.enemy.hp;
+    run(c, 40);
+    expect(c.enemy.hp).toBeLessThan(hp);
+  });
+
+  it('the Fire Drill Bell stuns the enemy once, the first time HP falls under 30%', () => {
+    const c = setup({ relics: ['fireDrillBell'] });
+    c.enemy.move = { id: 'wait', intent: 'defend', windup: 999 };
+    run(c, CONFIG.introTime + 0.01);
+    c.loseHp(30);
+    run(c, 0.1);
+    expect(c.has('enemy', 'stun')).toBe(false);
+    c.loseHp(30);
+    run(c, 0.1);
+    expect(c.has('enemy', 'stun')).toBe(true);
+    delete c.enemy.statuses.stun;
+    c.loseHp(1);
+    run(c, 0.1);
+    expect(c.has('enemy', 'stun')).toBe(false);
+  });
+
+  it('the Out-of-Office Sign cancels the first big hit of a fight, never a small one, and only once', () => {
+    const c = setup({ relics: ['outOfOffice'], hp: 200, maxHp: 200 });
+    run(c, CONFIG.introTime + 0.01);
+    c.damage('enemy', 'hero', 5, { raw: true }, 'enemy');
+    expect(c.hero.hp).toBe(195);
+    c.damage('enemy', 'hero', 40, { raw: true }, 'enemy');
+    expect(c.hero.hp).toBe(195);
+    c.damage('enemy', 'hero', 40, { raw: true }, 'enemy');
+    expect(c.hero.hp).toBe(155);
+  });
+
+  it('the Desk Plant heals now and then', () => {
+    const c = setup({ relics: ['deskPlant'] });
+    c.enemy.move = { id: 'wait', intent: 'defend', windup: 999 };
+    run(c, CONFIG.introTime + 0.01);
+    c.loseHp(10);
+    run(c, 16);
+    expect(c.hero.hp).toBe(80 - 10 + 2);
+  });
+
   it('the Emergency Exit saves you once per run, then never again', () => {
     const flags: Record<string, number> = {};
     const c = setup({ relics: ['emergencyExit'], relicFlags: flags });
