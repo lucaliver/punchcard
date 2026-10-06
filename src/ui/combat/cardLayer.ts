@@ -383,6 +383,7 @@ export function createCardLayer(v: CombatView): CardLayer {
     }
     toggle(ce.el, 'poor', !card.hex && !pending && (!afford || !playable || !!rule));
     toggle(ce.el, 'pending', pending);
+    toggle(ce.el, 'picked', combat.picked === card.uid);
     toggle(ce.el, 'ruled', !!rule);
     const charging = !card.hex && playable && !rule && !afford;
     toggle(ce.el, 'charging', charging);

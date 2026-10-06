@@ -78,9 +78,24 @@ export function botDecide(c: Combat, rnd: () => number, opts: BotOpts): void {
     for (let i = 0; i < 5; i++) c.playCard(hexed.card.uid);
     return;
   }
+  // The sushi buffet: eat a matching pair (two taps), whatever else is going on.
+  const pieces = c.belt.filter((b) => CARDS[b.card.id].pair).sort((a, b) => b.pos - a.pos);
+  const first = pieces.find((a) => pieces.some((b) => b !== a && b.card.id === a.card.id));
+  if (first) {
+    const mate = pieces.find((b) => b !== first && b.card.id === first.card.id)!;
+    c.playCard(first.card.uid);
+    c.playCard(mate.card.uid);
+    return;
+  }
   const affordable = cards.filter(
     ({ card, pos }) =>
-      !card.hex && c.isPlayable(card) && !c.isPending(card) && c.canAfford(card) && !c.ruleBlock(card) && (pos < 0 || !c.isCovered(card.uid)),
+      !card.hex &&
+      !CARDS[card.id].pair &&
+      c.isPlayable(card) &&
+      !c.isPending(card) &&
+      c.canAfford(card) &&
+      !c.ruleBlock(card) &&
+      (pos < 0 || !c.isCovered(card.uid)),
   );
 
   const score = ({ card, pos }: { card: CombatCard; pos: number }): number => {

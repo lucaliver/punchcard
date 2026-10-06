@@ -269,7 +269,7 @@ interface CardViewOpts {
 export function cardView(card: CardLike, opts: CardViewOpts = {}): HTMLDivElement {
   const def = CARDS[card.id];
   const el = h('div', {
-    class: `card ${opts.cls ?? ''} ${card.up ? 'is-up' : ''}`,
+    class: `card ${opts.cls ?? ''} ${card.up ? 'is-up' : ''} ${def.pair ? 'pair' : ''}`,
     'data-cls': def.cls,
     'data-type': def.type,
     'data-rarity': def.rarity,

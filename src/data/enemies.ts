@@ -8,6 +8,9 @@ const ramp: Partial<MoveDef> = { status: [gainStrength] };
 /** Seconds the Factory Siren's song holds you (stunned, on autopilot). */
 const SIREN_SONG = 8;
 
+/** Seconds the belt serves sushi (the Sushi Chef's special). */
+const ALL_YOU_CAN_EAT = 10;
+
 /** What the half-HP moves bring (their texts quote these, see `data/values.ts`). */
 export const HALF = { securityBlock: 30, slavesStall: 8, complianceSlow: 20 } as const;
 
@@ -669,6 +672,21 @@ const defs: EnemyDef[] = [
     start: [{ id: 'thorns', v: 1 }],
   },
   {
+    // The all-you-can-eat buffet: for a few seconds the belt serves sushi instead of your deck. Eat matching pairs to heal; every piece that slips off hurts.
+    id: 'sushiChef',
+    act: 2,
+    tier: 'normal',
+    hp: 90,
+    art: 'sushiChef',
+    main: atk('knifeWork', 7, 6),
+    every: 2,
+    specials: [
+      { id: 'allYouCanEat', intent: 'debuff', windup: 7, status: [{ id: 'allYouCanEat', t: ALL_YOU_CAN_EAT, target: 'hero' }, gainStrength] },
+      atk('omakase', 15, 10, { intent: 'charge' }),
+    ],
+    ruleBreaker: true,
+  },
+  {
     // Her song ties your hands and the belt keeps running: for a few seconds your cards play themselves, for free, wanted or not.
     id: 'factorySiren',
     act: 3,
@@ -783,6 +801,7 @@ export const DIFFICULTY = [
   'exaggeratedGirl',
   'powerSocket',
   'overthinker',
+  'sushiChef',
   'changeManager',
   'leaver',
   'wellnessCoach',

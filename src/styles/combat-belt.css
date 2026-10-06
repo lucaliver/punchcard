@@ -367,6 +367,10 @@
 /* only the belt repeats an Echo card: from the sleeve it is spent as usual */
 .sleeve .c-wave { display: none; }
 
+/* a piece of sushi has nothing to pay: its cost badge is hidden, and the one picked waits lifted, ringed in yellow for its match */
+.card.pair .c-cost { visibility: hidden; }
+.card.picked { translate: 0 -8%; outline: 3px solid var(--y); outline-offset: 2px; }
+
 /* an Echo card, played and still there: it pulses */
 .card.echoed { animation: echo-pulse 0.2s steps(2); }
 @keyframes echo-pulse {

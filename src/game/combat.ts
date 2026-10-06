@@ -128,12 +128,16 @@ export class Combat {
   beltDead = false;
   /** Mana only comes back by tapping the button (`EnemyDef.manaTap`, `tapMana`). */
   manaTapOn = false;
+  /** The `pair` card the hero has picked, waiting for its match (`pairUp`). */
+  picked: number | null = null;
   /** Total belt travel the player has cranked by hand, in belt widths (the UI scrolls the track stripes by it). */
   beltCranked = 0;
   sleeve: (CombatCard | null)[];
 
   /** Time accumulated towards the next regular draw onto the belt. */
   private spawnClock = 0;
+  /** The pieces a `feed` status still has to deal. */
+  private feedQueue: string[] = [];
   /** Seconds the belt still stands before it turns around, and how many turns it was asked for meanwhile (two cancel out). */
   private beltHalt = 0;
   private beltTurns = 0;
@@ -503,6 +507,22 @@ export class Combat {
     this.tickBelt(dt);
     for (const id of this.relics) RELICS[id]?.hooks?.tick?.(this, dt);
     this.heroDef.hooks.tick?.(this, dt);
+  }
+
+  /** The cards a `feed` status makes the belt serve right now, if any. */
+  private feedList(): string[] | undefined {
+    for (const id of Object.keys(this.hero.statuses)) if (this.has('hero', id) && STATUSES[id].feed) return STATUSES[id].feed;
+    return undefined;
+  }
+
+  /** The next piece a `feed` status deals: two of each of two kinds at a time, shuffled, so every piece has a match. */
+  private nextFeed(list: string[]): CombatCard {
+    if (!this.feedQueue.length) {
+      const a = this.rng.pick(list);
+      const b = this.rng.pick(list.length > 1 ? list.filter((id) => id !== a) : list);
+      this.feedQueue = this.rng.shuffle([a, a, b, b]);
+    }
+    return { uid: -++this.tempUid, id: this.feedQueue.pop()!, up: false, bonus: 0, temp: true };
   }
 
   /** The mana timer's whole turns become mana (a full bar keeps none). */
@@ -904,6 +924,9 @@ export class Combat {
     // A tall card rides the top row and hangs over the one below.
     if (card && CARDS[card.id].tall) row = 0;
     let c = card;
+    const feed = c ? undefined : this.feedList();
+    if (feed) c = this.nextFeed(feed);
+    else if (!c) this.feedQueue = [];
     if (!c) {
       if (!this.draw.length) {
         if (!this.discard.length) return false;
@@ -939,6 +962,11 @@ export class Combat {
       for (const [id, s] of Object.entries(this.fighter(side).statuses)) if (this.has(side, id)) STATUSES[id].onExpire?.(this, side, s);
     }
     if (caught && this.sleeveIndex(card.uid) >= 0) return;
+    // A piece of sushi that slipped off is gone, not shuffled back into the deck.
+    if (def.pair) {
+      if (this.picked === card.uid) this.picked = null;
+      return;
+    }
     delete card.disc;
     if (caught) this.events.emit({ type: 'cardExpired', card });
     if (this.keywords(card).includes('fleeting')) this.exhaust.push(card);
@@ -947,7 +975,7 @@ export class Combat {
 
   /** Whether the hero's passive catches this card as it falls (everything but a curse). */
   private catchesFalls(card: CombatCard): boolean {
-    return !!this.heroDef.catchesFalls && !isCurse(card);
+    return !!this.heroDef.catchesFalls && !isCurse(card) && !CARDS[card.id].pair;
   }
 
   /** The mana a card falling into a full sleeve takes off every card in it: the passive's, and what powers add (`StatusDef.catchBonus`). */
@@ -986,6 +1014,7 @@ export class Combat {
       this.tapHex(card);
       return false;
     }
+    if (CARDS[card.id].pair) return how !== 'auto' && beltIdx >= 0 && this.pairUp(card);
     if (!this.isPlayable(card)) {
       this.events.emit({ type: 'text', target: 'hero', key: 'combat.unplayable', tone: 'neutral' });
       return false;
@@ -1005,6 +1034,21 @@ export class Combat {
     }
     if (how === 'drag' && CARDS[card.id].type === 'attack' && this.dragCrits()) this.applyStatus('hero', 'crit', 1);
     this.resolvePlay(card, free);
+    return true;
+  }
+
+  /** A tap on a `pair` card: it is picked; a tap on a second one with the same id eats both (true), any other tap moves the pick. */
+  private pairUp(card: CombatCard): boolean {
+    const mate = this.picked === null ? undefined : this.belt.find((b) => b.card.uid === this.picked && b.card.uid !== card.uid)?.card;
+    if (!mate || mate.id !== card.id) {
+      this.picked = this.picked === card.uid ? null : card.uid;
+      this.events.emit({ type: 'cardPicked', card });
+      return false;
+    }
+    this.picked = null;
+    this.belt = this.belt.filter((b) => b.card.uid !== card.uid && b.card.uid !== mate.uid);
+    this.events.emit({ type: 'cardsPaired', a: mate, b: card });
+    this.heal('hero', this.cardVals(card)[0] * 2);
     return true;
   }
 
@@ -1109,7 +1153,7 @@ export class Combat {
     if (target < 0 || target >= this.sleeve.length) return false;
     const b = this.belt[beltIdx];
     // A hexed card is stuck to the belt until freed; a covered one can't be reached; a pending one waits its turn.
-    if (b.card.hex || this.isCovered(uid) || this.isPending(b.card)) return false;
+    if (b.card.hex || this.isCovered(uid) || this.isPending(b.card) || CARDS[b.card.id].pair) return false;
     const old = this.sleeve[target];
     // A bulky card can't be swapped out of the sleeve: it has to be played.
     if (old && this.keywords(old).includes('bulky')) return false;

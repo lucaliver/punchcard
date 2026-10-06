@@ -1215,6 +1215,33 @@ ${eyes(82, 118, 160, 6, '#ffd900', 'wf-g')}
 <path d="M84 176c10-8 22-8 32 0" fill="none" stroke="#120e18" stroke-width="5" stroke-linecap="round"/>
 <g fill="none" stroke="#120e18" stroke-width="3" stroke-linecap="round"><path d="M30 92l-8-6M170 92l8-6M84 52l-6-8M116 52l6-8"/></g>`;
 
+/** The Sushi Chef: a stern chef in a white jacket and a red rising-sun headband, a long knife in one hand and a tray of nigiri in the other, a fish on the board at his feet. */
+const sushiChef = `
+<defs>${rg('sc-w', '#ffffff', '#c8d0e0')}${rg('sc-f', '#ffd0a0', '#c88050')}${rg('sc-b', '#6a9af8', '#1c3a98')}</defs>
+${shadow}
+<!-- the board and the fish -->
+<rect x="14" y="170" width="172" height="16" rx="4" fill="#c88a4a" ${OUT}/><path d="M24 176h150" stroke="#8a5a2a" stroke-width="3"/>
+<path d="M126 170c8-12 24-14 38-8l12-8v22l-12-6c-14 6-30 4-38 0z" fill="#ff8a5a" ${OUT}/><circle cx="134" cy="166" r="2.5" fill="#120e18"/>
+<!-- legs and apron -->
+<path d="M72 150h22v24H72zM106 150h22v24h-22z" fill="#2a2a3a" ${OUT}/>
+<ellipse cx="100" cy="124" rx="46" ry="42" fill="url(#sc-w)" ${OUT}/>
+<path d="M74 112h52l4 52H70z" fill="url(#sc-b)" ${OUT}/><path d="M88 112v-12M112 112v-12" stroke="#120e18" stroke-width="3"/>
+<path d="M80 126h40v22H80z" fill="#1c3a98" ${OUT}/><path d="M92 106l8 14 8-14" fill="#f6f0e4" ${OUT}/>
+<!-- left arm with the tray of nigiri -->
+<path d="M62 112c-14 6-20 16-16 28l14-2z" fill="url(#sc-w)" ${OUT}/><circle cx="48" cy="142" r="8" fill="url(#sc-f)" ${OUT}/>
+<g class="limb"><rect x="14" y="138" width="56" height="8" rx="3" fill="#c88a4a" ${OUT}/><g ${OUT}><rect x="20" y="126" width="18" height="12" rx="5" fill="#f6f0e4"/><path d="M18 126c4-8 22-8 24 0z" fill="#ff8a5a"/><rect x="44" y="126" width="18" height="12" rx="5" fill="#f6f0e4"/><path d="M42 126c4-8 22-8 24 0z" fill="#ffd900"/></g></g>
+<!-- right arm with the knife -->
+<path d="M138 112c14 4 22 12 20 24l-14 0z" fill="url(#sc-w)" ${OUT}/>
+<g class="limb"><path d="M154 132L180 40l8 3-18 94z" fill="#d8e0ec" ${OUT}/><path d="M154 132l16 6-2 8-16-6z" fill="#120e18"/><circle cx="154" cy="136" r="8" fill="url(#sc-f)" ${OUT}/></g>
+<!-- head -->
+<ellipse cx="100" cy="64" rx="38" ry="40" fill="url(#sc-f)" ${OUT}/>
+<path d="M62 54c4-22 20-30 38-30s34 8 38 30z" fill="#fbf4ec" ${OUT}/><path d="M62 52h76v14H62z" fill="#ff2a2a" ${OUT}/><circle cx="100" cy="59" r="8" fill="#fbf4ec" ${OUT}/>
+<path d="M138 56l22 6-4 8-22-6z" fill="#ff2a2a" ${OUT}/>
+<path d="M72 78l18 6M128 78l-18 6" stroke="#120e18" stroke-width="5" stroke-linecap="round"/>
+<g ${OUT}><circle cx="84" cy="88" r="9" fill="#f6f0e4"/><circle cx="116" cy="88" r="9" fill="#f6f0e4"/></g><g class="eye" fill="#120e18"><circle cx="86" cy="89" r="4"/><circle cx="114" cy="89" r="4"/></g>
+<path d="M84 108c10-6 22-6 32 0" stroke="#120e18" stroke-width="5" fill="none" stroke-linecap="round"/>
+<path d="M92 114c2 4 14 4 16 0" stroke="#120e18" stroke-width="3" fill="none" stroke-linecap="round"/>`;
+
 /** The Factory Siren: a mermaid with an alarm beacon for a crown and loudspeaker horns for ears, singing the end-of-shift song through a megaphone. */
 const factorySiren = `
 <defs>${rg('fs-b', '#5ad0e0', '#1c5fd0')}${glow('fs-g', '#ff3b3b')}</defs>
@@ -1401,6 +1428,7 @@ export const CREATURES: Record<string, string> = {
   microwave,
   witheredFicus,
   factorySiren,
+  sushiChef,
   graveyardIntern,
   rateLimiter,
   lineLead,

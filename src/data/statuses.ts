@@ -118,6 +118,8 @@ const defs: StatusDef[] = [
   // Work-Life Balance: every attack gives Block too. Life-Work Balance: every defence card deals damage too.
   crossOver('workLifeBalance', 'attack', 'teal', (c, v) => c.gainBlock('hero', v)),
   crossOver('lifeWorkBalance', 'defense', 'red', (c, v) => void c.hit(v)),
+  // All You Can Eat (the Sushi Chef): the belt serves sushi instead of your deck for a while (`StatusDef.feed`).
+  { id: 'allYouCanEat', tone: 'red', kind: 'timed', good: false, icon: 'sushiPlate', feed: ['sushiSalmon', 'sushiMaki', 'sushiEgg', 'sushiShrimp'] },
   // Autopilot (Severance): cards slipping off the belt play themselves when they can.
   { id: 'autopilot', tone: 'blue', kind: 'timed', good: true, icon: 'autopilot', autoplay: true },
   // Flow State: Multitasking doesn't run out. Hustle Culture: a Multitasking charge every second.

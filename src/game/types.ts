@@ -166,6 +166,8 @@ export interface CardDef {
   /** Ids of the cards it adds to your piles when played: its detail lists them as related cards, each one a tap away. */
   makes?: string[];
   play?: (c: Combat, v: number[], card: CombatCard) => void;
+  /** A piece of the sushi game (`StatusDef.feed`): a tap picks it, a tap on a second one with the same id eats both (`Combat.pairUp`: each heals `vals[0]`); it can't be stashed or caught, and is gone for good once it leaves the belt. */
+  pair?: true;
   /** Triggered when the card leaves the belt without being played. */
   onExpire?: (c: Combat, v: number[], card: CombatCard) => void;
 }
@@ -271,6 +273,8 @@ export interface StatusDef {
   burst?: { kind: string; n: number };
   /** A class its sprite wears while the enemy carries the status (the look is in `combat-stage.css`). */
   look?: string;
+  /** On the hero: while it lasts the belt serves these cards (ids, dealt in matching pairs: `CardDef.pair`) instead of the deck. The pieces still riding when it ends stay on the belt. */
+  feed?: string[];
   /** On the enemy: how close the status is to going off, 0 to 1 (the belt reddens as it nears 1). */
   warning?: (c: Combat, s: StatusVal) => number;
   /** On the enemy: whether the belt's red wash blinks now (the last moments before it goes off). */
@@ -528,6 +532,10 @@ export type CombatEvent =
   | { type: 'cardEchoed'; card: CombatCard }
   | { type: 'cardExpired'; card: CombatCard }
   | { type: 'cardStashed'; card: CombatCard; slot: number }
+  /** A `pair` card was picked, or put down again. */
+  | { type: 'cardPicked'; card: CombatCard }
+  /** Two matching `pair` cards were eaten. */
+  | { type: 'cardsPaired'; a: CombatCard; b: CombatCard }
   /** The sleeve grew a slot for the rest of the fight. */
   | { type: 'sleeveGrew' }
   /** Cards in the sleeve got cheaper (a full sleeve caught a falling card, a card cut their cost). */

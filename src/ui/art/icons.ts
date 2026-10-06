@@ -446,6 +446,27 @@ export const ICONS: Record<string, { el: Element; svg: string }> = {
     el: 'necro',
     svg: `<rect x="2" y="40" width="16" height="14"/><rect x="21" y="40" width="30" height="14"/><rect x="52" y="40" width="10" height="14"/><rect x="56" y="44" width="4" height="4" fill="#16121f"/><g ${S} stroke-width="5"><path d="M42 36l-6-7 6-7-6-7M56 36l-6-7 6-7-6-7"/></g>`,
   },
+  // ---- the Sushi Chef's belt (`allYouCanEat`)
+  sushiSalmon: {
+    el: 'fire',
+    svg: `<rect x="6" y="36" width="52" height="20" rx="10" stroke="#16121f" stroke-width="3" stroke-linejoin="round"/><path d="M6 38C8 18 24 12 34 14c14 2 24 10 24 24z" stroke="#16121f" stroke-width="3" stroke-linejoin="round"/><path fill="none" stroke="#16121f" stroke-width="3" stroke-linecap="round" d="M18 34c4-8 8-11 13-12M32 36c4-8 8-11 14-12"/>`,
+  },
+  sushiPlate: {
+    el: 'fire',
+    svg: `<ellipse cx="32" cy="40" rx="30" ry="15" stroke="#16121f" stroke-width="3" stroke-linejoin="round"/><ellipse cx="32" cy="40" rx="21" ry="9" fill="#16121f"/><rect x="16" y="24" width="32" height="16" rx="8" stroke="#16121f" stroke-width="3" stroke-linejoin="round"/><path d="M16 30C18 20 28 17 34 18c8 1 14 5 14 12z" stroke="#16121f" stroke-width="3" stroke-linejoin="round"/>`,
+  },
+  sushiMaki: {
+    el: 'nature',
+    svg: `<circle cx="32" cy="32" r="28"/><circle cx="32" cy="32" r="22" fill="#16121f"/><circle cx="32" cy="32" r="17"/><circle cx="32" cy="32" r="10" fill="#16121f"/><circle cx="32" cy="32" r="6"/>`,
+  },
+  sushiEgg: {
+    el: 'holy',
+    svg: `<rect x="6" y="36" width="52" height="20" rx="10" stroke="#16121f" stroke-width="3" stroke-linejoin="round"/><rect x="10" y="18" width="44" height="22" rx="4" stroke="#16121f" stroke-width="3" stroke-linejoin="round"/><rect x="26" y="14" width="12" height="44" fill="#16121f"/><path d="M14 26h8M42 26h8M14 32h8M42 32h8" stroke="#16121f" stroke-width="2.5"/>`,
+  },
+  sushiShrimp: {
+    el: 'blood',
+    svg: `<rect x="6" y="40" width="52" height="16" rx="8" stroke="#16121f" stroke-width="3" stroke-linejoin="round"/><path d="M6 42c0-20 14-28 28-26 14 2 24 10 24 26z" stroke="#16121f" stroke-width="3" stroke-linejoin="round"/><path fill="none" stroke="#16121f" stroke-width="3" d="M18 40c0-8 4-14 10-17M30 40c0-8 4-14 12-16M42 40c0-6 2-10 7-12"/>`,
+  },
   // Boris, a little fish
   fish: {
     el: 'necro',
