@@ -5,13 +5,13 @@ import { CARD_LIST, CARDS, RARITY_ORDER, cardCostOf, cardKeywordsOf, rewardPool 
 import { PERKS } from '../data/perks';
 import { RELIC_LIST, RELICS, relicSum } from '../data/relics';
 import { ACT_DEFS, actDef } from '../data/acts';
-import { CONFIG, type RewardKind, rewardGuarantee, rewardOdds, rewardUpgradeChance } from '../data/config';
+import { CONFIG, type RewardKind, relicGuarantee, relicOdds, rewardGuarantee, rewardOdds, rewardUpgradeChance } from '../data/config';
 import { MODIFIERS, resolveMods } from '../data/modifiers';
 import { ENEMIES, enemiesFor } from '../data/enemies';
 import { HERO_LIST, HEROES, starterCards } from '../data/heroes';
 import type { Combat, CombatSetup } from './combat';
 import { discover, heroHidden, logRun, progress, type RunRecord, recordFight, recordRun, seeRelics, stampAct } from './meta';
-import type { CardDef, CardInst, EnemyDef, HeroId, RunLog } from './types';
+import type { CardDef, CardInst, EnemyDef, HeroId, RelicDef, RunLog } from './types';
 
 export const NODE_TYPES = ['fight', 'elite', 'rest', 'promotion', 'copy', 'tailor', 'lostFound', 'vending', 'crossTraining', 'boss'] as const;
 export type NodeType = (typeof NODE_TYPES)[number];
@@ -519,16 +519,32 @@ export function gainRelic(run: RunState, id: string): void {
   run.cleared = true;
 }
 
-/** The relics the Lost & Found offers: random ones the run doesn't hold yet. */
+/**
+ * The relics the Lost & Found offers: ones the run doesn't hold yet, each dealt from the act's rarity odds. The first is at least
+ * the act's guaranteed rarity, and no two share a rarity while the pool allows it.
+ */
 export function rollRelics(run: RunState): string[] {
   const rng = rngOf(run);
-  const picks = rng
-    .shuffle(RELIC_LIST.filter((r) => r.rarity !== 'special' && !hasRelic(run, r.id)))
-    .slice(0, CONFIG.lostFoundChoices)
-    .map((r) => r.id);
+  const act = currentNode(run).act;
+  const floor = RARITY_ORDER.indexOf(relicGuarantee(act));
+  let left = RELIC_LIST.filter((r) => r.rarity !== 'special' && !hasRelic(run, r.id));
+  const picks: RelicDef[] = [];
+  while (picks.length < CONFIG.lostFoundChoices && left.length) {
+    const fresh = (r: RelicDef): boolean => !picks.some((p) => p.rarity === r.rarity);
+    const high = (r: RelicDef): boolean => RARITY_ORDER.indexOf(r.rarity) >= floor;
+    // Each rule gives way when it would leave nothing to pick from.
+    const rules = picks.length ? [fresh] : [high];
+    const pool = rules.reduce((from, rule) => (from.some(rule) ? from.filter(rule) : from), left);
+    const odds = relicOdds(act).filter(([rarity]) => pool.some((r) => r.rarity === rarity));
+    const rarity = odds.length ? rng.weighted(odds, ([, w]) => w)[0] : undefined;
+    const choice = rng.pick(rarity ? pool.filter((r) => r.rarity === rarity) : pool);
+    picks.push(choice);
+    left = left.filter((r) => r !== choice);
+  }
   run.rng = rng.state;
-  seeRelics(picks);
-  return picks;
+  const ids = picks.sort((a, b) => RARITY_ORDER.indexOf(a.rarity) - RARITY_ORDER.indexOf(b.rarity)).map((r) => r.id);
+  seeRelics(ids);
+  return ids;
 }
 
 /** Vending Machine: what a snack costs in HP, by the rarity of the card that drops. */

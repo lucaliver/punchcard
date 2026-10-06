@@ -181,6 +181,34 @@ const REWARD_GUARANTEE: Record<RewardKind, { rarity: Rarity; count: number }[]> 
   boss: [{ rarity: 'legendary', count: 0 }],
 };
 
+/** Rarity odds (weights) of each stationery in the Lost & Found box, one entry per act (later acts use the last). */
+const RELIC_ODDS: [Rarity, number][][] = [
+  [
+    ['common', 50],
+    ['rare', 40],
+    ['epic', 10],
+  ],
+  [
+    ['common', 35],
+    ['rare', 45],
+    ['epic', 18],
+    ['legendary', 2],
+  ],
+  [
+    ['common', 15],
+    ['rare', 40],
+    ['epic', 37],
+    ['legendary', 8],
+  ],
+];
+
+export const relicOdds = (act: number): [Rarity, number][] => RELIC_ODDS[Math.min(act, RELIC_ODDS.length) - 1];
+
+/** The rarity the Lost & Found box always holds at least one stationery of (or above), per act (later acts use the last). */
+const RELIC_GUARANTEE: Rarity[] = ['rare', 'rare', 'epic'];
+
+export const relicGuarantee = (act: number): Rarity => RELIC_GUARANTEE[Math.min(act, RELIC_GUARANTEE.length) - 1];
+
 export const rewardGuarantee = (kind: RewardKind, act: number): { rarity: Rarity; count: number } =>
   REWARD_GUARANTEE[kind][Math.min(act, REWARD_GUARANTEE[kind].length) - 1];
 

@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
 import { Combat, type CombatSetup } from '../src/game/combat';
-import { ANCHOR_POS, CONFIG, EXPIRE_POS, rewardUpgradeChance } from '../src/data/config';
+import { ANCHOR_POS, CONFIG, EXPIRE_POS, relicGuarantee, rewardUpgradeChance } from '../src/data/config';
 import { ENEMIES, enemiesFor } from '../src/data/enemies';
 import { HEROES, VIRULENCE_START } from '../src/data/heroes';
 import { BOARD_CUT_TIME, COFFEE_EVERY, FLICKER_EVERY, FORKLIFT_BLOCK, LUNCH_EVERY, SMILE_HEAL, STATUSES, TABS_EVERY } from '../src/data/statuses';
@@ -2297,6 +2297,20 @@ describe('the Copy Room', () => {
     expect(offer).toHaveLength(CONFIG.lostFoundChoices);
     expect(offer).not.toContain('thermos');
     expect(offer).not.toContain('cargoPants');
+  });
+
+  it('the Lost & Found box holds a different rarity each, and never less than the act guarantees', () => {
+    const rank = (id: string): number => RARITY_ORDER.indexOf(RELICS[id].rarity);
+    for (const act of [1, 2, 3]) {
+      for (let seed = 1; seed <= 40; seed++) {
+        const r = newRun('warrior', seed);
+        currentNode(r).act = act;
+        const offer = rollRelics(r);
+        expect(new Set(offer.map((id) => RELICS[id].rarity)).size, `act ${act} seed ${seed}`).toBe(offer.length);
+        expect(Math.max(...offer.map(rank)), `act ${act} seed ${seed}`).toBeGreaterThanOrEqual(RARITY_ORDER.indexOf(relicGuarantee(act)));
+        expect(offer.map(rank)).toEqual([...offer.map(rank)].sort((a, b) => a - b));
+      }
+    }
   });
 });
 
