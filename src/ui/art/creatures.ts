@@ -278,28 +278,42 @@ ${shadow}
 <!-- Zs -->
 <g class="eye" fill="#f6f0e4" ${OUT}><path d="M126 42h16v5l-10 11h10v5h-16v-5l10-11h-10z"/><path d="M150 14h22v6l-14 15h14v6h-22v-6l14-15h-14z"/></g>`;
 
-/** New Hire: an eager young gorgon on day one, snakes for hair, a coffee tray for everyone, a huge trainee badge, and a stare that turns your cards to stone. */
+/** New Hire: a fresh graduate in a gown and a crooked mortarboard, grinning like it is the best day of his life, one CV hugged to his chest and another one screwed into a ball he is about to throw at your cards. */
 const newHire = `
-<defs>${lg('nh-s', '#8ad06a', '#2a7a3a')}${lg('nh-sh', '#f8f2e2', '#d8d0c0')}${glow('nh-g', '#ffd900')}</defs>
 ${shadow}
-<path d="M50 188c2-46 20-74 50-74s48 28 50 74z" fill="url(#nh-sh)" ${OUT}/>
-<path d="M98 118h8l2 6-8 30-6-4z" fill="#1c5fd0" ${OUT}/>
-<path d="M84 116l14 36 16-36" stroke="#ff3d9a" stroke-width="4" fill="none"/>
-<rect x="84" y="150" width="30" height="34" fill="#ffd900" ${OUT}/><rect x="89" y="155" width="20" height="12" fill="#1b1830"/><path d="M89 174h20" stroke="#1b1830" stroke-width="3"/>
-<!-- coffee tray for the whole office -->
-<rect x="116" y="140" width="66" height="9" fill="#6a4a2a" ${OUT}/>
-<path d="M121 120h13v20h-13zM139 120h13v20h-13zM157 120h13v20h-13z" fill="#f6f0e4" ${OUT}/><path d="M120 118h15v5h-15zM138 118h15v5h-15zM156 118h15v5h-15z" fill="#ff3d9a"/>
-<path d="M144 150c-8 8-22 10-34 4l2-10c8 2 18 0 24-4z" fill="url(#nh-sh)" ${OUT}/><circle cx="150" cy="148" r="7" fill="url(#nh-s)" ${OUT}/>
-<!-- left hand waving hello -->
-<g class="limb"><path d="M54 146c-12-10-16-28-10-42l12 2c-4 12-2 24 6 32z" fill="url(#nh-sh)" ${OUT}/><circle cx="48" cy="98" r="10" fill="url(#nh-s)" ${OUT}/></g>
-<!-- snakes for hair -->
-<g fill="none" stroke-linecap="round"><path d="M74 44c-14-6-24 2-24 12M86 30c-6-14-20-16-28-8M100 26c0-16 10-24 22-18M114 30c8-12 22-12 28-2M126 46c14-4 22 6 20 16" stroke="#1b1830" stroke-width="12"/>
-<path d="M74 44c-14-6-24 2-24 12M86 30c-6-14-20-16-28-8M100 26c0-16 10-24 22-18M114 30c8-12 22-12 28-2M126 46c14-4 22 6 20 16" stroke="#3aa05a" stroke-width="7"/></g>
-<g fill="#3aa05a" ${OUT}><circle cx="50" cy="58" r="6"/><circle cx="58" cy="22" r="6"/><circle cx="122" cy="8" r="6"/><circle cx="142" cy="28" r="6"/><circle cx="146" cy="62" r="6"/></g>
-<path d="M44 62l-4 4M54 18l-4-4M128 4l4-4M148 26l4-2M152 64l4 2" stroke="#ff3d9a" stroke-width="2.5"/>
-<path d="M68 64c0-24 14-40 32-40s32 16 32 40c0 20-14 36-32 36S68 84 68 64z" fill="url(#nh-s)" ${OUT}/>
-${eyes(86, 114, 62, 6, '#ffd900', 'nh-g')}
-<path d="M82 80c10 9 26 9 36 0z" fill="#f6f0e4" stroke="#1b1830" stroke-width="3.5"/>`;
+<!-- paper balls at his feet: rejected drafts -->
+<g fill="#f6f0e4" ${OUT}><path d="M38 182l6-8 10 0 6 8-4 8H42z"/><path d="M142 184l5-9 11 1 5 8-5 8h-13z"/></g>
+<path d="M44 176l4 6M54 176l-4 8M148 177l4 6M158 177l-5 8" stroke="#8a8478" stroke-width="2"/>
+<!-- diploma tube behind the arm -->
+<g transform="rotate(14 46 148)"><rect x="38" y="112" width="16" height="64" rx="3" fill="#f6f0e4" ${OUT}/><rect x="38" y="138" width="16" height="9" fill="#ff3d9a" ${OUT}/></g>
+<!-- gown -->
+<path d="M52 188c0-44 12-80 48-80s48 36 48 80z" fill="#1b2a70" ${OUT}/>
+<path d="M100 108v80" stroke="#120e18" stroke-width="3"/>
+<path d="M84 108l16 24 16-24" fill="#f6f0e4" ${OUT}/>
+<path d="M100 120l-6 10 6 40 6-40z" fill="#ffd900" ${OUT}/>
+<path d="M60 150h18M122 150h18" stroke="#3a4ab0" stroke-width="3"/>
+<!-- left arm: the CV hugged to the chest -->
+<g transform="rotate(-6 78 146)"><rect x="60" y="124" width="36" height="44" fill="#f6f0e4" ${OUT}/><rect x="65" y="129" width="11" height="11" fill="#ff3d9a" ${OUT}/><path d="M80 131h12M80 137h10M65 147h26M65 153h26M65 159h16" stroke="#1c5fd0" stroke-width="3"/></g>
+<path d="M62 118c-8 8-8 22-2 34l12-2c-4-8-4-16 2-22z" fill="#1b2a70" ${OUT}/><circle cx="76" cy="160" r="8" fill="#ffd8b8" ${OUT}/>
+<!-- right arm up, the crumpled CV ready to fly -->
+<g class="limb"><path d="M136 116c14 0 24-10 28-26l-12-4c-2 10-8 16-18 16z" fill="#1b2a70" ${OUT}/>
+<circle cx="160" cy="80" r="8" fill="#ffd8b8" ${OUT}/>
+<path d="M148 62l8-12 12-2 12 8 4 12-6 12-14 4-12-6z" fill="#f6f0e4" ${OUT}/><path d="M156 52l8 14-6 12M168 48l-4 18 14 4M150 68l14-2" stroke="#8a8478" stroke-width="2.5" fill="none"/>
+<path d="M174 46l8-6M180 58l10-2M146 50l-6-6" stroke="#ffd900" stroke-width="3" stroke-linecap="round"/></g>
+<!-- head -->
+<path d="M70 62c0-22 12-34 30-34s30 12 30 34c0 20-12 34-30 34S70 82 70 62z" fill="#ffd8b8" ${OUT}/>
+<ellipse cx="70" cy="66" rx="5" ry="8" fill="#ffd8b8" ${OUT}/><ellipse cx="130" cy="66" rx="5" ry="8" fill="#ffd8b8" ${OUT}/>
+<!-- messy hair and the mortarboard, crooked -->
+<path d="M72 44c0-12 12-20 28-20s28 8 28 20c-10-8-18-8-28-8s-18 0-28 8z" fill="#6a3a1a" ${OUT}/>
+<path d="M46 30l58-18 58 14-58 20z" fill="#1b1830" ${OUT}/><path d="M104 12l58 14" stroke="#3a3560" stroke-width="3"/>
+<circle cx="104" cy="28" r="4" fill="#ffd900" ${OUT}/><path d="M104 28L56 32l-2 26" stroke="#ffd900" stroke-width="3" fill="none"/><rect x="50" y="56" width="8" height="12" fill="#ffd900" ${OUT}/>
+<!-- round glasses, shining eager eyes -->
+<g ${OUT}><circle cx="86" cy="66" r="11" fill="#f6f0e4"/><circle cx="114" cy="66" r="11" fill="#f6f0e4"/></g><path d="M97 66h6" stroke="#120e18" stroke-width="3"/>
+<g class="eye"><circle cx="88" cy="66" r="6" fill="#120e18"/><circle cx="112" cy="66" r="6" fill="#120e18"/><circle cx="90" cy="63" r="2.5" fill="#fff"/><circle cx="114" cy="63" r="2.5" fill="#fff"/></g>
+<!-- huge hopeful grin and a drop of sweat -->
+<path d="M82 80c6 14 30 14 36 0z" fill="#120e18" ${OUT}/><path d="M86 81h28v4H86z" fill="#f6f0e4"/>
+<g fill="#ff3d9a" opacity=".5"><circle cx="76" cy="80" r="5"/><circle cx="124" cy="80" r="5"/></g>
+<path d="M134 44c4 6 5 10 0 12-5-2-4-6 0-12z" fill="#9ab8f0" ${OUT}/>`;
 
 /** The Boss's Son: a pampered prep-school boy in a navy blazer and bow tie, cashmere sweater knotted over his shoulders, a gold watch and a phone to CC Dad on, nose in the air. */
 const bossSon = `
