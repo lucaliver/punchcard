@@ -19,9 +19,8 @@ test('Settings switch the language to Italian, it survives a reload and a fight 
 });
 
 test('the first launch asks for the language before the contract, and the choice sticks', async ({ page }) => {
+  // A new browser context starts with empty storage: this is a first launch.
   await page.goto('/');
-  await page.evaluate(() => localStorage.clear());
-  await page.reload();
   await expect(page.locator('.language-btn')).toHaveCount(4);
   await page.getByRole('button', { name: 'Español' }).click();
   await expect(page.locator('.contract')).toBeVisible();
