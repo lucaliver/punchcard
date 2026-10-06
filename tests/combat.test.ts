@@ -1754,7 +1754,7 @@ describe('run maps', () => {
   });
 
   it('never offer two choices of the same kind of room', () => {
-    for (const nodes of [...maps, newRun('warrior', 1, [1]).nodes])
+    for (const nodes of [...maps, newRun('warrior', 1, [1, 2, 3]).nodes])
       for (const n of nodes.filter((m) => m.next.length > 1)) {
         const types = n.next.map((id) => nodes[id].type);
         expect(new Set(types).size).toBe(types.length);
@@ -1824,6 +1824,32 @@ describe('act 2, the first time it is met', () => {
     walk(0, [0]);
     // The Tailor comes once in the whole run.
     expect(all.filter((n) => n.type === 'tailor').length).toBeLessThanOrEqual(1);
+  });
+});
+
+describe('scripted acts', () => {
+  const all = newRun('warrior', 5, [1, 2, 3]).nodes;
+
+  it('are the same whatever the seed, and every room of them can be reached and every walk ends on the final boss', () => {
+    const sketch = (list: typeof all): string[] => list.map((n) => `${n.act}:${n.floor}:${n.lane}:${n.type}:${n.enemy ?? ''}:${n.next}`);
+    expect(sketch(newRun('mage', 999, [1, 2, 3]).nodes)).toEqual(sketch(all));
+    const seen = new Set<number>();
+    const walk = (id: number, path: number[]): void => {
+      seen.add(id);
+      const options = all[id].next.filter((n) => !path.includes(n));
+      if (!options.length) expect(all[id], `#${id}`).toMatchObject({ type: 'boss', act: ACTS });
+      for (const n of options) walk(n, [...path, n]);
+    };
+    walk(0, [0]);
+    expect(seen.size).toBe(all.length);
+  });
+
+  it('give every fight, elite and boss an enemy of its own act and tier, and the other rooms none', () => {
+    const tier = { fight: 'normal', elite: 'elite', boss: 'boss' } as const;
+    for (const n of all) {
+      if (n.type in tier) expect(ENEMIES[n.enemy!], `#${n.id}`).toMatchObject({ act: n.act, tier: tier[n.type as keyof typeof tier] });
+      else expect(n.enemy).toBeUndefined();
+    }
   });
 });
 
@@ -2272,11 +2298,12 @@ describe('the Copy Room', () => {
     expect(r.maxHp).toBe(hp + 2 * CONFIG.skipMaxHp + CONFIG.skipMaxHpStep);
   });
 
-  it('opens on two fights, a Lost and Found, then the third scripted enemy', () => {
-    const road = newRun('warrior', 1, [1]).nodes.slice(0, 4);
-    expect(road.map((n) => n.type)).toEqual(['fight', 'fight', 'lostFound', 'fight']);
-    expect(road.map((n) => n.enemy)).toEqual(['hrOrientationVideo', 'snitch', undefined, 'newHire']);
-    expect(road.map((n) => n.lane)).toEqual([0.5, 0.5, 0.5, 0.5]);
+  it('opens on two fights and a Lost and Found, then splits in two lanes', () => {
+    const road = newRun('warrior', 1, [1]).nodes.slice(0, 3);
+    expect(road.map((n) => n.type)).toEqual(['fight', 'fight', 'lostFound']);
+    expect(road.map((n) => n.enemy)).toEqual(['hrOrientationVideo', 'snitch', undefined]);
+    expect(road.map((n) => n.lane)).toEqual([0.5, 0.5, 0.5]);
+    expect(road[2].next.map((id) => newRun('warrior', 1, [1]).nodes[id].lane)).toEqual([0, 1]);
   });
 
   it('the Vending Machine drops a card of the rarity paid for, and never takes the last HP', () => {

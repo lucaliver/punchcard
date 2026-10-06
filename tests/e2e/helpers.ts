@@ -30,7 +30,7 @@ export async function freshGame(
             fresh: [],
             runs: veteran || stamps.length ? 1 : 0,
             stamps,
-            actsReached: veteran || stamps.length ? [1, 2] : [],
+            actsReached: veteran || stamps.length ? [1, 2, 3] : [],
           }),
         );
     },

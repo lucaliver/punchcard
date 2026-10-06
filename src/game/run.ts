@@ -98,42 +98,84 @@ export const ACTS = ACT_DEFS.length;
 /** Seed of the very first run: its map is always the same, with the enemies in order of difficulty. */
 export const FIRST_RUN_SEED = 1;
 /** Acts whose rooms are fixed the first time a player meets them (see `ACT_SCRIPTS`). */
-export const SCRIPTED_ACTS = [1, 2];
+export const SCRIPTED_ACTS = [1, 2, 3];
 
-/** An act laid out by hand: the shared road (one room per floor), the normal enemies by floor (both lanes of a floor meet the same one), and the two lanes after the road. */
-interface ActScript {
-  road: NodeType[];
-  enemies: Record<number, string>;
-  lanes: NodeType[][];
-  /** The enemy of the road's first floor, if it is not one of `enemies`. */
-  opener?: string;
+/** A room of an act laid out by hand: its floor and column, what it holds and the rooms it leads to (indexes in the act's list). */
+interface ScriptNode {
+  floor: number;
+  lane: 0 | 0.5 | 1;
+  type: NodeType;
+  /** The enemy of a fight, an elite or a boss. */
+  enemy?: string;
+  next: number[];
 }
 
-const ACT_SCRIPTS: Record<number, ActScript> = {
-  // Act 1, the very first run: two fights, a gift (so the map isn't only jobs), then the third fight; a rest on each side, never two in a row.
-  1: {
-    road: ['fight', 'fight', 'lostFound', 'fight'],
-    opener: 'hrOrientationVideo',
-    enemies: { 2: 'snitch', 4: 'newHire', 5: 'workWife', 6: 'teamLeader', 7: 'goblinConsultant', 8: 'seniorBoomer', 9: 'hrBitch' },
-    lanes: [
-      ['fight', 'rest', 'elite', 'fight', 'fight', 'rest'],
-      ['rest', 'fight', 'fight', 'promotion', 'fight', 'rest'],
-    ],
-  },
-  // Act 2, the first time it is reached: a rule-breaker opens it, the other fights climb in difficulty, every room kind shows once, and the Tailor is on offer.
-  2: {
-    road: ['fight'],
-    opener: 'exaggeratedGirl',
-    enemies: { 2: 'happinessOfficer', 3: 'dave', 5: 'overthinker', 8: 'beanCounter' },
-    lanes: [
-      ['fight', 'copy', 'rest', 'fight', 'elite', 'tailor', 'fight', 'rest'],
-      ['promotion', 'fight', 'vending', 'fight', 'rest', 'crossTraining', 'fight', 'rest'],
-    ],
-  },
+/** An act laid out by hand, floor by floor (the first room opens it, the last one is its boss); built by `addScripted`. Rooms and roads are exactly these. */
+const ACT_SCRIPTS: Record<number, ScriptNode[]> = {
+  // Act 1, the very first run: the orientation video, a snitch, a gift (so the map isn't only jobs), then two lanes with a rest on each side.
+  1: [
+    /* 0 */ { floor: 1, lane: 0.5, type: 'fight', enemy: 'hrOrientationVideo', next: [1] },
+    /* 1 */ { floor: 2, lane: 0.5, type: 'fight', enemy: 'snitch', next: [2] },
+    /* 2 */ { floor: 3, lane: 0.5, type: 'lostFound', next: [3, 4] },
+    /* 3 */ { floor: 4, lane: 0, type: 'fight', enemy: 'newHire', next: [5] },
+    /* 4 */ { floor: 4, lane: 1, type: 'rest', next: [6] },
+    /* 5 */ { floor: 5, lane: 0, type: 'rest', next: [7] },
+    /* 6 */ { floor: 5, lane: 1, type: 'fight', enemy: 'sickCoworker', next: [8] },
+    /* 7 */ { floor: 6, lane: 0, type: 'elite', enemy: 'securityMonitor', next: [9, 10] },
+    /* 8 */ { floor: 6, lane: 1, type: 'copy', next: [10, 9] },
+    /* 9 */ { floor: 7, lane: 0, type: 'promotion', next: [11] },
+    /* 10 */ { floor: 7, lane: 1, type: 'fight', enemy: 'goblinConsultant', next: [12] },
+    /* 11 */ { floor: 8, lane: 0, type: 'rest', next: [13] },
+    /* 12 */ { floor: 8, lane: 1, type: 'rest', next: [13] },
+    /* 13 */ { floor: 9, lane: 0.5, type: 'lostFound', next: [14] },
+    /* 14 */ { floor: 10, lane: 0.5, type: 'boss', enemy: 'slavesCeo', next: [] },
+  ],
+  // Act 2, the first time it is reached: a rule-breaker opens it, every room kind shows once, and the Tailor is on offer.
+  2: [
+    /* 0 */ { floor: 1, lane: 0.5, type: 'fight', enemy: 'exaggeratedGirl', next: [1, 2] },
+    /* 1 */ { floor: 2, lane: 0, type: 'fight', enemy: 'nightJanitor', next: [3] },
+    /* 2 */ { floor: 2, lane: 1, type: 'promotion', next: [4] },
+    /* 3 */ { floor: 3, lane: 0, type: 'vending', next: [5, 4] },
+    /* 4 */ { floor: 3, lane: 1, type: 'fight', enemy: 'powerSocket', next: [6] },
+    /* 5 */ { floor: 4, lane: 0, type: 'rest', next: [7] },
+    /* 6 */ { floor: 4, lane: 1, type: 'copy', next: [8] },
+    /* 7 */ { floor: 5, lane: 0, type: 'fight', enemy: 'changeManager', next: [9] },
+    /* 8 */ { floor: 5, lane: 1, type: 'rest', next: [10] },
+    /* 9 */ { floor: 6, lane: 0, type: 'elite', enemy: 'theNerd', next: [11] },
+    /* 10 */ { floor: 6, lane: 1, type: 'elite', enemy: 'theNerd', next: [12, 11] },
+    /* 11 */ { floor: 7, lane: 0, type: 'tailor', next: [13] },
+    /* 12 */ { floor: 7, lane: 1, type: 'crossTraining', next: [14] },
+    /* 13 */ { floor: 8, lane: 0, type: 'fight', enemy: 'beanCounter', next: [15] },
+    /* 14 */ { floor: 8, lane: 1, type: 'fight', enemy: 'beanCounter', next: [16] },
+    /* 15 */ { floor: 9, lane: 0, type: 'rest', next: [17] },
+    /* 16 */ { floor: 9, lane: 1, type: 'rest', next: [17] },
+    /* 17 */ { floor: 10, lane: 0.5, type: 'boss', enemy: 'micromanager', next: [] },
+  ],
+  // Act 3, the first time it is reached: the night shift's rules open it (the siren) and the Tailor stays away.
+  3: [
+    /* 0 */ { floor: 1, lane: 0.5, type: 'fight', enemy: 'factorySiren', next: [1, 2] },
+    /* 1 */ { floor: 2, lane: 0, type: 'lostFound', next: [3] },
+    /* 2 */ { floor: 2, lane: 1, type: 'promotion', next: [4] },
+    /* 3 */ { floor: 3, lane: 0, type: 'fight', enemy: 'vipClient', next: [5] },
+    /* 4 */ { floor: 3, lane: 1, type: 'fight', enemy: 'lineLead', next: [6] },
+    /* 5 */ { floor: 4, lane: 0, type: 'rest', next: [7] },
+    /* 6 */ { floor: 4, lane: 1, type: 'rest', next: [8] },
+    /* 7 */ { floor: 5, lane: 0, type: 'fight', enemy: 'smokeDetector', next: [9] },
+    /* 8 */ { floor: 5, lane: 1, type: 'fight', enemy: 'microwave', next: [10, 9] },
+    /* 9 */ { floor: 6, lane: 0, type: 'elite', enemy: 'tourist', next: [11] },
+    /* 10 */ { floor: 6, lane: 1, type: 'copy', next: [12] },
+    /* 11 */ { floor: 7, lane: 0, type: 'lostFound', next: [13] },
+    /* 12 */ { floor: 7, lane: 1, type: 'vending', next: [14] },
+    /* 13 */ { floor: 8, lane: 0, type: 'fight', enemy: 'helpdeskChatbot', next: [15, 14] },
+    /* 14 */ { floor: 8, lane: 1, type: 'elite', enemy: 'conveyorSis', next: [16, 13] },
+    /* 15 */ { floor: 9, lane: 0, type: 'rest', next: [17] },
+    /* 16 */ { floor: 9, lane: 1, type: 'rest', next: [17] },
+    /* 17 */ { floor: 10, lane: 0.5, type: 'boss', enemy: 'theBoard', next: [] },
+  ],
 };
 
 /**
- * A new run; the acts in `scripted` have the rooms and enemies of `ACT_SCRIPTS` instead of shuffled ones (the first run's act 1, and act 2 the
+ * A new run; the acts in `scripted` have the rooms and enemies of `ACT_SCRIPTS` instead of shuffled ones (the first run's act 1, and every other act the
  * first time it is met), the rest are dealt as usual. `mods` are the memos it plays under.
  */
 export function newRun(hero: HeroId, seed: number, scripted: readonly number[] = [], mods: string[] = []): RunState {
@@ -174,11 +216,10 @@ type Road = [from: Cell, to: Cell];
  * The lanes of an act and the roads between their rooms: both lanes' floors, a few one-way links between the lanes, and now and then a cut road.
  * Dealt again until no room offers two choices of the same kind (a special slot is always a different room from any other).
  */
-function dealLayout(rng: Rng, opening: number, script?: ActScript): { lanes: Slot[][]; roads: Road[] } {
+function dealLayout(rng: Rng, opening: number): { lanes: Slot[][]; roads: Road[] } {
   const deal = (): { lanes: Slot[][]; roads: Road[] } => {
-    const lanes = script ? script.lanes.map((l) => [...l]) : rng.shuffle(LANES.map((l) => l.slice(opening - 1)));
-    if (!script)
-      for (let i = 0; i < lanes[0].length - 1; i++) if (rng.next() < CONFIG.laneSwap) [lanes[0][i], lanes[1][i]] = [lanes[1][i], lanes[0][i]];
+    const lanes = rng.shuffle(LANES.map((l) => l.slice(opening - 1)));
+    for (let i = 0; i < lanes[0].length - 1; i++) if (rng.next() < CONFIG.laneSwap) [lanes[0][i], lanes[1][i]] = [lanes[1][i], lanes[0][i]];
     const n = lanes[0].length;
     const roads: Road[] = [];
     for (let i = 1; i < n; i++)
@@ -213,7 +254,7 @@ function dealLayout(rng: Rng, opening: number, script?: ActScript): { lanes: Slo
     }
     // Now and then one road between two floors is cut: its lane is crossed over, down the other lane and back (the long way round).
     // Both crossings are one-way, so no room is ever a dead end.
-    if (!script && rng.next() < CONFIG.roadCut) {
+    if (rng.next() < CONFIG.roadCut) {
       const i = rng.shuffle([...Array(n - 1).keys()]).find((f) => floors.every((l) => Math.abs(l - f) > 1));
       if (i !== undefined) {
         const side = rng.next() < 0.5 ? 0 : 1;
@@ -244,45 +285,40 @@ function dealLayout(rng: Rng, opening: number, script?: ActScript): { lanes: Slo
 }
 
 /**
- * One act appended to `nodes`: a shared road (one fight; three floors in act 1, four in the very first run), two lanes linked a couple of times, and the
+ * One act appended to `nodes`: a shared road (one fight; three floors in act 1), two lanes linked a couple of times, and the
  * boss where they meet. `last` are the nodes of the act before (they lead to its first fight). Returns the boss.
  */
-function addAct(nodes: RunNode[], rng: Rng, act: number, last: RunNode[], script?: ActScript, taken: readonly NodeType[] = []): RunNode[] {
+function addAct(nodes: RunNode[], rng: Rng, act: number, last: RunNode[], taken: readonly NodeType[] = []): RunNode[] {
   // `taken`: once-per-run rooms a scripted act of this run already holds.
   const dealt = new Set([...nodes.map((n) => n.type), ...taken]);
   // Deal normal enemies from a shuffled bag so the same one doesn't repeat back to back.
   let bag: EnemyDef[] = [];
   let specials: NodeType[] = [];
-  const add = (floor: number, lane: number, slot: Slot, fixed?: string): RunNode => {
+  const add = (floor: number, lane: number, slot: Slot): RunNode => {
     if (slot === 'special' && !specials.length) specials = rng.shuffle(SPECIALS.filter((s) => !(ONCE_PER_RUN.includes(s) && dealt.has(s))));
     const type = slot === 'special' ? specials.pop()! : slot;
     dealt.add(type);
-    // A set enemy (the orientation fight) takes nobody's turn.
-    let enemy = fixed;
-    if (!enemy && type === 'fight') {
-      if (script) enemy = script.enemies[floor];
-      else {
-        if (!bag.length) bag = rng.shuffle(enemiesFor(act, 'normal'));
-        // Act 2 opens on a rule-breaker (the bag is fresh here, so one is always in it).
-        const opener = act === 2 && floor === 1 ? bag.findIndex((e) => e.ruleBreaker) : -1;
-        enemy = (opener >= 0 ? bag.splice(opener, 1)[0] : bag.pop()!).id;
-      }
-    } else if (!enemy && (type === 'elite' || type === 'boss')) {
-      enemy = script ? enemiesFor(act, type)[0].id : rng.pick(enemiesFor(act, type)).id;
+    let enemy: string | undefined;
+    if (type === 'fight') {
+      if (!bag.length) bag = rng.shuffle(enemiesFor(act, 'normal'));
+      // Act 2 opens on a rule-breaker (the bag is fresh here, so one is always in it).
+      const opener = act === 2 && floor === 1 ? bag.findIndex((e) => e.ruleBreaker) : -1;
+      enemy = (opener >= 0 ? bag.splice(opener, 1)[0] : bag.pop()!).id;
+    } else if (type === 'elite' || type === 'boss') {
+      enemy = rng.pick(enemiesFor(act, type)).id;
     }
     const node: RunNode = { id: nodes.length, act, floor, lane, type, next: [], enemy };
     nodes.push(node);
     return node;
   };
-  const opening = script ? script.road.length : act === 1 ? ACT1_OPENING : 1;
-  // The links between the lanes of a scripted act are always the same ones.
-  const { lanes, roads } = dealLayout(script ? new Rng(act) : rng, opening, script);
+  const opening = act === 1 ? ACT1_OPENING : 1;
+  const { lanes, roads } = dealLayout(rng, opening);
 
-  // The shared road: one fight per floor, then the two lanes. The very first run opens on its orientation fight.
-  let road = add(1, 0.5, 'fight', script?.opener);
+  // The shared road: one fight per floor, then the two lanes.
+  let road = add(1, 0.5, 'fight');
   for (const n of last) n.next.push(road.id);
   for (let f = 2; f <= opening; f++) {
-    const n = add(f, 0.5, script ? script.road[f - 1] : 'fight');
+    const n = add(f, 0.5, 'fight');
     road.next.push(n.id);
     road = n;
   }
@@ -294,11 +330,21 @@ function addAct(nodes: RunNode[], rng: Rng, act: number, last: RunNode[], script
   return [boss];
 }
 
+/** An act laid out by hand (`ACT_SCRIPTS`) appended to `nodes`: `last` lead to its first room. Returns its boss. */
+function addScripted(nodes: RunNode[], act: number, last: RunNode[]): RunNode[] {
+  const script = ACT_SCRIPTS[act];
+  const made = script.map(({ floor, lane, type, enemy }, i): RunNode => ({ id: nodes.length + i, act, floor, lane, type, next: [], enemy }));
+  for (const [i, s] of script.entries()) made[i].next = s.next.map((j) => made[j].id);
+  nodes.push(...made);
+  for (const n of last) n.next.push(made[0].id);
+  return [made[made.length - 1]];
+}
+
 function buildNodes(rng: Rng, scripted: readonly number[]): RunNode[] {
   const nodes: RunNode[] = [];
   let last: RunNode[] = [];
-  const taken = ONCE_PER_RUN.filter((type) => scripted.some((act) => [...ACT_SCRIPTS[act].road, ...ACT_SCRIPTS[act].lanes.flat()].includes(type)));
-  for (let act = 1; act <= ACTS; act++) last = addAct(nodes, rng, act, last, scripted.includes(act) ? ACT_SCRIPTS[act] : undefined, taken);
+  const taken = ONCE_PER_RUN.filter((type) => scripted.some((act) => ACT_SCRIPTS[act].some((n) => n.type === type)));
+  for (let act = 1; act <= ACTS; act++) last = scripted.includes(act) ? addScripted(nodes, act, last) : addAct(nodes, rng, act, last, taken);
   return nodes;
 }
 
