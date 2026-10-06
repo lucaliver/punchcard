@@ -456,9 +456,11 @@ ${angry ? '<path d="M38 4l8 8-10 2 12 8M150 2l2 10 8-4" stroke="#ffd900" stroke-
 <rect x="32" y="40" width="116" height="112" rx="26" fill="#120e18" ${OUT}/>
 <rect x="40" y="48" width="100" height="96" rx="22" fill="${angry ? '#ff3d9a' : 'url(#hv-s)'}"/>
 <path d="M40 72h100M40 96h100M40 120h100" stroke="${angry ? '#120e18' : '#1c5fd0'}" stroke-width="3" opacity=".35"/>
-${angry
-  ? `<path d="M56 70l30 14M124 70l-30 14" stroke="#120e18" stroke-width="8" stroke-linecap="round"/><path d="M60 86l24 8-4 10H62zM120 86l-24 8 4 10h18z" fill="#ffd900" ${OUT}/><g class="eye" fill="#120e18"><circle cx="76" cy="98" r="3.5"/><circle cx="104" cy="98" r="3.5"/></g><path d="M58 112h64l-6 22H64z" fill="#120e18"/><path d="M58 112l6 10 6-10 6 10 6-10 6 10 6-10 6 10 6-10 6 10 6-10z" fill="#f6f0e4"/><path d="M126 50l-12 18 12 6-14 16" stroke="#120e18" stroke-width="3" fill="none"/>`
-  : `<path d="M64 84c4-8 14-8 18 0M98 84c4-8 14-8 18 0" stroke="#120e18" stroke-width="6" fill="none" stroke-linecap="round"/><path d="M68 108c12 16 32 16 44 0" stroke="#120e18" stroke-width="6" fill="none" stroke-linecap="round"/><circle cx="62" cy="100" r="6" fill="#ff8ac8"/><circle cx="118" cy="100" r="6" fill="#ff8ac8"/><path d="M50 56l16 0" stroke="#fff" stroke-width="5" stroke-linecap="round" opacity=".7"/>`}
+${
+  angry
+    ? `<path d="M56 70l30 14M124 70l-30 14" stroke="#120e18" stroke-width="8" stroke-linecap="round"/><path d="M60 86l24 8-4 10H62zM120 86l-24 8 4 10h18z" fill="#ffd900" ${OUT}/><g class="eye" fill="#120e18"><circle cx="76" cy="98" r="3.5"/><circle cx="104" cy="98" r="3.5"/></g><path d="M58 112h64l-6 22H64z" fill="#120e18"/><path d="M58 112l6 10 6-10 6 10 6-10 6 10 6-10 6 10 6-10 6 10 6-10z" fill="#f6f0e4"/><path d="M126 50l-12 18 12 6-14 16" stroke="#120e18" stroke-width="3" fill="none"/>`
+    : `<path d="M64 84c4-8 14-8 18 0M98 84c4-8 14-8 18 0" stroke="#120e18" stroke-width="6" fill="none" stroke-linecap="round"/><path d="M68 108c12 16 32 16 44 0" stroke="#120e18" stroke-width="6" fill="none" stroke-linecap="round"/><circle cx="62" cy="100" r="6" fill="#ff8ac8"/><circle cx="118" cy="100" r="6" fill="#ff8ac8"/><path d="M50 56l16 0" stroke="#fff" stroke-width="5" stroke-linecap="round" opacity=".7"/>`
+}
 <g fill="${angry ? '#ff3d9a' : '#ffd900'}" ${OUT}><circle cx="164" cy="62" r="8"/><circle cx="164" cy="90" r="8"/></g>
 <g fill="#120e18"><rect x="154" y="112" width="20" height="4"/><rect x="154" y="122" width="20" height="4"/><rect x="154" y="132" width="20" height="4"/></g>`;
 
