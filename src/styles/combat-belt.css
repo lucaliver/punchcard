@@ -95,6 +95,11 @@
   background: var(--red);
   opacity: calc(var(--alarm, 0) * 0.55);
 }
+/* the last moments before it goes off: the wash blinks */
+.belt-alarm.blink { animation: alarm-blink 0.2s steps(1) infinite; }
+@keyframes alarm-blink {
+  50% { opacity: 0.15; }
+}
 .belt-rust {
   /* rust patches over the stream, under the cards (JS shows them one by one) */
   position: absolute;
@@ -423,6 +428,12 @@
 .hex-cover span { font-size: 42cqw; }
 .card.hexed[data-hex-left='1'] .hex-cover,
 .card.hexed[data-hex-left='2'] .hex-cover { opacity: 0.75; }
+/* a crumpled card is a ball of paper: the card's own paper, border and face go, the cover's picture stays */
+.card.crumpled { background: transparent; border-color: transparent; box-shadow: none; }
+.card.crumpled > :not(.hex-cover) { visibility: hidden; }
+.card.crumpled .hex-cover { background: none; opacity: 1; justify-content: flex-end; padding-bottom: 12cqw; }
+.card.crumpled .hex-cover .pico { position: absolute; inset: 0; margin: auto; font-size: 90cqw; color: var(--paper); --ink2: var(--k); }
+.card.crumpled .hex-cover span { position: relative; font-size: 30cqw; }
 .card.hex-in { animation: hex-in 0.3s steps(3); }
 .card.hex-hit { animation: hex-hit 0.16s steps(2); }
 /* a large card is covered whole: the stone and the stealing hand stretch over the body welded behind it too */

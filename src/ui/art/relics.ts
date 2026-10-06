@@ -148,6 +148,16 @@ const paperShredder = `
 <path d="M60 112v36M76 112v44M92 112v32M108 112v42M124 112v34M140 112v40" stroke="${PAPER}" stroke-width="7" stroke-linecap="round"/>
 ${face(100, 92, 24, 5)}`;
 
+const quillPen = `
+<path d="M150 14c-34 6-70 34-92 84l22 22c28-18 56-52 70-106z" fill="#ff3d9a" ${OUT}/>
+<path d="M150 14c-8 36-24 66-44 90" stroke="#ffd0e6" stroke-width="5" fill="none" stroke-linecap="round"/>
+<path d="M62 96l-10 22 28 2z" fill="${INK}"/>
+<path d="M58 98C50 120 40 140 34 156" stroke="${INK}" stroke-width="5" fill="none" stroke-linecap="round"/>
+<path d="M62 150h92c8 0 12 6 12 12v10c0 8-6 12-14 12H64c-8 0-14-4-14-12v-10c0-6 4-12 12-12z" fill="#1c5fd0" ${OUT}/>
+<path d="M72 150h72v-12H72z" fill="${INK}" ${OUT}/>
+<path d="M50 168h116" stroke="#6a98ea" stroke-width="5" stroke-linecap="round" opacity=".7"/>
+${face(108, 168, 18, 5)}`;
+
 const statuette = `
 <path d="M34 164h132l8 20H26z" fill="#6c6880" ${OUT}/>
 <path d="M44 140h112v26H44z" fill="#8a8798" ${OUT}/>
@@ -194,6 +204,7 @@ export const RELIC_SPRITES: Record<string, string> = Object.fromEntries(
     rubberDuck,
     paperShredder,
     statuette,
+    quillPen,
     lanyard,
     paperClip,
     companyCard,

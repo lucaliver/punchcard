@@ -445,7 +445,7 @@ const defs: EnemyDef[] = [
     onHalf: (c) => c.closeBeltRows(1),
   },
   {
-    // One big idea, slowly charged; hit it hard enough meanwhile and it loses its train of thought.
+    // One big idea, slowly charged; every hit it takes meanwhile talks it out of some of the damage.
     id: 'overthinker',
     act: 2,
     tier: 'normal',
@@ -454,7 +454,7 @@ const defs: EnemyDef[] = [
     main: atk('bigIdea', 28, 14, { intent: 'charge' }),
     every: 0,
     specials: [],
-    start: [{ id: 'trainOfThought', v: 28 }],
+    start: [{ id: 'secondThoughts', v: 1 }],
   },
   {
     // Last day on the job, nothing to lose: hands you a bomb nobody can afford to defuse. Keep it in your sleeve.

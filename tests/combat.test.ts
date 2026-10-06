@@ -15,6 +15,7 @@ import {
   UNDERSTUDY_EVERY,
 } from '../src/data/statuses';
 import { CARD_LIST, CARDS, RARITY_ORDER, cardCostOf } from '../src/data/cards';
+import { HEXES } from '../src/data/hexes';
 import { RELICS } from '../src/data/relics';
 import { hasStamp, memosOpen, runHistory, stampAct } from '../src/game/meta';
 import { ACT_DEFS } from '../src/data/acts';
@@ -334,6 +335,33 @@ describe('combat engine', () => {
     for (let i = 0; i < 5; i++) expect(c.playCard(card.uid)).toBe(false);
     expect(c.stash(card.uid)).toBe(false);
     expect(card.hex?.left).toBe(0);
+    expect(c.playCard(card.uid)).toBe(false);
+    run(c, 0.6);
+    expect(card.hex).toBeUndefined();
+    expect(c.playCard(card.uid)).toBe(true);
+  });
+
+  it('a crumpled card needs its 4 taps, one picture for each, then plays normally', () => {
+    const c = setup({ deck: deckOf(new Array(8).fill('punch')) });
+    run(c, CONFIG.introTime + 0.01);
+    c.gainMana(3);
+    c.hexCards('crumple', 0.01);
+    const card = c.belt.find((b) => b.card.hex)!.card;
+    expect(HEXES.crumple.stages).toHaveLength(HEXES.crumple.taps);
+    for (let i = 0; i < HEXES.crumple.taps; i++) expect(c.playCard(card.uid)).toBe(false);
+    run(c, HEXES.crumple.thaw + 0.1);
+    expect(card.hex).toBeUndefined();
+    expect(c.playCard(card.uid)).toBe(true);
+  });
+
+  it('a hexed card that landed in the sleeve still thaws once cracked, and plays', () => {
+    const c = setup({ deck: deckOf(new Array(8).fill('punch')) });
+    run(c, CONFIG.introTime + 0.01);
+    c.gainMana(3);
+    const card = c.belt[0].card;
+    c.stash(card.uid);
+    card.hex = { id: 'petrify', left: 1, t: 0.5 };
+    expect(c.sleeveCards()).toContain(card);
     expect(c.playCard(card.uid)).toBe(false);
     run(c, 0.6);
     expect(card.hex).toBeUndefined();
@@ -1116,7 +1144,10 @@ describe('combat engine', () => {
       const hp = c.hero.hp;
       run(c, 1.5);
       expect(c.enemyWarning()).toBeCloseTo(0.5, 1);
-      run(c, 1.6);
+      expect(c.enemyAlarming()).toBe(false);
+      run(c, 0.8);
+      expect(c.enemyAlarming()).toBe(true);
+      run(c, 0.8);
       expect(c.enemyWarning()).toBeLessThan(0.1);
       expect(c.hero.hp).toBeLessThan(hp);
       // Playing cards keeps him off your back.
@@ -1693,18 +1724,17 @@ describe('sleeve cards', () => {
 });
 
 describe('the Overthinker', () => {
-  it('loses its train of thought (and its big hit) after taking enough damage while it charges', () => {
+  it('talks itself out of 1 damage of the move it charges for every hit it takes, and starts the next one whole', () => {
     const c = setup({ enemy: ENEMIES.overthinker, deck: deckOf(Array(6).fill('punch')) });
     run(c, CONFIG.introTime + 1);
-    expect(c.enemy.move.id).toBe('bigIdea');
-    c.damage('hero', 'enemy', 14, { raw: true }, 'hero');
-    expect(c.enemy.move.id).toBe('bigIdea');
-    c.damage('hero', 'enemy', 14, { raw: true }, 'hero');
-    expect(c.enemy.move.id).toBe('thePreviousSlide');
+    const full = c.intentDamage(c.enemy.move);
+    c.damage('hero', 'enemy', 5, { raw: true }, 'hero');
+    c.damage('hero', 'enemy', 5, { raw: true }, 'hero');
+    expect(c.intentDamage(c.enemy.move)).toBe(full - 2);
     const hp = c.hero.hp;
-    run(c, 4.1);
-    expect(c.hero.hp).toBe(hp);
-    expect(c.enemy.move.id).toBe('bigIdea');
+    run(c, c.enemy.move.windup);
+    expect(hp - c.hero.hp).toBe(full - 2);
+    expect(c.intentDamage(c.enemy.move)).toBe(full);
   });
 });
 
@@ -2715,6 +2745,7 @@ describe("Eight Hours, Krusty Krab, It's-a Me, Tip Jar, Raise Denied, CC the Bos
     }
     expect(damage()).toBe(7 * CARDS.redStapler.vals[0]);
     expect(STATUSES.eightHours.progress?.(c, 'hero', c.hero.statuses.eightHours)).toBeCloseTo(7 / 8);
+    expect(STATUSES.eightHours.imminent?.(c.hero.statuses.eightHours)).toBe(true);
     c.hero.mana = c.hero.maxMana;
     play(c, 'redStapler');
     expect(damage()).toBe(9 * CARDS.redStapler.vals[0]);

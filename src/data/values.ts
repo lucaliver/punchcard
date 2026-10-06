@@ -4,7 +4,7 @@ import { CARDS } from './cards';
 import { HARDSHIP_HP, JUST_CAUSE_HP } from './cards/warrior';
 import { OVERTIME_MULT, OVERTIME_TIME, STICKY_FINGERS, THICK_SKIN, TIME_THEFT, VIRULENCE_START } from './heroes';
 import { PERKS } from './perks';
-import { CLOCK_BLOCK, MUG_MANA, STAPLER_DAMAGE } from './relics';
+import { CLOCK_BLOCK, MUG_MANA, SHREDDER_BLOCK, STAPLER_DAMAGE } from './relics';
 import {
   ASLEEP,
   AWAKE,
@@ -110,6 +110,7 @@ export const VALUES = {
   mugMana: MUG_MANA,
   clockBlock: CLOCK_BLOCK,
   staplerDamage: STAPLER_DAMAGE,
+  shredderBlock: SHREDDER_BLOCK,
   budgetCut: -(PERKS.budgetCut.costDelta ?? 0),
   justCausePct: pct(JUST_CAUSE_HP),
   hardshipPct: pct(HARDSHIP_HP),

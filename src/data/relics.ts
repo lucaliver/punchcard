@@ -1,5 +1,6 @@
 import type { Combat } from '../game/combat';
-import type { RelicDef } from '../game/types';
+import type { Rarity, RelicDef } from '../game/types';
+import { CARDS } from './cards';
 
 /** A relic shows itself in the fight: a floating name over the hero. */
 const proc = (c: Combat, id: string): void => c.events.emit({ type: 'relic', id });
@@ -17,11 +18,14 @@ const STICKY_BELT = 0.8;
 const DUCK_BLOCK = 25;
 /** Share of max HP the Rubber Duck squeaks at. */
 const DUCK_HP = 0.5;
-const SHREDDER_BLOCK = 2;
+const SHREDDER_EVERY = 2;
+export const SHREDDER_BLOCK = 4;
 /** The belt's speed with a Lanyard. */
 const LANYARD_SPEED = 1.15;
 /** Share of max HP the Emergency Exit gets you back on your feet with. */
 const EXIT_HP = 0.35;
+/** The rarities the Quill Pen writes off: those cards start every fight Fleeting. */
+const QUILL_RARITIES: readonly Rarity[] = ['common', 'rare'];
 /** Cards the Statuette petrifies at the start of a fight. */
 const STATUETTE_CARDS = 5;
 
@@ -145,9 +149,12 @@ const defs: RelicDef[] = [
   {
     id: 'paperShredder',
     rarity: 'rare',
-    n: SHREDDER_BLOCK,
+    n: SHREDDER_EVERY,
+    progress: (c) => ((c.mem.shredder ?? 0) % SHREDDER_EVERY) / SHREDDER_EVERY,
     hooks: {
       onCardExpired: (c) => {
+        c.mem.shredder = (c.mem.shredder ?? 0) + 1;
+        if (c.mem.shredder % SHREDDER_EVERY) return;
         c.gainBlock('hero', SHREDDER_BLOCK);
         proc(c, 'paperShredder');
       },
@@ -174,6 +181,18 @@ const defs: RelicDef[] = [
       onCombatStart: (c) => {
         for (const card of c.draw) if (c.keywords(card).includes('pending')) card.passed = true;
         proc(c, 'paperClip');
+      },
+    },
+  },
+  {
+    id: 'quillPen',
+    rarity: 'rare',
+    n: 1,
+    hooks: {
+      // The cards are copies made for the fight: the deck itself keeps them as they were.
+      onCombatStart: (c) => {
+        for (const card of c.draw) if (QUILL_RARITIES.includes(CARDS[card.id].rarity)) card.fleeting = true;
+        proc(c, 'quillPen');
       },
     },
   },

@@ -1,5 +1,5 @@
 import type { Combat } from '../game/combat';
-import type { CardType, MoveDef, Side, StatusDef, StatusVal, Tone } from '../game/types';
+import type { CardType, Side, StatusDef, StatusVal, Tone } from '../game/types';
 import { CONFIG } from './config';
 
 /** How long every card played brings the Light Sleeper's hit closer (seconds). */
@@ -14,6 +14,8 @@ const ASSEMBLY_FROM = 0.5;
 export const CHILL_GAP = 2;
 /** Micromanagement: seconds without playing a card before he cuts in. */
 export const IDLE_LIMIT = 3;
+/** Seconds before he cuts in that the red belt starts to blink. */
+const IDLE_BLINK = 0.8;
 /** Seconds since a card was last played or he last cut in. */
 const idleFor = (c: Combat, s: StatusVal): number => c.time - Math.max(c.lastPlayedAt, s.e ?? 0);
 /** Work-Life Balance and its mirror: for a while, every card of one type also does what the other type is for (`v` of it). */
@@ -31,8 +33,6 @@ const crossOver = (id: string, type: CardType, tone: Tone, run: (c: Combat, v: n
 const PARACHUTE_HP = 0.4;
 const PARACHUTE_BLOCK = 20;
 const PARACHUTE_STRENGTH = 3;
-/** What the Overthinker does once it has lost its train of thought. */
-const WHERE_WAS_I: MoveDef = { id: 'thePreviousSlide', intent: 'idle', windup: 4 };
 /** Weak Spot: how long its target stays up, and the random wait (s) between the end of one and the next. */
 export const WEAK_SPOT_TIME = 2;
 const WEAK_SPOT_GAP = [5, 9];
@@ -231,6 +231,7 @@ const defs: StatusDef[] = [
     good: true,
     icon: 'shiftClock',
     progress: (_c, _side, s) => (s.e ?? 0) / s.v,
+    imminent: (s) => (s.e ?? 0) + 1 >= s.v,
     cue: 'punchClock',
     onCardPlayed: (c, side, def) => {
       const s = c.fighter(side).statuses.eightHours;
@@ -409,24 +410,16 @@ const defs: StatusDef[] = [
     canPlay: (c, side) => (side === 'enemy' && c.time - c.lastPlayedAt < CHILL_GAP ? 'combat.chillOut' : null),
   },
   { id: 'spendingFreeze', tone: 'blue', kind: 'stacks', good: true, passive: true, icon: 'calculator', manaCap: SPENDING_FREEZE_CAP },
-  // Train of thought: take `v` damage while it charges a move and it forgets what it was doing (the move is lost).
+  // Second thoughts: every hit it takes talks it out of a bit of what it was about to do (`v` less damage on the move it charges).
   {
-    id: 'trainOfThought',
+    id: 'secondThoughts',
     tone: 'purple',
     kind: 'stacks',
     good: true,
     passive: true,
     icon: 'thoughtBubble',
-    onHurt: (c, side, s, lost) => {
-      const e = c.enemy;
-      if (side !== 'enemy' || e.move === WHERE_WAS_I) return;
-      // Damage counts per move: `mem.focusMove` is the move it started taking damage on.
-      if (e.mem.focusMove !== e.moveCount) {
-        e.mem.focusMove = e.moveCount;
-        e.mem.focusDmg = 0;
-      }
-      e.mem.focusDmg += lost;
-      if (e.mem.focusDmg >= s.v) c.distractEnemy(WHERE_WAS_I);
+    onHurt: (c, side, s) => {
+      if (side === 'enemy') c.cutMove(s.v);
     },
   },
   {
@@ -443,6 +436,7 @@ const defs: StatusDef[] = [
       c.enemyStrike();
     },
     warning: (c, s) => idleFor(c, s) / IDLE_LIMIT,
+    alarming: (c, s) => idleFor(c, s) >= IDLE_LIMIT - IDLE_BLINK,
   },
   // Rusty belt: on the hero, one per rust spot on the belt (`Combat.syncRustStatus` keeps the count).
   { id: 'rustedBelt', tone: 'amber', kind: 'stacks', good: false, icon: 'rust' },

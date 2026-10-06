@@ -111,22 +111,14 @@ export function journeyScreen(run: RunState, onEnter: (to?: number) => void, onH
   let revealMs = 0;
   const foggy = (n: RunNode): boolean => !revealAll && n.type !== 'boss' && !run.path.includes(n.id) && !dist.has(n.id);
 
-  /** The corridor between two rooms: straight along a lane or across a floor, else up, across and up again. */
-  const route = (a: RunNode, b: RunNode): Pt[] => {
-    const [xa, xb, ya, yb] = [laneX(a.lane), laneX(b.lane), y(a), y(b)];
-    if (a.floor === b.floor || xa === xb)
-      return [
-        [xa, ya],
-        [xb, yb],
-      ];
-    const mid = (ya + yb) / 2;
-    return [
-      [xa, ya],
-      [xa, mid],
-      [xb, mid],
-      [xb, yb],
-    ];
-  };
+  /**
+   * The corridor between two rooms, a straight line: across a lane it runs on the slant, so it never meets the other
+   * lanes' corridors halfway (a step-shaped one would look like a crossing to rooms it doesn't lead to).
+   */
+  const route = (a: RunNode, b: RunNode): Pt[] => [
+    [laneX(a.lane), y(a)],
+    [laneX(b.lane), y(b)],
+  ];
   /** The corridors (a flat one usually goes both ways: drawn once), and which wall of a room each one leaves through. */
   const halls = nodes.flatMap((n) =>
     n.next

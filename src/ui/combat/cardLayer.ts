@@ -1,6 +1,7 @@
 import { t } from '../../core/i18n';
 import { sfx } from '../../audio/sfx';
 import { CONFIG } from '../../data/config';
+import { HEXES } from '../../data/hexes';
 import { CARDS, cardKeywordsOf, cardValsOf, isLarge } from '../../data/cards';
 import { STATUSES, statusIcon } from '../../data/statuses';
 import type { CombatCard } from '../../game/types';
@@ -366,6 +367,20 @@ export function createCardLayer(v: CombatView): CardLayer {
     const playable = combat.isPlayable(card) && !pending;
     const afford = combat.canAfford(card);
     // A pending card shows its stripes only: dimmed as well, it would be too heavy.
+    // The stone over a hexed card (on the belt or in the sleeve), or its thaw once it's cracked.
+    const hex = card.hex;
+    toggle(ce.el, 'hexed', !!hex && hex.left > 0);
+    toggle(ce.el, 'thawing', !!hex && hex.left <= 0);
+    const stages = hex && hex.left > 0 ? HEXES[hex.id].stages : undefined;
+    toggle(ce.el, 'crumpled', !!stages);
+    if (hex && hex.left > 0) {
+      ce.el.dataset.hexLeft = String(hex.left);
+      ce.hexEl ??= ce.el.appendChild(h('div', { class: 'hex-cover' }));
+      setHtml(ce.hexEl, `${stages ? icon(stages[stages.length - hex.left]) : `<b>${t('hex.tapIt')}</b>`}<span>×${hex.left}</span>`);
+    } else if (ce.hexEl) {
+      ce.hexEl.remove();
+      ce.hexEl = undefined;
+    }
     toggle(ce.el, 'poor', !card.hex && !pending && (!afford || !playable || !!rule));
     toggle(ce.el, 'pending', pending);
     toggle(ce.el, 'ruled', !!rule);
@@ -409,20 +424,9 @@ export function createCardLayer(v: CombatView): CardLayer {
         beltEls.set(b.card.uid, ce);
         r.beltCards.append(ce.el);
       }
-      const hex = b.card.hex;
       renderPlayState(ce, b.card);
-      toggle(ce.el, 'hexed', !!hex && hex.left > 0);
       toggle(ce.el, 'covered', combat.isCovered(b.card.uid));
-      toggle(ce.el, 'thawing', !!hex && hex.left <= 0);
       if (b.pinned && !ce.pinEl) ce.pinEl = ce.el.appendChild(h('div', { class: 'pin-badge', html: icon('pushpin') }));
-      if (hex && hex.left > 0) {
-        ce.el.dataset.hexLeft = String(hex.left);
-        ce.hexEl ??= ce.el.appendChild(h('div', { class: 'hex-cover' }));
-        setHtml(ce.hexEl, `<b>${t('hex.tapIt')}</b><span>×${hex.left}</span>`);
-      } else if (ce.hexEl) {
-        ce.hexEl.remove();
-        ce.hexEl = undefined;
-      }
       const stealing = combat.stealTarget()?.uid === b.card.uid;
       if (stealing) ce.stealEl ??= ce.el.appendChild(h('div', { class: 'steal-hand', html: icon('hand') }));
       else if (ce.stealEl) {

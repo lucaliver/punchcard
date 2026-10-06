@@ -207,6 +207,7 @@ export function createHud(v: CombatView, onPassive: () => void): { render(): voi
       if (sd.progress) {
         const fill = Math.floor(Math.min(1, Math.max(0, sd.progress(combat, side, s))) * BAR_STEPS) / BAR_STEPS;
         b.querySelector<HTMLElement>('.drain')!.style.setProperty('--fill', String(fill));
+        if (sd.imminent) toggle(b, 'low', sd.imminent(s));
       }
     }
   };
@@ -330,6 +331,7 @@ export function createHud(v: CombatView, onPassive: () => void): { render(): voi
       beltAlarm = alarm;
       r.beltAlarm.style.setProperty('--alarm', String(alarm));
     }
+    toggle(r.beltAlarm, 'blink', !combat.isOver && combat.enemyAlarming());
     toggle(r.weakSpot, 'on', !!combat.weakSpot && !combat.isOver);
     renderPopup();
     renderTied();

@@ -36,7 +36,17 @@ const muscle = `<path d="M4 56V46C4 36 12 26 22 25c8-1 14 3 18 11V20h-4V10c0-4 3
 /** A little mouse in profile, running: it scurries off the belt (Fleeting). */
 const mouse = `<ellipse cx="29" cy="42" rx="20" ry="13"/><circle cx="48" cy="36" r="10"/><path d="M54 30l10 10-10 6z"/><circle cx="44" cy="25" r="8"/><circle cx="44" cy="25" r="4" fill="#16121f" opacity=".45"/><circle cx="51" cy="34" r="2.2" fill="#16121f"/><circle cx="62" cy="40" r="2" fill="#16121f"/><path d="M18 52h8v6h-8zM38 52h8v6h-8z"/><path ${S} stroke-width="3.5" d="M11 44C2 44 2 30 9 28"/>`;
 
+/** A sheet of paper screwed up, in four stages: 4 is the tight ball, 1 the sheet nearly open again (the Crumple hex shows them as its taps run out). */
+const CREASE = `fill="none" stroke="#16121f" stroke-width="2.6" stroke-linejoin="round"`;
+const crumple = [
+  `<path d="M32 16l9 4 8 8 2 10-4 11-9 8-11 1-9-6-5-10 2-11 7-9z"/><path ${CREASE} d="M23 25l9 6-2 10M39 23l-5 8 9 5M20 39l9-4"/>`,
+  `<path d="M30 10l12 3 11 9 4 13-3 13-9 10-13 4-13-4-9-11-1-13 5-12 9-8z"/><path ${CREASE} d="M20 22l12 8-3 12 9 6M44 18l-8 12 14 4M14 38l15-4M30 50l-2 8"/>`,
+  `<path d="M8 16l14-6 10 4 12-5 10 7 4 14-4 8 6 12-9 9-14-2-10 6-13-6-4-13 4-10-5-9z"/><path ${CREASE} d="M16 22l14 10-6 14 12 8M46 16l-10 16 16 6M10 40l18-6M22 12l4 14M42 50l-6-10"/>`,
+  `<path d="M12 4l18 3 16-4 6 11-3 14 5 14-5 18-20-4-16 5-4-15 4-14-5-14z"/><path ${CREASE} d="M14 22l20 8 16-6M12 44l22-4 14 8M30 8l-4 18 6 16M44 10l-4 14"/>`,
+];
+
 export const ICONS: Record<string, { el: Element; svg: string }> = {
+  ...Object.fromEntries(crumple.map((svg, i) => [`crumple${4 - i}`, { el: 'shadow' as Element, svg }])),
   // ---- warrior
   sword: { el: 'steel', svg: sword },
   shield: { el: 'steel', svg: shield },
@@ -1522,6 +1532,10 @@ export const ICONS: Record<string, { el: Element; svg: string }> = {
   'relic.statuette': {
     el: 'steel',
     svg: `<path d="M6 54h52l3 8H3z"/><path d="M18 52c-4-14-3-26 4-34 4-6 16-6 20 0 7 8 8 20 4 34z"/><path fill="#16121f" d="M26 30h4v4h-4zM36 30h4v4h-4zM28 40h8v3h-8z"/>`,
+  },
+  'relic.quillPen': {
+    el: 'steel',
+    svg: `<path d="M58 4C36 8 18 24 10 46l8 8c20-8 36-28 40-50z"/><path fill="none" stroke="#16121f" stroke-width="3" d="M52 10c-4 16-14 30-28 38"/><path d="M8 50l-5 11 12-3z"/>`,
   },
   'relic.paperClip': {
     el: 'steel',

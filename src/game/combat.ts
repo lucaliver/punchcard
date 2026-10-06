@@ -296,6 +296,11 @@ export class Combat {
     return Math.min(1, w);
   }
 
+  /** Whether an enemy status is about to go off and wants the red belt to blink. */
+  enemyAlarming(): boolean {
+    return Object.entries(this.enemy.statuses).some(([id, s]) => STATUSES[id].alarming?.(this, s) && this.has('enemy', id));
+  }
+
   /** Whether the side takes no damage right now (Dodge). */
   isImmune(side: Side): boolean {
     return this.flag(side, 'immune');
@@ -426,11 +431,22 @@ export class Combat {
     return this.computeDamage('hero', 'enemy', base, def);
   }
 
+  /** Base damage per hit of an enemy move: what it is charging has lost what `cutMove` took off it. */
+  private moveBase(move: MoveDef): number {
+    const cut = move === this.enemy.move ? (this.enemy.mem.cut ?? 0) : 0;
+    return Math.max(0, (move.dmg ?? 0) - cut);
+  }
+
+  /** The move the enemy is charging loses `n` damage per hit (not below 0); the next move starts whole. */
+  cutMove(n: number): void {
+    this.enemy.mem.cut = (this.enemy.mem.cut ?? 0) + n;
+  }
+
   /** Damage per hit of the given enemy move after modifiers (a releasing move adds what was stored). */
   intentDamage(move: MoveDef): number {
     const stored = move.release ? this.enemy.stored : 0;
     if (!move.dmg && !stored) return 0;
-    return this.computeDamage('enemy', 'hero', Math.round((move.dmg ?? 0) * this.enemy.dmgScale) + stored, null);
+    return this.computeDamage('enemy', 'hero', Math.round(this.moveBase(move) * this.enemy.dmgScale) + stored, null);
   }
 
   enemyTimeRate(): number {
@@ -598,6 +614,7 @@ export class Combat {
 
   /** Main attack, main attack… then a special move every `every` mains (specials rotate). */
   private nextEnemyMove(): MoveDef {
+    this.enemy.mem.cut = 0;
     const e = this.enemy;
     const d = e.def;
     if (e.mainsLeft > 0 || !d.specials.length) {
@@ -722,15 +739,6 @@ export class Combat {
     this.events.emit({ type: 'rowsClose' });
   }
 
-  /** The enemy drops the move it is charging for `move` (e.g. it lost its train of thought); its pattern goes on after. */
-  distractEnemy(move: MoveDef): void {
-    const e = this.enemy;
-    e.timer = 0;
-    e.move = move;
-    this.events.emit({ type: 'text', target: 'enemy', key: `move.${move.id}`, tone: 'good' });
-    this.events.emit({ type: 'enemyIntent', move });
-  }
-
   /** The enemy lands its main attack right now, outside its pattern (a Micromanager cutting in). */
   enemyStrike(): void {
     if (this.enemyTimeRate() === 0) return;
@@ -752,7 +760,7 @@ export class Combat {
     if (m.dmg || stored) {
       const hits = m.hits ?? 1;
       for (let i = 0; i < hits && !this.result; i++) {
-        this.damage('enemy', 'hero', Math.round((m.dmg ?? 0) * scale) + stored, { kind: 'claw' }, 'enemy', i);
+        this.damage('enemy', 'hero', Math.round(this.moveBase(m) * scale) + stored, { kind: 'claw' }, 'enemy', i);
       }
       if (this.result) return;
       for (const [id, s] of Object.entries(this.enemy.statuses)) if (this.has('enemy', id)) STATUSES[id].onAttack?.(this, 'enemy', s);
@@ -782,14 +790,8 @@ export class Combat {
     for (const b of this.belt) {
       b.card.age = (b.card.age ?? 0) + dt;
       this.spreadVirus(b, dt);
-      const hex = b.card.hex;
-      if (!hex || hex.left > 0) continue;
-      hex.t -= dt;
-      if (hex.t <= 0) {
-        delete b.card.hex;
-        this.events.emit({ type: 'hexBroken', card: b.card });
-      }
     }
+    for (const card of [...this.belt.map((b) => b.card), ...this.sleeveCards()]) this.thawHex(card, dt);
     const held = this.belt.find((b) => b.card.uid === this.dragged);
     if (held && held.pos >= EXPIRE_POS - move) this.dragEdge += dt;
     this.settleBelt(move, dt);
@@ -1881,6 +1883,16 @@ export class Combat {
     if (!behind) return;
     virus.spread = true;
     this.infect(behind.card);
+  }
+
+  /** A cracked hex thaws away over its `thaw` seconds, on the belt or in the sleeve (a card caught or retrieved with its stone still on). */
+  private thawHex(card: CombatCard, dt: number): void {
+    const hex = card.hex;
+    if (!hex || hex.left > 0) return;
+    hex.t -= dt;
+    if (hex.t > 0) return;
+    delete card.hex;
+    this.events.emit({ type: 'hexBroken', card });
   }
 
   /** A tap on a hexed card chips at the hex instead of playing it; the last tap starts the thaw. */

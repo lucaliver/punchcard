@@ -50,7 +50,7 @@ This file is the technical guide: read it before changing code. Field-by-field d
 
 - Adding a card, enemy, hero, status or relic touches data, i18n and art only. If it needs `if (id === …)` in engine or UI,
   add a generic field or hook instead. Statuses already work this way (`StatusDef`: `timeMul`, `beltMul`, `dealtMul`,
-  `takenMul`, `holdsBlock`, `immune`, `ignoresRules`, `autoplay`, `heals`, `strength`, `cutsHits`, `regenMul`, `manaCap`, `keeps`, `passable` (a debuff CC the Boss can hand to the enemy), `catchBonus` (adds to the Rogue's sleeve discount), hooks…).
+  `takenMul`, `holdsBlock`, `immune`, `ignoresRules`, `autoplay`, `heals`, `strength`, `cutsHits`, `regenMul`, `manaCap`, `keeps`, `passable` (a debuff CC the Boss can hand to the enemy), `catchBonus` (adds to the Rogue's sleeve discount), `warning`/`alarming` (the belt reddens, then blinks, before an enemy trait goes off), `imminent` (a chip's bar blinks when the next trigger is the one), hooks…).
 - No hard-coded hero/enemy ids in UI; lists and icons come from data maps (`HEROES`, `ENEMIES`, `CARDS`, `STATUSES`,
   `ABILITY_ICON`). Tunable numbers live in `data/config.ts` or the records, never inline in UI or engine.
 - Every player-facing string goes through `t()`; use `{placeholders}` and plurals, never English word order.
@@ -122,7 +122,7 @@ tests/         combat, content, balance.sim (+ bot), balance.stats, e2e/
   included). Set `dmg: []` only for raw damage that ignores modifiers.
 - Special mechanics (`ride`, `onOverflow`, `tip`, `sweep`, `costDrop`, `inSleeve`, `span`/`tall`/`lockRow`, the `large` keyword, `pack`) are
   documented on `CardDef`. Curse *cards* live in `neutral.ts` (their rarity is a power level: common = a nuisance, rare = hurts or clogs, epic = shuts down belt space or can't be cleared; they never drop as rewards and can't be upgraded); **hexes** (`hexes.ts`) are a different thing (a curse on one
-  belt card, chipped away by taps).
+  belt card, chipped away by taps, on the belt or in the sleeve; a hex with `stages`, like Crumple, shows the card as a picture instead of the stone: one icon per tap left).
 - A card whose numbers move with the fight (Dress Code's Block, Raise Denied's damage) gives `CardDef.shown` (the same maths its `play` uses): the belt and sleeve faces read `Combat.shownVals`, so they show what the card would do right now.
 - `CardDef.makes` lists the cards it adds to your piles: its detail shows them as "Related cards" buttons (a test checks the ids exist).
 - Rarities are common, rare, epic and legendary (`special` only for cards a fight generates); basic cards of the starter decks are common with `starterOnly` (never a reward, a vending drop or a cross-training offer).

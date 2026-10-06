@@ -38,12 +38,14 @@ export interface PerkDef {
   costDelta?: number;
 }
 
-/** A curse cast on one card during a fight (e.g. petrified): it must be tapped `taps` times, then thaws for `thaw` s. */
+/** A curse cast on one card during a fight (e.g. petrified): it must be tapped `taps` times, then thaws for `thaw` s (`stages`: it shows as a picture instead of a card). */
 export interface HexDef {
   id: string;
   icon: string;
   taps: number;
   thaw: number;
+  /** Icons that cover the card instead of the stone, one per tap (the first while it is untouched): the card shows as that picture. */
+  stages?: string[];
 }
 
 /** A hex on a combat card: `left` taps still needed; once 0, it thaws for `t` seconds and the card is free. */
@@ -269,6 +271,10 @@ export interface StatusDef {
   look?: string;
   /** On the enemy: how close the status is to going off, 0 to 1 (the belt reddens as it nears 1). */
   warning?: (c: Combat, s: StatusVal) => number;
+  /** On the enemy: whether the belt's red wash blinks now (the last moments before it goes off). */
+  alarming?: (c: Combat, s: StatusVal) => boolean;
+  /** With `progress`: whether the very next trigger is the one that sets it off; the chip's bar blinks. */
+  imminent?: (s: StatusVal) => boolean;
 }
 
 /** `v` = stacks/amount; `t` = seconds left for timed statuses; `e` = a free clock for statuses with a tick. */
