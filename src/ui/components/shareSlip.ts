@@ -24,6 +24,23 @@ export interface ShareSlip {
   stamp: string;
   /** The final deck, identical copies grouped. */
   deck: { card: CardInst; n: number }[];
+  /** Act and floor reached. */
+  act: number;
+  floor: number;
+  /** The hero begged to stay once. */
+  begged: boolean;
+  /** Seconds spent in fights. */
+  time: number;
+  /** Ids of the stationery the run ended with. */
+  relics: string[];
+}
+
+/** Seconds as m:ss, or h:mm:ss from an hour on. */
+function clock(seconds: number): string {
+  const total = Math.round(seconds);
+  const [hh, mm, ss] = [Math.floor(total / 3600), Math.floor(total / 60) % 60, total % 60];
+  const two = (n: number): string => String(n).padStart(2, '0');
+  return hh ? `${hh}:${two(mm)}:${two(ss)}` : `${mm}:${two(ss)}`;
 }
 
 /** What a payslip counts: the end of a run, or a run of the history. */
@@ -66,6 +83,9 @@ const SLIP_Y = TOP + 290;
 const DECK_COLS = 6;
 const DECK_GAP = 12;
 const TICKET_H = 100;
+const RELIC_SIZE = 100;
+const RELIC_GAP = 12;
+const RELICS_PER_ROW = Math.floor((W - 2 * PAD + RELIC_GAP) / (RELIC_SIZE + RELIC_GAP));
 
 /** Reads the design tokens so the image matches the game's inks. */
 function tokens(): Record<'paper' | 'paper2' | 'k' | 'p' | 'b' | 'y' | 'bg' | 'bg2' | 'muted' | 'mutedD' | 'shadow', string> {
@@ -121,12 +141,14 @@ function stamp(g: CanvasRenderingContext2D, text: string, x: number, y: number, 
   g.restore();
 }
 
-/** A shareable portrait image of the run's payslip: the hero, the slip, the final deck and where to play. */
+/** A shareable portrait image of the run's payslip: the hero and how far it got, the slip, the stationery, the final deck and where to play. */
 export async function payslipImage(s: ShareSlip): Promise<Blob | null> {
   await Promise.all(['64px Silkscreen', '40px "Pixel UI"', '600 30px "Chakra Petch"'].map((f) => document.fonts.load(f)));
   const c = tokens();
   const slipH = 150 + s.rows.length * 40;
-  const deckY = SLIP_Y + slipH + 50;
+  const relicY = SLIP_Y + slipH + 50;
+  const relicH = s.relics.length ? 20 + Math.ceil(s.relics.length / RELICS_PER_ROW) * (RELIC_SIZE + RELIC_GAP) + 30 : 0;
+  const deckY = relicY + relicH;
   const H = Math.max(MIN_H, deckY + 20 + Math.ceil(s.deck.length / DECK_COLS) * (TICKET_H + DECK_GAP) + 80);
   const cv = document.createElement('canvas');
   cv.width = W;
@@ -179,14 +201,21 @@ export async function payslipImage(s: ShareSlip): Promise<Blob | null> {
   const tx = PAD + 290;
   g.textAlign = 'left';
   g.fillStyle = c.paper;
-  fitFont(g, t(`hero.${s.hero}.name`).toUpperCase(), W - tx - PAD, 60, 'Silkscreen');
-  g.fillText(t(`hero.${s.hero}.name`).toUpperCase(), tx, top + 80);
-  g.fillStyle = c.mutedD;
-  fitFont(g, t(`hero.${s.hero}.job`), W - tx - PAD, 38, '"Pixel UI"');
-  g.fillText(t(`hero.${s.hero}.job`), tx, top + 130);
+  const name = t(`hero.${s.hero}.name`).toUpperCase();
+  fitFont(g, name, W - tx - PAD, 52, 'Silkscreen');
+  g.fillText(name, tx, top + 50);
   g.fillStyle = c.p;
-  fitFont(g, s.title.toUpperCase(), W - tx - PAD, 56, 'Silkscreen');
-  g.fillText(s.title.toUpperCase(), tx, top + 215);
+  const result = s.title.toUpperCase();
+  fitFont(g, result, W - tx - PAD, 48, 'Silkscreen');
+  g.fillText(result, tx, top + 112);
+  g.fillStyle = c.y;
+  const reach = t('end.share.reach', { a: s.act, n: s.floor }).toUpperCase();
+  fitFont(g, reach, W - tx - PAD, 64, 'Silkscreen');
+  g.fillText(reach, tx, top + 188);
+  g.fillStyle = c.mutedD;
+  const small = `${t('end.share.time', { t: clock(s.time) })} · ${t(s.begged ? 'end.share.begged' : 'end.share.noBeg')}`;
+  fitFont(g, small, W - tx - PAD, 30, '"Pixel UI"');
+  g.fillText(small, tx, top + 236);
 
   // The payslip on paper: rows with dot leaders, NEW RECORD stamps, then the big stamp.
   const sy = SLIP_Y;
@@ -235,6 +264,24 @@ export async function payslipImage(s: ShareSlip): Promise<Blob | null> {
   }
   stamp(g, s.stamp.toUpperCase(), W / 2 + 60, sy + sh - 90, 48, s.won ? c.b : c.p, -0.2);
 
+  // The stationery it ended with.
+  if (s.relics.length) {
+    g.textAlign = 'left';
+    g.fillStyle = c.mutedD;
+    g.font = '32px "Pixel UI"';
+    g.fillText(t('hero.relics').toUpperCase(), PAD, relicY);
+    for (const [i, id] of s.relics.entries()) {
+      const x = PAD + (i % RELICS_PER_ROW) * (RELIC_SIZE + RELIC_GAP);
+      const ry = relicY + 20 + Math.floor(i / RELICS_PER_ROW) * (RELIC_SIZE + RELIC_GAP);
+      g.fillStyle = c.bg2;
+      g.fillRect(x, ry, RELIC_SIZE, RELIC_SIZE);
+      g.lineWidth = 3;
+      g.strokeStyle = c.k;
+      g.strokeRect(x, ry, RELIC_SIZE, RELIC_SIZE);
+      await drawSprite(g, `relic.${id}`, x + 4, ry + 4, RELIC_SIZE - 8);
+    }
+  }
+
   // The final deck: one ticket per card, copies counted.
   const dy = deckY;
   g.textAlign = 'left';
@@ -281,6 +328,9 @@ export async function payslipImage(s: ShareSlip): Promise<Blob | null> {
   g.fillStyle = c.mutedD;
   g.font = '30px "Pixel UI"';
   g.fillText(`${location.host}${location.pathname}`.replace(/\/$/, ''), W / 2, H - 30);
+  g.textAlign = 'right';
+  g.font = '24px "Pixel UI"';
+  g.fillText(`v${__APP_VERSION__}`, W - PAD, H - 30);
 
   return new Promise((resolve) => cv.toBlob(resolve, 'image/png'));
 }

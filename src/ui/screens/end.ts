@@ -1,4 +1,5 @@
 import { type TKey, t } from '../../core/i18n';
+import { BEG_FLAG } from '../../data/config';
 import { sfx } from '../../audio/sfx';
 import type { HeroId } from '../../game/types';
 import type { RunRecord } from '../../game/meta';
@@ -49,6 +50,11 @@ export function endScreen(run: RunState, won: boolean, end: RunEnd, onAgain: (he
     won,
     stamp: won ? t('end.slip.paid') : t('end.slip.void'),
     deck: groupCopies(sortCards(run.deck)),
+    act: node.act,
+    floor: node.floor,
+    begged: !!run.relicFlags[BEG_FLAG],
+    time: run.stats.time,
+    relics: run.relics,
   };
   // The image is drawn ahead, so the share sheet opens right on the tap (browsers want it within the gesture).
   let image: Promise<Blob | null> | null = null;

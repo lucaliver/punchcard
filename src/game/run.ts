@@ -37,10 +37,12 @@ export interface RunStats {
   elites: number;
   cardsPlayed: number;
   damageTaken: number;
+  /** Seconds spent in fights (the run's play time). */
+  time: number;
 }
 
 /** Shape of the saved run; a save of another version is dropped. */
-const SAVE_VERSION = 5;
+const SAVE_VERSION = 6;
 
 export interface RunState {
   version: number;
@@ -155,7 +157,7 @@ export function newRun(hero: HeroId, seed: number, scripted: readonly number[] =
     current: 0,
     path: [0],
     cleared: false,
-    stats: { kills: 0, elites: 0, cardsPlayed: 0, damageTaken: 0 },
+    stats: { kills: 0, elites: 0, cardsPlayed: 0, damageTaken: 0, time: 0 },
     money: 0,
     skips: 0,
     uid: peekUid(),
@@ -364,6 +366,7 @@ export function applyCombat(run: RunState, combat: Combat): void {
   run.stats.damageTaken += Math.max(0, run.hp - hp);
   run.hp = hp;
   run.stats.cardsPlayed += combat.cardsPlayed;
+  run.stats.time += combat.time;
   const node = currentNode(run);
   recordFight({
     tier: combat.enemy.def.tier,
@@ -720,8 +723,8 @@ function parseRun(raw: unknown): RunState | null {
   if (!isObj(relicFlags) || !Object.values(relicFlags).every(isNum)) return null;
   if (!Array.isArray(nodes) || !nodes.length || !nodes.every((n, i) => isNode(n, i, nodes.length))) return null;
   if (!isNum(current) || !isIndexes([current], nodes.length) || !isIndexes(path, nodes.length) || !isObj(stats)) return null;
-  const { kills, elites, cardsPlayed, damageTaken } = stats;
-  if (!isNum(kills) || !isNum(elites) || !isNum(cardsPlayed) || !isNum(damageTaken)) return null;
+  const { kills, elites, cardsPlayed, damageTaken, time } = stats;
+  if (!isNum(kills) || !isNum(elites) || !isNum(cardsPlayed) || !isNum(damageTaken) || !isNum(time)) return null;
   if (Math.max(...nodes.map((n) => n.act)) !== ACTS) return null;
   const offers = Array.isArray(reward)
     ? reward.filter((o): o is { id: string; up: boolean } => isObj(o) && typeof o.id === 'string' && !!CARDS[o.id] && typeof o.up === 'boolean')
@@ -740,7 +743,7 @@ function parseRun(raw: unknown): RunState | null {
     current,
     path,
     cleared,
-    stats: { kills, elites, cardsPlayed, damageTaken },
+    stats: { kills, elites, cardsPlayed, damageTaken, time },
     money: isNum(money) ? money : 0,
     skips: isNum(skips) ? skips : 0,
     uid,
