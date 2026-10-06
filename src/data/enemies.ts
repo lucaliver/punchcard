@@ -741,12 +741,12 @@ const defs: EnemyDef[] = [
     ruleBreaker: true,
   },
   {
-    // Three directors in one chassis: each third of its HP you take, one more loses patience.
+    // Three directors in one chassis: it starts angry (Block, Strength); each third of its HP you take, one more loses patience (faster, then the belt is cut).
     id: 'theBoard',
     act: 3,
     tier: 'boss',
     hp: 260,
-    block: 40,
+    block: 70,
     art: 'theBoard',
     main: atk('gavel', 9, 6, ramp),
     every: 2,
@@ -756,7 +756,7 @@ const defs: EnemyDef[] = [
       { id: 'quarterlyTargets', intent: 'curse', windup: 7, curse: [{ id: 'deadline', n: 2, to: 'belt' }] },
       atk('liquidation', 26, 12, { intent: 'charge' }),
     ],
-    start: [{ id: 'boardroom' }],
+    start: [{ id: 'boardroom' }, { id: 'strength', v: 2 }],
   },
 ];
 

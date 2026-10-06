@@ -67,9 +67,8 @@ const FLICKER_WARN = 3;
 export const SMILE_HEAL = 1;
 /** Paradigm Shift: the belt turns around each time the enemy loses another 1/this of its max HP. */
 export const PARADIGM_TURNS = 4;
-/** The Board: what the first director to leave brings (Block, Strength); the second one speeds the whole board up. */
-const BOARD_BLOCK = 30;
-const BOARD_STRENGTH = 2;
+/** The Board: the second director speeds the whole board up, the third one restructures: the belt is cut to one row for this long (s). */
+export const BOARD_CUT_TIME = 15;
 
 /** Forty Tabs Open: seconds between two Multitasking charges. */
 export const TABS_EVERY = 4;
@@ -361,6 +360,8 @@ const defs: StatusDef[] = [
   { id: 'crunch', tone: 'purple', kind: 'timed', good: false, icon: 'siren', beltMul: CONFIG.beltCrunch },
   // Every card turns black: only the art and the cost are left to go by.
   { id: 'blackout', tone: 'purple', kind: 'timed', good: false, icon: 'bulbOff', hidesCards: true },
+  // Restructured: the belt is cut to one row, and opens again when it runs out.
+  { id: 'restructured', tone: 'purple', kind: 'timed', good: false, icon: 'lane', onEnd: (c) => c.openBeltRows() },
   { id: 'slowdown', tone: 'purple', kind: 'timed', good: false, icon: 'cone', beltMul: CONFIG.beltSlow },
   // Enemy passives (permanent traits).
   {
@@ -635,7 +636,7 @@ const defs: StatusDef[] = [
       c.applyStatus(side, 'strength', 1);
     },
   },
-  // The Board: every third of its HP you take, one more director loses patience (`mem.thirds` counts them).
+  // The Board: every third of its HP you take, one more director loses patience (`mem.thirds` counts them): the board speeds up, then the belt is cut to one row.
   {
     id: 'boardroom',
     tone: 'purple',
@@ -649,10 +650,11 @@ const defs: StatusDef[] = [
       const thirds = Math.min(2, Math.floor((3 * (e.maxHp - e.hp)) / e.maxHp));
       for (let n = e.mem.thirds ?? 0; n < thirds; n++) {
         c.say(`status.boardroom.speech${n + 1}`);
-        if (n === 0) {
-          c.gainBlock(side, BOARD_BLOCK);
-          c.applyStatus(side, 'strength', BOARD_STRENGTH);
-        } else c.applyStatus(side, 'haste', 1, 9999);
+        if (n === 0) c.applyStatus(side, 'haste', 1, 9999);
+        else {
+          c.closeBeltRows(1);
+          c.applyStatus('hero', 'restructured', 1, BOARD_CUT_TIME);
+        }
       }
       e.mem.thirds = Math.max(e.mem.thirds ?? 0, thirds);
     },

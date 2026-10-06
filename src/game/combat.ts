@@ -593,7 +593,10 @@ export class Combat {
       if (def.kind === 'timed' && s.t > 0) {
         if (this.isKept(side, id)) continue;
         s.t -= dt;
-        if (s.t <= 0) delete f.statuses[id];
+        if (s.t <= 0) {
+          delete f.statuses[id];
+          def.onEnd?.(this, side);
+        }
       } else if (def.kind === 'dot' && s.v > 0) {
         hasDot = true;
       }

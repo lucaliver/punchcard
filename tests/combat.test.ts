@@ -3,7 +3,7 @@ import { Combat, type CombatSetup } from '../src/game/combat';
 import { ANCHOR_POS, CONFIG, EXPIRE_POS, rewardUpgradeChance } from '../src/data/config';
 import { ENEMIES, enemiesFor } from '../src/data/enemies';
 import { HEROES, VIRULENCE_START } from '../src/data/heroes';
-import { COFFEE_EVERY, FLICKER_EVERY, FORKLIFT_BLOCK, LUNCH_EVERY, SMILE_HEAL, STATUSES, TABS_EVERY } from '../src/data/statuses';
+import { BOARD_CUT_TIME, COFFEE_EVERY, FLICKER_EVERY, FORKLIFT_BLOCK, LUNCH_EVERY, SMILE_HEAL, STATUSES, TABS_EVERY } from '../src/data/statuses';
 import { CARD_LIST, CARDS, RARITY_ORDER, cardCostOf, cardKeywordsOf } from '../src/data/cards';
 import { HEXES } from '../src/data/hexes';
 import { RELICS } from '../src/data/relics';
@@ -2612,17 +2612,22 @@ describe('act 3 elites and boss', () => {
     }
   });
 
-  it('every third of its HP the Board loses, a director loses patience', () => {
+  it('the Board starts angry, then every third of its HP it loses brings haste, then a belt cut to one row for a while', () => {
     const c = setup({ enemy: { ...ENEMIES.theBoard, main: { ...ENEMIES.theBoard.main, windup: 999 } } });
     run(c, CONFIG.introTime);
-    c.enemy.block = 0;
-    const strength = c.stacks('enemy', 'strength');
-    c.damage('hero', 'enemy', Math.ceil(c.enemy.maxHp / 3) + 5, { raw: true }, 'hero');
-    expect(c.stacks('enemy', 'strength')).toBeGreaterThan(strength);
+    expect(c.stacks('enemy', 'strength')).toBe(2);
     expect(c.has('enemy', 'haste')).toBe(false);
     c.enemy.block = 0;
-    c.damage('hero', 'enemy', Math.ceil(c.enemy.maxHp / 3), { raw: true }, 'hero');
+    c.damage('hero', 'enemy', Math.ceil(c.enemy.maxHp / 3) + 5, { raw: true }, 'hero');
     expect(c.has('enemy', 'haste')).toBe(true);
+    expect(c.rowsOpen).toBe(CONFIG.beltRows);
+    c.enemy.block = 0;
+    c.damage('hero', 'enemy', Math.ceil(c.enemy.maxHp / 3), { raw: true }, 'hero');
+    expect(c.rowsOpen).toBe(1);
+    expect(c.has('hero', 'restructured')).toBe(true);
+    run(c, BOARD_CUT_TIME + 1);
+    expect(c.has('hero', 'restructured')).toBe(false);
+    expect(c.rowsOpen).toBe(CONFIG.beltRows);
   });
 
   it('Flow State keeps Multitasking up, Cold Sweat chills with every Poison, Voodoo Pin petrifies and discounts', () => {
