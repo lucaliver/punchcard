@@ -513,33 +513,42 @@ ${shadow}
 <g fill="#ff3d9a" ${OUT}><circle cx="160" cy="62" r="7"/><circle cx="160" cy="88" r="7"/></g>
 <g fill="#1b1830"><rect x="152" y="110" width="16" height="4"/><rect x="152" y="120" width="16" height="4"/><rect x="152" y="130" width="16" height="4"/></g>`;
 
-/** Change Manager: a grinning pale ghoul in a slim suit and headset, giant scissors in one hand, pointing at a chart going down. */
+/** Change Manager: an agile archmage in a purple robe with pivot-arrow runes, a pointy hat covered in sticky notes, white sneakers under the hem, a kanban-board staff, a DISRUPT mug and a floating backlog grimoire. */
 const changeManager = `
-<defs>${lg('chm-s', '#8a84a0', '#3a3450')}${lg('chm-f', '#e0f0c0', '#98b878')}</defs>
 ${shadow}
-<path d="M142 188l12-74M180 188l-12-74" stroke="#6a4a2a" stroke-width="6"/>
-<rect x="128" y="56" width="60" height="64" fill="#f6f0e4" ${OUT}/>
-<g fill="#1c5fd0"><rect x="136" y="72" width="11" height="40"/><rect x="151" y="86" width="11" height="26"/><rect x="166" y="100" width="11" height="12"/></g>
-<path d="M136 66l38 36" stroke="#ff3d9a" stroke-width="5"/><path d="M178 94v12h-12z" fill="#ff3d9a"/>
-<path d="M58 188c0-48 16-80 42-80s42 32 42 80z" fill="url(#chm-s)" ${OUT}/>
-<path d="M86 110l14 32 14-32z" fill="#f6f0e4" ${OUT}/>
-<path d="M96 116h8l5 36-9 9-9-9z" fill="#ff3d9a" ${OUT}/>
-<path d="M84 112l-8 30 12-6M116 112l8 30-12-6" fill="none" stroke="#1b1830" stroke-width="3"/>
-<g class="limb">
-<path d="M70 130c-14 8-20 18-18 28" stroke="#120e18" stroke-width="12" fill="none" stroke-linecap="round"/><path d="M70 130c-14 8-20 18-18 28" stroke="#5a5470" stroke-width="7" fill="none" stroke-linecap="round"/>
-<path d="M54 156L14 118l-4 6 38 36z" fill="#c8c0d8" ${OUT}/><path d="M54 156L10 160l0 7 44-3z" fill="#c8c0d8" ${OUT}/>
-<circle cx="60" cy="166" r="7" fill="none" stroke="#ff3d9a" stroke-width="5"/><circle cx="64" cy="152" r="7" fill="none" stroke="#ff3d9a" stroke-width="5"/>
-</g>
-<path d="M130 126c10-8 16-22 12-36" stroke="#120e18" stroke-width="12" fill="none" stroke-linecap="round"/><path d="M130 126c10-8 16-22 12-36" stroke="#5a5470" stroke-width="7" fill="none" stroke-linecap="round"/>
-<circle cx="142" cy="86" r="7" fill="url(#chm-f)" ${OUT}/>
-<ellipse cx="100" cy="72" rx="27" ry="33" fill="url(#chm-f)" ${OUT}/>
-<path d="M72 64c0-28 16-38 30-38s28 10 28 28c-12-14-32-16-58 10z" fill="#1b1830" ${OUT}/>
-<path d="M70 66c0-30 60-30 60 0" stroke="#1b1830" stroke-width="4" fill="none"/>
-<path d="M72 74c-2 14 6 22 18 22" stroke="#1b1830" stroke-width="3" fill="none"/><circle cx="91" cy="96" r="3.5" fill="#1b1830"/>
-<path d="M80 62l14 6M120 62l-14 6" stroke="#120e18" stroke-width="4" stroke-linecap="round"/>
-<g class="eye"><ellipse cx="88" cy="72" rx="6" ry="4" fill="#ffd900" ${OUT}/><ellipse cx="112" cy="72" rx="6" ry="4" fill="#ffd900" ${OUT}/><circle cx="89" cy="72" r="2" fill="#120e18"/><circle cx="111" cy="72" r="2" fill="#120e18"/></g>
-<path d="M80 86c10 12 30 12 40 0z" fill="#f6f0e4" ${OUT}/>
-<path d="M88 87v6M96 88v7M104 88v7M112 87v6" stroke="#120e18" stroke-width="2"/>`;
+<!-- staff topped with a kanban board -->
+<rect x="159" y="46" width="7" height="142" fill="#6a4a2a" ${OUT}/>
+<rect x="138" y="8" width="50" height="42" fill="#f6f0e4" ${OUT}/><path d="M154 10v38M170 10v38" stroke="#120e18" stroke-width="2.5"/>
+<g ${OUT}><rect x="142" y="14" width="9" height="9" fill="#ffd900"/><rect x="142" y="27" width="9" height="9" fill="#ff3d9a"/><rect x="158" y="14" width="9" height="9" fill="#9ab8f0"/><rect x="174" y="14" width="9" height="9" fill="#ff3d9a"/><rect x="174" y="27" width="9" height="9" fill="#ffd900"/><rect x="174" y="40" width="9" height="7" fill="#9ab8f0"/></g>
+<!-- sneakers under the hem -->
+<path d="M62 180h32l4 10H58zM106 180h32l4 10h-40z" fill="#f6f0e4" ${OUT}/><path d="M58 188h40M102 188h40" stroke="#ff3d9a" stroke-width="3"/>
+<!-- robe with pivot-arrow runes -->
+<path d="M52 182c0-52 12-80 48-80s48 28 48 80z" fill="#5a3fb0" ${OUT}/>
+<path d="M92 112l8 70 8-70z" fill="#3a2480"/>
+<path d="M62 160c8-8 14-8 20 0M62 160l2-8M62 160l8 0M138 160c-8-8-14-8-20 0M138 160l-2-8M138 160l-8 0M70 134c4-6 8-6 12 0M118 134c4-6 8-6 12 0" stroke="#ffd900" stroke-width="3" fill="none" stroke-linecap="round"/>
+<path d="M60 146h80v8H60z" fill="#ffd900" ${OUT}/><rect x="94" y="144" width="12" height="12" fill="#ff3d9a" ${OUT}/>
+<!-- left arm: a DISRUPT mug, the backlog grimoire floating above it -->
+<g class="limb"><path d="M62 112c-16 6-22 20-18 32l12-2c-2-8 0-14 8-20z" fill="#5a3fb0" ${OUT}/>
+<circle cx="48" cy="146" r="8" fill="#ffd8b8" ${OUT}/>
+<rect x="30" y="140" width="22" height="26" fill="#f6f0e4" ${OUT}/><path d="M52 146h6c4 0 4 12 0 12h-6" fill="none" stroke="#120e18" stroke-width="3"/><rect x="30" y="148" width="22" height="7" fill="#ff3d9a"/>
+<path d="M36 134c-3-4 3-6 0-10M44 134c-3-4 3-6 0-10" stroke="#f6f0e4" stroke-width="3" fill="none" stroke-linecap="round"/></g>
+<g transform="rotate(-12 34 84)"><path d="M10 72h24v30H10zM34 72h24v30H34z" fill="#f6f0e4" ${OUT}/><path d="M10 72l-4 4v30l4-4zM58 72l4 4v30l-4-4z" fill="#3a2480" ${OUT}/><path d="M15 80h14M15 87h14M15 94h10M39 80h14M39 87h14M39 94h8" stroke="#1c5fd0" stroke-width="2.5"/></g>
+<path d="M18 56l3 6 6 3-6 3-3 6-3-6-6-3 6-3zM60 62l2 4 4 2-4 2-2 4-2-4-4-2 4-2z" fill="#ffd900"/>
+<!-- right arm on the staff -->
+<path d="M136 112c14 4 22 12 24 24l-12 2c-2-8-6-12-14-14z" fill="#5a3fb0" ${OUT}/><circle cx="162" cy="134" r="8" fill="#ffd8b8" ${OUT}/>
+<!-- head, goatee -->
+<ellipse cx="100" cy="78" rx="26" ry="28" fill="#ffd8b8" ${OUT}/>
+<path d="M92 98c4 10 12 10 16 0l-2 16c-4 4-8 4-12 0z" fill="#6a3a1a" ${OUT}/>
+<path d="M82 90c10 10 26 10 36 0z" fill="#120e18" ${OUT}/><path d="M86 91h28v4H86z" fill="#f6f0e4"/>
+<path d="M78 66l14 4M122 66l-14 4" stroke="#120e18" stroke-width="4" stroke-linecap="round"/>
+<g ${OUT}><ellipse cx="88" cy="76" rx="8" ry="7" fill="#f6f0e4"/><ellipse cx="112" cy="76" rx="8" ry="7" fill="#f6f0e4"/></g>
+<g class="eye" fill="#120e18"><circle cx="90" cy="77" r="3.5"/><circle cx="110" cy="77" r="3.5"/></g>
+<!-- pointy hat with sticky notes -->
+<ellipse cx="100" cy="58" rx="42" ry="9" fill="#ff3d9a" ${OUT}/>
+<path d="M68 56C78 34 92 18 112 8l12 6C112 22 112 38 132 56z" fill="#ff3d9a" ${OUT}/>
+<path d="M70 52c20 6 44 6 62 0v6c-20 6-44 6-62 0z" fill="#ffd900" ${OUT}/>
+<g ${OUT}><rect x="88" y="26" width="11" height="11" fill="#ffd900" transform="rotate(-10 93 31)"/><rect x="104" y="30" width="11" height="11" fill="#9ab8f0" transform="rotate(8 109 35)"/></g>
+<path d="M92 29h5M91 33h5M107 33h5" stroke="#120e18" stroke-width="1.5"/>`;
 
 /** Act 2 stage prop: an office water cooler, upside-down jug on top (CSS adds the rising bubble). */
 const waterCooler = `

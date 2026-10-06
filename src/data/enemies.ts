@@ -432,15 +432,15 @@ const defs: EnemyDef[] = [
     ruleBreaker: true,
   },
   {
-    // Streamlines your workflow: at half HP one belt row is let go, with the cards on it.
+    // An agile archmage who streamlines your workflow: at half HP one belt row is let go, with the cards on it.
     id: 'changeManager',
     act: 2,
     tier: 'normal',
     hp: 90,
     art: 'changeManager',
-    main: atk('bestPractice', 7, 7),
+    main: atk('sprintBolt', 7, 7),
     every: 2,
-    specials: [{ id: 'synergies', intent: 'defend', windup: 6, block: 10, status: [gainStrength] }, atk('rightsizing', 17, 10, { intent: 'charge' })],
+    specials: [{ id: 'pivotWard', intent: 'defend', windup: 6, block: 10, status: [gainStrength] }, atk('rightsizing', 17, 10, { intent: 'charge' })],
     halfSpeech: true,
     onHalf: (c) => c.closeBeltRows(1),
   },
