@@ -76,63 +76,72 @@ ${shadow}
 <path d="M84 76h32v6H84z" fill="#efe6cc" ${OUT}/><path d="M90 76v6M96 76v6M102 76v6M108 76v6" stroke="#1a1422" stroke-width="1.5"/>
 <path d="M118 14l-4 8 6 6-4 8" stroke="#1a1422" stroke-width="2.5" fill="none"/>`;
 
-/** Toxic Coworker: a bloated toad on the phone, gossiping, badge on a lanyard, a colleague half-swallowed on its back. */
+/** Toxic Coworker: a smug purple toad on the phone, an iced coffee in the other hand, bubbles of gossip floating about and poison dripping from the smirk. */
 const toxicCoworker = `
-<defs>${lg('tc-b', '#5a9a3a', '#16402a')}${lg('tc-bn', '#fbf4df', '#e8d8a8')}</defs>
+<defs>${rg('tc-b', '#c898f8', '#4a1a90')}${rg('tc-bl', '#f4e4ff', '#b090e0')}${rg('tc-w', '#d8ff7a', '#4a9a20')}</defs>
 ${shadow}
-<path d="M150 70l20-26 6 2 2-8 8 4-4 6 4 4-8 4-2-4-18 24z" fill="url(#tc-bn)" ${OUT}/>
-<path d="M12 186c-4-28 8-46 30-48 10 14 12 32 8 48zM188 186c4-28-8-46-30-48-10 14-12 32-8 48z" fill="url(#tc-b)" ${OUT}/>
-<path d="M22 168c-6-44 22-84 78-86 56 2 84 42 78 86-4 16-30 20-78 20s-74-4-78-20z" fill="url(#tc-b)" ${OUT}/>
-<path d="M56 174c10-12 78-12 88 0-10 10-78 10-88 0z" fill="#e8d070"/>
-<path d="M120 92c0-12 10-20 22-20s22 8 22 20c0 8-4 12-8 14v6h-28v-6c-4-2-8-6-8-14z" fill="url(#tc-bn)" ${OUT}/>
-<path d="M128 90l8-2 2 8-8 2zM148 88l8 2-2 8-8-2z" fill="#1a1422"/><path d="M140 100l2 4h-4z" fill="#1a1422"/>
-<g fill="#ff8ac8" ${OUT}><circle cx="166" cy="128" r="7"/><circle cx="60" cy="104" r="5"/><circle cx="176" cy="154" r="5"/></g>
-<g fill="#16402a"><circle cx="84" cy="98" r="3"/><circle cx="150" cy="146" r="3"/><circle cx="106" cy="92" r="2.5"/></g>
-<circle cx="62" cy="92" r="23" fill="url(#tc-b)" ${OUT}/><circle cx="102" cy="78" r="13" fill="url(#tc-b)" ${OUT}/>
-<g class="eye">
-<circle cx="62" cy="93" r="15" fill="#ffd900" ${OUT}/><rect x="48" y="93" width="28" height="5" fill="#1a1422"/>
-<ellipse cx="102" cy="78" rx="8" ry="7" fill="#ff3d9a" ${OUT}/><rect x="100" y="72" width="4" height="12" fill="#1a1422"/>
-</g>
-<path d="M44 84c8-10 28-12 38-2l-4 3c-10-4-24-3-32 4z" fill="#16402a" ${OUT}/>
-<path d="M30 124c32 24 108 24 140 0-6 22-36 36-70 36s-64-14-70-36z" fill="#1a1422" ${OUT}/>
-<path d="M44 132l5 9 5-7zM60 138l4 10 5-8zM78 142l3 8 5-7zM116 142l5 7 3-8zM132 139l5 8 4-10zM150 133l5 7 5-9z" fill="#fbf4df"/>
-<path d="M104 150c0 16 4 26 10 30 7-2 9-12 7-30z" fill="#ff3d9a" ${OUT}/>
-<path d="M114 178c0 4 1 7 3 8 2-1 3-4 2-8z" fill="#c8e86a" ${OUT}/>
-<!-- lanyard and ID badge -->
-<path d="M62 156l12 12 12-12" stroke="#1c5fd0" stroke-width="4" fill="none"/>
-<rect x="62" y="166" width="24" height="20" rx="2" fill="#f6f0e4" ${OUT}/><rect x="66" y="170" width="8" height="8" fill="#ff3d9a"/><path d="M76 172h6M76 178h6" stroke="#1b1830" stroke-width="2"/>
-<!-- webbed hand holding a phone to its head -->
-<path d="M30 160c-10-10-14-26-8-40l12 2c-4 10-2 22 6 30z" fill="url(#tc-b)" ${OUT}/>
-<g class="limb"><rect x="14" y="84" width="20" height="36" rx="4" fill="#1b1830" ${OUT}/><rect x="18" y="90" width="12" height="22" fill="#1c5fd0"/><rect x="20" y="92" width="4" height="4" fill="#fff" opacity=".7"/></g>
-<path d="M22 118c-6 0-10 6-8 12l12 2c4-4 4-10 0-14z" fill="url(#tc-b)" ${OUT}/>
-<path d="M138 188c2-10 6-16 14-16s14 6 14 16z" fill="url(#tc-b)" ${OUT}/><path d="M144 186v-6M152 186v-8M160 186v-6" stroke="#1a1422" stroke-width="2"/>`;
+<!-- gossip bubbles -->
+<g class="limb"><ellipse cx="150" cy="30" rx="26" ry="16" fill="#f6f0e4" ${OUT}/><path d="M132 42l-6 12 16-8z" fill="#f6f0e4" ${OUT}/><circle cx="138" cy="30" r="4" fill="#120e18"/><circle cx="150" cy="30" r="4" fill="#120e18"/><circle cx="162" cy="30" r="4" fill="#120e18"/>
+<ellipse cx="50" cy="26" rx="22" ry="14" fill="#d8ff7a" ${OUT}/><path d="M64 36l8 10-14-4z" fill="#d8ff7a" ${OUT}/><path d="M38 26h24M42 32h16" stroke="#120e18" stroke-width="3"/></g>
+<!-- legs -->
+<path d="M44 176c-8 4-8 12 2 14l20-2 2-12zM156 176c8 4 8 12-2 14l-20-2-2-12z" fill="url(#tc-b)" ${OUT}/>
+<!-- fat body -->
+<ellipse cx="100" cy="136" rx="70" ry="50" fill="url(#tc-b)" ${OUT}/>
+<ellipse cx="100" cy="150" rx="42" ry="32" fill="url(#tc-bl)" ${OUT}/>
+<g fill="url(#tc-w)" ${OUT}><circle cx="46" cy="118" r="5"/><circle cx="154" cy="112" r="6"/><circle cx="62" cy="104" r="4"/><circle cx="142" cy="98" r="4"/><circle cx="168" cy="136" r="4"/></g>
+<!-- lanyard and badge -->
+<path d="M82 100l18 30 18-30" stroke="#ff3d9a" stroke-width="4" fill="none"/><rect x="88" y="128" width="24" height="18" rx="2" fill="#f6f0e4" ${OUT}/><rect x="92" y="132" width="8" height="8" fill="#ff3d9a"/><path d="M103 133h6M103 139h6" stroke="#120e18" stroke-width="2"/>
+<!-- left hand: iced coffee with a straw -->
+<path d="M46 148c-6 6-6 14 0 18l12-6z" fill="url(#tc-b)" ${OUT}/>
+<g class="limb"><path d="M18 120h26l-3 38H21z" fill="#f6f0e4" ${OUT}/><path d="M18 120h26l-1 8H19z" fill="#ff3d9a" ${OUT}/><path d="M32 120l4-20 8-2" stroke="#120e18" stroke-width="4" fill="none"/><path d="M24 138h14M24 146h14" stroke="#9a6a3a" stroke-width="4"/></g>
+<circle cx="46" cy="150" r="8" fill="url(#tc-b)" ${OUT}/>
+<!-- right hand: the phone -->
+<g class="limb"><rect x="150" y="104" width="24" height="42" rx="4" fill="#120e18" ${OUT}/><rect x="154" y="110" width="16" height="28" fill="#1c5fd0"/><path d="M158 118h8M158 124h6" stroke="#f6f0e4" stroke-width="2.5"/></g>
+<circle cx="156" cy="148" r="8" fill="url(#tc-b)" ${OUT}/>
+<!-- head: bulging half-lidded eyes, a wide smirk, poison drip -->
+<circle cx="64" cy="76" r="24" fill="url(#tc-b)" ${OUT}/><circle cx="136" cy="76" r="24" fill="url(#tc-b)" ${OUT}/>
+<ellipse cx="100" cy="98" rx="62" ry="36" fill="url(#tc-b)" ${OUT}/>
+<g ${OUT}><circle cx="64" cy="76" r="16" fill="#f6f0e4"/><circle cx="136" cy="76" r="16" fill="#f6f0e4"/></g>
+<g class="eye"><rect x="62" y="68" width="5" height="16" rx="2" fill="#ff3d9a" ${OUT}/><rect x="133" y="68" width="5" height="16" rx="2" fill="#ff3d9a" ${OUT}/></g>
+<path d="M46 76a18 18 0 0 1 36 0c-10-6-26-6-36 0zM118 76a18 18 0 0 1 36 0c-10-6-26-6-36 0z" fill="#6a2ab0" ${OUT}/>
+<path d="M40 112c20 16 100 16 120 0-4 22-30 30-60 30s-56-8-60-30z" fill="#120e18" ${OUT}/>
+<path d="M60 124c20 8 60 8 80 0" stroke="#f6f0e4" stroke-width="4" fill="none"/>
+<path d="M150 118c4 8 6 14 3 18-4-2-6-8-3-18z" fill="url(#tc-w)" ${OUT}/><path d="M156 138c2 4 2 8 0 10-3-2-3-6 0-10z" fill="url(#tc-w)" ${OUT}/>
+<circle cx="86" cy="104" r="3" fill="#120e18"/><circle cx="114" cy="104" r="3" fill="#120e18"/>`;
 
-/** Team Leader: a hooded cult leader with a headset, a manic grin, a thumbs-up and a flip chart where the line only goes up. */
+/** Team Leader: a team-building mascot in a stretched polo, headset on, megaphone in one hand and a giant foam thumbs-up in the other, grinning far too much. */
 const teamLeader = `
-<defs>${lg('sc-r', '#b070d8', '#4a2090')}${lg('sc-h', '#c080e0', '#5a2aa0')}${glow('sc-g', '#ff4af0')}</defs>
+<defs>${rg('sc-p', '#ffc860', '#c05a10')}${rg('sc-f', '#ffe0c8', '#d89068')}${rg('sc-h', '#ffec6a', '#e0a000')}</defs>
 ${shadow}
-<!-- flip chart on an easel -->
-<path d="M24 140l-10 48M58 140l10 48M41 140v44" stroke="#6a4a2a" stroke-width="6"/>
-<rect x="10" y="92" width="62" height="52" fill="#f6f0e4" ${OUT}/><path d="M10 92h62" stroke="#1b1830" stroke-width="6"/>
-<path d="M20 136v-10M32 136v-16M44 136v-24M56 136v-32" stroke="#1c5fd0" stroke-width="7"/>
-<path d="M16 124l14-10 10 6 22-18" stroke="#ff3d9a" stroke-width="5" fill="none"/><path d="M54 98h12v12z" fill="#ff3d9a"/>
-<path d="M40 186c4-50 20-90 60-96 40 6 56 46 60 96z" fill="url(#sc-r)" ${OUT}/>
-<path d="M100 96v90" stroke="#b58ae0" stroke-width="3" opacity=".6"/>
-<!-- name sticker -->
-<rect x="110" y="120" width="30" height="20" fill="#f6f0e4" ${OUT}/><rect x="110" y="120" width="30" height="7" fill="#ff3d9a"/><path d="M116 133h18" stroke="#1b1830" stroke-width="2.5"/>
-<!-- left sleeve holding a pointer to the chart -->
-<path d="M52 150c-6-10-4-22 6-30l10 8c-6 6-6 12-4 18z" fill="url(#sc-r)" ${OUT}/><path d="M58 124l-16-16" stroke="#1b1830" stroke-width="4"/>
-<!-- right sleeve raised in a thumbs-up -->
-<path d="M150 146c12-10 18-26 14-44l-14-2c2 14-2 26-12 34z" fill="url(#sc-r)" ${OUT}/>
-<g class="limb"><rect x="146" y="82" width="22" height="22" rx="5" fill="#ffc890" ${OUT}/><rect x="150" y="64" width="9" height="20" rx="4" fill="#ffc890" ${OUT}/></g>
-<!-- hood, shadowed face, grin, headset -->
-<path d="M58 30c10-16 74-16 84 0 10 20 6 60-6 76H64c-12-16-16-56-6-76z" fill="url(#sc-h)" ${OUT}/>
-<path d="M72 50c8-10 48-10 56 0 6 12 4 36-4 48H76c-8-12-10-36-4-48z" fill="#0c0612"/>
-${eyes(86, 114, 66, 4.5, '#ff6af5', 'sc-g')}
-<path d="M78 78c8 14 36 14 44 0z" fill="#f6f0e4" ${OUT}/><path d="M86 79v8M94 79v10M102 79v10M110 79v9M117 79v6" stroke="#1b1830" stroke-width="2"/>
-<path d="M58 40c10-18 74-18 84 0" stroke="#1b1830" stroke-width="5" fill="none"/>
-<rect x="52" y="40" width="12" height="22" rx="4" fill="#1c5fd0" ${OUT}/><rect x="136" y="40" width="12" height="22" rx="4" fill="#1c5fd0" ${OUT}/>
-<path d="M60 62c2 16 8 24 18 26" stroke="#1b1830" stroke-width="4" fill="none"/><circle cx="80" cy="88" r="5" fill="#ff3d9a" ${OUT}/>`;
+<!-- cheering sparkles -->
+<g fill="#ffd900" ${OUT}><path d="M30 44l4 10 10 4-10 4-4 10-4-10-10-4 10-4z"/><path d="M170 30l3 7 7 3-7 3-3 7-3-7-7-3 7-3z"/></g>
+<!-- stubby legs and sneakers -->
+<path d="M72 168h20v14H72zM108 168h20v14h-20z" fill="#3a3450" ${OUT}/>
+<path d="M62 180h34v10H62zM104 180h34v10h-34z" fill="#f6f0e4" ${OUT}/><path d="M62 186h34M104 186h34" stroke="#ff3d9a" stroke-width="3"/>
+<!-- stretched polo -->
+<ellipse cx="100" cy="136" rx="54" ry="46" fill="url(#sc-p)" ${OUT}/>
+<path d="M60 128c28 6 52 6 80 0M58 146c28 6 56 6 84 0" stroke="#fff4d0" stroke-width="5" fill="none"/>
+<path d="M82 98l18 16 18-16-6-6-12 10-12-10z" fill="#f6f0e4" ${OUT}/>
+<!-- lanyard with whistle and badge -->
+<path d="M84 104l16 34 16-34" stroke="#1c5fd0" stroke-width="4" fill="none"/><rect x="88" y="136" width="24" height="18" rx="2" fill="#f6f0e4" ${OUT}/><path d="M100 140l2 4 4 1-3 3 1 4-4-2-4 2 1-4-3-3 4-1z" fill="#ff3d9a"/>
+<!-- left arm: megaphone with sound waves -->
+<path d="M56 124c-10 4-14 14-10 24l12-4c-2-6 0-10 6-12z" fill="url(#sc-p)" ${OUT}/>
+<g class="limb"><path d="M22 118l-12-8v36l12-8z" fill="#f6f0e4" ${OUT}/><path d="M22 118l30 8v14l-30 6z" fill="#ff3d9a" ${OUT}/><rect x="50" y="126" width="12" height="14" fill="#120e18" ${OUT}/></g>
+<circle cx="56" cy="148" r="9" fill="url(#sc-f)" ${OUT}/>
+<!-- right arm: giant foam thumbs-up -->
+<path d="M140 124c12-4 20-14 22-26l-12-2c-2 10-6 16-14 20z" fill="url(#sc-p)" ${OUT}/>
+<g class="limb" transform="rotate(10 168 100)"><rect x="146" y="84" width="48" height="44" rx="14" fill="url(#sc-h)" ${OUT}/><path d="M150 68c0-10 18-10 18 0v20h-18z" fill="url(#sc-h)" ${OUT}/><path d="M176 92h14M176 102h14M176 112h14" stroke="#b07800" stroke-width="3" stroke-linecap="round"/><path d="M146 104c-8 0-10 12 0 14" fill="none" stroke="#120e18" stroke-width="3"/></g>
+<!-- head: slicked hair, headset, manic eyes, a grin full of teeth -->
+<circle cx="100" cy="70" r="40" fill="url(#sc-f)" ${OUT}/>
+<path d="M62 62c0-24 16-38 38-38s38 14 38 38c-8-12-20-18-38-18s-30 6-38 18z" fill="#6a3a1a" ${OUT}/><path d="M80 34c8-4 16-4 24-2" stroke="#fff4a0" stroke-width="3" fill="none" stroke-linecap="round"/>
+<path d="M58 70c0-40 16-48 42-48s42 8 42 48" stroke="#120e18" stroke-width="5" fill="none"/>
+<rect x="52" y="60" width="12" height="22" rx="4" fill="#1c5fd0" ${OUT}/><rect x="136" y="60" width="12" height="22" rx="4" fill="#1c5fd0" ${OUT}/>
+<path d="M58 80c2 18 10 26 24 28" stroke="#120e18" stroke-width="3" fill="none"/><circle cx="84" cy="108" r="5" fill="#ff3d9a" ${OUT}/>
+<g ${OUT}><circle cx="86" cy="66" r="11" fill="#f6f0e4"/><circle cx="114" cy="66" r="11" fill="#f6f0e4"/></g>
+<g class="eye" fill="#120e18"><circle cx="86" cy="66" r="3"/><circle cx="114" cy="66" r="3"/></g>
+<path d="M72 50l26 4M128 50l-26 4" stroke="#120e18" stroke-width="5" stroke-linecap="round"/>
+<path d="M72 80c10 24 46 24 56 0z" fill="#120e18" ${OUT}/><path d="M76 82h48v7H80zM82 90c8 6 28 6 36 0z" fill="#f6f0e4"/><path d="M88 82v7M96 82v8M104 82v8M112 82v7" stroke="#120e18" stroke-width="2"/>
+<path d="M142 40c4 6 5 10 0 12-5-2-4-6 0-12z" fill="#9ab8f0" ${OUT}/>`;
 
 /** Goblin Consultant: pale, a mop of curls, a big hooked nose and an evil grin, a cheap suit, a briefcase full of invoices and a knife for your back. */
 const goblinConsultant = `
@@ -226,35 +235,36 @@ ${shadow}
 <path d="M74 34V2h52v32z" fill="#4a2a90" ${OUT}/><rect x="74" y="22" width="52" height="8" fill="#ff3d9a"/>
 <path d="M56 32h88c0 6-4 10-10 10H66c-6 0-10-4-10-10z" fill="#4a2a90" ${OUT}/>`;
 
-/** HR Bitch: a harpy in a pink blazer, hair in a bun (pencil stuck in it), cat-eye glasses, clipboard in one talon, red pen in the other. */
+/** HR Bitch: a round pink harpy in a blazer, pearls, a pencil-stuck bun and cat-eye glasses, a giant WRITE-UP rubber stamp in one talon and a stack of forms in the other wing. */
 const hrBitch = `
-<defs>${lg('hr-w', '#c080e0', '#4a2090')}${lg('hr-j', '#ff8ac8', '#c02a80')}</defs>
+<defs>${rg('hr-w', '#d8a0f0', '#4a2090')}${rg('hr-j', '#ffa8d4', '#a01a60')}${rg('hr-f', '#fbf4df', '#c8b090')}</defs>
 ${shadow}
-<g class="limb"><path d="M70 96C40 72 12 82 4 112c14-6 22-4 28 2-10 4-16 12-18 22 12-8 24-8 32-2-6 6-8 14-8 22 14-12 28-20 40-20z" fill="url(#hr-w)" ${OUT}/>
-<path d="M130 96c30-24 58-14 66 16-14-6-22-4-28 2 10 4 16 12 18 22-12-8-24-8-32-2 6 6 8 14 8 22-14-12-28-20-40-20z" fill="url(#hr-w)" ${OUT}/></g>
-<path d="M82 170l-8 18M82 170l0 18M82 170l8 18M118 170l-8 18M118 170l0 18M118 170l8 18" stroke="#1b1830" stroke-width="7" stroke-linecap="round"/>
-<path d="M82 170l-8 18M82 170l0 18M82 170l8 18M118 170l-8 18M118 170l0 18M118 170l8 18" stroke="#ffd900" stroke-width="3" stroke-linecap="round"/>
-<path d="M70 146h60l4 26H66z" fill="#1b1830" ${OUT}/>
-<path d="M60 102c12-8 26-10 40-10s28 2 40 10l-6 50H66z" fill="url(#hr-j)" ${OUT}/>
-<path d="M88 96l12 26 12-26z" fill="#f6f0e4" ${OUT}/>
-<path d="M88 96l-8 22 18 8zM112 96l8 22-18 8z" fill="#c02a80" ${OUT}/>
-<g fill="#f6f0e4" ${OUT}><circle cx="90" cy="102" r="3"/><circle cx="100" cy="106" r="3"/><circle cx="110" cy="102" r="3"/></g>
-<!-- clipboard (left) and red pen (right) -->
-<rect x="24" y="110" width="38" height="46" fill="#c9a060" ${OUT}/><rect x="29" y="120" width="28" height="32" fill="#f6f0e4"/>
-<path d="M33 128h20M33 136h20M33 144h12" stroke="#1b1830" stroke-width="3"/><rect x="36" y="106" width="14" height="8" fill="#1b1830"/>
-<path d="M56 128l10-4 4 6-8 6zM56 142l10-2 2 6-10 4z" fill="#ffd900" ${OUT}/>
-<path d="M140 110c14 2 22 10 22 22l-10 4c-2-8-6-12-12-14z" fill="url(#hr-j)" ${OUT}/>
-<g class="limb"><path d="M150 134l20-38 8 4-20 38z" fill="#ff3d9a" ${OUT}/><path d="M150 134l8 4-8 6z" fill="#1b1830"/></g>
-<path d="M148 130l10-2 2 8-10 2z" fill="#ffd900" ${OUT}/>
-<!-- head: bun with a pencil, cat-eye glasses, stern mouth -->
-<rect x="92" y="78" width="16" height="16" fill="#f4ecd6" ${OUT}/>
-<path d="M72 54c0-22 12-36 28-36s28 14 28 36c0 18-12 32-28 32S72 72 72 54z" fill="#f4ecd6" ${OUT}/>
-<path d="M108 2l12 22" stroke="#1b1830" stroke-width="7"/><path d="M108 2l12 22" stroke="#ffd900" stroke-width="3"/>
-<circle cx="100" cy="14" r="13" fill="#4a2090" ${OUT}/>
-<path d="M70 52c-2-22 12-36 30-36s32 14 30 36c-6-12-18-20-30-20s-24 8-30 20z" fill="#4a2090" ${OUT}/>
-<path d="M70 46l26 4v12H78zM130 46l-26 4v12h18z" fill="#1b1830"/>
-<g class="eye"><rect x="82" y="53" width="7" height="4" fill="#ff3d9a"/><rect x="111" y="53" width="7" height="4" fill="#ff3d9a"/></g>
-<path d="M90 74h20" stroke="#ff3d9a" stroke-width="5"/>`;
+<!-- big feathered wings -->
+<path d="M62 120C38 96 14 100 6 120c8-2 12 0 14 4-8 2-12 8-12 16 8-4 14-4 18 0-4 4-4 10-2 16 8-6 18-8 26-6z" fill="url(#hr-w)" ${OUT}/>
+<path d="M138 120c24-24 48-20 56 0-8-2-12 0-14 4 8 2 12 8 12 16-8-4-14-4-18 0 4 4 4 10 2 16-8-6-18-8-26-6z" fill="url(#hr-w)" ${OUT}/>
+<!-- talons -->
+<path d="M80 172l-10 16M80 172v16M80 172l10 16M120 172l-10 16M120 172v16M120 172l10 16" stroke="#120e18" stroke-width="8" stroke-linecap="round"/>
+<path d="M80 172l-10 16M80 172v16M80 172l10 16M120 172l-10 16M120 172v16M120 172l10 16" stroke="#ffd900" stroke-width="4" stroke-linecap="round"/>
+<!-- blazer body -->
+<ellipse cx="100" cy="136" rx="52" ry="44" fill="url(#hr-j)" ${OUT}/>
+<path d="M84 96l16 34 16-34-6-4-10 14-10-14z" fill="#f6f0e4" ${OUT}/><path d="M84 96l-12 28 22 8zM116 96l12 28-22 8z" fill="#c02a80" ${OUT}/>
+<circle cx="100" cy="150" r="4" fill="#ffd900" ${OUT}/><circle cx="100" cy="166" r="4" fill="#ffd900" ${OUT}/>
+<rect x="116" y="138" width="22" height="12" fill="#f6f0e4" ${OUT}/><path d="M120 144h14" stroke="#120e18" stroke-width="2.5"/>
+<!-- forms in the left wing -->
+<g transform="rotate(-10 34 140)"><rect x="12" y="118" width="40" height="48" fill="#f6f0e4" ${OUT}/><rect x="16" y="122" width="40" height="48" fill="#f6f0e4" ${OUT}/><path d="M22 134h28M22 142h28M22 150h18" stroke="#1c5fd0" stroke-width="3"/><path d="M42 154l10 10M52 154l-10 10" stroke="#ff3d9a" stroke-width="4"/></g>
+<circle cx="52" cy="156" r="8" fill="url(#hr-w)" ${OUT}/>
+<!-- stamp in the right talon -->
+<g class="limb"><path d="M162 100h22v14h-22z" fill="#6a4a2a" ${OUT}/><path d="M168 114h10v16h-10z" fill="#6a4a2a" ${OUT}/><rect x="154" y="130" width="42" height="14" rx="2" fill="#ff3d9a" ${OUT}/><path d="M158 144h34v6h-34z" fill="#c02a80" ${OUT}/></g>
+<path d="M136 128c14 0 22 6 24 14l-10 4c-2-6-6-8-12-8z" fill="url(#hr-w)" ${OUT}/><circle cx="162" cy="116" r="7" fill="url(#hr-w)" ${OUT}/>
+<!-- head: pearls, bun with pencils, cat-eye glasses, a pursed beak -->
+<path d="M72 94c8 10 48 10 56 0" stroke="#f6f0e4" stroke-width="6" stroke-dasharray="1 7" stroke-linecap="round" fill="none"/>
+<circle cx="100" cy="68" r="36" fill="url(#hr-f)" ${OUT}/>
+<circle cx="100" cy="22" r="17" fill="#4a2090" ${OUT}/><path d="M92 14l22-12M108 14L86 2" stroke="#120e18" stroke-width="7"/><path d="M92 14l22-12M108 14L86 2" stroke="#ffd900" stroke-width="3"/>
+<path d="M64 62c-2-24 14-40 36-40s38 16 36 40c-8-14-20-22-36-22s-28 8-36 22z" fill="#4a2090" ${OUT}/>
+<path d="M66 60l26 4v12L72 72zM134 60l-26 4v12l20-4z" fill="#f6f0e4" ${OUT}/><path d="M66 60l26 4M134 60l-26 4" stroke="#120e18" stroke-width="5"/>
+<path d="M92 66h16" stroke="#120e18" stroke-width="4"/><path d="M62 56l-4-6M138 56l4-6" stroke="#120e18" stroke-width="4" stroke-linecap="round"/>
+<g class="eye" fill="#ff3d9a"><circle cx="82" cy="68" r="3.5"/><circle cx="118" cy="68" r="3.5"/></g>
+<path d="M92 80l8 12 8-12z" fill="#ffd900" ${OUT}/><path d="M92 80h16" stroke="#120e18" stroke-width="2"/>`;
 
 /** Guy Asleep: an ogre in overalls asleep on his desk, nightcap on, drooling, mug gone cold, Zs rising. */
 const guyAsleep = `
@@ -357,34 +367,40 @@ ${shadow}
 <path d="M98 72l-3 8h6" stroke="#120e18" stroke-width="3" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
 <path d="M90 90c6-5 14-5 20 0" stroke="#120e18" stroke-width="4" fill="none" stroke-linecap="round"/>`;
 
-/** The Sick Coworker: pale green, red nose, a thermometer in his mouth, a tissue box under one arm and a cloud of germs he refuses to take home. */
+/** The Sick Coworker: a feverish man in a bathrobe and bunny slippers, a bag of frozen peas on his head, a thermometer in his mouth, a nose like a stop light and his germs hovering about, cheering him on. */
+const germ = (x: number, y: number, r: number): string =>
+  `<g transform="translate(${x} ${y})"><circle r="${r + 5}" fill="none" stroke="#120e18" stroke-width="5" stroke-dasharray="3 5"/><circle r="${r}" fill="#7ad03a" ${OUT}/><path d="M-${r * 0.6} -${r * 0.35}l${r * 0.4} ${r * 0.2}M${r * 0.6} -${r * 0.35}l-${r * 0.4} ${r * 0.2}" stroke="#120e18" stroke-width="2.5"/><circle cx="-${r * 0.35}" cy="0" r="${r * 0.16}" fill="#120e18"/><circle cx="${r * 0.35}" cy="0" r="${r * 0.16}" fill="#120e18"/></g>`;
 const sickCoworker = `
-<defs>${lg('cw-s', '#d8d0c0', '#9a948a')}${lg('cw-k', '#c8e8a8', '#7ab86a')}</defs>
+<defs>${rg('cw-r', '#ffd4c4', '#d8604a')}${rg('cw-o', '#b8d0fa', '#2a4fa0')}${rg('cw-g', '#d8ffb0', '#4a9a2a')}</defs>
 ${shadow}
-<!-- germ cloud -->
-<g class="limb" fill="#2a8a4a" ${OUT}><circle cx="36" cy="40" r="9"/><circle cx="168" cy="52" r="8"/><circle cx="26" cy="86" r="6"/><circle cx="174" cy="96" r="6"/></g>
-<g stroke="#1b1830" stroke-width="2.5"><path d="M36 28v-5M36 52v5M24 40h-5M48 40h5M168 41v-5M168 63v5M157 52h-5M179 52h5"/></g>
-<!-- legs and shoes -->
-<path d="M74 150h20v34H70zM106 150h20l4 34h-26z" fill="#4a4660" ${OUT}/>
-<path d="M60 184h38v10H60zM104 184h38v10h-38z" fill="#1b1830" ${OUT}/>
-<!-- rumpled shirt and loosened tie -->
-<path d="M52 188c-4-44 6-82 34-88h28c28 6 38 44 34 88z" fill="url(#cw-s)" ${OUT}/>
-<path d="M84 100l16 36 16-36z" fill="#f6f0e4" ${OUT}/>
-<path d="M96 108h8l4 44-8 6-8-6z" fill="#1c5fd0" ${OUT}/>
-<!-- tissue box under the left arm -->
-<g class="limb"><rect x="40" y="124" width="36" height="28" fill="#8db3f2" ${OUT}/><path d="M52 124c2-12 6-14 10-14s6 6 8 14z" fill="#f6f0e4" ${OUT}/><circle cx="46" cy="150" r="9" fill="url(#cw-k)" ${OUT}/></g>
-<!-- right hand with a crumpled tissue -->
-<path d="M132 108c14 6 22 18 22 34l-12 2c0-10-6-18-14-22z" fill="url(#cw-s)" ${OUT}/><circle cx="150" cy="144" r="9" fill="url(#cw-k)" ${OUT}/><circle cx="154" cy="136" r="8" fill="#f6f0e4" ${OUT}/>
-<!-- head: green face, red nose, heavy eyelids, thermometer -->
-<path d="M70 62c0-24 14-40 30-40s30 16 30 40c0 22-12 40-30 40S70 84 70 62z" fill="url(#cw-k)" ${OUT}/>
-<path d="M72 50c4-22 18-30 30-30s26 8 28 30c-10-10-20-12-30-12s-18 2-28 12z" fill="#6a4a2a" ${OUT}/>
-<g ${OUT}><ellipse cx="86" cy="64" rx="9" ry="7" fill="#f6f0e4"/><ellipse cx="114" cy="64" rx="9" ry="7" fill="#f6f0e4"/></g>
-<g class="eye" fill="#1b1830"><circle cx="86" cy="67" r="4"/><circle cx="114" cy="67" r="4"/></g>
-<path d="M75 60h22M103 60h22" stroke="#1b1830" stroke-width="6" stroke-linecap="round"/>
-<ellipse cx="100" cy="80" rx="9" ry="7" fill="#f63a1e" ${OUT}/>
-<path d="M88 94c8-4 16-4 24 0" stroke="#1b1830" stroke-width="4" fill="none" stroke-linecap="round"/>
-<path d="M104 92l32 6" stroke="#f6f0e4" stroke-width="5" stroke-linecap="round"/><path d="M128 97l8 1.5" stroke="#f63a1e" stroke-width="5" stroke-linecap="round"/>
-<path d="M130 40c2 6 0 10-4 14" stroke="#1c5fd0" stroke-width="4" fill="none" stroke-linecap="round"/>`;
+<g class="limb">${germ(28, 52, 10)}${germ(172, 40, 8)}${germ(176, 150, 9)}</g>
+<!-- bunny slippers -->
+<ellipse cx="72" cy="182" rx="24" ry="9" fill="#ff9ad0" ${OUT}/><ellipse cx="128" cy="182" rx="24" ry="9" fill="#ff9ad0" ${OUT}/>
+<path d="M56 176c-6-14-2-22 2-22s4 10 4 22zM70 176c-2-14 2-22 6-22s2 10 0 22zM130 176c-2-14 2-22 6-22s2 10 0 22zM144 176c-6-14-2-22 2-22s4 10 4 22z" fill="#ff9ad0" ${OUT}/>
+<!-- bathrobe -->
+<ellipse cx="100" cy="134" rx="58" ry="50" fill="url(#cw-o)" ${OUT}/>
+<path d="M76 92l24 50 24-50-8-6-16 22-16-22z" fill="#f6f0e4" ${OUT}/>
+<path d="M44 148c36 12 76 12 112 0v10c-36 12-76 12-112 0z" fill="#ffd900" ${OUT}/>
+<path d="M64 124h18v16H64z" fill="#9ab8f0" ${OUT}/><path d="M68 124c2-10 6-12 8-12s4 4 6 12z" fill="#f6f0e4" ${OUT}/>
+<!-- left arm: tissue box -->
+<g class="limb"><rect x="14" y="124" width="34" height="26" fill="#8db3f2" ${OUT}/><ellipse cx="31" cy="124" rx="10" ry="4" fill="#120e18"/><path d="M26 124c0-12 4-16 6-16s4 6 4 16z" fill="#f6f0e4" ${OUT}/></g>
+<path d="M54 118c-10 6-12 18-8 28l12-4c-2-8 0-14 6-18z" fill="url(#cw-o)" ${OUT}/><circle cx="46" cy="146" r="9" fill="url(#cw-r)" ${OUT}/>
+<!-- right arm: a crumpled tissue -->
+<path d="M146 118c10 6 14 16 12 28l-12 0c2-8 0-14-6-18z" fill="url(#cw-o)" ${OUT}/><circle cx="152" cy="148" r="9" fill="url(#cw-r)" ${OUT}/><path d="M146 138l6-10 10 2 4 10-6 8z" fill="#f6f0e4" ${OUT}/>
+<!-- head: feverish flush, peas on the head, bloodshot half-lidded eyes, red nose, thermometer -->
+<circle cx="100" cy="76" r="42" fill="url(#cw-r)" ${OUT}/>
+<path d="M62 62c-4-20 10-34 24-36l2 10c-8 2-14 12-12 26zM138 62c4-20-10-34-24-36l-2 10c8 2 14 12 12 26z" fill="#6a4a2a" ${OUT}/><path d="M92 36c0-8 4-12 8-12s6 6 4 14z" fill="#6a4a2a" ${OUT}/>
+<g transform="rotate(14 118 34)"><rect x="100" y="20" width="44" height="26" rx="4" fill="#d8ffb0" ${OUT}/><path d="M104 24h36" stroke="#4a9a2a" stroke-width="4"/><circle cx="112" cy="36" r="4" fill="#4a9a2a"/><circle cx="124" cy="38" r="4" fill="#4a9a2a"/><circle cx="134" cy="35" r="4" fill="#4a9a2a"/></g>
+<g ${OUT}><ellipse cx="84" cy="76" rx="11" ry="9" fill="#f6f0e4"/><ellipse cx="116" cy="76" rx="11" ry="9" fill="#f6f0e4"/></g>
+<g class="eye" fill="#120e18"><circle cx="85" cy="80" r="3.5"/><circle cx="115" cy="80" r="3.5"/></g>
+<path d="M72 76a11 9 0 0 1 22 0zM104 76a11 9 0 0 1 22 0z" fill="#e8806a" ${OUT}/>
+<path d="M74 90c6 4 14 4 20 0M106 90c6 4 14 4 20 0" stroke="#8a4ad0" stroke-width="3" fill="none"/>
+<path d="M72 56l22 6M128 56l-22 6" stroke="#120e18" stroke-width="4" stroke-linecap="round"/>
+<circle cx="100" cy="94" r="12" fill="#f63a1e" ${OUT}/><circle cx="96" cy="90" r="3.5" fill="#fff" opacity=".7"/>
+<circle cx="112" cy="106" r="6" fill="#bfeaff" ${OUT}/><path d="M112 100v-4" stroke="#bfeaff" stroke-width="3"/>
+<path d="M88 112c6-4 12-2 16 0" stroke="#120e18" stroke-width="4" fill="none" stroke-linecap="round"/>
+<path d="M100 112l44-10" stroke="#120e18" stroke-width="9" stroke-linecap="round"/><path d="M100 112l44-10" stroke="#f6f0e4" stroke-width="5" stroke-linecap="round"/><circle cx="148" cy="101" r="6" fill="#f63a1e" ${OUT}/>
+<path d="M142 50c2 6 0 10-4 12" stroke="#9ad8f0" stroke-width="4" fill="none" stroke-linecap="round"/>`;
 
 /** The Facilities Manager: a stout man in a patched brown jacket and a flat cap, a clipboard of tickets nobody reads, a jangling key ring, rust blooming on everything he owns. */
 const facilitiesManager = `
