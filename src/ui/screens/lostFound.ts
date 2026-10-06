@@ -26,7 +26,8 @@ export function lostFoundScreen(run: RunState, onDone: () => void): Screen {
         const text = t(`relic.${id}.d`, { n: RELICS[id].n });
         const card = h('button', {
           class: `relic-card ${RELICS[id].rarity}`,
-          html: `<b>${t(`relic.${id}.name`)}</b>${relicArt(id)}<span>${text}</span>`,
+          'data-rarity': RELICS[id].rarity,
+          html: `<i class="relic-gem"></i><b>${t(`relic.${id}.name`)}</b>${relicArt(id)}<span>${text}</span>`,
         });
         // Tap = keep it, hold = read all of it (the card shows only the first lines).
         onTapOrHold(

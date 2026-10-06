@@ -238,34 +238,6 @@
 }
 .relic-line { position: relative; }
 .relic-line .riso { flex: none; width: 48px; height: 48px; }
-/* rarity corner, like a card's: a triangle in the rarity ink (nothing for a stationery not found yet) */
-.relic-gem {
-  display: none;
-  position: absolute;
-  right: 0;
-  bottom: 0;
-  width: 18px;
-  height: 18px;
-  background: var(--k);
-  clip-path: polygon(100% 0, 100% 100%, 0 100%);
-}
-.relic-gem::after {
-  content: '';
-  position: absolute;
-  inset: 0;
-  background: var(--gem);
-  clip-path: polygon(100% 26%, 100% 100%, 26% 100%);
-}
-.relic-line[data-rarity='common'] .relic-gem,
-.relic-line[data-rarity='rare'] .relic-gem,
-.relic-line[data-rarity='epic'] .relic-gem,
-.relic-line[data-rarity='legendary'] .relic-gem,
-.relic-line[data-rarity='special'] .relic-gem { display: block; }
-.relic-line[data-rarity='common'] .relic-gem { --gem: var(--paper-dot); }
-.relic-line[data-rarity='rare'] .relic-gem { --gem: var(--b); }
-.relic-line[data-rarity='epic'] .relic-gem { --gem: var(--p); }
-.relic-line[data-rarity='legendary'] .relic-gem { --gem: var(--y); }
-.relic-line[data-rarity='special'] .relic-gem { --gem: var(--k); }
 .relic-line b {
   display: block;
   font-family: var(--font-ui);

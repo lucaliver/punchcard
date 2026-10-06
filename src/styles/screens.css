@@ -164,6 +164,7 @@
   gap: 8px;
 }
 .relic-card {
+  position: relative;
   color: var(--k);
   display: flex;
   flex-direction: column;

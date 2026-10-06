@@ -78,3 +78,32 @@
   64% { opacity: 1; top: 38%; }
   to { opacity: 1; top: 12%; }
 }
+
+/* a stationery's rarity corner (handbook lines, Lost & Found cards), like a card's: a triangle in the rarity ink on the parent's `data-rarity` (nothing without one) */
+.relic-gem {
+  display: none;
+  position: absolute;
+  right: 0;
+  bottom: 0;
+  width: 18px;
+  height: 18px;
+  background: var(--k);
+  clip-path: polygon(100% 0, 100% 100%, 0 100%);
+}
+.relic-gem::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: var(--gem);
+  clip-path: polygon(100% 26%, 100% 100%, 26% 100%);
+}
+[data-rarity='common'] > .relic-gem,
+[data-rarity='rare'] > .relic-gem,
+[data-rarity='epic'] > .relic-gem,
+[data-rarity='legendary'] > .relic-gem,
+[data-rarity='special'] > .relic-gem { display: block; }
+[data-rarity='common'] > .relic-gem { --gem: var(--paper-dot); }
+[data-rarity='rare'] > .relic-gem { --gem: var(--b); }
+[data-rarity='epic'] > .relic-gem { --gem: var(--p); }
+[data-rarity='legendary'] > .relic-gem { --gem: var(--y); }
+[data-rarity='special'] > .relic-gem { --gem: var(--k); }
