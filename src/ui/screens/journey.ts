@@ -3,7 +3,10 @@ import { sfx } from '../../audio/sfx';
 import { haptic } from '../fx/fx';
 import { actDef, isFinalAct } from '../../data/acts';
 import { clockAt, currentNode, mapAct, saveRun, startShift, type RunNode, type RunState } from '../../game/run';
-import type { Screen } from '../app';
+import { openModal, type Screen } from '../app';
+import { ENEMIES } from '../../data/enemies';
+import { settings } from '../../game/settings';
+import { foeView } from '../components/moveText';
 import { h, onPress, onTapOrHold, setText } from '../dom';
 import { playHealing } from './rest';
 import { icon } from '../art/icons';
@@ -264,6 +267,15 @@ export function journeyScreen(run: RunState, onEnter: (to?: number) => void, onH
         sfx('tap');
         if (fog) {
           openInfo({ icon: 'question', title: t('journey.fog'), tag: t('common.floor', { n: n.floor }), desc: t('journey.info.fog') });
+          return;
+        }
+        // Debug: a fight node shows the enemy's whole sheet.
+        if (settings.debugMenus && n.enemy) {
+          openModal({
+            title: t(`enemy.${n.enemy}.name`),
+            body: foeView(ENEMIES[n.enemy], true),
+            actions: [{ label: t('common.close'), cls: 'secondary' }],
+          });
           return;
         }
         const enemy = n.enemy ? t(`enemy.${n.enemy}.name`) : null;
