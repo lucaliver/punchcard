@@ -76,13 +76,13 @@ ${shadow}
 <path d="M84 76h32v6H84z" fill="#efe6cc" ${OUT}/><path d="M90 76v6M96 76v6M102 76v6M108 76v6" stroke="#1a1422" stroke-width="1.5"/>
 <path d="M118 14l-4 8 6 6-4 8" stroke="#1a1422" stroke-width="2.5" fill="none"/>`;
 
-/** Toxic Coworker: a smug purple toad on the phone, an iced coffee in the other hand, bubbles of gossip floating about and poison dripping from the smirk. */
+/** Toxic Coworker: a smug green toad on the phone, an iced coffee in the other hand, bubbles of gossip floating about and poison dripping from the smirk. */
 const toxicCoworker = `
-<defs>${rg('tc-b', '#c898f8', '#4a1a90')}${rg('tc-bl', '#f4e4ff', '#b090e0')}${rg('tc-w', '#d8ff7a', '#4a9a20')}</defs>
+<defs>${rg('tc-b', '#8ad060', '#16402a')}${rg('tc-bl', '#fbf4c0', '#c8d880')}${rg('tc-w', '#ff9ad0', '#c02a80')}</defs>
 ${shadow}
 <!-- gossip bubbles -->
 <g class="limb"><ellipse cx="150" cy="30" rx="26" ry="16" fill="#f6f0e4" ${OUT}/><path d="M132 42l-6 12 16-8z" fill="#f6f0e4" ${OUT}/><circle cx="138" cy="30" r="4" fill="#120e18"/><circle cx="150" cy="30" r="4" fill="#120e18"/><circle cx="162" cy="30" r="4" fill="#120e18"/>
-<ellipse cx="50" cy="26" rx="22" ry="14" fill="#d8ff7a" ${OUT}/><path d="M64 36l8 10-14-4z" fill="#d8ff7a" ${OUT}/><path d="M38 26h24M42 32h16" stroke="#120e18" stroke-width="3"/></g>
+<ellipse cx="50" cy="26" rx="22" ry="14" fill="#ffd900" ${OUT}/><path d="M64 36l8 10-14-4z" fill="#ffd900" ${OUT}/><path d="M38 26h24M42 32h16" stroke="#120e18" stroke-width="3"/></g>
 <!-- legs -->
 <path d="M44 176c-8 4-8 12 2 14l20-2 2-12zM156 176c8 4 8 12-2 14l-20-2-2-12z" fill="url(#tc-b)" ${OUT}/>
 <!-- fat body -->
@@ -103,7 +103,7 @@ ${shadow}
 <ellipse cx="100" cy="98" rx="62" ry="36" fill="url(#tc-b)" ${OUT}/>
 <g ${OUT}><circle cx="64" cy="76" r="16" fill="#f6f0e4"/><circle cx="136" cy="76" r="16" fill="#f6f0e4"/></g>
 <g class="eye"><rect x="62" y="68" width="5" height="16" rx="2" fill="#ff3d9a" ${OUT}/><rect x="133" y="68" width="5" height="16" rx="2" fill="#ff3d9a" ${OUT}/></g>
-<path d="M46 76a18 18 0 0 1 36 0c-10-6-26-6-36 0zM118 76a18 18 0 0 1 36 0c-10-6-26-6-36 0z" fill="#6a2ab0" ${OUT}/>
+<path d="M46 76a18 18 0 0 1 36 0c-10-6-26-6-36 0zM118 76a18 18 0 0 1 36 0c-10-6-26-6-36 0z" fill="#2a6a2a" ${OUT}/>
 <path d="M40 112c20 16 100 16 120 0-4 22-30 30-60 30s-56-8-60-30z" fill="#120e18" ${OUT}/>
 <path d="M60 124c20 8 60 8 80 0" stroke="#f6f0e4" stroke-width="4" fill="none"/>
 <path d="M150 118c4 8 6 14 3 18-4-2-6-8-3-18z" fill="url(#tc-w)" ${OUT}/><path d="M156 138c2 4 2 8 0 10-3-2-3-6 0-10z" fill="url(#tc-w)" ${OUT}/>
