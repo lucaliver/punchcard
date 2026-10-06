@@ -1,6 +1,6 @@
 import { type TKey, t } from '../../core/i18n';
-import { CARDS } from '../../data/cards';
-import type { CardInst, HeroId } from '../../game/types';
+import { CARDS, RARITY_ORDER } from '../../data/cards';
+import type { CardInst, HeroId, Rarity } from '../../game/types';
 import { drawIcon, drawSprite } from '../art/riso';
 import { h } from '../dom';
 import { cardCostLabel, cardName } from './cardView';
@@ -122,6 +122,14 @@ function fitFont(g: CanvasRenderingContext2D, text: string, width: number, size:
     g.font = `${s}px ${family}`;
     if (g.measureText(text).width <= width) return;
   }
+}
+
+const GEM = 32;
+
+/** The ink of a card's rarity corner (none for commons), as `.c-gem` sets it in cards.css. */
+function gemInk(rarity: Rarity, c: ReturnType<typeof tokens>): string | null {
+  const inks: Partial<Record<Rarity, string>> = { rare: c.b, epic: c.p, legendary: c.y, special: c.k };
+  return inks[rarity] ?? null;
 }
 
 /** A rubber stamp: bordered caps, tilted. */
@@ -291,7 +299,9 @@ export async function payslipImage(s: ShareSlip): Promise<Blob | null> {
   const tw = (W - 2 * PAD - (DECK_COLS - 1) * DECK_GAP) / DECK_COLS;
   const th = TICKET_H;
   const bands = new Map<string, { band: string; text: string }>();
-  for (const [i, { card, n }] of s.deck.entries()) {
+  // Rarer cards last; the order the deck came in holds within a rarity.
+  const deck = [...s.deck].sort((a, b) => RARITY_ORDER.indexOf(CARDS[a.card.id].rarity) - RARITY_ORDER.indexOf(CARDS[b.card.id].rarity));
+  for (const [i, { card, n }] of deck.entries()) {
     const x = PAD + (i % DECK_COLS) * (tw + DECK_GAP);
     const ty = dy + 20 + Math.floor(i / DECK_COLS) * (th + DECK_GAP);
     const def = CARDS[card.id];
@@ -309,17 +319,34 @@ export async function payslipImage(s: ShareSlip): Promise<Blob | null> {
     g.textAlign = 'left';
     fitFont(g, cardName(card), tw - 12, 24, '"Pixel UI"');
     g.fillText(cardName(card), x + 6, ty + 25);
-    g.fillStyle = c.y;
+    g.fillStyle = c.b;
     g.fillRect(x + 6, ty + 44, 40, 44);
-    g.fillStyle = c.k;
+    g.fillStyle = c.paper;
     g.font = '36px "Pixel UI"';
     g.textAlign = 'center';
     g.fillText(cardCostLabel(card), x + 26, ty + 78);
     await drawIcon(g, def.art, x + 54, ty + 44, 44, c.k);
     if (n > 1) {
+      g.fillStyle = c.k;
       g.textAlign = 'right';
       g.font = '30px "Pixel UI"';
-      g.fillText(t('deck.copies', { n }), x + tw - 6, ty + 90);
+      g.fillText(t('deck.copies', { n }), x + tw - 6, ty + 66);
+    }
+    // The rarity corner: rare and above, a triangle in the rarity ink (as on the card).
+    const gem = gemInk(def.rarity, c);
+    if (gem) {
+      g.fillStyle = c.k;
+      g.beginPath();
+      g.moveTo(x + tw, ty + th - GEM);
+      g.lineTo(x + tw, ty + th);
+      g.lineTo(x + tw - GEM, ty + th);
+      g.fill();
+      g.fillStyle = gem;
+      g.beginPath();
+      g.moveTo(x + tw - 3, ty + th - GEM * 0.74);
+      g.lineTo(x + tw - 3, ty + th - 3);
+      g.lineTo(x + tw - GEM * 0.74, ty + th - 3);
+      g.fill();
     }
   }
 
