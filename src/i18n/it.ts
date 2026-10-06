@@ -1013,6 +1013,8 @@ const it: Record<EnKey, string> = {
   'card.walkInFreezer.desc': '[chill] il nemico per {0}s [x] volte.',
   'card.voodooPin.name': 'Spillone Voodoo',
   'card.voodooPin.desc': 'Pietrifica {0} carte a caso nel mazzo e negli scarti. Costano {1} in meno per il resto dello scontro.',
+  'card.screwedUpMemo.name': 'Memo Accartocciato',
+  'card.screwedUpMemo.desc': 'Accartoccia {0} carte a caso nel mazzo e negli scarti. Costano {1} in meno per il resto dello scontro.',
   'card.passiveAggressive.name': 'Biglietto Passivo-Aggressivo',
   'card.passiveAggressive.desc': 'Il nemico è [weak] per {0}s [x] volte.',
   'card.coldOpen.name': 'Cold Open',

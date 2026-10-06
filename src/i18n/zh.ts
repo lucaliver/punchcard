@@ -1001,6 +1001,8 @@ const zh: Record<EnKey, string> = {
   'card.walkInFreezer.desc': '使敌人[chill] {0} 秒，共 [x] 次。',
   'card.voodooPin.name': '巫毒针',
   'card.voodooPin.desc': '石化你抽牌堆和弃牌堆中的 {0} 张随机卡牌。它们在本场战斗剩余时间内费用减少 {1}。',
+  'card.screwedUpMemo.name': '揉皱的备忘录',
+  'card.screwedUpMemo.desc': '揉皱你抽牌堆和弃牌堆中的 {0} 张随机卡牌。它们在本场战斗剩余时间内费用减少 {1}。',
   'card.passiveAggressive.name': '被动攻击便条',
   'card.passiveAggressive.desc': '敌人[weak] {0} 秒，共 [x] 次。',
   'card.coldOpen.name': '冷开场',

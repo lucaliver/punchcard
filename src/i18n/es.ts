@@ -1013,6 +1013,8 @@ const es: Record<EnKey, string> = {
   'card.walkInFreezer.desc': '[chill] al enemigo durante {0}s [x] veces.',
   'card.voodooPin.name': 'Alfiler vudú',
   'card.voodooPin.desc': 'Petrifica {0} cartas al azar de tus pilas de robo y descarte. Cuestan {1} menos el resto del combate.',
+  'card.screwedUpMemo.name': 'Memo arrugado',
+  'card.screwedUpMemo.desc': 'Arruga {0} cartas al azar de tus pilas de robo y descarte. Cuestan {1} menos el resto del combate.',
   'card.passiveAggressive.name': 'Nota pasivo-agresiva',
   'card.passiveAggressive.desc': 'El enemigo está [weak] durante {0}s [x] veces.',
   'card.coldOpen.name': 'Apertura en frío',

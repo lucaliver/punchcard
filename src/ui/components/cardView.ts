@@ -72,6 +72,8 @@ export const GLYPHS: Record<string, { icon: string; unit?: string; sign?: string
   pin: { icon: 'pushpin' },
   /** Petrifies cards of your deck (the hex's rock). */
   petrify: { icon: 'stone' },
+  /** Crumples cards of your deck (the hex's paper ball). */
+  crumple: { icon: 'crumple4' },
   sweep: { icon: 'windKey', sign: '+' },
   manaRegen: { icon: 'crystalUp', unit: 's' },
   /** Multitasking, for seconds or as charges. */

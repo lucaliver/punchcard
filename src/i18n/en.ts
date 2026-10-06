@@ -1007,6 +1007,8 @@ const en = {
   'card.walkInFreezer.desc': '[chill] the enemy for {0}s [x] times.',
   'card.voodooPin.name': 'Voodoo Pin',
   'card.voodooPin.desc': 'Petrify {0} random cards in your draw and discard piles. They cost {1} less for the rest of the fight.',
+  'card.screwedUpMemo.name': 'Screwed-Up Memo',
+  'card.screwedUpMemo.desc': 'Crumple {0} random cards in your draw and discard piles. They cost {1} less for the rest of the fight.',
   'card.passiveAggressive.name': 'Passive-Aggressive Note',
   'card.passiveAggressive.desc': 'The enemy is [weak] for {0}s [x] times.',
   'card.coldOpen.name': 'Cold Open',

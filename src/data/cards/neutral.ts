@@ -777,6 +777,21 @@ export const neutralCards: CardDef[] = [
     play: (c, v) => c.gainBlock('hero', v[0]),
   },
 
+  {
+    id: 'screwedUpMemo',
+    face: '{crumple:0}|{cheaper:1}',
+    cls: 'neutral',
+    type: 'skill',
+    rarity: 'rare',
+    cost: 1,
+    vals: [3, 1],
+    upVals: [5, 1],
+    keywords: ['exhaust'],
+    art: 'paperBin',
+    // The crumpled cards cost less for this fight, but they have to be smoothed out first.
+    play: (c, v) => c.pinCards('crumple', v[0], v[1], { deckOnly: true }),
+  },
+
   // Tempo and mana cards any hero can use (they started as Mage cards)
   {
     id: 'turnItOff',

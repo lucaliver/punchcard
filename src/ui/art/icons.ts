@@ -704,6 +704,10 @@ export const ICONS: Record<string, { el: Element; svg: string }> = {
     el: 'steel',
     svg: `<path d="M6 52l6-26 16-18 20 6 10 22-6 18H12z"/><path d="M26 22l6 14-10 8M42 26l-4 12 12 6" stroke="#16121f" stroke-width="4" fill="none"/>`,
   },
+  paperBin: {
+    el: 'steel',
+    svg: `<path d="M14 30h36l-4 30H18z"/><path fill="#16121f" d="M22 36h3v18h-3zM30 36h4v18h-4zM39 36h3v18h-3z"/><path d="M20 8l10-4 10 3 6 8-3 9H18l-4-8z"/><path fill="none" stroke="#16121f" stroke-width="2.4" d="M24 12l6 8M38 10l-4 8M18 22l12-2"/>`,
+  },
   luggage: {
     el: 'steel',
     svg: `<path d="M20 4h24v10h-6V10H26v4h-6z"/><rect x="4" y="14" width="56" height="44" rx="6"/><path fill="#16121f" d="M4 33h56v4H4zM12 24h8v6h-8zM44 24h8v6h-8z"/><rect x="28" y="30" width="8" height="10"/>`,
