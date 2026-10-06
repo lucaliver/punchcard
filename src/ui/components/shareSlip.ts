@@ -85,10 +85,14 @@ const DECK_GAP = 12;
 const TICKET_H = 100;
 const RELIC_SIZE = 100;
 const RELIC_GAP = 12;
+/** Each row of stationery stands on a little table: a top plank and its legs. */
+const TABLE_TOP = 14;
+const TABLE_LEGS = 22;
+const RELIC_ROW = RELIC_SIZE + TABLE_TOP + TABLE_LEGS + RELIC_GAP;
 const RELICS_PER_ROW = Math.floor((W - 2 * PAD + RELIC_GAP) / (RELIC_SIZE + RELIC_GAP));
 
 /** Reads the design tokens so the image matches the game's inks. */
-function tokens(): Record<'paper' | 'paper2' | 'k' | 'p' | 'b' | 'y' | 'bg' | 'bg2' | 'muted' | 'mutedD' | 'shadow', string> {
+function tokens(): Record<'paper' | 'paper2' | 'k' | 'p' | 'b' | 'y' | 'bg' | 'bg2' | 'wood' | 'woodTop' | 'muted' | 'mutedD' | 'shadow', string> {
   const css = getComputedStyle(document.documentElement);
   const v = (name: string): string => css.getPropertyValue(name).trim();
   return {
@@ -100,6 +104,8 @@ function tokens(): Record<'paper' | 'paper2' | 'k' | 'p' | 'b' | 'y' | 'bg' | 'b
     y: v('--y'),
     bg: v('--bg'),
     bg2: v('--bg2'),
+    wood: v('--wood-edge'),
+    woodTop: v('--paper-dot'),
     muted: v('--muted'),
     mutedD: v('--muted-d'),
     shadow: v('--shadow'),
@@ -114,6 +120,15 @@ function bandOf(cls: string): { band: string; text: string } {
   const out = { band: css.getPropertyValue('--band').trim(), text: css.getPropertyValue('--band-text').trim() };
   probe.remove();
   return out;
+}
+
+/** The background of a card type's art, as `.card[data-type]` sets it in cards.css. */
+function artBgOf(type: string): string {
+  const probe = h('div', { class: 'card', 'data-type': type, style: { position: 'absolute', visibility: 'hidden' } });
+  document.body.append(probe);
+  const bg = getComputedStyle(probe).getPropertyValue('--art-bg').trim();
+  probe.remove();
+  return bg;
 }
 
 /** Sets the largest font (down to `min`) that fits `text` in `width`. */
@@ -155,7 +170,7 @@ export async function payslipImage(s: ShareSlip): Promise<Blob | null> {
   const c = tokens();
   const slipH = 150 + s.rows.length * 40;
   const relicY = SLIP_Y + slipH + 50;
-  const relicH = s.relics.length ? 20 + Math.ceil(s.relics.length / RELICS_PER_ROW) * (RELIC_SIZE + RELIC_GAP) + 30 : 0;
+  const relicH = s.relics.length ? 20 + Math.ceil(s.relics.length / RELICS_PER_ROW) * RELIC_ROW + 30 : 0;
   const deckY = relicY + relicH;
   const H = Math.max(MIN_H, deckY + 20 + Math.ceil(s.deck.length / DECK_COLS) * (TICKET_H + DECK_GAP) + 80);
   const cv = document.createElement('canvas');
@@ -280,13 +295,26 @@ export async function payslipImage(s: ShareSlip): Promise<Blob | null> {
     g.fillText(t('hero.relics').toUpperCase(), PAD, relicY);
     for (const [i, id] of s.relics.entries()) {
       const x = PAD + (i % RELICS_PER_ROW) * (RELIC_SIZE + RELIC_GAP);
-      const ry = relicY + 20 + Math.floor(i / RELICS_PER_ROW) * (RELIC_SIZE + RELIC_GAP);
-      g.fillStyle = c.bg2;
-      g.fillRect(x, ry, RELIC_SIZE, RELIC_SIZE);
+      const ry = relicY + 20 + Math.floor(i / RELICS_PER_ROW) * RELIC_ROW;
+      await drawSprite(g, `relic.${id}`, x, ry, RELIC_SIZE);
+    }
+    // One little table per row, drawn under the sprites' feet.
+    const rows = Math.ceil(s.relics.length / RELICS_PER_ROW);
+    for (let r = 0; r < rows; r++) {
+      const n = Math.min(RELICS_PER_ROW, s.relics.length - r * RELICS_PER_ROW);
+      const tx0 = PAD - 6;
+      const tw0 = n * (RELIC_SIZE + RELIC_GAP) - RELIC_GAP + 12;
+      const ty0 = relicY + 20 + r * RELIC_ROW + RELIC_SIZE - 6;
       g.lineWidth = 3;
       g.strokeStyle = c.k;
-      g.strokeRect(x, ry, RELIC_SIZE, RELIC_SIZE);
-      await drawSprite(g, `relic.${id}`, x + 4, ry + 4, RELIC_SIZE - 8);
+      g.fillStyle = c.wood;
+      for (const lx0 of [tx0 + 14, tx0 + tw0 - 14 - 10]) {
+        g.fillRect(lx0, ty0 + TABLE_TOP, 10, TABLE_LEGS);
+        g.strokeRect(lx0, ty0 + TABLE_TOP, 10, TABLE_LEGS);
+      }
+      g.fillStyle = c.woodTop;
+      g.fillRect(tx0, ty0, tw0, TABLE_TOP);
+      g.strokeRect(tx0, ty0, tw0, TABLE_TOP);
     }
   }
 
@@ -299,6 +327,7 @@ export async function payslipImage(s: ShareSlip): Promise<Blob | null> {
   const tw = (W - 2 * PAD - (DECK_COLS - 1) * DECK_GAP) / DECK_COLS;
   const th = TICKET_H;
   const bands = new Map<string, { band: string; text: string }>();
+  const artBgs = new Map<string, string>();
   // Rarer cards last; the order the deck came in holds within a rarity.
   const deck = [...s.deck].sort((a, b) => RARITY_ORDER.indexOf(CARDS[a.card.id].rarity) - RARITY_ORDER.indexOf(CARDS[b.card.id].rarity));
   for (const [i, { card, n }] of deck.entries()) {
@@ -308,6 +337,7 @@ export async function payslipImage(s: ShareSlip): Promise<Blob | null> {
     const cls = def.cls;
     if (!bands.has(cls)) bands.set(cls, bandOf(cls));
     const band = bands.get(cls)!;
+    if (!artBgs.has(def.type)) artBgs.set(def.type, artBgOf(def.type));
     g.fillStyle = c.paper;
     g.fillRect(x, ty, tw, th);
     g.fillStyle = band.band;
@@ -319,6 +349,9 @@ export async function payslipImage(s: ShareSlip): Promise<Blob | null> {
     g.textAlign = 'left';
     fitFont(g, cardName(card), tw - 12, 24, '"Pixel UI"');
     g.fillText(cardName(card), x + 6, ty + 25);
+    g.fillStyle = artBgs.get(def.type)!;
+    g.fillRect(x, ty + 34, tw, th - 34);
+    g.strokeRect(x, ty, tw, th);
     g.fillStyle = c.b;
     g.fillRect(x + 6, ty + 44, 40, 44);
     g.fillStyle = c.paper;
