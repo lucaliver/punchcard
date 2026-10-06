@@ -531,7 +531,7 @@ describe('combat engine', () => {
     expect(c.enemy.timer).toBeCloseTo(before + 1, 5);
   });
 
-  it('New Hire petrifies half the belt and half the rest of the deck at the start; a hex survives the piles until broken', () => {
+  it('New Hire crumples half the belt and half the rest of the deck at the start; a hex survives the piles until broken', () => {
     const c = setup({ enemy: ENEMIES.newHire, deck: deckOf(new Array(12).fill('punch')) });
     const onBelt = c.belt.length;
     const rest = c.draw.length + c.discard.length;

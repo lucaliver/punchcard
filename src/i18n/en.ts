@@ -1202,7 +1202,7 @@ const en = {
   'enemy.facilitiesManager.name': 'Facilities Manager',
   'enemy.workWife.name': 'Work Wife',
   'enemy.leaver.name': 'The Leaver',
-  'enemy.startHex': 'Petrifies {n}% of your cards at the start of the fight.',
+  'enemy.startHex': 'Puts a hex on {n}% of your cards at the start of the fight.',
   'enemy.fillSleeve': 'Your sleeves start full of boxes.',
   'enemy.exaggeratedGirl.name': 'Exaggerated Girl',
   'enemy.exaggeratedGirl.deep': 'After {$deepBeltSecs} seconds your sleeves and ability slide off the screen and a third belt row opens.',

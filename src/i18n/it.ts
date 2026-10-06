@@ -1212,7 +1212,7 @@ const it: Record<EnKey, string> = {
   'enemy.facilitiesManager.name': 'Inserviente',
   'enemy.workWife.name': "Moglie d'Ufficio",
   'enemy.leaver.name': 'Quello che Se Ne Va',
-  'enemy.startHex': 'Pietrifica il {n}% delle tue carte a inizio scontro.',
+  'enemy.startHex': 'Lancia una maledizione sul {n}% delle tue carte a inizio scontro.',
   'enemy.fillSleeve': 'Le tue maniche iniziano piene di scatoloni.',
   'enemy.exaggeratedGirl.name': 'Ragazza Esagerata',
   'enemy.exaggeratedGirl.deep':

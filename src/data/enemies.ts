@@ -147,7 +147,7 @@ const defs: EnemyDef[] = [
     main: atk('coffeeSpill', 6, 6),
     every: 0,
     specials: [],
-    startHex: { id: 'petrify', share: 0.5 },
+    startHex: { id: 'crumple', share: 0.5 },
   },
   {
     // Nepotism hire: a target shows on him now and then; tap it in time and your next attack is critical.

@@ -1194,7 +1194,7 @@ const zh: Record<EnKey, string> = {
   'enemy.facilitiesManager.name': '设施经理',
   'enemy.workWife.name': '办公室老婆',
   'enemy.leaver.name': '离职者',
-  'enemy.startHex': '战斗开始时石化你 {n}% 的卡牌。',
+  'enemy.startHex': '战斗开始时对你 {n}% 的卡牌施加诅咒。',
   'enemy.fillSleeve': '你的袖口一开始就塞满了纸箱。',
   'enemy.exaggeratedGirl.name': '夸张女孩',
   'enemy.exaggeratedGirl.deep': '{$deepBeltSecs} 秒后，你的袖口和技能会滑出屏幕，并开启第三排传送带。',

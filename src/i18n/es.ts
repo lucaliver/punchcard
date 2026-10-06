@@ -1209,7 +1209,7 @@ const es: Record<EnKey, string> = {
   'enemy.facilitiesManager.name': 'Gerente de instalaciones',
   'enemy.workWife.name': 'Esposa de oficina',
   'enemy.leaver.name': 'El Desertor',
-  'enemy.startHex': 'Petrifica un {n}% de tus cartas al empezar el combate.',
+  'enemy.startHex': 'Echa un maleficio sobre el {n}% de tus cartas al empezar el combate.',
   'enemy.fillSleeve': 'Tus mangas empiezan llenas de cajas.',
   'enemy.exaggeratedGirl.name': 'La Exagerada',
   'enemy.exaggeratedGirl.deep':
