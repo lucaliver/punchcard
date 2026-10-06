@@ -134,7 +134,7 @@ ${shadow}
 <path d="M72 80c10 24 46 24 56 0z" fill="#120e18" ${OUT}/><path d="M76 82h48v7H80zM82 90c8 6 28 6 36 0z" fill="#f6f0e4"/><path d="M88 82v7M96 82v8M104 82v8M112 82v7" stroke="#120e18" stroke-width="2"/>
 <path d="M142 40c4 6 5 10 0 12-5-2-4-6 0-12z" fill="#9ab8f0" ${OUT}/>`;
 
-/** Goblin Consultant: a round pale goblin with a mop of orange curls, an enormous hooked nose and an evil grin, in a shiny teal suit and a dollar-green tie, a briefcase spilling invoices and a knife behind his back. */
+/** Goblin Consultant: a round pale goblin with a mop of black curls, an enormous hooked nose and an evil grin, in a shiny teal suit and a dollar-green tie, a briefcase spilling invoices and a knife behind his back. */
 const goblinConsultant = `
 <defs>${rg('gc-b', '#4ac0b0', '#0e5a58')}${rg('gc-f', '#e8f4c0', '#9ab860')}${rg('gc-c', '#c8864a', '#6a3a1a')}${glow('gc-g', '#ffd900')}</defs>
 ${shadow}
@@ -152,7 +152,7 @@ ${shadow}
 <!-- head: big ears, curls, nose, grin -->
 <path d="M62 66L28 52l22 24zM138 66l34-14-22 24z" fill="url(#gc-f)" ${OUT}/>
 <circle cx="100" cy="68" r="38" fill="url(#gc-f)" ${OUT}/>
-<g fill="#ff9a1e" ${OUT}><circle cx="68" cy="38" r="12"/><circle cx="86" cy="28" r="12"/><circle cx="106" cy="26" r="12"/><circle cx="126" cy="32" r="12"/><circle cx="136" cy="48" r="10"/><circle cx="62" cy="54" r="10"/></g>
+<g fill="#1b1830" ${OUT}><circle cx="68" cy="38" r="12"/><circle cx="86" cy="28" r="12"/><circle cx="106" cy="26" r="12"/><circle cx="126" cy="32" r="12"/><circle cx="136" cy="48" r="10"/><circle cx="62" cy="54" r="10"/></g>
 <path d="M92 66c-4 12 2 26 14 26 6 0 10-4 8-8-6 2-10-2-8-8z" fill="#c8e080" ${OUT}/>
 ${eyes(84, 116, 62, 6, '#ffd900', 'gc-g')}<circle cx="85" cy="63" r="2.5" fill="#120e18"/><circle cx="117" cy="63" r="2.5" fill="#120e18"/>
 <path d="M70 48l22 10M130 48l-22 10" stroke="#120e18" stroke-width="6" stroke-linecap="round"/>
@@ -663,28 +663,22 @@ ${shadow}
 <ellipse cx="100" cy="88" rx="10" ry="7" fill="#9aa0b8" ${OUT}/>
 <path d="M90 98c6 2 14 2 20 0M92 104l-3 7M108 104l3 7" stroke="#120e18" stroke-width="3" fill="none" stroke-linecap="round"/>`;
 
-/** The Printer: a cursed photocopier, lid thrown open like a jaw full of teeth, one green scanner eye on the glass, paper tray for a tongue and cables for tentacles. */
+/** The Printer: a cursed photocopier, lid open like a jaw full of teeth, one green scanner eye, cables for tentacles. */
 const printer = `
-<defs>${rg('pr-b', '#fbf6e6', '#a89f84')}${rg('pr-l', '#6a76c8', '#1c2260')}${glow('pr-g', '#5aff7a')}</defs>
+<defs>${lg('pr-b', '#ece6d8', '#9a94ac')}${glow('pr-g', '#1cffc0')}</defs>
 ${shadow}
-<!-- cable tentacles -->
-<g class="limb" fill="none" stroke-linecap="round"><path d="M44 170c-24 4-34 14-26 24M156 170c24 4 34 14 26 24M70 178c-10 12-4 18 6 14" stroke="#120e18" stroke-width="10"/><path d="M44 170c-24 4-34 14-26 24M156 170c24 4 34 14 26 24M70 178c-10 12-4 18 6 14" stroke="#ff3d9a" stroke-width="5"/></g>
-<g fill="#ffd900" ${OUT}><rect x="10" y="186" width="14" height="10"/><rect x="176" y="186" width="14" height="10"/></g>
-<!-- body -->
-<rect x="28" y="96" width="144" height="82" rx="14" fill="url(#pr-b)" ${OUT}/>
-<rect x="28" y="154" width="144" height="24" rx="8" fill="#c8c0a8" ${OUT}/>
-<!-- open lid with teeth, scanner glass -->
-<path d="M32 98L56 28h92l24 70z" fill="url(#pr-l)" ${OUT}/>
-<path d="M50 40h100l16 52H34z" fill="#120e18" ${OUT}/>
-<g class="eye"><circle cx="100" cy="68" r="26" fill="url(#pr-g)"/><circle cx="100" cy="68" r="16" fill="#5aff7a" ${OUT}/><rect x="97" y="54" width="6" height="28" fill="#120e18"/><circle cx="94" cy="62" r="3" fill="#fff"/></g>
-<path d="M36 92l8-12 8 12 8-12 8 12 8-12 8 12 8-12 8 12 8-12 8 12 8-12 8 12 8-12 8 12" stroke="#f6f0e4" stroke-width="3" fill="#f6f0e4" stroke-linejoin="round"/>
-<path d="M32 98h136" stroke="#120e18" stroke-width="4"/>
-<path d="M32 104l8 12 8-12 8 12 8-12 8 12 8-12 8 12 8-12 8 12 8-12 8 12 8-12 8 12 8-12 8 12" fill="#f6f0e4" stroke="#120e18" stroke-width="2.5" stroke-linejoin="round"/>
-<!-- control panel face and tongue -->
-<rect x="116" y="128" width="40" height="16" rx="3" fill="#120e18" ${OUT}/><rect x="120" y="132" width="14" height="8" fill="#ffd900"/><circle cx="144" cy="136" r="4" fill="#ff3b3b"/><circle cx="152" cy="136" r="0" fill="none"/>
-<path d="M44 130h50" stroke="#8a8468" stroke-width="3"/>
-<path d="M54 176l-10 12h56l-8-12z" fill="#f6f0e4" ${OUT}/><path d="M96 168c14-4 30 0 52 6l4 14c-22 4-40 2-56-2z" fill="#f6f0e4" ${OUT}/><path d="M104 176h36M106 182h30" stroke="#1c5fd0" stroke-width="2.5"/>
-<g class="limb" fill="#f6f0e4" ${OUT}><path d="M156 20l14 6-4 12-14-6z"/><path d="M176 36l12 8-6 10-12-8z"/></g>`;
+<path class="limb" d="M40 150c-24 6-30 24-22 38M160 150c24 6 30 24 22 38" stroke="#1b1830" stroke-width="8" fill="none" stroke-linecap="round"/>
+<path class="limb" d="M40 150c-24 6-30 24-22 38M160 150c24 6 30 24 22 38" stroke="#ff3d9a" stroke-width="3" fill="none" stroke-linecap="round"/>
+<rect x="34" y="92" width="132" height="82" fill="url(#pr-b)" ${OUT}/>
+<rect x="44" y="150" width="112" height="16" fill="#6d6680" ${OUT}/><rect x="88" y="155" width="24" height="6" fill="#1b1830"/>
+<rect x="118" y="100" width="40" height="24" fill="#1b1830" ${OUT}/><rect x="122" y="104" width="16" height="9" fill="#1cc0a0"/><circle cx="148" cy="107" r="3.5" fill="#ffd900"/><circle cx="148" cy="117" r="3.5" fill="#ff3d9a"/>
+<path d="M40 92l8-8 8 8 8-8 8 8 8-8 8 8 8-8 8 8 8-8 8 8 8-8 8 8 8-8 8 8 8-8z" fill="#f6f0e4" ${OUT}/>
+<path d="M44 80l6-50h100l6 50z" fill="url(#pr-b)" ${OUT}/>
+<path d="M44 80h112l-2 6-6-6-8 8-8-8-8 8-8-8-8 8-8-8-8 8-8-8-8 8-8-8-8 8-8-8-8 8-6-6z" fill="#f6f0e4" ${OUT}/>
+<path d="M58 40h84" stroke="#1cc0a0" stroke-width="5"/>
+<circle cx="100" cy="58" r="14" fill="#1b1830" ${OUT}/>
+<g class="eye"><circle cx="100" cy="58" r="22" fill="url(#pr-g)"/><circle cx="100" cy="58" r="8" fill="#1cffc0"/><circle cx="97" cy="55" r="3" fill="#fff"/></g>
+<g class="limb"><path d="M156 128l38-10 4 22-38 10z" fill="#f6f0e4" ${OUT}/><path d="M164 132l24-6M166 140l24-6" stroke="#1b1830" stroke-width="2.5"/></g>`;
 
 /** The Nerd: the IT guy. Round and pimply, in a shirt with a code bracket and pocket pens, taped glasses and braces; a laptop on a blue screen in one hand, a "well, actually" finger up in the other. */
 const theNerd = `
