@@ -19,7 +19,7 @@ const DUCK_BLOCK = 25;
 /** Share of max HP the Rubber Duck squeaks at. */
 const DUCK_HP = 0.5;
 const SHREDDER_EVERY = 2;
-export const SHREDDER_BLOCK = 4;
+export const SHREDDER_BLOCK = 3;
 /** The belt's speed with a Lanyard. */
 const LANYARD_SPEED = 1.15;
 /** Share of max HP the Emergency Exit gets you back on your feet with. */
@@ -31,7 +31,7 @@ const STATUETTE_CARDS = 5;
 const PLANT_EVERY = 15;
 export const PLANT_HEAL = 2;
 export const HIGHLIGHTER_MULT = 2;
-export const PUNCH_DAMAGE = 3;
+export const PUNCH_DAMAGE = 2;
 /** How long the Name Tag leaves the enemy Vulnerable at the start of a fight (s). */
 export const NAME_TAG_TIME = 8;
 /** Share of max HP the Fire Drill Bell rings at. */
@@ -58,7 +58,7 @@ const defs: RelicDef[] = [
   },
   {
     id: 'thermos',
-    rarity: 'common',
+    rarity: 'rare',
     n: THERMOS_HEAL,
     hooks: { onCombatEnd: (c) => void (c.heal('hero', THERMOS_HEAL) > 0 && proc(c, 'thermos')) },
   },
@@ -105,7 +105,7 @@ const defs: RelicDef[] = [
   },
   {
     id: 'inboxZero',
-    rarity: 'rare',
+    rarity: 'epic',
     n: 1,
     hooks: {
       onCombatStart: (c) => {
@@ -142,7 +142,7 @@ const defs: RelicDef[] = [
       },
     },
   },
-  { id: 'stickyNotes', rarity: 'common', n: 1, mods: { startBelt: STICKY_BELT } },
+  { id: 'stickyNotes', rarity: 'epic', n: 1, mods: { startBelt: STICKY_BELT } },
   {
     id: 'rubberDuck',
     rarity: 'common',
@@ -159,7 +159,7 @@ const defs: RelicDef[] = [
   },
   {
     id: 'paperShredder',
-    rarity: 'rare',
+    rarity: 'epic',
     n: SHREDDER_EVERY,
     progress: (c) => ((c.mem.shredder ?? 0) % SHREDDER_EVERY) / SHREDDER_EVERY,
     hooks: {
@@ -197,7 +197,7 @@ const defs: RelicDef[] = [
   },
   {
     id: 'quillPen',
-    rarity: 'rare',
+    rarity: 'epic',
     n: 1,
     hooks: {
       // The cards are copies made for the fight: the deck itself keeps them as they were.
@@ -207,7 +207,7 @@ const defs: RelicDef[] = [
       },
     },
   },
-  { id: 'lanyard', rarity: 'rare', n: Math.round((LANYARD_SPEED - 1) * 100), mods: { beltSpeed: LANYARD_SPEED } },
+  { id: 'lanyard', rarity: 'epic', n: Math.round((LANYARD_SPEED - 1) * 100), mods: { beltSpeed: LANYARD_SPEED } },
   { id: 'companyCard', rarity: 'epic', n: 1, mods: { rewardCards: 1 } },
   {
     id: 'deskPlant',
@@ -239,7 +239,7 @@ const defs: RelicDef[] = [
   },
   {
     id: 'holePunch',
-    rarity: 'common',
+    rarity: 'epic',
     n: PUNCH_DAMAGE,
     hooks: {
       onCardExpired: (c) => {
@@ -262,7 +262,7 @@ const defs: RelicDef[] = [
   },
   {
     id: 'nameTag',
-    rarity: 'rare',
+    rarity: 'common',
     n: NAME_TAG_TIME,
     hooks: {
       onCombatStart: (c) => {
