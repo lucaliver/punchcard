@@ -335,6 +335,7 @@ function traitsOf(e: EnemyDef): string {
   if (e.ruleBreaker) t.push('rule-breaker');
   if (e.deepBelt !== undefined) t.push(`deep belt @${e.deepBelt}s`);
   if (e.beltOff !== undefined) t.push(`belt off @${e.beltOff}s`);
+  if (e.manaTap !== undefined) t.push(`mana by tap @${e.manaTap}s`);
   if (e.startRows) t.push(`${e.startRows} belt row at start`);
   return t.join(', ');
 }

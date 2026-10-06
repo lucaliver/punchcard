@@ -126,6 +126,8 @@ export class Combat {
   private rowAdded = false;
   /** The belt is shut off (`EnemyDef.beltOff`): it only moves when the player turns the crank (`crankBelt`). */
   beltDead = false;
+  /** Mana only comes back by tapping the button (`EnemyDef.manaTap`, `tapMana`). */
+  manaTapOn = false;
   /** Total belt travel the player has cranked by hand, in belt widths (the UI scrolls the track stripes by it). */
   beltCranked = 0;
   sleeve: (CombatCard | null)[];
@@ -496,22 +498,44 @@ export class Combat {
     if (this.result) return;
     this.tickDeepBelt();
     this.tickBeltOff();
+    this.tickManaTap();
     this.tickBeltTurn(dt);
     this.tickBelt(dt);
     for (const id of this.relics) RELICS[id]?.hooks?.tick?.(this, dt);
     this.heroDef.hooks.tick?.(this, dt);
   }
 
+  /** The mana timer's whole turns become mana (a full bar keeps none). */
+  private fillMana(): void {
+    const h = this.hero;
+    while (h.manaTimer >= h.regen && h.mana < h.maxMana) {
+      h.manaTimer -= h.regen;
+      h.mana++;
+    }
+    if (h.mana >= h.maxMana) h.manaTimer = 0;
+  }
+
+  /** `EnemyDef.manaTap`: mana stops coming back by itself; from now on the player taps it out of the button. */
+  private tickManaTap(): void {
+    const at = this.enemy.def.manaTap;
+    if (at === undefined || this.manaTapOn || this.time < at) return;
+    this.manaTapOn = true;
+    this.events.emit({ type: 'manaTap' });
+  }
+
+  /** A tap on the mana button: a share of a mana (`CONFIG.manaTapAmount`) comes back. */
+  tapMana(): void {
+    if (!this.manaTapOn || this.result || this.intro > 0 || this.hero.mana >= this.hero.maxMana) return;
+    this.hero.manaTimer += this.hero.regen * CONFIG.manaTapAmount;
+    this.fillMana();
+  }
+
   private tickHero(dt: number): void {
     const h = this.hero;
     if (h.mana < h.maxMana) {
-      const rate = this.regenMul * this.mul('hero', 'regenMul');
+      const rate = this.manaTapOn ? 0 : this.regenMul * this.mul('hero', 'regenMul');
       h.manaTimer += dt * rate;
-      while (h.manaTimer >= h.regen && h.mana < h.maxMana) {
-        h.manaTimer -= h.regen;
-        h.mana++;
-      }
-      if (h.mana >= h.maxMana) h.manaTimer = 0;
+      this.fillMana();
     } else {
       h.manaTimer = 0;
       // Mana overflowing (full, the regen wasted): every whole second, cards that grow on it do, wherever they are.
@@ -773,7 +797,11 @@ export class Combat {
     for (const cu of m.curse ?? []) {
       // Curses arriving on the belt together come in one after the other, spread over the rows (one row's spacing is shared by all).
       const gap = (CONFIG.spacing * (CARDS[cu.id].span ?? 1)) / this.rowsOpen;
-      for (let i = 0; i < cu.n; i++) this.addTempCard(cu.id, cu.to, false, cu.to === 'belt' ? -queued++ * gap : 0);
+      for (let i = 0; i < cu.n; i++) {
+        const hex = cu.hex ? { id: cu.hex, left: HEXES[cu.hex].taps, t: HEXES[cu.hex].thaw } : undefined;
+        const card = this.addTempCard(cu.id, cu.to, false, cu.to === 'belt' ? -queued++ * gap : 0, hex ? { hex } : {});
+        if (hex) this.events.emit({ type: 'hexed', card });
+      }
     }
     if (m.steal) for (let i = 0; i < m.steal; i++) this.stealCard();
     if (m.drainMana) this.drainMana(m.drainMana);
@@ -1539,7 +1567,7 @@ export class Combat {
    * Adds a temporary card (curses, generated cards) to a pile or straight onto the belt. `at` < 0 queues a belt card
    * just before the entry, so several arriving together come in one after the other. `extra` is what a copy carries over (perks, `fleeting`).
    */
-  addTempCard(id: string, to: 'belt' | 'draw' | 'discard', up = false, at = 0, extra: Partial<CombatCard> = {}): void {
+  addTempCard(id: string, to: 'belt' | 'draw' | 'discard', up = false, at = 0, extra: Partial<CombatCard> = {}): CombatCard {
     // Temporary cards get negative uids so they never collide with deck cards.
     const card: CombatCard = { uid: -++this.tempUid, id, up, bonus: 0, temp: true, ...extra };
     if (to === 'belt' && this.spawnCard(at, card)) {
@@ -1552,6 +1580,7 @@ export class Combat {
       this.discard.push(card);
     }
     this.events.emit({ type: 'cardAdded', card, to });
+    return card;
   }
 
   /** Removes every curse from the belt, the sleeve and the piles (one from the run's own deck is gone for good). Returns how many. */

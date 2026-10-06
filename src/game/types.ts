@@ -299,8 +299,8 @@ export interface MoveDef {
   heal?: number;
   /** Statuses applied on resolve. */
   status?: { id: string; v?: number; t?: number; target: Side }[];
-  /** Curses shuffled into the player's piles (several kinds at once if needed). */
-  curse?: { id: string; n: number; to: 'belt' | 'draw' | 'discard' }[];
+  /** Cards shuffled into the player's piles (several kinds at once if needed); `hex` puts that hex on each of them (see `HEXES`). */
+  curse?: { id: string; n: number; to: 'belt' | 'draw' | 'discard'; hex?: string }[];
   steal?: number;
   drainMana?: number;
   /** Hexes cards (see `HEXES`): a `share` (0–1) of the belt, and the same share of the rest of the deck. */
@@ -349,6 +349,8 @@ export interface EnemyDef {
   deepBelt?: number;
   /** A surprise (no pre-fight line): seconds into the fight when the belt shuts off for good; from then on the player turns it by hand with a crank knob (`Combat.crankBelt`). It says `enemy.<id>.speech`. */
   beltOff?: number;
+  /** A surprise (no pre-fight line): seconds into the fight when its hidden passive kicks in: mana stops coming back by itself and a button next to the mana bar gives `CONFIG.manaTapAmount` per tap (`Combat.tapMana`). It says `enemy.<id>.speech`. */
+  manaTap?: number;
   /** Only met as the very first fight of the very first run (never dealt at random). */
   firstRunOnly?: boolean;
   /** Bends the rules of the belt or of what you may play (not just numbers): every act 2 opens on one of these, so the act's fun shows at once. */
@@ -558,6 +560,8 @@ export type CombatEvent =
   | { type: 'rowAdded' }
   /** `beltOff`: the belt is shut off; it only moves under the player's finger now. */
   | { type: 'beltDead' }
+  /** `manaTap`: mana no longer comes back by itself; the tap button is up. */
+  | { type: 'manaTap' }
   | { type: 'rowsClose' }
   | { type: 'weakSpot'; x: number; y: number }
   | { type: 'rust' }

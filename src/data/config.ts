@@ -63,6 +63,8 @@ export const CONFIG = {
   beltRows: 2,
   /** Belt widths the belt moves for one full clockwise turn of the crank knob (`EnemyDef.beltOff`): small, so it takes many turns. */
   crankTurn: 0.1,
+  /** Mana a tap on the button gives (`EnemyDef.manaTap`): about four taps a second match the usual regeneration. */
+  manaTapAmount: 0.2,
   /** Degrees of crank turn between two buzzes of the phone. */
   crankBuzz: 24,
   /** Seconds between the lower part of the screen sinking (`EnemyDef.deepBelt`) and the extra belt row opening in its place. */

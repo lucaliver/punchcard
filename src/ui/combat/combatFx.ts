@@ -382,6 +382,12 @@ export function bindCombatFx(v: CombatView, cards: CardLayer, onEnd: (result: 'w
         speak(t(`enemy.${v.combat.enemy.def.id}.speech`));
         sfx('machinery');
         break;
+      case 'manaTap':
+        // Mana stops coming back by itself; the tap button comes up next to the bar (see `.mana-tapping`).
+        v.el.classList.add('mana-tapping');
+        speak(t(`enemy.${v.combat.enemy.def.id}.speech`));
+        sfx('machinery');
+        break;
       case 'rowAdded':
         v.el.classList.add('deep');
         r.belt.style.setProperty('--rows', String(v.combat.beltRows));

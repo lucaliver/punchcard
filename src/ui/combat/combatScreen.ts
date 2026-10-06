@@ -280,6 +280,13 @@ export function combatScreen(run: RunState, combat: Combat, cb: CombatCallbacks)
   };
   r.popupUpdate.addEventListener('click', () => answerUpdate(() => combat.startUpdate()));
   r.popupPostpone.addEventListener('click', () => answerUpdate(() => combat.postponeUpdate()));
+  // Big Sis's mana button: every touch gives mana at once (it doesn't wait for a full tap, so quick fingers keep up); it never starts the bar's hold-to-inspect.
+  r.manaTap.addEventListener('pointerdown', (ev) => {
+    ev.stopPropagation();
+    if (state.paused || state.waiting || state.ended) return;
+    combat.tapMana();
+    haptic('tap');
+  });
   // The mana bar explains itself only on a hold (it's right under the thumb while playing).
   onTapOrHold(r.manaRow, () => {}, manaInfo);
 

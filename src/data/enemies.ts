@@ -688,39 +688,57 @@ const defs: EnemyDef[] = [
     ],
   },
   {
-    // Your replacement, already on the floor: at half HP it recalibrates and works half as fast again.
-    id: 'replacement',
+    // Lost on the wrong floor, he hands out his luggage: helpful cards, but shut in suitcases big enough to clog the belt.
+    id: 'tourist',
     act: 3,
     tier: 'elite',
     hp: 140,
     block: 20,
-    art: 'replacement',
-    main: atk('weld', 8, 7, ramp),
+    art: 'tourist',
+    main: atk('selfieStick', 8, 7, ramp),
     every: 2,
     specials: [
-      atk('pickAndPlace', 4, 8, { hits: 3 }),
-      { id: 'safetyInterlock', intent: 'curse', windup: 6, curse: [{ id: 'lockout', n: 1, to: 'belt' }] },
-      atk('crush', 18, 11, { intent: 'charge' }),
+      {
+        id: 'lostLuggage',
+        intent: 'curse',
+        windup: 6,
+        curse: [
+          { id: 'carryOn', n: 1, to: 'draw', hex: 'suitcase' },
+          { id: 'dutyFree', n: 1, to: 'draw', hex: 'suitcase' },
+        ],
+      },
+      atk('allInclusive', 4, 8, { hits: 3 }),
+      {
+        id: 'souvenirShop',
+        intent: 'curse',
+        windup: 6,
+        curse: [
+          { id: 'snowGlobe', n: 1, to: 'draw', hex: 'suitcase' },
+          { id: 'dutyFree', n: 1, to: 'draw', hex: 'suitcase' },
+        ],
+      },
+      atk('overbooked', 18, 11, { intent: 'charge' }),
     ],
-    start: [{ id: 'understudy' }],
     halfSpeech: true,
     onHalf: (c) => c.applyStatus('enemy', 'haste', 1, 9999),
   },
   {
-    // Pressure builds up in its Block: chew through it before it bursts.
-    id: 'oldBoiler',
+    // The belt's big sister: five seconds in, she shuts off your mana and makes you tap it out by hand.
+    id: 'conveyorSis',
     act: 3,
     tier: 'elite',
     hp: 140,
     block: 20,
-    art: 'oldBoiler',
-    main: atk('steamBlast', 9, 8, ramp),
+    art: 'conveyorSis',
+    main: atk('rollerSlap', 8, 7, ramp),
     every: 2,
     specials: [
-      { id: 'stokeTheFire', intent: 'buff', windup: 6, block: 15, status: [{ id: 'strength', v: 2, target: 'enemy' }] },
-      atk('overpressure', 20, 12, { intent: 'charge' }),
+      { id: 'fullSpeedAhead', intent: 'debuff', windup: 5, status: [{ id: 'crunch', t: 8, target: 'hero' }] },
+      { id: 'safetyInterlock', intent: 'curse', windup: 6, curse: [{ id: 'lockout', n: 1, to: 'belt' }] },
+      atk('familyBusiness', 18, 11, { intent: 'charge' }),
     ],
-    start: [{ id: 'pressure' }],
+    manaTap: 5,
+    ruleBreaker: true,
   },
   {
     // Three directors in one chassis: each third of its HP you take, one more loses patience.
@@ -788,8 +806,8 @@ export const DIFFICULTY = [
   'microwave',
   'witheredFicus',
   'factorySiren',
-  'replacement',
-  'oldBoiler',
+  'tourist',
+  'conveyorSis',
   'theBoard',
 ];
 

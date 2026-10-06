@@ -51,7 +51,11 @@ const BLOCKISH = [
 ];
 const DEBUFFS = ['karoshi', 'chainSmoking', 'waterCooler', 'blackFriday', 'walkout'];
 
+/** Taps a second the bot gives Conveyor Sis's mana button (about what a thumb does). */
+const TAPS_PER_SECOND = 4;
+
 export function botDecide(c: Combat, rnd: () => number, opts: BotOpts): void {
+  for (let i = 0; c.manaTapOn && i < opts.reaction * TAPS_PER_SECOND; i++) c.tapMana();
   if (rnd() < opts.sloppiness) return;
   if (c.abilityReady()) c.useAbility();
   // The IT guy's window: it postpones it, and plays in the seconds that leaves.

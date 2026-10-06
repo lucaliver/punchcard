@@ -372,7 +372,7 @@ export function createCardLayer(v: CombatView): CardLayer {
     toggle(ce.el, 'hexed', !!hex && hex.left > 0);
     toggle(ce.el, 'thawing', !!hex && hex.left <= 0);
     const stages = hex && hex.left > 0 ? HEXES[hex.id].stages : undefined;
-    toggle(ce.el, 'crumpled', !!stages);
+    toggle(ce.el, 'pictured', !!stages);
     if (hex && hex.left > 0) {
       ce.el.dataset.hexLeft = String(hex.left);
       ce.hexEl ??= ce.el.appendChild(h('div', { class: 'hex-cover' }));

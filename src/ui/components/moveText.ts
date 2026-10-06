@@ -58,7 +58,9 @@ export function moveEffect(m: MoveDef, verbose = false, values: MoveValues = bas
   for (const cu of m.curse ?? []) {
     const card = t(`card.${cu.id}.name`);
     const n = cu.n > 1 ? ` ×${cu.n}` : '';
-    parts.push(`<span class="fx fx-curse" data-card="${cu.id}">${icon('skull')}${verbose ? t('move.fx.adds', { card }) : card}<b>${n}</b></span>`);
+    parts.push(
+      `<span class="fx fx-curse" data-card="${cu.id}">${icon(cu.hex ? HEXES[cu.hex].icon : 'skull')}${verbose ? t('move.fx.adds', { card }) : card}<b>${n}</b></span>`,
+    );
   }
   if (m.inflate) parts.push(`<span class="fx fx-bad" data-rule="inflation">${icon('inflation')}${t('move.fx.inflate', { n: m.inflate })}</span>`);
   if (m.infect)

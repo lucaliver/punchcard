@@ -704,6 +704,26 @@ export const ICONS: Record<string, { el: Element; svg: string }> = {
     el: 'steel',
     svg: `<path d="M6 52l6-26 16-18 20 6 10 22-6 18H12z"/><path d="M26 22l6 14-10 8M42 26l-4 12 12 6" stroke="#16121f" stroke-width="4" fill="none"/>`,
   },
+  luggage: {
+    el: 'steel',
+    svg: `<path d="M20 4h24v10h-6V10H26v4h-6z"/><rect x="4" y="14" width="56" height="44" rx="6"/><path fill="#16121f" d="M4 33h56v4H4zM12 24h8v6h-8zM44 24h8v6h-8z"/><rect x="28" y="30" width="8" height="10"/>`,
+  },
+  luggageOpen: {
+    el: 'steel',
+    svg: `<rect x="4" y="32" width="56" height="26" rx="4"/><path d="M10 29l6-24h32l6 24z"/><path fill="none" stroke="#16121f" stroke-width="3" d="M4 31h56M26 36v8M38 36v8"/>`,
+  },
+  carryOn: {
+    el: 'steel',
+    svg: `<path d="M28 14V4h8v10"/><rect x="14" y="14" width="36" height="40" rx="4"/><path fill="#16121f" d="M21 14h3v40h-3zM40 14h3v40h-3z"/><circle cx="22" cy="58" r="4"/><circle cx="42" cy="58" r="4"/>`,
+  },
+  dutyFree: {
+    el: 'steel',
+    svg: `<path d="M26 4h12v10l6 8v34c0 3-2 4-4 4H24c-2 0-4-1-4-4V22l6-8z"/><rect x="24" y="30" width="16" height="16" fill="#16121f"/><rect x="28" y="34" width="8" height="3" /><rect x="28" y="40" width="8" height="3" />`,
+  },
+  snowGlobe: {
+    el: 'steel',
+    svg: `<circle cx="32" cy="26" r="21"/><path fill="#16121f" d="M32 12l3 8 8 1-6 5 2 8-7-4-7 4 2-8-6-5 8-1z"/><rect x="14" y="44" width="36" height="14" rx="3"/><path fill="#16121f" d="M18 50h28v3H18z"/>`,
+  },
   down: { el: 'shadow', svg: `<path d="M32 60L8 34h14V4h20v30h14z"/>` },
   shutdown: {
     el: 'necro',
@@ -1218,10 +1238,6 @@ export const ICONS: Record<string, { el: Element; svg: string }> = {
   brainChip: {
     el: 'arcane',
     svg: `<rect x="14" y="14" width="36" height="36" rx="3"/><path d="M20 4h4v10h-4zM30 4h4v10h-4zM40 4h4v10h-4zM20 50h4v10h-4zM30 50h4v10h-4zM40 50h4v10h-4zM4 20h10v4H4zM4 30h10v4H4zM4 40h10v4H4zM50 20h10v4H50zM50 30h10v4H50zM50 40h10v4H50z"/><path d="M32 22c-6 0-9 4-9 8 0 3 2 5 3 6-1 3 1 6 4 6h4c3 0 5-3 4-6 1-1 3-3 3-6 0-4-3-8-9-8z" fill="#16121f"/><path d="M32 24v18M27 30h5M32 34h5" stroke="#fff" stroke-width="2" opacity=".7"/>`,
-  },
-  steamGauge: {
-    el: 'fire',
-    svg: `<circle cx="32" cy="32" r="28"/><circle cx="32" cy="32" r="21" fill="#16121f" opacity=".55"/><path d="M32 32L46 18" stroke="#fff" stroke-width="4" stroke-linecap="round"/><circle cx="32" cy="32" r="4" fill="#fff"/><path d="M12 38l4-1M14 24l4 2M24 13l2 4M38 13l-2 4M50 24l-4 2" stroke="#fff" stroke-width="3" opacity=".8"/><path d="M26 56h12v6H26z"/>`,
   },
   gavel: {
     el: 'steel',

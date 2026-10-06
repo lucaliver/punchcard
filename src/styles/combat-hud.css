@@ -1,5 +1,6 @@
 /* mana */
 .mana-row {
+  position: relative;
   display: flex;
   align-items: center;
   gap: 8px;
@@ -62,6 +63,34 @@
   font-size: 26px;
   line-height: 1;
 }
+/* Conveyor Sis cuts the regeneration: a blue button over the right of the row (taller than the row, so it never changes its height) gives a bit of mana per tap */
+.mana-tap {
+  display: none;
+  position: absolute;
+  right: 12px;
+  top: 50%;
+  translate: 0 -50%;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  width: 76px;
+  height: 46px;
+  padding: 0;
+  touch-action: manipulation;
+  user-select: none;
+  -webkit-user-select: none;
+  color: var(--paper);
+  background: var(--b);
+  border: var(--line) solid var(--k);
+  box-shadow: var(--off) var(--off) 0 var(--shadow);
+  font-family: var(--font-ui);
+  font-size: 24px;
+  line-height: 1;
+}
+.mana-tap .pico { font-size: 24px; color: var(--paper); --ink2: var(--k); }
+.mana-tap:active { translate: 2px calc(-50% + 2px); box-shadow: 1px 1px 0 var(--shadow); }
+.combat.mana-tapping .mana-tap { display: flex; }
+.combat.mana-tapping .mana-row { padding-right: 100px; }
 .mana-num small {
   font-size: 18px;
   color: var(--muted-d);

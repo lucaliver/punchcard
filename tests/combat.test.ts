@@ -3,18 +3,8 @@ import { Combat, type CombatSetup } from '../src/game/combat';
 import { ANCHOR_POS, CONFIG, EXPIRE_POS, rewardUpgradeChance } from '../src/data/config';
 import { ENEMIES, enemiesFor } from '../src/data/enemies';
 import { HEROES, VIRULENCE_START } from '../src/data/heroes';
-import {
-  COFFEE_EVERY,
-  FLICKER_EVERY,
-  FORKLIFT_BLOCK,
-  LUNCH_EVERY,
-  SMILE_HEAL,
-  STATUSES,
-  TABS_EVERY,
-  UNDERSTUDY_BLOCK,
-  UNDERSTUDY_EVERY,
-} from '../src/data/statuses';
-import { CARD_LIST, CARDS, RARITY_ORDER, cardCostOf } from '../src/data/cards';
+import { COFFEE_EVERY, FLICKER_EVERY, FORKLIFT_BLOCK, LUNCH_EVERY, SMILE_HEAL, STATUSES, TABS_EVERY } from '../src/data/statuses';
+import { CARD_LIST, CARDS, RARITY_ORDER, cardCostOf, cardKeywordsOf } from '../src/data/cards';
 import { HEXES } from '../src/data/hexes';
 import { RELICS } from '../src/data/relics';
 import { hasStamp, memosOpen, runHistory, stampAct } from '../src/game/meta';
@@ -2584,19 +2574,6 @@ describe('act 3 rules, second batch', () => {
     expect(c.enemy.hp).toBe(hp + 3 * SMILE_HEAL);
   });
 
-  it('Understudy: every few cards you play, the enemy copies the work and gains Block', () => {
-    const c = setup({ enemy: { ...ENEMIES.replacement, main: { ...ENEMIES.replacement.main, windup: 999 } } });
-    run(c, CONFIG.introTime + 8);
-    c.enemy.block = 0;
-    const play = (): void => {
-      c.playCard(c.belt.find((b) => c.isPlayable(b.card))!.card.uid, 'auto');
-    };
-    for (let i = 0; i < UNDERSTUDY_EVERY - 1; i++) play();
-    expect(c.enemy.block).toBe(0);
-    play();
-    expect(c.enemy.block).toBe(UNDERSTUDY_BLOCK);
-  });
-
   it('the Withered Ficus stings back when an attack card hits it', () => {
     const c = setup({ enemy: ENEMIES.witheredFicus });
     expect(c.stacks('enemy', 'thorns')).toBe(1);
@@ -2604,13 +2581,35 @@ describe('act 3 rules, second batch', () => {
 });
 
 describe('act 3 elites and boss', () => {
-  it('the Old Boiler bursts when its Block reaches the limit, and the Block is gone', () => {
-    const c = setup({ enemy: { ...ENEMIES.oldBoiler, main: { ...ENEMIES.oldBoiler.main, windup: 999 } } });
-    c.enemy.block = 200;
-    const hp = c.hero.hp;
-    run(c, CONFIG.introTime + 1);
-    expect(c.enemy.block).toBeLessThan(40);
-    expect(c.hero.hp).toBeLessThan(hp);
+  it('Conveyor Sis cuts the mana regeneration after 5 seconds; the button gives it back a tap at a time', () => {
+    const c = setup({ enemy: { ...ENEMIES.conveyorSis, main: { ...ENEMIES.conveyorSis.main, windup: 999 } } });
+    c.hero.mana = 0;
+    run(c, CONFIG.introTime + 4);
+    expect(c.manaTapOn).toBe(false);
+    expect(c.hero.mana).toBeGreaterThan(0);
+    run(c, 1.5);
+    expect(c.manaTapOn).toBe(true);
+    c.hero.mana = 0;
+    c.hero.manaTimer = 0;
+    run(c, 10);
+    expect(c.hero.mana).toBe(0);
+    const taps = Math.ceil(1 / CONFIG.manaTapAmount);
+    for (let i = 0; i < taps; i++) c.tapMana();
+    expect(c.hero.mana).toBe(1);
+  });
+
+  it('the Tourist hands out large luggage: suitcases to tap open, then the cards play as usual', () => {
+    const c = setup({ enemy: { ...ENEMIES.tourist, main: { ...ENEMIES.tourist.main, windup: 999 } }, deck: deckOf(Array(4).fill('punch')) });
+    run(c, CONFIG.introTime + 0.1);
+    const luggage = ENEMIES.tourist.specials[0];
+    c.enemy.move = luggage;
+    run(c, luggage.windup + 0.1);
+    const cards = [...c.draw, ...c.belt.map((b) => b.card)].filter((x) => x.hex?.id === 'suitcase');
+    expect(cards.map((x) => x.id).sort()).toEqual(['carryOn', 'dutyFree']);
+    for (const card of cards) {
+      expect(cardKeywordsOf(card)).toContain('large');
+      expect(card.hex?.left).toBe(HEXES.suitcase.taps);
+    }
   });
 
   it('every third of its HP the Board loses, a director loses patience', () => {

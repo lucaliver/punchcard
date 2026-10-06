@@ -59,20 +59,12 @@ export const CREEP_EVERY = 10;
 export const CHIRP_EVERY = 5;
 /** Machine Learning: every this many cards slipping off the belt teach it +1 Strength. */
 export const LEARN_EVERY = 3;
-/** Pressure: gains this much Block every so many seconds; at the limit it bursts (the Block is gone, the hero takes the blast). */
-export const PRESSURE_EVERY = 5;
-export const PRESSURE_STEP = 6;
-export const PRESSURE_LIMIT = 30;
-const PRESSURE_BLAST = 12;
 /** Flickering Lights: the lights go out on the hero this often (s), for this long (s); the belt reddens for the last `FLICKER_WARN` seconds before. */
 export const FLICKER_EVERY = 16;
 export const FLICKER_TIME = 8;
 const FLICKER_WARN = 3;
 /** Forced Smile: HP it heals every second. */
 export const SMILE_HEAL = 1;
-/** Understudy: every this many cards the hero plays it copies the work and gains this much Block. */
-export const UNDERSTUDY_EVERY = 4;
-export const UNDERSTUDY_BLOCK = 6;
 /** Paradigm Shift: the belt turns around each time the enemy loses another 1/this of its max HP. */
 export const PARADIGM_TURNS = 4;
 /** The Board: what the first director to leave brings (Block, Strength); the second one speeds the whole board up. */
@@ -109,10 +101,6 @@ const endOnPlay =
   (id: string): StatusDef['onCardPlayed'] =>
   (c, side) =>
     c.removeStatus(side, id);
-
-const buildPressure = everySecond((c, side, n) => {
-  if (n % PRESSURE_EVERY === 0) c.gainBlock(side, PRESSURE_STEP);
-});
 
 const defs: StatusDef[] = [
   { id: 'strength', tone: 'red', kind: 'stacks', good: true, chip: 'icon', icon: 'muscle', strength: true },
@@ -630,22 +618,6 @@ const defs: StatusDef[] = [
     icon: 'leaf',
     tick: everySecond((c, side, _n, s) => c.heal(side, s.v * SMILE_HEAL)),
   },
-  // Understudy: it copies your work, a few cards at a time. `mem.understudy` counts them.
-  {
-    id: 'understudy',
-    tone: 'teal',
-    kind: 'stacks',
-    good: true,
-    passive: true,
-    icon: 'copy',
-    progress: (c) => (c.enemy.mem.understudy ?? 0) / UNDERSTUDY_EVERY,
-    onCardPlayed: (c, side) => {
-      if (side !== 'enemy') return;
-      const n = (c.enemy.mem.understudy ?? 0) + 1;
-      c.enemy.mem.understudy = n % UNDERSTUDY_EVERY;
-      if (n >= UNDERSTUDY_EVERY) c.gainBlock(side, UNDERSTUDY_BLOCK);
-    },
-  },
   // Machine learning: `e` counts the cards you let slip.
   {
     id: 'machineLearning',
@@ -661,24 +633,6 @@ const defs: StatusDef[] = [
       if (s.e < LEARN_EVERY) return;
       s.e = 0;
       c.applyStatus(side, 'strength', 1);
-    },
-  },
-  // Pressure: Block builds up on its own; let it reach the limit and it bursts. `e` is the clock of the build-up.
-  {
-    id: 'pressure',
-    tone: 'teal',
-    kind: 'stacks',
-    good: true,
-    passive: true,
-    icon: 'steamGauge',
-    progress: cycle(PRESSURE_EVERY),
-    tick: (c, side, s, dt) => {
-      buildPressure(c, side, s, dt);
-      const f = c.fighter(side);
-      if (f.block < PRESSURE_LIMIT) return;
-      f.block = 0;
-      c.say('status.pressure.speech');
-      c.damage(side, 'hero', Math.round(PRESSURE_BLAST * c.enemy.dmgScale), { raw: true, kind: 'claw' }, 'enemy');
     },
   },
   // The Board: every third of its HP you take, one more director loses patience (`mem.thirds` counts them).

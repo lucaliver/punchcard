@@ -1152,51 +1152,60 @@ ${shadow}
 <ellipse cx="100" cy="80" rx="10" ry="12" fill="#120e18" ${OUT}/><ellipse cx="100" cy="86" rx="6" ry="5" fill="#ff3d9a"/>
 <g fill="none" stroke="#ff3d9a" stroke-width="4" stroke-linecap="round"><path d="M22 100q-8 10 0 20M10 92q-14 18 0 36"/></g>`;
 
-/** The Replacement: a lanky factory robot with a smiling screen for a face, a welding torch for one hand and a gripper for the other. */
-const replacement = `
-<defs>${glow('rp-g', '#ff3b3b')}</defs>
+/** The Tourist: a handsome sunglassed dude in a Hawaiian shirt, selfie stick up, rolling a suitcase he swears is his. */
+const tourist = `
 ${shadow}
-<path d="M74 142v38M126 142v38" stroke="#5a5470" stroke-width="16" stroke-linecap="round"/>
-<g ${OUT}><rect x="58" y="176" width="34" height="12" rx="4" fill="#3a3450"/><rect x="108" y="176" width="34" height="12" rx="4" fill="#3a3450"/></g>
-<rect x="62" y="84" width="76" height="64" rx="8" fill="#9a94ac" ${OUT}/>
-<path d="M62 132h76v16a8 8 0 0 1-8 0H70a8 8 0 0 1-8 0z" fill="#ffd900"/>
-<path d="M72 132l-8 16M92 132l-8 16M112 132l-8 16M132 132l-8 16" stroke="#120e18" stroke-width="5"/>
-<rect x="62" y="132" width="76" height="16" fill="none" ${OUT}/>
-<g ${OUT}><rect x="84" y="94" width="32" height="22" rx="3" fill="#f6f0e4"/></g>
-<rect x="90" y="102" width="20" height="6" fill="#ff3d9a"/>
-<rect x="94" y="76" width="12" height="10" fill="#3a3450" ${OUT}/>
-<path d="M100 24V10" stroke="#120e18" stroke-width="4"/><circle cx="100" cy="8" r="6" fill="#ffd900" ${OUT}/>
-<rect x="58" y="24" width="84" height="56" rx="8" fill="#f6f0e4" ${OUT}/>
-<rect x="66" y="32" width="68" height="40" rx="4" fill="#120e18" ${OUT}/>
-${eyes(84, 116, 48, 5, '#ff3b3b', 'rp-g')}
-<path d="M80 60c10 8 30 8 40 0" fill="none" stroke="#f6f0e4" stroke-width="4" stroke-linecap="round"/>
-<g class="limb"><path d="M64 96L38 114L50 140" fill="none" stroke="#8a84a0" stroke-width="11" stroke-linecap="round" stroke-linejoin="round"/>
-<g ${OUT}><path d="M42 138h16l4 14H38z" fill="#ffd900"/></g>
-<g fill="none" stroke="#ffd900" stroke-width="4" stroke-linecap="round"><path d="M30 160l-8 6M42 166l-2 10M56 166l4 10M66 160l8 6"/></g></g>
-<path d="M136 96L162 114L152 138" fill="none" stroke="#8a84a0" stroke-width="11" stroke-linecap="round" stroke-linejoin="round"/>
-<g fill="#c9c4d6" ${OUT}><path d="M142 138l10 0 0 20-6 0zM164 138l-10 0 0 20 6 0z"/></g>`;
+<g ${OUT}><rect x="136" y="104" width="50" height="68" rx="6" fill="#1c5fd0"/></g>
+<path d="M150 104V90h22v14" fill="none" stroke="#120e18" stroke-width="5" stroke-linecap="round"/>
+<path d="M146 112v52M176 112v52" stroke="#0d3c8a" stroke-width="4"/>
+<rect x="154" y="126" width="18" height="12" fill="#ffd900" ${OUT}/><circle cx="163" cy="132" r="3" fill="#ff3d9a"/>
+<circle cx="150" cy="176" r="6" fill="#120e18"/><circle cx="174" cy="176" r="6" fill="#120e18"/>
+<path d="M84 142v32M116 142v32" stroke="#f2b88a" stroke-width="14" stroke-linecap="round"/>
+<g ${OUT}><path d="M70 176h28v10H66z" fill="#8a5a2a"/><path d="M102 176h28l4 10h-32z" fill="#8a5a2a"/></g>
+<path d="M68 124h64l4 28h-30l-6-10-6 10H64z" fill="#f2e2a0" ${OUT}/>
+<path d="M62 64c8-8 20-12 38-12s30 4 38 12l6 64H56z" fill="#ff3d9a" ${OUT}/>
+<path d="M100 56l-13 28 13 38 13-38z" fill="#f2b88a"/>
+<path d="M82 54l18 22-6 6-22-20zM118 54l-18 22 6 6 22-20z" fill="#ff8ac8" ${OUT}/>
+<g fill="#ffd900"><circle cx="72" cy="96" r="6"/><circle cx="128" cy="100" r="6"/><circle cx="66" cy="116" r="5"/><circle cx="134" cy="118" r="5"/></g>
+<g fill="#1c5fd0"><circle cx="76" cy="112" r="4"/><circle cx="124" cy="90" r="4"/></g>
+<g fill="#f6f0e4"><circle cx="86" cy="104" r="3.5"/><circle cx="118" cy="112" r="3.5"/></g>
+<ellipse cx="100" cy="32" rx="24" ry="26" fill="#f2b88a" ${OUT}/>
+<path d="M75 28c-2-20 12-28 26-28s26 8 24 28c-4-10-12-14-26-14s-20 4-24 14z" fill="#120e18" ${OUT}/>
+<g ${OUT}><rect x="77" y="25" width="21" height="13" rx="3" fill="#120e18"/><rect x="102" y="25" width="21" height="13" rx="3" fill="#120e18"/></g>
+<path d="M98 30h4" stroke="#120e18" stroke-width="4"/>
+<path d="M81 28l6 0M106 28l6 0" stroke="#fff" stroke-width="2.5" opacity=".7"/>
+<path d="M86 46q14 14 28 0z" fill="#fff" ${OUT}/>
+<g class="limb"><path d="M62 72L44 96L36 70" fill="none" stroke="#f2b88a" stroke-width="12" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M34 72L24 20" stroke="#3a3450" stroke-width="5" stroke-linecap="round"/>
+<g ${OUT}><rect x="12" y="4" width="18" height="26" rx="3" fill="#120e18"/></g><rect x="15" y="8" width="12" height="16" fill="#6a98ea"/></g>
+<path d="M138 72L158 96L156 106" fill="none" stroke="#f2b88a" stroke-width="12" stroke-linecap="round" stroke-linejoin="round"/>
+<circle cx="156" cy="106" r="7" fill="#f2b88a" ${OUT}/>`;
 
-/** The Old Boiler: a riveted steam boiler on iron legs, brass bands, a pressure gauge and a furnace door that grins. */
-const oldBoiler = `
-<defs>${glow('ob-g', '#ffd900')}${lg('ob-b', '#6a6486', '#3a3450', 1, 0)}</defs>
+/** Conveyor Sis: a belt standing up on its rollers, a furious face on the top one, fists up, a box riding her front. */
+const conveyorSis = `
+<defs>${glow('cs-g', '#ff3b3b')}</defs>
 ${shadow}
-<g transform="translate(8 18) scale(.9)">
-<path d="M142 40V12h18v28" fill="#3a3450" ${OUT}/><path d="M138 12h26" stroke="#120e18" stroke-width="5"/>
-<g fill="#f6f0e4" opacity=".85" ${OUT}><circle cx="150" cy="-2" r="12"/><circle cx="166" cy="-12" r="9"/></g>
-<path d="M50 188l-6-26h20l4 26zM136 188l4-26h20l-6 26z" fill="#1b1830" ${OUT}/>
-<rect x="24" y="46" width="152" height="120" rx="48" fill="url(#ob-b)" ${OUT}/>
-<g fill="#e0a800" ${OUT}><rect x="52" y="46" width="14" height="120"/><rect x="134" y="46" width="14" height="120"/></g>
-<g fill="#120e18"><circle cx="59" cy="62" r="3"/><circle cx="59" cy="90" r="3"/><circle cx="59" cy="118" r="3"/><circle cx="59" cy="146" r="3"/><circle cx="141" cy="62" r="3"/><circle cx="141" cy="90" r="3"/><circle cx="141" cy="118" r="3"/><circle cx="141" cy="146" r="3"/></g>
-<circle cx="100" cy="76" r="22" fill="#f6f0e4" ${OUT}/><circle cx="100" cy="76" r="16" fill="none" stroke="#1b1830" stroke-width="2.5"/>
-<path d="M100 76l10-10" stroke="#ff3d9a" stroke-width="4" stroke-linecap="round"/><path d="M86 84l-4 4M114 84l4 4M100 58v4" stroke="#1b1830" stroke-width="3"/>
-<path d="M76 112h48c8 0 14 6 14 14v22c0 6-4 10-10 10H72c-6 0-10-4-10-10v-22c0-8 6-14 14-14z" fill="#120e18" ${OUT}/>
-<circle cx="100" cy="132" r="26" fill="url(#ob-g)" opacity=".55"/>
-${eyes(84, 116, 128, 5, '#ffd900', 'ob-g')}
-<path d="M72 144l8-8 8 8 8-8 8 8 8-8 8 8 8-8 4 6v6H72z" fill="#ff3d9a" ${OUT}/>
-<path d="M72 118l14 6M128 118l-14 6" stroke="#ffd900" stroke-width="5" stroke-linecap="round"/>
-<g class="limb"><path d="M24 100c-14 2-20 12-18 26" stroke="#e0a800" stroke-width="9" fill="none" stroke-linecap="round"/><circle cx="6" cy="128" r="9" fill="#ffd900" ${OUT}/></g>
-<path d="M176 100c14 4 18 14 14 26" stroke="#e0a800" stroke-width="9" fill="none" stroke-linecap="round"/><circle cx="190" cy="128" r="9" fill="#ffd900" ${OUT}/>
-</g>`;
+<path d="M72 178l-8 12M128 178l8 12" stroke="#5a5470" stroke-width="10" stroke-linecap="round"/>
+<g ${OUT}><rect x="54" y="186" width="24" height="8" rx="3" fill="#3a3450"/><rect x="122" y="186" width="24" height="8" rx="3" fill="#3a3450"/></g>
+<rect x="52" y="34" width="96" height="148" rx="46" fill="#3a3450" ${OUT}/>
+<rect x="62" y="44" width="76" height="128" rx="36" fill="#2a2640"/>
+<g stroke="#5a5470" stroke-width="4"><path d="M62 100h76M62 120h76M62 140h76M62 160h76"/></g>
+<g fill="#ffd900"><path d="M92 112l8-8 8 8v8l-8-8-8 8zM92 144l8-8 8 8v8l-8-8-8 8z"/></g>
+<g ${OUT}><rect x="82" y="118" width="36" height="26" fill="#c98a4a"/></g>
+<path d="M82 128h36M100 118v26" stroke="#8a5a2a" stroke-width="3"/>
+<circle cx="100" cy="164" r="22" fill="#9a94ac" ${OUT}/><circle cx="100" cy="164" r="7" fill="#3a3450"/>
+<circle cx="100" cy="64" r="38" fill="#c9c4d6" ${OUT}/>
+<circle cx="100" cy="64" r="30" fill="#f6f0e4"/>
+<g ${OUT}><path d="M80 48l12 8M120 48l-12 8" stroke-width="5"/></g>
+<g fill="#120e18"><circle cx="86" cy="62" r="6"/><circle cx="114" cy="62" r="6"/></g>
+<g fill="#fff"><circle cx="84" cy="60" r="2"/><circle cx="112" cy="60" r="2"/></g>
+<ellipse cx="76" cy="74" rx="7" ry="4.5" fill="#ff3d9a" opacity=".6"/><ellipse cx="124" cy="74" rx="7" ry="4.5" fill="#ff3d9a" opacity=".6"/>
+<ellipse cx="100" cy="82" rx="11" ry="9" fill="#120e18" ${OUT}/><ellipse cx="100" cy="86" rx="6" ry="4" fill="#ff3d9a"/>
+<g class="limb"><path d="M62 70L34 62L22 30" fill="none" stroke="#ffd900" stroke-width="11" stroke-linecap="round" stroke-linejoin="round"/>
+<circle cx="22" cy="28" r="10" fill="#ffd900" ${OUT}/></g>
+<path d="M138 70L168 76L180 100" fill="none" stroke="#ffd900" stroke-width="11" stroke-linecap="round" stroke-linejoin="round"/>
+<circle cx="181" cy="102" r="10" fill="#ffd900" ${OUT}/>
+<path d="M170 60q10 6 6 18" fill="none" stroke="#ff3d9a" stroke-width="4" stroke-linecap="round"/>`;
 
 /** The Board: three porcelain-masked directors on one brass-and-steel chassis, ticker tape pouring from its chest. */
 const theBoard = `
@@ -1298,8 +1307,8 @@ export const CREATURES: Record<string, string> = {
   veteran,
   nightJanitor,
   micromanager,
-  replacement,
-  oldBoiler,
+  tourist,
+  conveyorSis,
   theBoard,
   punchClock,
   smokeDetector,

@@ -1,4 +1,5 @@
 import { t } from '../../core/i18n';
+import { CONFIG } from '../../data/config';
 import type { Combat } from '../../game/combat';
 import { currentNode, type RunState, totalFloors } from '../../game/run';
 import type { HeroId, Side } from '../../game/types';
@@ -119,7 +120,7 @@ function markup(run: RunState, combat: Combat): string {
         </div>
       </div>
     </section>
-    <section class="mana-row">${icon('crystal')}<div class="mana-pips"></div><div class="mana-num"></div></section>
+    <section class="mana-row">${icon('crystal')}<div class="mana-pips"></div><div class="mana-num"></div><button class="mana-tap" aria-label="${t('combat.manaTap')}">${icon('crystal')}<b>+${CONFIG.manaTapAmount}</b></button></section>
     <section class="action-row">
       <div class="crank" aria-hidden="true">${icon('crank')}</div>
       <div class="sleeve js-sleeve"></div>
@@ -158,6 +159,7 @@ function queryRefs(el: HTMLElement) {
     manaRow: $('.mana-row', el),
     pips: $('.mana-pips', el),
     manaNum: $('.mana-num', el),
+    manaTap: $<HTMLButtonElement>('.mana-tap', el),
     crank: $('.crank', el),
     sleeve: $('.js-sleeve', el),
     belt: $('.belt', el),
