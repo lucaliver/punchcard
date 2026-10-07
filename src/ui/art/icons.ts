@@ -209,6 +209,19 @@ export const ICONS: Record<string, { el: Element; svg: string }> = {
     el: 'fire',
     svg: `<path d="M8 28h38v16c0 9-7 16-16 16h-6C15 60 8 53 8 44z"/><path d="M46 32h5c6 0 10 4 10 9s-4 9-10 9h-6v-7h6c2 0 3-1 3-2s-1-2-3-2h-5z"/><g ${S} stroke-width="4.5"><path d="M18 22c-4-5 4-8 0-14M28 22c-4-5 4-8 0-14M38 22c-4-5 4-8 0-14"/></g>`,
   },
+  // The Coffee Machine's tray: a paper cup with a band, a teaspoon and a fork.
+  paperCup: {
+    el: 'fire',
+    svg: `<path d="M10 14h44l-6 44H16z"/><rect x="6" y="8" width="52" height="9" rx="2"/><path fill="#16121f" opacity=".35" d="M13 30h38l-1 10H14z"/><path ${HI} d="M18 22l-2 26h4z"/>`,
+  },
+  spoon: {
+    el: 'steel',
+    svg: `<ellipse cx="32" cy="16" rx="12" ry="14"/><path d="M28 28h8l2 32H26z"/><path ${HI} d="M26 10c2-3 4-4 7-4-4 1-6 4-7 9z"/>`,
+  },
+  fork: {
+    el: 'steel',
+    svg: `<path d="M17 4h6v18c0 2 2 3 5 3V4h6v21c3 0 5-1 5-3V4h6v18c0 7-5 11-11 12v26h-6V34c-6-1-11-5-11-12z"/>`,
+  },
   clipboard: {
     el: 'steel',
     svg: `<rect x="10" y="8" width="44" height="54" rx="4"/><rect x="21" y="3" width="22" height="12" rx="3" fill="#16121f"/><path d="M17 28l5 5 9-9M17 45l5 5 9-9M37 30h10M37 47h10" fill="none" stroke="#16121f" stroke-width="4.5" stroke-linecap="round" stroke-linejoin="round"/>`,

@@ -398,6 +398,8 @@ export function combatScreen(run: RunState, combat: Combat, cb: CombatCallbacks)
         },
         { label: t('debug.half'), icon: 'crack', run: () => kill(combat.enemy.hp - Math.floor(combat.enemy.maxHp / 2)) },
         { label: t('debug.stun'), icon: 'stars', run: () => combat.applyStatus('enemy', 'stun', 1, 10) },
+        { label: t('debug.skipMove'), icon: 'swap', run: () => combat.skipEnemyMove() },
+        { label: t('debug.shield'), icon: 'shield', run: () => combat.gainBlock('hero', 50) },
         { label: t('debug.heal'), icon: 'heart', run: () => void combat.heal('hero', combat.hero.maxHp) },
         { label: t('debug.mana'), icon: 'crystal', run: () => combat.gainMana(combat.hero.maxMana) },
         { label: t('debug.crystals'), icon: 'crystalSlot', run: () => combat.addManaCrystals(2) },

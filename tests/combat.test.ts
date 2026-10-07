@@ -705,12 +705,14 @@ describe('combat engine', () => {
       const task = c.task!;
       while (task.phase === 'coins') c.coffee({ kind: 'coin', id: task.coins.find((x) => !x.used && task.fits(x))!.id });
     };
-    /** Does the whole chore with the right moves, up to pressing start. */
+    /** Does the whole chore with the right moves, up to pressing start (the fork on the tray is a mistake: it costs seconds). */
     const doChore = (c: Combat): void => {
       const task = c.task!;
       pay(c);
       for (const key of task.code) expect(c.coffee({ kind: 'key', key })).toBe('ok');
-      expect(c.coffee({ kind: 'cup' })).toBe('ok');
+      expect(c.coffee({ kind: 'item', item: 'fork' })).toBe('wrong');
+      expect(c.coffee({ kind: 'item', item: 'cup' })).toBe('ok');
+      expect(c.coffee({ kind: 'item', item: 'spoon' })).toBe('ok');
       for (let i = 0; i < task.sugar; i++) c.coffee({ kind: 'sugar', by: 1 });
       expect(c.coffee({ kind: 'start' })).toBe('ok');
     };
@@ -740,8 +742,8 @@ describe('combat engine', () => {
       expect(c.task).toBeNull();
       expect(c.hero.hp).toBe(80);
       expect(c.has('enemy', 'stun')).toBe(true);
-      expect(phases).toEqual(['open', 'done']);
-      expect(said).toEqual(['enemy.coffeeMachine.calm']);
+      expect(phases).toEqual(['open', 'wrong', 'done']);
+      expect(said).toEqual(['enemy.coffeeMachine.order', 'enemy.coffeeMachine.calm']);
       expect(c.isCovered(uid)).toBe(false);
     });
 

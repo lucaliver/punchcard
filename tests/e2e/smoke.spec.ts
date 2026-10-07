@@ -309,6 +309,14 @@ test('debug menus: the fight menu kills the enemy, the map menu opens rooms and 
   await startFight(page);
   await page.locator('.combat .debug-fab').click();
   await page.getByRole('button', { name: 'Restore my HP' }).click();
+  // Block 50 for the hero, and the enemy drops the move it was charging.
+  await page.locator('.combat .debug-fab').click();
+  await page.getByRole('button', { name: 'Give me 50 Block' }).click();
+  expect(await combat(page, 'return c.hero.block;')).toBeGreaterThanOrEqual(50);
+  await combat(page, 'c.enemy.timer = 2;');
+  await page.locator('.combat .debug-fab').click();
+  await page.getByRole('button', { name: 'Skip enemy move' }).click();
+  expect(await combat(page, 'return c.enemy.timer < 1;')).toBe(true);
   await page.locator('.combat .debug-fab').click();
   await page.getByRole('button', { name: 'Kill enemy' }).click();
   await expect(page.getByRole('button', { name: /^swap$/i })).toBeVisible({ timeout: 8000 });
@@ -730,15 +738,26 @@ test("the Boss's coffee: a chore window covers the belt and the sleeve; pay, key
       .locator('.tk-key')
       .nth(n - 1)
       .tap();
-  // Step 3: the cup, the sugar, start.
-  await expect(page.locator('.tk-cup')).toBeVisible();
-  await page.locator('.tk-cup').tap();
+  // Step 3: the cup goes under the spout by a drag, the fork bounces, the spoon by a tap.
+  await expect(page.locator('.tk-item[data-item="cup"]')).toBeVisible();
+  const errors = (await combat(page, 'return c.task.errors;')) as number;
+  await page.locator('.tk-item[data-item="fork"]').tap();
+  expect(await combat(page, 'return c.task.errors;')).toBe(errors + 1);
+  const cupBox = (await page.locator('.tk-item[data-item="cup"]').boundingBox())!;
+  const spotBox = (await page.locator('.tk-spot').boundingBox())!;
+  await page.mouse.move(cupBox.x + cupBox.width / 2, cupBox.y + cupBox.height / 2);
+  await page.mouse.down();
+  await page.mouse.move(spotBox.x + spotBox.width / 2, spotBox.y + spotBox.height / 2, { steps: 6 });
+  await page.mouse.up();
+  await page.locator('.tk-item[data-item="spoon"]').tap();
+  // Step 4: the sugar, start.
+  await expect(page.locator('.tk-dial')).toBeVisible();
   const sugar = (await combat(page, 'return c.task.sugar;')) as number;
   for (let i = 0; i < sugar; i++) await page.locator('.tk-step-btn').last().tap();
   await page.locator('.tk-start').tap();
-  await expect(page.locator('.tk-glass')).toBeVisible();
+  await expect(page.locator('.tk-brew')).toBeVisible();
   // The pour takes a while, then the window goes and the move with it.
-  await expect(win).toBeHidden({ timeout: 10000 });
+  await expect(win).toBeHidden({ timeout: 12000 });
   expect(await combat(page, "return c.has('enemy', 'stun');")).toBe(true);
   expect(await combat(page, 'return c.hero.hp === c.hero.maxHp;')).toBe(true);
   expect(problems).toEqual([]);

@@ -1,4 +1,4 @@
-/* The Coffee Machine's chore: a window over the belt, the mana bar and the sleeve (the enemy, its move bar and your ability stay in view) */
+/* The Coffee Machine's chore: its front panel, over the belt, the mana bar and the sleeve (the enemy, its move bar and your ability stay in view) */
 .task-window {
   display: none;
   position: absolute;
@@ -7,7 +7,14 @@
   z-index: var(--z-belt-window);
   flex-direction: column;
   color: var(--k);
-  background: var(--paper);
+  /* a steel body with a rivet in each corner */
+  background-color: var(--muted);
+  background-image:
+    radial-gradient(circle, var(--k) 2px, transparent 3px), radial-gradient(circle, var(--k) 2px, transparent 3px),
+    radial-gradient(circle, var(--k) 2px, transparent 3px), radial-gradient(circle, var(--k) 2px, transparent 3px);
+  background-size: 12px 12px;
+  background-position: 3px 30px, calc(100% - 3px) 30px, 3px calc(100% - 3px), calc(100% - 3px) calc(100% - 3px);
+  background-repeat: no-repeat;
   border: var(--line) solid var(--k);
   box-shadow: var(--off) var(--off) 0 var(--shadow);
   animation: stamp-in 0.15s steps(2);
@@ -21,6 +28,7 @@
 @keyframes task-fined {
   0%, 50% { filter: brightness(2) saturate(2); }
 }
+/* the brand plate */
 .tk-bar {
   flex: none;
   display: flex;
@@ -29,8 +37,9 @@
   font-family: var(--font-display);
   font-size: 15px;
   letter-spacing: 0.04em;
-  color: var(--paper);
-  background: var(--b);
+  color: var(--y);
+  background: var(--k);
+  border-bottom: var(--line) solid var(--p);
 }
 .tk-step { font-family: var(--font-ui); font-weight: 400; }
 .tk-body {
@@ -39,9 +48,9 @@
   display: flex;
   flex-direction: column;
   gap: 6px;
-  padding: 6px 8px 8px;
+  padding: 8px 12px 12px;
 }
-/* the Boss's note: what he wants, the line for the current step lit */
+/* the Boss's note, stuck on the front: what he wants, in the order the machine asks for it, the line for the current step lit */
 .tk-note {
   flex: none;
   display: flex;
@@ -79,45 +88,57 @@
   border: var(--line) solid var(--k);
 }
 .tk-lcd b { font-weight: 400; white-space: pre; font-variant-numeric: tabular-nums; }
+/* the dark front where everything happens */
 .tk-stage {
   flex: 1;
   min-height: 0;
   display: flex;
   align-items: center;
   justify-content: center;
-  padding-right: var(--tk-gap, 0);
+  padding: 6px;
+  padding-right: calc(var(--tk-gap, 0px) + 6px);
+  color: var(--fg);
+  background-color: var(--void);
+  background-image: radial-gradient(circle, var(--night-dot) 1.5px, transparent 2px);
+  background-size: 8px 8px;
+  border: var(--line) solid var(--k);
 }
 .tk-stage > * { width: 100%; }
 
 /* step 1: the purse and the coin slot */
 .tk-coins { display: flex; align-items: center; gap: 10px; }
 .tk-purse { flex: 1; display: flex; flex-wrap: wrap; justify-content: center; gap: 6px; }
+/* euro coins: copper cents, gold cents, and the two-tone 1 and 2 euro */
 .tk-coin {
-  --coin: var(--paper-dim);
+  --coin: var(--brass);
+  --ring: var(--coin);
   position: relative;
   flex: none;
   width: 46px;
   height: 46px;
-  display: grid;
-  place-items: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
   font-family: var(--font-ui);
-  font-size: 20px;
+  line-height: 0.85;
   color: var(--k);
   background: var(--coin);
   border: var(--line) solid var(--k);
   border-radius: 50%;
-  box-shadow: 2px 2px 0 var(--shadow);
+  box-shadow: inset 0 0 0 5px var(--ring), 2px 2px 0 var(--shadow);
   touch-action: none;
   user-select: none;
   -webkit-user-select: none;
 }
-.tk-coin b { font-weight: 400; }
-.tk-coin[data-v='10'] { --coin: var(--brass); }
-.tk-coin[data-v='20'] { --coin: var(--y); }
-.tk-coin[data-v='50'] { --coin: var(--shield-hi); }
-.tk-coin[data-v='100'] { --coin: var(--p); }
+.tk-coin::before { content: ''; position: absolute; inset: 3px; border: 2px dotted var(--k); border-radius: 50%; opacity: 0.3; }
+.tk-coin b { font-size: 19px; font-weight: 400; }
+.tk-coin small { font-size: 11px; }
+.tk-coin[data-v='5'] { --coin: var(--rust); }
+.tk-coin[data-v='100'] { --ring: var(--coin-silver); }
+.tk-coin[data-v='200'] { --coin: var(--coin-silver); --ring: var(--brass); }
 .tk-coin.gone { visibility: hidden; }
-.tk-coin.dragging, .tk-cup.dragging { z-index: 2; box-shadow: 4px 4px 0 var(--shadow); }
+.tk-coin.dragging, .tk-item.dragging { z-index: 2; box-shadow: inset 0 0 0 5px var(--ring, transparent), 4px 4px 0 var(--shadow); }
 .tk-coin.bounce { animation: coin-bounce 0.4s steps(4); }
 @keyframes coin-bounce {
   30% { translate: 0 -14px; }
@@ -130,7 +151,7 @@
   height: 84px;
   display: grid;
   place-items: center;
-  background: var(--paper2);
+  background: var(--coin-silver);
   border: var(--line) solid var(--k);
   box-shadow: 2px 2px 0 var(--shadow);
 }
@@ -144,40 +165,54 @@
   font-family: var(--font-ui);
   font-size: 22px;
   color: var(--k);
-  background: var(--paper2);
+  background: var(--coin-silver);
   border: var(--line) solid var(--k);
   box-shadow: 2px 2px 0 var(--shadow);
 }
 .tk-key b { font-weight: 400; }
 .tk-key:active, .tk-key.press { background: var(--y); transform: translate(2px, 2px); box-shadow: none; }
-.tk-key.bounce, .tk-start.bounce, .tk-step-btn.bounce { animation: shake-s 0.25s steps(2); }
+.tk-key.bounce, .tk-start.bounce, .tk-step-btn.bounce, .tk-item.bounce { animation: shake-s 0.25s steps(2); }
 
-/* step 3: the cup under the spout, the sugar dial, start */
-.tk-prep { display: flex; align-items: center; justify-content: center; gap: 14px; }
-.tk-bay { flex: none; display: flex; flex-direction: column; align-items: center; gap: 8px; }
-.tk-spot {
-  width: 56px;
-  height: 56px;
-  display: grid;
-  place-items: center;
-  border: var(--line) dashed var(--k);
+/* steps 3 and 4: the niche under the spout, the tray, the sugar dial, start */
+.tk-place { display: flex; flex-direction: column; align-items: center; gap: 8px; }
+.tk-sugar-step { display: flex; align-items: center; justify-content: center; gap: 14px; }
+.tk-niche { position: relative; flex: none; width: 112px; padding-top: 12px; }
+.tk-spout {
+  position: absolute;
+  top: 0;
+  left: 50%;
+  width: 40px;
+  height: 12px;
+  margin-left: -20px;
+  background: var(--coin-silver);
+  border: 2px solid var(--k);
 }
-.tk-spot.hot { background: var(--y); border-style: solid; }
-.tk-tray { width: 56px; height: 52px; display: grid; place-items: center; background: var(--paper2); border: var(--line) solid var(--k); }
-.tk-cup {
+.tk-spot {
+  height: 54px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  border: var(--line) dashed var(--muted-d);
+}
+.tk-spot.hot { background: var(--hazard-light); border-style: solid; border-color: var(--y); }
+.tk-placed, .tk-spot .tk-item { display: grid; place-items: center; width: 36px; height: 36px; font-size: 30px; color: var(--paper); background: none; border: 0; box-shadow: none; pointer-events: none; }
+.tk-tray { display: flex; justify-content: center; gap: 8px; }
+.tk-item {
   width: 46px;
   height: 46px;
   display: grid;
   place-items: center;
   font-size: 34px;
   color: var(--k);
+  background: var(--coin-silver);
+  border: var(--line) solid var(--k);
+  box-shadow: 2px 2px 0 var(--shadow);
   touch-action: none;
 }
-.tk-cup .pico { --ink2: var(--paper); }
-.tk-cup.placed { pointer-events: none; }
 .tk-side { flex: 1; display: flex; flex-direction: column; gap: 8px; min-width: 0; }
 .tk-dial { display: flex; flex-direction: column; align-items: center; gap: 2px; font-family: var(--font-ui); }
-.tk-dial small { font-size: 14px; opacity: 0.7; }
+.tk-dial small { font-size: 14px; color: var(--muted-d); }
 .tk-dial > div { display: flex; align-items: center; gap: 8px; }
 .tk-n { min-width: 1.4ch; text-align: center; font-size: 28px; font-weight: 400; }
 .tk-step-btn {
@@ -186,7 +221,7 @@
   font-family: var(--font-ui);
   font-size: 26px;
   color: var(--k);
-  background: var(--paper2);
+  background: var(--coin-silver);
   border: var(--line) solid var(--k);
   box-shadow: 2px 2px 0 var(--shadow);
 }
@@ -194,20 +229,48 @@
 .tk-step-btn:active { transform: translate(2px, 2px); box-shadow: none; }
 .tk-start { width: 100%; }
 
-/* the pour: a stream falls into a glass that fills in steps */
-.tk-brew { display: grid; place-items: center; }
-.tk-glass {
-  --fill: 0;
-  position: relative;
-  width: 64px;
-  height: 84px;
-  background: var(--paper2);
-  border: var(--line) solid var(--k);
-  overflow: hidden;
+/* the pour: a stream falls from the spout into the cup, which fills in steps; once it is served, steam rises */
+.tk-stage > .tk-brew { --fill: 0; position: relative; width: 84px; height: 108px; flex: none; }
+.tk-brew .tk-spout { top: 0; left: 50%; }
+.tk-pour {
+  display: none;
+  position: absolute;
+  top: 12px;
+  left: 50%;
+  width: 6px;
+  height: 36px;
+  margin-left: -3px;
+  background: var(--wood-edge);
+  animation: pour-flicker 0.2s steps(1) infinite;
 }
-.tk-liquid { position: absolute; left: 0; right: 0; bottom: 0; height: calc(var(--fill) * 100%); background: var(--wood-edge); }
-.tk-pour { display: none; position: absolute; left: 50%; top: 0; bottom: 0; width: 6px; margin-left: -3px; background: var(--wood-edge); animation: pour-flicker 0.2s steps(1) infinite; }
-.tk-glass.pouring .tk-pour { display: block; }
+.tk-brew.pouring .tk-pour { display: block; }
 @keyframes pour-flicker {
   50% { width: 4px; margin-left: -2px; }
+}
+.tk-cupbig {
+  position: absolute;
+  left: 10px;
+  right: 10px;
+  bottom: 0;
+  height: 64px;
+  background: var(--k);
+  clip-path: polygon(0 0, 100% 0, 84% 100%, 16% 100%);
+}
+.tk-cupin {
+  position: absolute;
+  inset: 4px 5px 4px;
+  overflow: hidden;
+  background: var(--paper);
+  clip-path: polygon(0 0, 100% 0, 85% 100%, 15% 100%);
+}
+.tk-liquid { position: absolute; left: 0; right: 0; bottom: 0; height: calc(var(--fill) * 100%); background: var(--wood-edge); border-top: 3px solid var(--rust); }
+.tk-spoon { position: absolute; right: 6px; bottom: 22px; font-size: 52px; color: var(--coin-silver); rotate: 14deg; }
+.tk-steam { display: none; position: absolute; left: 14px; right: 14px; bottom: 64px; height: 30px; justify-content: space-around; }
+.tk-brew.served .tk-steam { display: flex; }
+.tk-steam i { width: 4px; height: 14px; background: var(--paper); animation: steam-up 0.8s steps(4) infinite; }
+.tk-steam i:nth-child(2) { animation-delay: 0.25s; }
+.tk-steam i:nth-child(3) { animation-delay: 0.5s; }
+@keyframes steam-up {
+  from { translate: 0 12px; opacity: 1; }
+  to { translate: 0 -8px; opacity: 0; }
 }

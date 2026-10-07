@@ -1,3 +1,5 @@
+import { CONFIG } from '../data/config';
+
 /**
  * Procedural sound effects (WebAudio). No assets: every sound is synthesised on demand.
  * The context is created lazily on the first user gesture (browser autoplay policy).
@@ -167,6 +169,13 @@ const SOUNDS = {
   scrub: () => noise(0.12, { freq: 1800, to: 900, vol: 0.12 }),
   ratchet: () => tone(900, 0.03, { type: 'square', vol: 0.06, to: 600 }),
   weakSpot: () => tone(1200, 0.07, { type: 'square', vol: 0.07, to: 1600 }),
+  /** The machine wakes up for an order: the grinder whirrs, then two beeps. */
+  grinder: () => {
+    noise(0.6, { freq: 220, to: 160, vol: 0.2, q: 2 });
+    tone(110, 0.6, { type: 'sawtooth', vol: 0.06, to: 90 });
+    tone(1320, 0.07, { type: 'square', vol: 0.05, delay: 0.65 });
+    tone(1320, 0.07, { type: 'square', vol: 0.05, delay: 0.78 });
+  },
   /** A coin drops into the machine's slot: a bright double clink. */
   coin: () => {
     tone(2200, 0.05, { type: 'square', vol: 0.05 });
@@ -177,7 +186,7 @@ const SOUNDS = {
   /** The paper cup lands in the tray. */
   cup: () => noise(0.08, { freq: 700, to: 400, vol: 0.14 }),
   /** The machine starts to pour: a rising whirr. */
-  brew: () => noise(1.4, { freq: 300, to: 900, vol: 0.12, q: 1.2 }),
+  brew: () => noise(CONFIG.coffee.brewTime, { freq: 300, to: 900, vol: 0.1, q: 1.2, attack: 0.3 }),
   /** A system warning chime: two falling square beeps. */
   popup: () => {
     tone(880, 0.09, { type: 'square', vol: 0.07 });

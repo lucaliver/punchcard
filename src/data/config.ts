@@ -87,16 +87,17 @@ export const CONFIG = {
   popupArm: 0.4,
   /**
    * The Coffee Machine's chore (`MoveDef.task`, `game/coffee.ts`): `brewTime` s the machine takes to pour and `doneHold` s the finished cup stays up; a mistake takes `penalty` s off the move's countdown
-   * (`penaltyMax` s in all); the Boss then `calm`s down (the enemy is stunned that long). The order: `payCoins` ([min, max]) coins add up to the price and `decoys` more ride along in the purse,
+   * (`penaltyMax` s in all); the Boss then `calm`s down (the enemy is stunned that long). The order: a `price` ([min, max] cents) paid with `payCoins` ([min, max]) coins, `decoys` more in the purse,
    * a `codeLength` keys code on a pad of `keys`, `sugar` ([min, max]) sugars out of a dial that goes up to `maxSugar`.
    */
   coffee: {
-    brewTime: 3,
+    brewTime: 5,
     doneHold: 0.8,
     penalty: 2,
     penaltyMax: 8,
     calm: 3,
-    payCoins: [3, 4],
+    price: [60, 250],
+    payCoins: [3, 5],
     decoys: 3,
     codeLength: 3,
     keys: 9,

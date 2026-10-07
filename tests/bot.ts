@@ -1,5 +1,6 @@
 import { Combat } from '../src/game/combat';
 import { CARDS } from '../src/data/cards';
+import { COFFEE_SERVICE } from '../src/data/coffee';
 import {
   addPerk,
   advance,
@@ -62,11 +63,8 @@ function botCoffee(c: Combat): void {
     const coin = task.coins.find((x) => !x.used && task.fits(x));
     if (coin) c.coffee({ kind: 'coin', id: coin.id });
   } else if (task.phase === 'code') c.coffee({ kind: 'key', key: task.code[task.keysDone] });
-  else if (task.phase === 'prep') {
-    if (!task.cup) c.coffee({ kind: 'cup' });
-    else if (task.dial < task.sugar) c.coffee({ kind: 'sugar', by: 1 });
-    else c.coffee({ kind: 'start' });
-  }
+  else if (task.phase === 'place') c.coffee({ kind: 'item', item: COFFEE_SERVICE.find((x) => !task.placed.includes(x))! });
+  else if (task.phase === 'sugar') c.coffee(task.dial < task.sugar ? { kind: 'sugar', by: 1 } : { kind: 'start' });
 }
 
 export function botDecide(c: Combat, rnd: () => number, opts: BotOpts): void {

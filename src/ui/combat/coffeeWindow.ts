@@ -1,5 +1,6 @@
-import { t } from '../../core/i18n';
+import { getLocale, t } from '../../core/i18n';
 import { sfx } from '../../audio/sfx';
+import { COFFEE_ITEMS, type CoffeeItem } from '../../data/coffee';
 import { CONFIG } from '../../data/config';
 import type { CoffeeAction, CoffeePhase, CoffeeResult, CoffeeTask } from '../../game/coffee';
 import { icon } from '../art/icons';
@@ -12,14 +13,22 @@ const DRAG_PX = 8;
 /** How far (px) past a drop target's edge a drop still counts. */
 const DROP_SLACK = 14;
 /** Steps of the cup filling up (motion is stepped). */
-const FILL_STEPS = 12;
-/** The window's three steps, in order (the pour and the served cup are still the third). */
-const STEPS: Record<CoffeePhase, number> = { coins: 1, code: 2, prep: 3, brew: 3, done: 3 };
+const FILL_STEPS = 20;
+/** The window's four steps, in order (the pour and the served cup are still the fourth). */
+const STEPS: Record<CoffeePhase, number> = { coins: 1, code: 2, place: 3, sugar: 4, brew: 4, done: 4 };
+const STEP_COUNT = 4;
+/** The icon of each thing on the tray. */
+const ITEM_ICON: Record<CoffeeItem, string> = { cup: 'paperCup', spoon: 'spoon', fork: 'fork' };
+
+/** Euro cents as the player's currency format (1.85). */
+const money = (cents: number): string => new Intl.NumberFormat(getLocale(), { style: 'currency', currency: 'EUR' }).format(cents / 100);
+/** What a coin's face says: the number, and `c` (cent) or the euro sign under it. */
+const coinFace = (cents: number): string => (cents < 100 ? `<b>${cents}</b><small>c</small>` : `<b>${cents / 100}</b><small>€</small>`);
 const PAD = Array.from({ length: CONFIG.coffee.keys }, (_, i) => i + 1);
 
 /**
  * The Coffee Machine's chore (`MoveDef.task`): a window over the belt and the sleeve (the enemy, its move bar and your ability stay in view).
- * It only draws `Combat.task` and sends the hand's moves to `Combat.coffee`; coins and the cup can be dragged to their place or just tapped.
+ * It only draws `Combat.task` and sends the hand's moves to `Combat.coffee`; coins and the things on the tray can be dragged to their place or just tapped.
  */
 export function createTaskWindow(v: CombatView): { render(): void } {
   const { combat, state, r } = v;
@@ -30,9 +39,9 @@ export function createTaskWindow(v: CombatView): { render(): void } {
       <div class="tk-note">
         <small>${t('task.coffee.order')}</small>
         <b class="tk-drink"></b>
-        <span class="tk-sugar"></span>
         <span class="tk-pay"></span>
         <span class="tk-code"></span>
+        <span class="tk-sugar"></span>
       </div>
       <div class="tk-machine">
         <div class="tk-lcd"><span class="tk-msg"></span><b class="tk-val"></b></div>
@@ -57,7 +66,7 @@ export function createTaskWindow(v: CombatView): { render(): void } {
   let built: CoffeePhase | null = null;
   const coinEls = new Map<number, HTMLElement>();
   let slot: HTMLElement | null = null;
-  let cup: HTMLButtonElement | null = null;
+  const itemEls = new Map<CoffeeItem, HTMLButtonElement>();
   let spot: HTMLElement | null = null;
   let dialNum: HTMLElement | null = null;
   let glass: HTMLElement | null = null;
@@ -132,7 +141,7 @@ export function createTaskWindow(v: CombatView): { render(): void } {
     slot = h('div', { class: 'tk-slot', 'aria-label': t('task.coffee.slot') }, h('i'));
     const purse = h('div', { class: 'tk-purse' });
     for (const coin of task.coins) {
-      const b = h('button', { class: 'tk-coin', 'data-v': coin.value, 'aria-label': String(coin.value) }, h('b', null, coin.value));
+      const b = h('button', { class: 'tk-coin', 'data-v': coin.value, 'aria-label': money(coin.value), html: coinFace(coin.value) });
       bindDrag(
         b,
         () => slot,
@@ -159,17 +168,34 @@ export function createTaskWindow(v: CombatView): { render(): void } {
     refs.stage.replaceChildren(h('div', { class: 'tk-pad' }, ...keys));
   };
 
-  const buildPrep = (): void => {
-    spot = h('div', { class: 'tk-spot' }, h('i'));
-    cup = h('button', { class: 'tk-cup', 'aria-label': t('task.coffee.cup') }, h('span', { html: icon('coffee') }));
-    bindDrag(
-      cup,
-      () => spot,
-      () => {
-        if (send({ kind: 'cup' }, cup!) === 'ok') sfx('cup');
-      },
-    );
-    const bay = h('div', { class: 'tk-bay' }, spot, h('div', { class: 'tk-tray' }, cup));
+  /** The niche under the spout: whatever has been put there so far. */
+  const buildNiche = (): HTMLElement => {
+    spot = h('div', { class: 'tk-spot' });
+    return h('div', { class: 'tk-niche' }, h('i', { class: 'tk-spout' }), spot);
+  };
+
+  const buildPlace = (): void => {
+    const niche = buildNiche();
+    itemEls.clear();
+    const tray = h('div', { class: 'tk-tray' });
+    for (const item of COFFEE_ITEMS) {
+      const b = h('button', { class: 'tk-item', 'data-item': item, 'aria-label': t(`task.coffee.${item}`), html: icon(ITEM_ICON[item]) });
+      bindDrag(
+        b,
+        () => spot,
+        () => {
+          if (send({ kind: 'item', item }, b) === 'ok') sfx('cup');
+        },
+      );
+      itemEls.set(item, b);
+      tray.append(b);
+    }
+    refs.stage.replaceChildren(h('div', { class: 'tk-place' }, niche, tray));
+  };
+
+  const buildSugar = (task: CoffeeTask): void => {
+    const niche = buildNiche();
+    spot!.append(...task.placed.map((item) => h('span', { class: 'tk-placed', html: icon(ITEM_ICON[item]) })));
     dialNum = h('b', { class: 'tk-n' }, '0');
     const step = (by: 1 | -1, label: string): HTMLElement => {
       const b = h('button', { class: 'tk-step-btn', 'aria-label': label }, h('b', null, label));
@@ -183,12 +209,21 @@ export function createTaskWindow(v: CombatView): { render(): void } {
     start.addEventListener('click', () => {
       if (send({ kind: 'start' }, start) === 'ok') sfx('brew');
     });
-    refs.stage.replaceChildren(h('div', { class: 'tk-prep' }, bay, h('div', { class: 'tk-side' }, dial, start)));
+    refs.stage.replaceChildren(h('div', { class: 'tk-sugar-step' }, niche, h('div', { class: 'tk-side' }, dial, start)));
   };
 
+  /** The pour: a stream falls from the spout into the cup, which fills up in steps (the spoon sticks out of it); when it is served, steam rises. */
   const buildBrew = (): void => {
-    glass = h('div', { class: 'tk-glass' }, h('i', { class: 'tk-pour' }), h('i', { class: 'tk-liquid' }));
-    refs.stage.replaceChildren(h('div', { class: 'tk-brew' }, glass));
+    glass = h(
+      'div',
+      { class: 'tk-brew' },
+      h('i', { class: 'tk-spout' }),
+      h('i', { class: 'tk-pour' }),
+      h('div', { class: 'tk-cupbig' }, h('div', { class: 'tk-cupin' }, h('i', { class: 'tk-liquid' }))),
+      h('span', { class: 'tk-spoon', html: icon('spoon') }),
+      h('div', { class: 'tk-steam' }, h('i'), h('i'), h('i')),
+    );
+    refs.stage.replaceChildren(glass);
   };
 
   /** Rebuilds the stage when the task or its phase changed (a phase only ever moves forward). */
@@ -198,7 +233,7 @@ export function createTaskWindow(v: CombatView): { render(): void } {
       built = null;
       refs.drink.textContent = t(`drink.${task.drink}`);
       refs.sugar.textContent = t('task.coffee.sugar', { n: task.sugar });
-      refs.pay.textContent = t('task.coffee.pay', { n: task.price });
+      refs.pay.textContent = t('task.coffee.pay', { n: money(task.price) });
       refs.code.textContent = t('task.coffee.code', { code: task.code.join('-') });
       place();
     }
@@ -207,7 +242,8 @@ export function createTaskWindow(v: CombatView): { render(): void } {
     built = task.phase;
     if (task.phase === 'coins') buildCoins(task);
     else if (task.phase === 'code') buildCode();
-    else if (task.phase === 'prep') buildPrep();
+    else if (task.phase === 'place') buildPlace();
+    else if (task.phase === 'sugar') buildSugar(task);
     else if (task.phase === 'brew') buildBrew();
     else if (task.phase === 'done' && was !== 'brew') buildBrew();
     if (task.phase === 'done') sfx('ding');
@@ -238,29 +274,35 @@ export function createTaskWindow(v: CombatView): { render(): void } {
       }
       sync(task);
       const phase = task.phase;
-      setText(refs.step, `${STEPS[phase]}/3`);
+      setText(refs.step, `${STEPS[phase]}/${STEP_COUNT}`);
       setText(refs.msg, t(`task.coffee.step.${phase}`));
       toggle(refs.pay, 'cur', phase === 'coins');
       toggle(refs.code, 'cur', phase === 'code');
-      toggle(refs.sugar, 'cur', phase === 'prep');
+      toggle(refs.sugar, 'cur', phase === 'sugar');
       if (phase === 'coins') {
-        setText(refs.val, `${task.paid}/${task.price}`);
+        setText(refs.val, `${money(task.paid)} / ${money(task.price)}`);
         for (const c of task.coins) coinEls.get(c.id)?.classList.toggle('gone', c.used);
       } else if (phase === 'code') {
         setText(refs.val, task.code.map((n, i) => (i < task.keysDone ? n : '_')).join(' '));
-      } else if (phase === 'prep') {
+      } else if (phase === 'place') {
+        setText(refs.val, '');
+        for (const [item, b] of itemEls) {
+          const put = task.placed.includes(item);
+          toggle(b, 'placed', put);
+          b.disabled = put;
+          if (put && b.parentElement !== spot) spot?.append(b);
+        }
+      } else if (phase === 'sugar') {
         setText(refs.val, '');
         if (dialNum) setText(dialNum, task.dial);
-        if (cup && spot) {
-          toggle(cup, 'placed', task.cup);
-          if (task.cup && cup.parentElement !== spot) spot.append(cup);
-          cup.disabled = task.cup;
-        }
       } else {
         const pct = Math.floor(task.brewed * 100);
         setText(refs.val, `${pct}%`);
         glass?.style.setProperty('--fill', (Math.ceil(task.brewed * FILL_STEPS) / FILL_STEPS).toFixed(3));
-        if (glass) toggle(glass, 'pouring', phase === 'brew');
+        if (glass) {
+          toggle(glass, 'pouring', phase === 'brew');
+          toggle(glass, 'served', phase === 'done');
+        }
       }
     },
   };

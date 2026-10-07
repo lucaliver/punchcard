@@ -1,14 +1,14 @@
 import type { Rng } from '../core/rng';
-import { COFFEE_COINS, COFFEE_DRINKS, type CoffeeDrink } from '../data/coffee';
+import { COFFEE_COINS, COFFEE_DRINKS, COFFEE_SERVICE, type CoffeeDrink, type CoffeeItem } from '../data/coffee';
 import { CONFIG } from '../data/config';
 
-/** The three steps (pay, key in the code, prepare), then the machine pours (`brew`) and the cup is served (`done`). */
-export type CoffeePhase = 'coins' | 'code' | 'prep' | 'brew' | 'done';
+/** The four steps (pay, key in the code, put the cup and the spoon under the spout, dial the sugar and start), then the machine pours (`brew`) and the cup is served (`done`). */
+export type CoffeePhase = 'coins' | 'code' | 'place' | 'sugar' | 'brew' | 'done';
 
 export type CoffeeAction =
   | { kind: 'coin'; id: number }
   | { kind: 'key'; key: number }
-  | { kind: 'cup' }
+  | { kind: 'item'; item: CoffeeItem }
   | { kind: 'sugar'; by: 1 | -1 }
   | { kind: 'start' };
 
@@ -27,7 +27,7 @@ const reaches = (values: number[], sum: number): boolean =>
   sum === 0 || values.some((v, i) => v <= sum && reaches([...values.slice(0, i), ...values.slice(i + 1)], sum - v));
 
 /**
- * One order of the Boss's coffee: pay the price with the right coins, key in the drink's code, put a cup under the spout, dial the sugar and press start.
+ * One order of the Boss's coffee: pay the price with the right coins, key in the drink's code, put the cup and the spoon (not the fork) under the spout, dial the sugar and press start.
  * Pure state, driven by `Combat.coffee` (which turns a `wrong` into lost seconds) and ticked by simulated time.
  */
 export class CoffeeTask {
@@ -40,7 +40,8 @@ export class CoffeeTask {
   paid = 0;
   /** Keys of the code pressed right so far. */
   keysDone = 0;
-  cup = false;
+  /** What is under the spout so far. */
+  readonly placed: CoffeeItem[] = [];
   dial = 0;
   /** Seconds in the current `brew` or `done` phase. */
   t = 0;
@@ -50,7 +51,15 @@ export class CoffeeTask {
 
   constructor(rng: Rng) {
     const c = CONFIG.coffee;
-    const pay = Array.from({ length: rng.int(c.payCoins[0], c.payCoins[1]) }, () => rng.pick(COFFEE_COINS));
+    // Coins that add up to a believable price (a handful of tries, then a sure one).
+    let pay: number[] = [100, 50, 20];
+    for (let i = 0; i < 50; i++) {
+      const tryPay = Array.from({ length: rng.int(c.payCoins[0], c.payCoins[1]) }, () => rng.pick(COFFEE_COINS));
+      const sum = tryPay.reduce((a, b) => a + b, 0);
+      if (sum < c.price[0] || sum > c.price[1]) continue;
+      pay = tryPay;
+      break;
+    }
     const decoys = Array.from({ length: c.decoys }, () => rng.pick(COFFEE_COINS));
     this.price = pay.reduce((a, b) => a + b, 0);
     this.coins = rng.shuffle([...pay, ...decoys]).map((value, id) => ({ id, value, used: false }));
@@ -66,19 +75,21 @@ export class CoffeeTask {
       case 'key':
         if (this.phase !== 'code') return 'ignored';
         if (a.key !== this.code[this.keysDone]) return 'wrong';
-        if (++this.keysDone === this.code.length) this.phase = 'prep';
+        if (++this.keysDone === this.code.length) this.phase = 'place';
         return 'ok';
-      case 'cup':
-        if (this.phase !== 'prep') return 'ignored';
-        this.cup = true;
+      case 'item':
+        if (this.phase !== 'place' || this.placed.includes(a.item)) return 'ignored';
+        if (!COFFEE_SERVICE.includes(a.item)) return 'wrong';
+        this.placed.push(a.item);
+        if (COFFEE_SERVICE.every((x) => this.placed.includes(x))) this.phase = 'sugar';
         return 'ok';
       case 'sugar':
-        if (this.phase !== 'prep') return 'ignored';
+        if (this.phase !== 'sugar') return 'ignored';
         this.dial = Math.max(0, Math.min(CONFIG.coffee.maxSugar, this.dial + a.by));
         return 'ok';
       case 'start':
-        if (this.phase !== 'prep') return 'ignored';
-        if (!this.cup || this.dial !== this.sugar) return 'wrong';
+        if (this.phase !== 'sugar') return 'ignored';
+        if (this.dial !== this.sugar) return 'wrong';
         this.phase = 'brew';
         return 'ok';
     }

@@ -1903,6 +1903,7 @@ export class Combat {
       this.taskSeen = true;
       this.task = new CoffeeTask(this.rng);
       this.events.emit({ type: 'task', phase: 'open' });
+      this.say('enemy.coffeeMachine.order');
       return;
     }
     if (!this.task.tick(dt)) return;

@@ -8,8 +8,8 @@ const ramp: Partial<MoveDef> = { status: [gainStrength] };
 /** Seconds the Factory Siren's song holds you (stunned, on autopilot). */
 const SIREN_SONG = 8;
 
-/** Seconds the Boss's coffee move takes to land: the chore (pay, key in the code, prepare, pour) fits in it with a little to spare. */
-const GET_COFFEE = 22;
+/** Seconds the Boss's coffee move takes to land: the chore (pay, key in the code, cup and spoon, sugar, pour) fits in it with a little to spare. */
+const GET_COFFEE = 26;
 
 /** Seconds the belt serves sushi (the Sushi Chef's special). */
 const ALL_YOU_CAN_EAT = 10;
