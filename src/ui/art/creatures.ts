@@ -538,77 +538,138 @@ const rogue = `
 <g class="limb"><path d="M128 140c14 2 22 12 22 22l-16 4z" fill="url(#ro-h)" ${OUT}/><circle cx="144" cy="164" r="9" fill="url(#ro-f)" ${OUT}/>
 <g transform="rotate(-18 150 150)"><rect x="132" y="148" width="46" height="12" fill="#ff3d9a" ${OUT}/><path d="M132 148c0-10 8-14 20-16l26-4v20z" fill="#d03a8a" ${OUT}/><rect x="170" y="140" width="6" height="6" fill="#f6f0e4"/></g></g>`;
 
+/** The Warrior: a barrel-chested site hand in a dented hard hat ("0 days without incident" sticker), square jaw and handlebar mustache, a hi-vis vest over a pink shirt, a monster wrench in his one good fist and a coffee mug duct-taped to the bandaged stump of the other arm. */
 const warrior = `
-<defs>${lg('wa-h', '#9ac0f8', '#1c5fd0', 1, 1)}${lg('wa-s', '#ffb4d4', '#ff86bc')}${lg('wa-a', '#ff8ac8', '#d03a8a')}${lg('wa-y', '#ffc890', '#ffbc80')}</defs>
-<path d="M14 200c0-46 36-70 86-70 34 0 58 10 70 30l6 40z" fill="url(#wa-a)" ${OUT}/>
-<path d="M14 176c0-28 18-46 44-48l14 46z" fill="url(#wa-h)" ${OUT}/>
-<path d="M22 142l-10-20 22 8zM40 130l-4-22 16 14z" fill="#fbf4df" ${OUT}/>
-<!-- right arm lost on the job: a bandaged stump -->
-<path d="M132 132c16-8 38-4 46 12 6 12 0 26-14 28l-34-14z" fill="#f6f0e4" ${OUT}/>
-<path d="M146 134l-8 28M160 136l-8 30M172 144l-6 26" stroke="#c9bd98" stroke-width="4"/>
-<circle cx="168" cy="160" r="6" fill="#ff3d9a"/>
-<path d="M72 120h56v26H72z" fill="url(#wa-s)" ${OUT}/>
-<path d="M50 86c0-40 22-66 50-66s50 26 50 66v22c0 24-22 40-50 40S50 132 50 108z" fill="url(#wa-s)" ${OUT}/>
-<path d="M72 34c7-7 15-10 22-10" stroke="#fff" stroke-width="6" stroke-linecap="round"/>
-<path d="M50 60c0-30 22-46 50-46s50 16 50 46z" fill="#ffd900" ${OUT}/><path d="M95 16h10v44H95z" fill="#e8b820"/>
-<path d="M46 60h108v18H46z" fill="url(#wa-h)" ${OUT}/>
-<path d="M58 62v14M142 62v14M100 62v14" stroke="#fbf4df" stroke-width="3"/>
-<path d="M46 76h18v40c-10-4-18-16-18-28zM154 76h-18v40c10-4 18-16 18-28z" fill="url(#wa-h)" ${OUT}/>
-<path d="M95 76h10v26H95z" fill="url(#wa-h)" ${OUT}/>
-<path d="M68 84l24 8M132 84l-24 8" stroke="#1b1830" stroke-width="6" stroke-linecap="square"/>
-<rect x="74" y="92" width="14" height="8" fill="#f6f0e4" ${OUT}/><rect x="112" y="92" width="14" height="8" fill="#f6f0e4" ${OUT}/>
-<rect x="78" y="92" width="7" height="8" fill="#2a8a4a"/><rect x="116" y="92" width="7" height="8" fill="#2a8a4a"/>
-<rect x="80" y="94" width="3" height="4" fill="#0c3a1a"/><rect x="118" y="94" width="3" height="4" fill="#0c3a1a"/>
-<path d="M120 80l8 28" stroke="#d03a8a" stroke-width="4"/>
-<path d="M52 102h96v8c-4 24-22 38-48 38s-44-14-48-38z" fill="url(#wa-y)" ${OUT}/>
-<path d="M78 112c8-5 15-5 22-1 7-4 14-4 22 1-4 6-14 7-22 3-8 4-18 3-22-3z" fill="#e8b820" ${OUT}/>
-<path d="M88 124h24" stroke="#1b1830" stroke-width="5"/>
-<path d="M60 116h4M70 128h4M130 128h4M136 116h4M84 136h4M112 136h4M98 142h4" stroke="#b08a10" stroke-width="3"/>
-<g fill="#ffd900" ${OUT}><circle cx="56" cy="152" r="5"/><circle cx="144" cy="152" r="5"/></g>`;
+<defs>${rg('wa-s', '#ffe0c8', '#e08a70')}${rg('wa-v', '#9ac0ff', '#1c5fd0')}${rg('wa-p', '#ffa0d4', '#a02a70')}${rg('wa-y', '#fff070', '#c88a08')}${lg('wa-k', '#f0ecf8', '#7a7a98', 1, 1)}${rg('wa-n', '#ff9a8a', '#b03a3a')}</defs>
+<!-- torso: pink shirt, hi-vis vest with reflective stripes -->
+<path d="M10 200c0-40 22-70 58-76h64c36 6 58 36 58 76z" fill="url(#wa-p)" ${OUT}/>
+<path d="M34 134l34 66h-44c-4-22 0-48 10-66zM166 134l-34 66h44c4-22 0-48-10-66z" fill="url(#wa-v)" ${OUT}/>
+<path d="M30 160h26M26 180h36M170 160h-26M174 180h-36" stroke="#f6f0e4" stroke-width="7"/>
+<path d="M68 128c10 22 22 28 32 28s22-6 32-28" fill="none" stroke="#120e18" stroke-width="3"/>
+<path d="M82 170h36" stroke="#a02a70" stroke-width="3"/>
+<!-- good arm: a bicep like a ham, a wrench as long as a leg -->
+<g class="limb"><path d="M42 134c-22 0-34 18-30 38 4 14 18 18 28 12l8-34z" fill="url(#wa-s)" ${OUT}/>
+<path d="M20 148c6-6 14-6 20 0" stroke="#a04030" stroke-width="3" fill="none"/>
+<rect x="14" y="62" width="14" height="86" fill="url(#wa-k)" ${OUT}/>
+<path d="M2 66V44c0-10 8-14 14-14l-2 14h14l-2-14c6 0 14 4 14 14v22z" fill="url(#wa-k)" ${OUT}/>
+<circle cx="21" cy="152" r="14" fill="url(#wa-s)" ${OUT}/><path d="M12 146h18M12 154h18" stroke="#a04030" stroke-width="2.5"/></g>
+<!-- the stump: bandage rolls, a mug duct-taped to it -->
+<path d="M146 130c22 0 34 14 32 34l-26 8-18-26z" fill="url(#wa-v)" ${OUT}/>
+<path d="M150 150h26v28h-26z" fill="#f6f0e4" ${OUT}/><path d="M150 158h26M150 168h26" stroke="#c9bd98" stroke-width="3"/>
+<circle cx="170" cy="168" r="3" fill="#ff3d9a"/>
+<rect x="152" y="130" width="24" height="26" fill="#f6f0e4" ${OUT}/><path d="M176 136c10 0 10 14 0 14" stroke="#120e18" stroke-width="4" fill="none"/>
+<rect x="152" y="136" width="24" height="7" fill="#1c5fd0"/><path d="M148 148l32-8" stroke="#8a8aa0" stroke-width="6"/>
+<path d="M158 126c-3-4 3-6 0-10M168 126c-3-4 3-6 0-10" stroke="#f6f0e4" stroke-width="3" fill="none" stroke-linecap="round"/>
+<!-- neck and head -->
+<path d="M78 108h44v26c-8 8-36 8-44 0z" fill="url(#wa-s)" ${OUT}/>
+<path d="M56 86c0-6 4-8 8-8l2 22c-6 0-10-6-10-14zM144 86c0-6-4-8-8-8l-2 22c6 0 10-6 10-14z" fill="url(#wa-s)" ${OUT}/>
+<path d="M56 64c0-24 18-34 44-34s44 10 44 34v34c0 18-16 30-44 30s-44-12-44-30z" fill="url(#wa-s)" ${OUT}/>
+<path d="M126 52c8 10 10 30 2 52-6 10-16 16-28 18 24 2 42-10 42-28V70c0-8-6-16-16-18z" fill="#a04030" opacity=".28"/>
+<path d="M72 54c6-6 14-8 22-8" stroke="#fff" stroke-width="5" stroke-linecap="round" opacity=".7"/>
+<!-- hard hat: dented dome, rib, brim, sticker -->
+<path d="M48 62c0-34 22-52 52-52s52 18 52 52z" fill="url(#wa-y)" ${OUT}/>
+<path d="M90 12h20v50H90z" fill="#d89a10" ${OUT}/>
+<path d="M116 20c12 6 20 18 22 36" stroke="#a06a08" stroke-width="3" fill="none"/>
+<path d="M60 40c4-10 10-16 18-20" stroke="#fffbb0" stroke-width="6" stroke-linecap="round"/>
+<path d="M118 28l-6 10 8 2-6 10" stroke="#120e18" stroke-width="3" fill="none" stroke-linejoin="round"/>
+<path d="M38 62c0-6 6-10 14-10h96c8 0 14 4 14 10 0 6-6 8-14 8H52c-8 0-14-2-14-8z" fill="#e8aa18" ${OUT}/>
+<g ${OUT}><rect x="64" y="26" width="22" height="18" fill="#f6f0e4"/></g><ellipse cx="75" cy="35" rx="5" ry="6" fill="none" stroke="#120e18" stroke-width="3"/><path d="M69 29l12 12" stroke="#ff3d9a" stroke-width="3"/>
+<!-- face: unibrow, beady eyes, turnip nose, handlebar mustache, gritted teeth, scar, stubble -->
+<path d="M66 72c10-6 22-4 34 0 12-4 24-6 34 0l-3 6c-10-4-20-2-31 2-11-4-21-6-31-2z" fill="#6a3a1a" ${OUT}/>
+<g ${OUT}><ellipse cx="82" cy="89" rx="11" ry="9" fill="#f6f0e4"/><ellipse cx="118" cy="89" rx="11" ry="9" fill="#f6f0e4"/></g>
+<g class="eye" fill="#120e18"><circle cx="85" cy="91" r="5"/><circle cx="115" cy="91" r="5"/></g>
 
+<ellipse cx="100" cy="102" rx="12" ry="10" fill="url(#wa-n)" ${OUT}/><path d="M96 98c2-3 6-3 8 0" stroke="#fff" stroke-width="3" opacity=".7"/>
+<path d="M62 112c6-12 18-12 28-6 4 2 6 2 10 2s6 0 10-2c10-6 22-6 28 6-8-2-14 0-20 4-6-2-12-2-18-2s-12 0-18 2c-6-4-12-6-20-4z" fill="#6a3a1a" ${OUT}/>
+<path d="M84 118h32v8c-4 4-28 4-32 0z" fill="#f6f0e4" ${OUT}/><path d="M92 118v10M100 118v10M108 118v10" stroke="#120e18" stroke-width="2"/>
+<path d="M124 96l12 16M126 100l-5 3M130 106l-5 3M134 112l-5 3" stroke="#ff3d9a" stroke-width="2.5"/>
+<g fill="#6a3a2a" opacity=".6"><rect x="70" y="124" width="4" height="3"/><rect x="80" y="130" width="4" height="3"/><rect x="116" y="130" width="4" height="3"/><rect x="126" y="124" width="4" height="3"/><rect x="98" y="134" width="4" height="3"/></g>`;
+
+/** The Mage: the IT guy turned wizard. A floppy blue hat with a drooping tip and a sticky note, round magnifying glasses, a beard of tangled ethernet cable with a pencil in it, a lanyard badge, a flaming spreadsheet in his palm and a bored paperclip with googly eyes floating by. */
 const mage = `
-<defs>${lg('ma-h', '#6a9af8', '#1c4fb0')}${lg('ma-f', '#ffb4d4', '#ff86bc')}${lg('ma-b', '#fbf4df', '#d8d0c0')}</defs>
-<path d="M18 200c0-44 34-66 82-66s82 22 82 66z" fill="url(#ma-h)" ${OUT}/>
-<path d="M100 150l-12 50h24z" fill="#ffd900" opacity=".85"/>
-<path d="M100 2c-8 22-24 40-44 56-4 18-2 34 4 46h80c6-12 8-28 4-46C124 42 108 24 100 2z" fill="url(#ma-h)" ${OUT}/>
-<path d="M66 70c0-14 14-22 34-22s34 8 34 22v30H66z" fill="url(#ma-f)" ${OUT}/>
-<path d="M62 92l6 36c4 14 16 24 32 24s28-10 32-24l6-36-10 4-8 10H80l-8-10z" fill="url(#ma-b)" ${OUT}/>
-<path d="M76 104c8-6 16-6 24-2 8-4 16-4 24 2-6 6-16 6-24 2-8 4-18 4-24-2z" fill="url(#ma-b)" ${OUT}/>
-<path d="M84 124v14M100 126v18M116 124v14" stroke="#a89880" stroke-width="3"/>
-<path d="M60 62c10-10 24-14 40-14s30 4 40 14l-4 12c-10-6-22-8-36-8s-26 2-36 8z" fill="url(#ma-h)" ${OUT}/>
-<path d="M60 50c20-8 60-8 80 0" stroke="#1b1830" stroke-width="6" fill="none"/>
-<circle cx="84" cy="46" r="10" fill="#1c5fd0" stroke="#ffd900" stroke-width="4"/><circle cx="116" cy="46" r="10" fill="#1c5fd0" stroke="#ffd900" stroke-width="4"/>
-<path d="M74 76l16 2M126 76l-16 2" stroke="#1b1830" stroke-width="4"/>
-<g fill="#3a3450" opacity=".7"><rect x="70" y="100" width="6" height="4"/><rect x="124" y="96" width="5" height="4"/></g>
-<circle cx="85" cy="88" r="10" fill="#f6f0e4" stroke="#1b1830" stroke-width="4"/>
-<circle cx="115" cy="88" r="10" fill="#f6f0e4" stroke="#1b1830" stroke-width="4"/>
-<path d="M95 88h10M75 86l-9-3M125 86l9-3" stroke="#1b1830" stroke-width="3"/>
-<rect x="81" y="84" width="8" height="8" fill="#c85a20"/><rect x="111" y="84" width="8" height="8" fill="#c85a20"/>
-<rect x="83" y="86" width="4" height="4" fill="#3a1a08"/><rect x="113" y="86" width="4" height="4" fill="#3a1a08"/>
-<path d="M78 82l4-2" stroke="#fff" stroke-width="2"/>
-<g fill="#ffe08a"><path d="M78 30l3 6 6 1-5 4 1 6-5-3-5 3 1-6-5-4 6-1z"/><path d="M120 44l2 4 4 1-3 3 1 4-4-2-4 2 1-4-3-3 4-1z"/></g>`;
+<defs>${rg('ma-h', '#7aa8ff', '#143a92')}${rg('ma-f', '#ffc4a0', '#e07a5a')}${rg('ma-b', '#ffffff', '#a8a0c0')}${lg('ma-c', '#f0ecf8', '#7a7a98', 1, 1)}${glow('ma-g', '#ffd900')}</defs>
+<!-- robe -->
+<path d="M8 200c0-42 30-70 66-74h52c36 4 66 32 66 74z" fill="url(#ma-h)" ${OUT}/>
+<path d="M26 150l8 6 8-6-4 10 8 6-10 0-2 10-2-10-10 0 8-6zM156 168l6 4 6-4-3 8 6 4-8 0-1 8-2-8-8 0 6-4z" fill="#ffd900" ${OUT}/>
+<path d="M70 126l30 40 30-40" fill="none" stroke="#ff3d9a" stroke-width="7" stroke-linejoin="round"/>
+<!-- left sleeve: palm up, a spreadsheet on fire -->
+<g class="limb"><path d="M52 138c-22 2-36 14-40 30l30 6c2-8 8-12 18-12z" fill="url(#ma-h)" ${OUT}/>
+<circle cx="22" cy="150" r="11" fill="url(#ma-f)" ${OUT}/>
+<g transform="rotate(-14 24 130)"><rect x="12" y="104" width="30" height="34" fill="#f6f0e4" ${OUT}/><path d="M12 116h30M12 126h30M24 104v34" stroke="#2a8a4a" stroke-width="2.5"/></g>
+<path d="M14 108c-4-14 6-18 6-30 8 8 14 14 10 26 6-2 8-8 6-14 10 10 8 28-2 34z" fill="#ff7a2a" ${OUT}/><path d="M20 108c-2-8 4-10 4-18 6 6 8 10 4 18z" fill="#ffd900"/></g>
+<!-- beard of cables and a pencil -->
+<path d="M74 106c-6 26-4 46 8 62 8 12 14 16 18 16s10-4 18-16c12-16 14-36 8-62z" fill="url(#ma-b)" ${OUT}/>
+<path d="M76 118c10 8 18 18 20 34M124 118c-10 8-18 18-20 34M88 110c6 16 10 30 12 50" stroke="#a8a0c0" stroke-width="3" fill="none"/>
+<path d="M80 124c14 0 14 12 28 12s14 12 20 12M96 148c8 6 8 14 16 16" stroke="#120e18" stroke-width="7" fill="none" stroke-linecap="round"/><path d="M80 124c14 0 14 12 28 12s14 12 20 12M96 148c8 6 8 14 16 16" stroke="#1c5fd0" stroke-width="3.5" fill="none" stroke-linecap="round"/>
+<rect x="124" y="140" width="6" height="8" fill="#ffd900" ${OUT}/>
+<g transform="rotate(-24 112 126)"><rect x="106" y="110" width="7" height="34" fill="#ffd900" ${OUT}/><path d="M106 110l3-8 4 8z" fill="#ffd8b8" ${OUT}/><rect x="106" y="144" width="7" height="6" fill="#ff3d9a" ${OUT}/></g>
+<!-- badge on a lanyard -->
+<rect x="84" y="170" width="22" height="26" fill="#f6f0e4" ${OUT}/><rect x="88" y="175" width="14" height="9" fill="#ff3d9a"/><path d="M89 189h12M89 193h8" stroke="#120e18" stroke-width="2.5"/>
+<!-- head -->
+<ellipse cx="100" cy="82" rx="32" ry="30" fill="url(#ma-f)" ${OUT}/>
+<path d="M120 62c10 10 12 28 4 42-6 6-12 8-16 8 18 0 32-16 24-38-2-6-6-10-12-12z" fill="#a04030" opacity=".28"/>
+<ellipse cx="100" cy="98" rx="10" ry="8" fill="url(#ma-f)" ${OUT}/><ellipse cx="97" cy="96" rx="3" ry="2" fill="#fff" opacity=".8"/>
+<path d="M68 102c6-10 16-10 24-4 5-2 11-2 16 0 8-6 18-6 24 4-6 6-12 8-20 6-4 4-8 4-12 2-4 2-8 2-12-2-8 2-14 0-20-6z" fill="url(#ma-b)" ${OUT}/>
+<path d="M76 62c4-4 10-5 16-4M108 58c6-1 12 0 16 4" stroke="#fff" stroke-width="7" stroke-linecap="round"/><path d="M76 62c4-4 10-5 16-4M108 58c6-1 12 0 16 4" stroke="#120e18" stroke-width="2" stroke-linecap="round" opacity=".5"/>
+<!-- round glasses, huge eyes -->
+<g ${OUT}><circle cx="82" cy="80" r="15" fill="#f6f0e4"/><circle cx="118" cy="80" r="15" fill="#f6f0e4"/></g>
+<path d="M97 80h6" stroke="#120e18" stroke-width="4"/>
+<g class="eye"><circle cx="84" cy="82" r="8" fill="#1c5fd0"/><circle cx="116" cy="82" r="8" fill="#1c5fd0"/><circle cx="84" cy="82" r="4" fill="#120e18"/><circle cx="116" cy="82" r="4" fill="#120e18"/><circle cx="81" cy="78" r="2.5" fill="#fff"/><circle cx="113" cy="78" r="2.5" fill="#fff"/></g>
+<path d="M72 70c4-4 8-6 14-6M108 64c6 0 10 2 14 6" stroke="#fff" stroke-width="3" fill="none" opacity=".9"/>
+<!-- floppy hat with a drooping tip and a sticky note -->
+<ellipse cx="100" cy="54" rx="52" ry="11" fill="url(#ma-h)" ${OUT}/>
+<path d="M66 54c0-22 8-38 30-48 14-6 30-6 44 4 8 6 12 14 20 18l-4 10c-12-2-18-10-24-14-8-6-18-4-24 2-4 8-6 18-6 28z" fill="url(#ma-h)" ${OUT}/>
+<path d="M66 46c22 8 46 8 68 0v10c-22 8-46 8-68 0z" fill="#ffd900" ${OUT}/><rect x="92" y="44" width="16" height="14" fill="#f6f0e4" ${OUT}/><rect x="96" y="48" width="8" height="6" fill="#ffd900"/>
+<circle cx="154" cy="36" r="6" fill="#ffd900" ${OUT}/>
+<path d="M78 28l2 6 6 2-5 3 1 6-4-4-5 3 1-6-4-4 5-1z" fill="#ffd900" ${OUT}/>
+<path d="M100 22c8-4 18-2 24 6" stroke="#b8d0ff" stroke-width="4" fill="none" stroke-linecap="round"/>
+<g transform="rotate(8 120 22)"><rect x="112" y="16" width="14" height="14" fill="#ff8ac8" ${OUT}/><path d="M115 21h8M115 25h6" stroke="#120e18" stroke-width="1.5"/></g>
+<!-- Clippy, unimpressed -->
+<g class="limb" transform="translate(-14 -20) scale(1.2)"><path d="M156 128V92a8 8 0 0 1 16 0v40a14 14 0 0 1-28 0V84a22 22 0 0 1 44 0v36" fill="none" stroke="#120e18" stroke-width="9" stroke-linecap="round"/><path d="M156 128V92a8 8 0 0 1 16 0v40a14 14 0 0 1-28 0V84a22 22 0 0 1 44 0v36" fill="none" stroke="url(#ma-c)" stroke-width="4.5" stroke-linecap="round"/></g>
+<g transform="translate(-14 -20) scale(1.2)"><g ${OUT}><ellipse cx="155" cy="100" rx="9" ry="10" fill="#f6f0e4"/><ellipse cx="173" cy="100" rx="9" ry="10" fill="#f6f0e4"/></g>
+<g class="eye" fill="#120e18"><circle cx="158" cy="102" r="5"/><circle cx="170" cy="102" r="5"/></g>
+<path d="M148 90l12 2M166 90l10-4" stroke="#120e18" stroke-width="3" stroke-linecap="round"/></g>`;
 
+/** The Necromancer: the night-shift intern raising the dead for peanuts. A deep green hoodie with a pink drawstring, a pale face with huge purple eye bags and half-lidded glowing eyes, a lopsided grin with one fang, a lanyard, a skull staff whose skull wears a call-centre headset, and the ghost of a former coworker floating by in a party hat. */
 const necromancer = `
-<defs>${lg('ne-h', '#3aa05a', '#1a5a30')}${lg('ne-f', '#eee6f4', '#b8a8d0')}${lg('ne-s', '#fbf4df', '#f6e27a')}${lg('ne-e', '#ffb0d0', '#e07aa8')}</defs>
-<path d="M18 200c0-44 34-66 82-66s82 22 82 66z" fill="url(#ne-h)" ${OUT}/>
-<path d="M100 136l-18 64h36z" fill="#1b1830"/>
-<path d="M60 134l40 20 40-20" stroke="#ff3d9a" stroke-width="5" fill="none"/>
-<path d="M100 8c-30 6-50 34-50 66 0 20 6 42 12 56h76c6-14 12-36 12-56 0-32-20-60-50-66z" fill="url(#ne-h)" ${OUT}/>
-<path d="M60 70c-22-10-40-6-44 6-2 12 14 22 42 22zM140 70c22-10 40-6 44 6 2 12-14 22-42 22z" fill="url(#ne-f)" ${OUT}/>
-<path d="M58 76c-14-4-26-2-30 4 2 6 14 10 30 10zM142 76c14-4 26-2 30 4-2 6-14 10-30 10z" fill="url(#ne-e)"/>
-<path d="M72 76c0-18 12-30 28-30s28 12 28 30v18c0 16-12 28-28 28s-28-12-28-28z" fill="#1b1830"/>
-<path d="M78 80c0-14 10-22 22-22s22 8 22 22v12c0 12-10 20-22 20s-22-8-22-20z" fill="url(#ne-f)" ${OUT}/>
-<path d="M82 76l12 3M118 76l-12 3" stroke="#1b1830" stroke-width="4"/>
-<rect x="84" y="82" width="12" height="9" fill="#f6f0e4" ${OUT}/><rect x="104" y="82" width="12" height="9" fill="#f6f0e4" ${OUT}/>
-<rect x="87" y="82" width="7" height="9" fill="#c85a20"/><rect x="107" y="82" width="7" height="9" fill="#c85a20"/>
-<rect x="89" y="84" width="3" height="5" fill="#3a1a08"/><rect x="109" y="84" width="3" height="5" fill="#3a1a08"/>
-<path d="M98 94l2 6 2-6" stroke="#1b1830" stroke-width="2.5" fill="none"/>
-<path d="M90 104c6 3 14 3 20 0" stroke="#1b1830" stroke-width="3" fill="none"/>
-<path d="M84 134l16 30 16-30" stroke="#1c5fd0" stroke-width="4" fill="none"/><rect x="90" y="162" width="20" height="24" fill="#f6f0e4" ${OUT}/><rect x="94" y="166" width="12" height="8" fill="#3aa05a"/>
-<circle cx="62" cy="168" r="11" fill="#ff3d9a" ${OUT}/><rect x="58" y="161" width="8" height="12" rx="2" fill="#ffd900"/>
-<path d="M150 200l8-150" stroke="#1b1830" stroke-width="8"/>
-<path d="M146 44c0-12 20-12 20 0 0 8-4 12-10 14-6-2-10-6-10-14z" fill="url(#ne-s)" ${OUT}/>
-<circle cx="152" cy="46" r="2.5" fill="#1b1830"/><circle cx="160" cy="46" r="2.5" fill="#1b1830"/>`;
+<defs>${rg('ne-h', '#4acb78', '#0f4a28')}${rg('ne-f', '#f8f0ff', '#a898c8')}${rg('ne-s', '#fffbe8', '#d8c880')}${glow('ne-g', '#ff3d9a')}${rg('ne-w', '#ffffff', '#c8d4ff')}</defs>
+<!-- ghost coworker -->
+<g class="limb" opacity=".92"><path d="M14 112c-2-24 10-38 26-38s28 14 26 38l-1 28c-4-6-8-6-12 0-4-6-8-6-12 0-4-6-8-6-12 0-4-6-8-6-12 0z" fill="url(#ne-w)" ${OUT}/>
+<g ${OUT}><circle cx="30" cy="102" r="7" fill="#f6f0e4"/><circle cx="48" cy="102" r="7" fill="#f6f0e4"/></g><circle cx="32" cy="104" r="3" fill="#120e18"/><circle cx="46" cy="104" r="3" fill="#120e18"/>
+<ellipse cx="39" cy="118" rx="6" ry="5" fill="#120e18"/>
+<path d="M26 76l12-22 12 22z" fill="#ffd900" ${OUT}/><circle cx="38" cy="52" r="4" fill="#ff3d9a" ${OUT}/><path d="M31 70l14-10" stroke="#ff3d9a" stroke-width="3"/></g>
+<!-- torso: hoodie -->
+<path d="M14 200c0-44 30-68 64-72h44c34 4 64 28 64 72z" fill="url(#ne-h)" ${OUT}/>
+<path d="M100 150l-14 50h28z" fill="#0c2a18"/>
+<path d="M44 150c10 8 18 12 26 14M156 150c-10 8-18 12-26 14" stroke="#082010" stroke-width="3" fill="none" opacity=".6"/>
+<path d="M88 132v28M112 132v28" stroke="#120e18" stroke-width="7" stroke-linecap="round"/><path d="M88 132v28M112 132v28" stroke="#ff3d9a" stroke-width="3.5" stroke-linecap="round"/>
+<circle cx="88" cy="164" r="5" fill="#ffd900" ${OUT}/><circle cx="112" cy="164" r="5" fill="#ffd900" ${OUT}/>
+<path d="M76 128l24 30 24-30" fill="none" stroke="#1c5fd0" stroke-width="6" stroke-linejoin="round"/>
+<rect x="90" y="170" width="20" height="24" fill="#f6f0e4" ${OUT}/><circle cx="100" cy="179" r="5" fill="#1b1830"/><rect x="96" y="184" width="8" height="4" fill="#1b1830"/>
+<!-- the staff: a skull on call -->
+<path d="M156 200l4-130" stroke="#120e18" stroke-width="11" stroke-linecap="round"/><path d="M156 200l4-130" stroke="#8a5a3a" stroke-width="5" stroke-linecap="round"/>
+<g class="limb"><path d="M158 56c-14-2-24-14-22-28 2-12 12-20 26-20s24 8 26 20c2 14-8 26-22 28l-2 14h-10z" fill="url(#ne-s)" ${OUT}/>
+<path d="M144 28c-2-8 4-14 12-16" stroke="#fff" stroke-width="4" stroke-linecap="round" opacity=".8"/>
+<ellipse cx="150" cy="32" rx="7" ry="8" fill="#120e18"/><ellipse cx="172" cy="32" rx="7" ry="8" fill="#120e18"/>
+<circle cx="150" cy="33" r="3.5" fill="#ff3d9a"/><circle cx="172" cy="33" r="3.5" fill="#ff3d9a"/>
+<path d="M156 46l5-7 5 7z" fill="#120e18"/><path d="M148 52h26M154 52v8M161 52v9M168 52v8" stroke="#120e18" stroke-width="2.5"/>
+<path d="M136 26c0-18 12-28 26-28s26 10 26 28" fill="none" stroke="#120e18" stroke-width="8"/><path d="M136 26c0-18 12-28 26-28s26 10 26 28" fill="none" stroke="#1c5fd0" stroke-width="4"/>
+<rect x="128" y="22" width="12" height="18" rx="4" fill="#1c5fd0" ${OUT}/><path d="M132 40c0 12 8 16 18 16" stroke="#120e18" stroke-width="3" fill="none"/><circle cx="152" cy="56" r="3.5" fill="#ff3d9a" ${OUT}/></g>
+<circle cx="142" cy="108" r="6" fill="#4acb78" opacity=".8" ${OUT}/><circle cx="170" cy="92" r="4" fill="#4acb78" opacity=".8" ${OUT}/>
+<!-- hood and face -->
+<path d="M100 6c-34 2-56 30-56 66 0 24 8 42 14 54h84c6-12 14-30 14-54 0-36-22-64-56-66z" fill="url(#ne-h)" ${OUT}/>
+<path d="M132 22c16 14 24 36 20 62-2 16-8 30-12 42h8c6-12 14-30 14-54 0-28-12-44-30-50z" fill="#082010" opacity=".4"/>
+<path d="M62 30c8-12 18-18 30-20" stroke="#a8f0b8" stroke-width="6" stroke-linecap="round" opacity=".7"/>
+<path d="M70 82c0-20 12-34 30-34s30 14 30 34v16c0 18-12 30-30 30s-30-12-30-30z" fill="#1b1830"/>
+<path d="M76 84c0-16 10-26 24-26s24 10 24 26v12c0 14-10 24-24 24s-24-10-24-24z" fill="url(#ne-f)" ${OUT}/>
+<path d="M72 54c6 10 12 12 28 8 16 4 22 2 28-8-8-8-16-10-28-10s-20 2-28 10z" fill="url(#ne-w)" ${OUT}/>
+<path d="M88 52l-6 14M100 54v12M112 52l6 14" stroke="#a898c8" stroke-width="2.5"/>
+<ellipse cx="88" cy="90" rx="10" ry="7" fill="#7a3ab0" opacity=".85"/><ellipse cx="112" cy="90" rx="10" ry="7" fill="#7a3ab0" opacity=".85"/>
+<g class="eye"><circle cx="88" cy="86" r="8" fill="url(#ne-g)"/><circle cx="112" cy="86" r="8" fill="url(#ne-g)"/><circle cx="88" cy="86" r="5" fill="#ff3d9a"/><circle cx="112" cy="86" r="5" fill="#ff3d9a"/><circle cx="88" cy="87" r="2" fill="#120e18"/><circle cx="112" cy="87" r="2" fill="#120e18"/></g>
+<path d="M78 82h20M102 82h20" stroke="#120e18" stroke-width="5" stroke-linecap="round"/>
+<path d="M78 78c6-3 14-3 20 0M104 74c6-3 12-2 18 2" stroke="#120e18" stroke-width="3.5" stroke-linecap="round" fill="none"/>
+<path d="M98 94l2 6 2-6" stroke="#6a5a88" stroke-width="2.5" fill="none"/>
+<path d="M86 108c8 6 18 6 28 0 4-2 6-4 6-6" stroke="#120e18" stroke-width="3.5" fill="none" stroke-linecap="round"/><path d="M104 107l2 8 4-8z" fill="#f6f0e4" ${OUT}/>`;
 
 // ------------------------------------------------------------------ Act 2: the afternoon shift
 
