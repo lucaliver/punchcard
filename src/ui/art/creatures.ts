@@ -539,7 +539,7 @@ const rogue = `
 <g transform="rotate(-18 150 150)"><rect x="132" y="148" width="46" height="12" fill="#ff3d9a" ${OUT}/><path d="M132 148c0-10 8-14 20-16l26-4v20z" fill="#d03a8a" ${OUT}/><rect x="170" y="140" width="6" height="6" fill="#f6f0e4"/></g></g>`;
 
 const warrior = `
-<defs>${rg('wa-h', '#9ac0f8', '#1c5fd0')}${rg('wa-s', '#ffb4d4', '#ff7ab4')}${rg('wa-a', '#ff8ac8', '#d03a8a')}${rg('wa-y', '#ffe0b0', '#f0a050')}${rg('wa-d', '#fff070', '#d89a10')}</defs>
+<defs>${lg('wa-h', '#9ac0f8', '#1c5fd0', 1, 1)}${lg('wa-s', '#ffb4d4', '#ff86bc')}${lg('wa-a', '#ff8ac8', '#d03a8a')}${lg('wa-y', '#ffc890', '#ffbc80')}</defs>
 <path d="M14 200c0-46 36-70 86-70 34 0 58 10 70 30l6 40z" fill="url(#wa-a)" ${OUT}/>
 <path d="M14 176c0-28 18-46 44-48l14 46z" fill="url(#wa-h)" ${OUT}/>
 <path d="M22 142l-10-20 22 8zM40 130l-4-22 16 14z" fill="#fbf4df" ${OUT}/>
@@ -550,7 +550,7 @@ const warrior = `
 <path d="M72 120h56v26H72z" fill="url(#wa-s)" ${OUT}/>
 <path d="M50 86c0-40 22-66 50-66s50 26 50 66v22c0 24-22 40-50 40S50 132 50 108z" fill="url(#wa-s)" ${OUT}/>
 <path d="M72 34c7-7 15-10 22-10" stroke="#fff" stroke-width="6" stroke-linecap="round"/>
-<path d="M50 60c0-30 22-46 50-46s50 16 50 46z" fill="url(#wa-d)" ${OUT}/><path d="M95 16h10v44H95z" fill="#e8b820"/>
+<path d="M50 60c0-30 22-46 50-46s50 16 50 46z" fill="#ffd900" ${OUT}/><path d="M95 16h10v44H95z" fill="#e8b820"/>
 <path d="M46 60h108v18H46z" fill="url(#wa-h)" ${OUT}/>
 <path d="M58 62v14M142 62v14M100 62v14" stroke="#fbf4df" stroke-width="3"/>
 <path d="M46 76h18v40c-10-4-18-16-18-28zM154 76h-18v40c10-4 18-16 18-28z" fill="url(#wa-h)" ${OUT}/>
@@ -564,23 +564,10 @@ const warrior = `
 <path d="M78 112c8-5 15-5 22-1 7-4 14-4 22 1-4 6-14 7-22 3-8 4-18 3-22-3z" fill="#e8b820" ${OUT}/>
 <path d="M88 124h24" stroke="#1b1830" stroke-width="5"/>
 <path d="M60 116h4M70 128h4M130 128h4M136 116h4M84 136h4M112 136h4M98 142h4" stroke="#b08a10" stroke-width="3"/>
-<g fill="#ffd900" ${OUT}><circle cx="56" cy="152" r="5"/><circle cx="144" cy="152" r="5"/></g>
-<!-- light from the upper left: a rim of shade on the right, specular spots -->
-<path d="M134 40c10 10 14 26 12 44-2 22-12 40-30 52 20-2 34-18 34-40V60c0-8-6-16-16-20z" fill="#7a1a58" opacity=".22"/>
-<path d="M60 40c6-8 14-14 24-18" stroke="#fffbd0" stroke-width="6" stroke-linecap="round"/>
-<ellipse cx="66" cy="104" rx="5" ry="3" fill="#fff" opacity=".6"/>
-<path d="M28 150c-6 6-8 16-4 26" stroke="#fff" stroke-width="4" stroke-linecap="round" opacity=".7"/>
-<!-- helmet: a dent, a sticker reading 0 (days without incident) -->
-<path d="M116 24l-6 10 8 2-6 10" stroke="#120e18" stroke-width="3" fill="none" stroke-linejoin="round"/>
-<rect x="64" y="22" width="20" height="16" fill="#f6f0e4" ${OUT}/><ellipse cx="74" cy="30" rx="4" ry="5" fill="none" stroke="#120e18" stroke-width="2.5"/>
-<!-- a sweat drop and a mug duct-taped on the stump -->
-<path d="M156 66c4 6 5 10 0 12-5-2-4-6 0-12z" fill="#9ab8f0" ${OUT}/>
-<rect x="150" y="104" width="24" height="26" fill="#f6f0e4" ${OUT}/><path d="M174 110c10 0 10 14 0 14" stroke="#120e18" stroke-width="4" fill="none"/><rect x="150" y="110" width="24" height="7" fill="#ff3d9a"/>
-<path d="M146 130l32-8" stroke="#8a8aa0" stroke-width="6"/>
-<path d="M156 98c-3-4 3-6 0-10M166 98c-3-4 3-6 0-10" stroke="#f6f0e4" stroke-width="3" fill="none" stroke-linecap="round"/>`;
+<g fill="#ffd900" ${OUT}><circle cx="56" cy="152" r="5"/><circle cx="144" cy="152" r="5"/></g>`;
 
 const mage = `
-<defs>${rg('ma-h', '#6a9af8', '#1c4fb0')}${rg('ma-f', '#ffb4d4', '#ff86bc')}${rg('ma-b', '#fbf4df', '#d8d0c0')}${lg('ma-c', '#f0ecf8', '#7a7a98', 1, 1)}</defs>
+<defs>${lg('ma-h', '#6a9af8', '#1c4fb0')}${lg('ma-f', '#ffb4d4', '#ff86bc')}${lg('ma-b', '#fbf4df', '#d8d0c0')}</defs>
 <path d="M18 200c0-44 34-66 82-66s82 22 82 66z" fill="url(#ma-h)" ${OUT}/>
 <path d="M100 150l-12 50h24z" fill="#ffd900" opacity=".85"/>
 <path d="M100 2c-8 22-24 40-44 56-4 18-2 34 4 46h80c6-12 8-28 4-46C124 42 108 24 100 2z" fill="url(#ma-h)" ${OUT}/>
@@ -599,20 +586,10 @@ const mage = `
 <rect x="81" y="84" width="8" height="8" fill="#c85a20"/><rect x="111" y="84" width="8" height="8" fill="#c85a20"/>
 <rect x="83" y="86" width="4" height="4" fill="#3a1a08"/><rect x="113" y="86" width="4" height="4" fill="#3a1a08"/>
 <path d="M78 82l4-2" stroke="#fff" stroke-width="2"/>
-<g fill="#ffe08a"><path d="M78 30l3 6 6 1-5 4 1 6-5-3-5 3 1-6-5-4 6-1z"/><path d="M120 44l2 4 4 1-3 3 1 4-4-2-4 2 1-4-3-3 4-1z"/></g>
-<!-- light from the upper left -->
-<path d="M122 24c10 10 14 24 12 40l-4 10c8-4 14-12 14-22 0-14-8-24-22-28z" fill="#0a1c5a" opacity=".2"/>
-<path d="M90 14c-8 8-14 18-16 30" stroke="#d8e8ff" stroke-width="5" stroke-linecap="round"/>
-<path d="M30 150c14-10 30-14 46-14" stroke="#b8d4ff" stroke-width="4" stroke-linecap="round" opacity=".8"/>
-<ellipse cx="76" cy="72" rx="5" ry="3" fill="#fff" opacity=".7"/>
-<!-- a sticky note on the hat, a paperclip pal floating at the shoulder -->
-<g transform="rotate(8 114 24)"><rect x="106" y="16" width="14" height="14" fill="#ffd900" ${OUT}/><path d="M109 21h8M109 25h6" stroke="#120e18" stroke-width="1.5"/></g>
-<g class="limb"><path d="M150 150v-34a8 8 0 0 1 16 0v38a14 14 0 0 1-28 0v-44a20 20 0 0 1 40 0v30" fill="none" stroke="#120e18" stroke-width="9" stroke-linecap="round"/><path d="M150 150v-34a8 8 0 0 1 16 0v38a14 14 0 0 1-28 0v-44a20 20 0 0 1 40 0v30" fill="none" stroke="url(#ma-c)" stroke-width="4.5" stroke-linecap="round"/></g>
-<g ${OUT}><ellipse cx="146" cy="120" rx="8" ry="9" fill="#f6f0e4"/><ellipse cx="164" cy="120" rx="8" ry="9" fill="#f6f0e4"/></g>
-<g class="eye" fill="#120e18"><circle cx="148" cy="122" r="4"/><circle cx="162" cy="122" r="4"/></g><path d="M138 108l12 2M158 110l12-5" stroke="#120e18" stroke-width="3" stroke-linecap="round"/>`;
+<g fill="#ffe08a"><path d="M78 30l3 6 6 1-5 4 1 6-5-3-5 3 1-6-5-4 6-1z"/><path d="M120 44l2 4 4 1-3 3 1 4-4-2-4 2 1-4-3-3 4-1z"/></g>`;
 
 const necromancer = `
-<defs>${rg('ne-h', '#3aa05a', '#1a5a30')}${rg('ne-f', '#eee6f4', '#c4b4dc')}${rg('ne-s', '#fffbe8', '#d8c880')}${rg('ne-e', '#ffd0e4', '#e0609a')}</defs>
+<defs>${lg('ne-h', '#3aa05a', '#1a5a30')}${lg('ne-f', '#eee6f4', '#b8a8d0')}${lg('ne-s', '#fbf4df', '#f6e27a')}${lg('ne-e', '#ffb0d0', '#e07aa8')}</defs>
 <path d="M18 200c0-44 34-66 82-66s82 22 82 66z" fill="url(#ne-h)" ${OUT}/>
 <path d="M100 136l-18 64h36z" fill="#1b1830"/>
 <path d="M60 134l40 20 40-20" stroke="#ff3d9a" stroke-width="5" fill="none"/>
@@ -631,15 +608,7 @@ const necromancer = `
 <circle cx="62" cy="168" r="11" fill="#ff3d9a" ${OUT}/><rect x="58" y="161" width="8" height="12" rx="2" fill="#ffd900"/>
 <path d="M150 200l8-150" stroke="#1b1830" stroke-width="8"/>
 <path d="M146 44c0-12 20-12 20 0 0 8-4 12-10 14-6-2-10-6-10-14z" fill="url(#ne-s)" ${OUT}/>
-<circle cx="152" cy="46" r="2.5" fill="#1b1830"/><circle cx="160" cy="46" r="2.5" fill="#1b1830"/>
-<!-- the staff skull works the phones: a headset -->
-<path d="M142 44c-2-22 8-32 14-32s16 8 14 32" fill="none" stroke="#120e18" stroke-width="8"/><path d="M142 44c-2-22 8-32 14-32s16 8 14 32" fill="none" stroke="#1c5fd0" stroke-width="4"/>
-<rect x="138" y="38" width="10" height="16" rx="4" fill="#1c5fd0" ${OUT}/><path d="M142 54c0 10 8 14 16 14" stroke="#120e18" stroke-width="3" fill="none"/><circle cx="160" cy="68" r="3.5" fill="#ff3d9a" ${OUT}/>
-<!-- light from the upper left, eye bags, a bubbling green blob -->
-<path d="M126 22c14 12 20 34 16 58-2 16-8 30-12 42h8c6-12 12-26 12-46 0-26-10-44-24-54z" fill="#082010" opacity=".25"/>
-<path d="M66 40c8-14 20-22 34-24" stroke="#b8f8c8" stroke-width="6" stroke-linecap="round" opacity=".8"/>
-<ellipse cx="90" cy="92" rx="9" ry="5" fill="#7a3ab0" opacity=".6"/><ellipse cx="110" cy="92" rx="9" ry="5" fill="#7a3ab0" opacity=".6"/>
-<circle cx="40" cy="150" r="7" fill="#5ad088" stroke="#120e18" stroke-width="3"/><circle cx="52" cy="136" r="4" fill="#5ad088" stroke="#120e18" stroke-width="2.5"/>`;
+<circle cx="152" cy="46" r="2.5" fill="#1b1830"/><circle cx="160" cy="46" r="2.5" fill="#1b1830"/>`;
 
 // ------------------------------------------------------------------ Act 2: the afternoon shift
 
