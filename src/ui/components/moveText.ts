@@ -125,18 +125,25 @@ export function moveIcon(m: MoveDef): string {
 /** Icon of an enemy's half-HP trait (traits list, status row). */
 export const HALF_ICON = 'rage';
 
-/** What an enemy does beyond its moves: passive statuses and (unless `withHalf` is false) what happens at half HP. */
-export function enemyTraits(e: EnemyDef, withHalf = true): { icon: string; name: string; desc: string }[] {
+/**
+ * What an enemy does beyond its moves: passive statuses, what it does to the belt or mana, and what happens at half HP.
+ * The handbook lists everything; `inFight` (the lines before the fight starts) leaves out the surprises.
+ */
+export function enemyTraits(e: EnemyDef, inFight = false): { icon: string; name: string; desc: string }[] {
   const traits = (e.start ?? [])
-    .filter((s) => STATUSES[s.id].passive && !STATUSES[s.id].hidden)
+    .filter((s) => STATUSES[s.id].passive && !(inFight && STATUSES[s.id].hidden))
     .map((s) => ({ icon: STATUSES[s.id].icon, name: t(`status.${s.id}`), desc: keywordHtml(t(`status.${s.id}.d`, { v: s.v ?? 1 })) }));
   if (e.fillSleeve) traits.push({ icon: 'hand', name: t(`card.${e.fillSleeve}.name`), desc: t('enemy.fillSleeve') });
   if (e.startHex) {
     const { id, share } = e.startHex;
     traits.push({ icon: HEXES[id].icon, name: t(`hex.${id}`), desc: t('enemy.startHex', { n: Math.round(share * 100) }) });
   }
-  if (e.deepBelt !== undefined) traits.push({ icon: 'conveyorLine', name: '', desc: keywordHtml(t(`enemy.${e.id}.deep`)) });
-  if (e.onHalf && withHalf) traits.push({ icon: HALF_ICON, name: t('status.half'), desc: keywordHtml(t(`enemy.${e.id}.half`)) });
+  if (!inFight) {
+    if (e.deepBelt !== undefined) traits.push({ icon: 'conveyorLine', name: '', desc: keywordHtml(t(`enemy.${e.id}.deep`)) });
+    if (e.beltOff !== undefined) traits.push({ icon: 'crank', name: '', desc: t(`enemy.${e.id}.off`) });
+    if (e.manaTap !== undefined) traits.push({ icon: 'crystal', name: '', desc: t(`enemy.${e.id}.tap`) });
+  }
+  if (e.onHalf && !(inFight && e.halfSecret)) traits.push({ icon: HALF_ICON, name: t('status.half'), desc: keywordHtml(t(`enemy.${e.id}.half`)) });
   return traits;
 }
 

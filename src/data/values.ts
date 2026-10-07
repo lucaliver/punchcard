@@ -84,6 +84,8 @@ export const VALUES = {
   largeSpan: CARDS.meetingTable.span ?? 1,
   // Half-HP moves (the Paper Cuts it starts with count 1)
   deepBeltSecs: ENEMIES.exaggeratedGirl.deepBelt ?? 0,
+  beltOffSecs: ENEMIES.powerSocket.beltOff ?? 0,
+  manaTapSecs: ENEMIES.conveyorSis.manaTap ?? 0,
   securityBlock: HALF.securityBlock,
   slavesStall: HALF.slavesStall,
   complianceSlow: HALF.complianceSlow,
