@@ -887,7 +887,7 @@ const zh: Record<EnKey, string> = {
   'card.mayFirst.name': '五一劳动节',
   'card.mayFirst.desc': '[stun] {0} 秒。恢复 {1} 点生命。',
   'card.energyDrink.name': '能量饮料',
-  'card.energyDrink.desc': '获得 {0} 点[mana]。',
+  'card.energyDrink.desc': '获得 {0} 点[mana]，并 +{1} 最大法力（空的[crystal]）。',
   'card.fika.name': '瑞典咖啡时间',
   'card.fika.desc': '恢复 {0} 点生命。获得 {1} 点[mana]。',
   'card.heavyLifting.name': '搬重物',

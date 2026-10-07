@@ -1051,6 +1051,11 @@ export const ICONS: Record<string, { el: Element; svg: string }> = {
     el: 'nature',
     svg: `<g transform="translate(-3 0) scale(.95)">${heart}</g><g transform="translate(0 -3)"><path d="M48 30l14 16h-8v16H42V46h-8z" fill="#16121f" stroke="#16121f" stroke-width="6" stroke-linejoin="round"/><path d="M48 30l14 16h-8v16H42V46h-8z"/></g>`,
   },
+  // A heart gone half dark: what a hero does when HP drops below half (Forklift Certified).
+  halfHeart: {
+    el: 'steel',
+    svg: `${heart}<clipPath id="hh"><rect x="0" y="0" width="64" height="34"/></clipPath><g clip-path="url(#hh)"><path fill="#16121f" opacity=".6" d="M32 56C9 41 4 27 11 17c7-10 18-8 21 1 3-9 14-11 21-1 7 10 2 24-21 39z"/></g><path d="M4 34h56" stroke="#16121f" stroke-width="3"/>`,
+  },
   // The clock behind Eight Hours: a wall clock at eight.
   shiftClock: {
     el: 'steel',

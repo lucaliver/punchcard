@@ -506,7 +506,7 @@ export const warriorCards: CardDef[] = [
   },
   {
     id: 'forkliftCertified',
-    face: '{?hp}{mana}|{block}{str:0}',
+    face: '{halfLife}',
     cls: 'warrior',
     type: 'power',
     rarity: 'rare',

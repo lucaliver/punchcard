@@ -143,17 +143,20 @@ export const neutralCards: CardDef[] = [
   },
   {
     id: 'energyDrink',
-    face: '{mana:0}',
+    face: '{mana:0}|{crystal:1}',
     cls: 'neutral',
     type: 'skill',
     rarity: 'rare',
     cost: 1,
     upCost: 0,
-    vals: [4],
-    upVals: [6],
+    vals: [4, 4],
+    upVals: [6, 4],
     keywords: ['consume', 'anchor'],
     art: 'energyCan',
-    play: (c, v) => c.gainMana(v[0]),
+    play: (c, v) => {
+      c.addManaCrystals(v[1]);
+      c.gainMana(v[0]);
+    },
   },
 
   {
@@ -734,7 +737,7 @@ export const neutralCards: CardDef[] = [
     face: '{block:0}|{?exit}{block:1}',
     cls: 'neutral',
     type: 'defense',
-    rarity: 'rare',
+    rarity: 'epic',
     cost: 2,
     vals: [10, 5],
     upVals: [14, 7],
@@ -843,8 +846,8 @@ export const neutralCards: CardDef[] = [
     rarity: 'epic',
     cost: 2,
     upCost: 1,
-    vals: [5, 5],
-    upVals: [8, 8],
+    vals: [20, 5],
+    upVals: [32, 8],
     art: 'rootKey',
     play: (c, v) => {
       c.applyStatus('hero', 'rootAccess', 1, v[0]);

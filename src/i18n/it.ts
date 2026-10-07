@@ -897,7 +897,7 @@ const it: Record<EnKey, string> = {
   'card.mayFirst.name': '1° Maggio',
   'card.mayFirst.desc': '[stun] per {0}s. Cura {1} HP.',
   'card.energyDrink.name': 'Bevanda Energetica',
-  'card.energyDrink.desc': 'Ottieni {0} di [mana].',
+  'card.energyDrink.desc': 'Ottieni {0} di [mana] e +{1} di mana massimo ([crystal] vuoto).',
   'card.fika.name': 'Fika',
   'card.fika.desc': 'Cura {0} HP. Ottieni {1} di [mana].',
   'card.heavyLifting.name': 'Sollevamento Pesi',

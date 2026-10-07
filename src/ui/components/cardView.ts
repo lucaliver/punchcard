@@ -94,6 +94,8 @@ export const GLYPHS: Record<string, { icon: string; unit?: string; sign?: string
   debuff: { icon: 'down' },
   /** A curse card. */
   curse: { icon: 'skull' },
+  /** Below half HP: Forklift Certified's comeback. */
+  halfLife: { icon: 'halfHeart', tone: 'teal' },
   /** Handed over to the enemy. */
   pass: { icon: 'share' },
 };

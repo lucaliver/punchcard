@@ -894,7 +894,7 @@ const en = {
   'card.mayFirst.name': 'May 1st',
   'card.mayFirst.desc': '[stun] for {0}s. Heal {1} HP.',
   'card.energyDrink.name': 'Energy Drink',
-  'card.energyDrink.desc': 'Gain {0} [mana].',
+  'card.energyDrink.desc': 'Gain {0} [mana] and +{1} max mana (empty [crystal]).',
   'card.fika.name': 'Fika',
   'card.fika.desc': 'Heal {0} HP. Gain {1} [mana].',
   'card.heavyLifting.name': 'Heavy Lifting',
