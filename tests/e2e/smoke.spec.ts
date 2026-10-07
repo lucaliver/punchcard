@@ -686,6 +686,8 @@ test('handbook history: tapping a run opens its payslip, stationery and deck', a
         memos: 0,
         deck,
         relics: ['stressBall'],
+        time: 300,
+        begged: false,
         at: Date.now(),
       },
     ];
@@ -696,6 +698,7 @@ test('handbook history: tapping a run opens its payslip, stationery and deck', a
   await page.getByRole('tab', { name: /history/i }).click();
   await page.locator('.run-log').first().click();
   await expect(page.locator('.run-detail .payslip')).toBeVisible();
+  await expect(page.locator('.run-detail .act-btn')).toBeVisible();
   await expect(page.locator('.run-detail .hero-feature')).toHaveCount(1);
   await expect(page.locator('.run-detail .deck-grid .card')).toHaveCount(2);
   expect(problems).toEqual([]);
