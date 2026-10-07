@@ -182,15 +182,12 @@ const it: Record<EnKey, string> = {
   'howto.inspect.t': 'Tieni premuto per capire',
   'howto.inspect.d': 'Non sai cosa fa qualcosa? Tieni premuto per info su carte, stati, mosse, statistiche, etc.',
   'howto.gotIt': 'Capito!',
-  'coach.enemy': 'Il tuo primo lavoro: **sconfiggi questo nemico**.\nPorta a zero la sua **barra HP**.',
-  'coach.threat':
-    "La sua **prossima mossa**: quando la barra si riempie, la mossa va a segno.\n**Tieni premuta** la barra o l'etichetta alla sua sinistra per vedere tutte le prossime mosse.",
-  'coach.hero': 'Tu e la tua **barra HP**.\nSotto, i tuoi **stati** e le tue **passive**.',
-  'coach.belt': 'Non peschi. Il tuo mazzo arriva su questo **nastro**.\n**Tocca** una carta per giocarla.',
-  'coach.mana': 'I tuoi cristalli di **mana**.\nLe carte costano mana, ma per fortuna si **ricarica col tempo**.',
-  'coach.sleeve': 'La tua **manica**: **trascina** qui una carta per tenerla da parte per quando ti serve.',
-  'coach.ability': 'La tua **abilità**. È una mossa potente che costa molto mana.',
-  'coach.start': 'Ricorda: puoi **tenere premuto** su qualsiasi cosa per leggere cosa fa.\nQuando sei pronto, **timbra** per iniziare.',
+  'coach.enemy':
+    '**Sconfiggi il nemico**: porta a zero i suoi HP.\nQuando la barra si riempie, arriva la sua **prossima mossa**. **Tieni premuto** per leggerla.',
+  'coach.hero': 'I tuoi **HP** e il tuo **mana**.\nIl mana **si ricarica col tempo**.',
+  'coach.belt': 'Il tuo mazzo arriva su questo **nastro**.\n**Tocca** una carta per giocarla.',
+  'coach.sleeve': "**Trascina** una carta nella **manica** per tenerla da parte.\nQui c'è la tua grande **abilità**.",
+  'coach.start': '**Tieni premuto** su tutto per leggerlo.\nPronto? **Timbra**.',
 
   // ------------------------------------------------------------- heroes
   'hero.select': 'Chi è di turno?',

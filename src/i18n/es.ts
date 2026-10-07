@@ -182,15 +182,12 @@ const es: Record<EnKey, string> = {
   'howto.inspect.t': 'Mantén para aprender',
   'howto.inspect.d': '¿No sabes qué hace algo? Mantenlo pulsado: cartas, estados, movimientos, estadísticas.',
   'howto.gotIt': '¡Entendido!',
-  'coach.enemy': 'Tu primer trabajo: **derrota a este enemigo**.\nLleva su **barra de PV** a cero.',
-  'coach.threat':
-    'Su **próximo movimiento**: cuando la barra se llena, el movimiento se ejecuta.\n**Mantén** la barra o la etiqueta a su izquierda para ver todos los próximos movimientos.',
-  'coach.hero': 'Tú y tu **barra de PV**.\nDebajo, tus **estados** y **pasivas**.',
-  'coach.belt': 'No robas cartas. Tu mazo llega por esta **cinta**.\n**Toca** una carta para jugarla.',
-  'coach.mana': 'Tus cristales de **maná**.\nLas cartas cuestan maná, pero por suerte se **rellena con el tiempo**.',
-  'coach.sleeve': 'Tu **manga**: **arrastra** una carta aquí para guardarla para cuando la necesites.',
-  'coach.ability': 'Tu **habilidad**. Es un gran movimiento que cuesta mucho maná.',
-  'coach.start': 'Recuerda: puedes **mantener pulsado** cualquier cosa para leer lo que hace.\nCuando estés listo, **ficha** para empezar.',
+  'coach.enemy':
+    '**Derrota al enemigo**: baja sus PV a cero.\nCuando su barra se llena, cae su **próximo movimiento**. **Mantén pulsado** para leerlo.',
+  'coach.hero': 'Tus **PV** y tu **maná**.\nEl maná **se rellena con el tiempo**.',
+  'coach.belt': 'Tu mazo llega por esta **cinta**.\n**Toca** una carta para jugarla.',
+  'coach.sleeve': '**Arrastra** una carta a la **manga** para guardarla.\nAquí está tu gran **habilidad**.',
+  'coach.start': '**Mantén pulsado** cualquier cosa para leerla.\n¿Listo? **Ficha**.',
 
   // ------------------------------------------------------------- heroes
   'hero.select': '¿Quién está de turno?',
