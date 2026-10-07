@@ -1,0 +1,402 @@
+<!doctype html>
+<html lang="it"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Map editor</title>
+<style>
+:root{--paper:#2e2b45;--panel:#3b3858;--ink:#f1ecde;--line:#8e88b8;--pink:#ff5fa2;--yellow:#f2c230;--muted:#b4aed0}
+*{box-sizing:border-box}
+body{margin:0;background:var(--paper);color:var(--ink);font:14px/1.35 system-ui,sans-serif;color-scheme:dark}
+header{position:sticky;top:0;z-index:5;background:#1f1d33;color:var(--ink);display:flex;flex-wrap:wrap;gap:6px;padding:8px 12px;align-items:center;border-bottom:2px solid var(--line)}
+header b{margin-right:8px}
+button,select{font:inherit;color:inherit}
+header button{background:transparent;border:2px solid var(--line);color:var(--ink);padding:4px 10px;cursor:pointer}
+header button:disabled{opacity:.35;cursor:default}
+header button.on{background:var(--ink);color:#14121f;border-color:var(--ink)}
+header .sp{flex:1}
+main{display:flex;flex-wrap:wrap;gap:12px;padding:12px;align-items:flex-start}
+#mapwrap{flex:0 0 auto;overflow:auto;max-width:100%;border:2px solid var(--line);background:#363350}
+#map{position:relative}
+#map svg{position:absolute;inset:0;pointer-events:none}
+.node{position:absolute;width:124px;height:72px;border:2px solid var(--line);background:var(--panel);color:var(--ink);cursor:pointer;display:flex;align-items:center;gap:4px;padding:2px 4px;overflow:hidden;box-shadow:3px 3px 0 #1a1830}
+.node.sel{outline:4px solid var(--pink);z-index:3}
+.node.target{outline:4px dashed #6c9bff;z-index:3}
+.node.target.swap{outline-color:var(--yellow)}
+.node .t{font-size:11px;font-weight:700;line-height:1.1}
+.node .n{font-size:11px;line-height:1.1;word-break:break-word}
+.node .no{font-size:10px;opacity:.6}
+.node img{width:48px;height:48px;image-rendering:pixelated;flex:none}
+.node .txt{min-width:0}
+.node.bad{background:#8a2f40}
+.k-fight{background:#47436a}.k-elite{background:#7a3562}.k-boss{background:#62459c}.k-rest{background:#2f6552}.k-promotion{background:#76692f}
+.k-copy,.k-tailor,.k-lostFound,.k-vending,.k-crossTraining{background:#2f559a}
+.node.bad{background:#8a2f40}
+.slot{position:absolute;width:124px;height:72px;border:2px dashed #6a6590;color:#6a6590;display:flex;align-items:center;justify-content:center;font-size:24px;cursor:pointer}
+.slot:hover{border-color:var(--ink);color:var(--ink)}
+.flr{position:absolute;left:4px;font-size:11px;color:var(--muted);font-weight:700}
+#side{flex:1 1 320px;min-width:300px;max-width:560px;border:2px solid var(--line);background:var(--panel);padding:10px;position:sticky;top:56px;max-height:calc(100vh - 70px);overflow:auto}
+#side h3{margin:0 0 6px}
+#side label{display:block;margin:8px 0 2px;font-weight:700;font-size:12px;text-transform:uppercase}
+#side select{width:100%;padding:4px;background:#2e2b45;border:2px solid var(--line)}
+.btn{background:#2e2b45;border:2px solid var(--line);padding:4px 8px;cursor:pointer;color:var(--ink)}
+.btn:hover{background:var(--yellow);color:#14121f}
+.btn.danger{border-color:#e05555;color:#ff8a8a}
+.row{display:flex;flex-wrap:wrap;gap:6px;margin-top:6px}
+.egrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(92px,1fr));gap:6px;margin-top:4px}
+.ecard{border:2px solid var(--line);background:#2e2b45;padding:3px;text-align:center;cursor:pointer;font-size:11px;line-height:1.15;position:relative}
+.ecard img{width:56px;height:56px;image-rendering:pixelated}
+.ecard.cur{background:var(--yellow);color:#14121f}
+.ecard .u{position:absolute;top:1px;right:2px;font-size:10px;background:var(--ink);color:#14121f;padding:0 3px}
+.ecard small{display:block;opacity:.7}
+.det{font-size:12px;margin-top:6px;border-top:1px solid var(--line);padding-top:6px}
+.det ul{margin:2px 0 0;padding-left:16px}
+.pill{display:inline-block;border:1px solid var(--line);padding:0 5px;margin:1px;font-size:12px}
+.pill button{border:0;background:none;cursor:pointer;color:#ff8a8a;font-weight:700}
+#out{width:100%;height:220px;font:11px/1.3 ui-monospace,Menlo,monospace;background:#2e2b45;color:var(--ink);border:2px solid var(--line)}
+#enemies{padding:12px;display:none}
+.sec{margin:14px 0 4px;font-weight:700;border-bottom:2px solid var(--line)}
+.elist{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:8px}
+.ebox{border:2px solid var(--line);background:var(--panel);padding:6px;display:flex;gap:8px;font-size:12px}
+.ebox img{width:72px;height:72px;image-rendering:pixelated;flex:none}
+.hint{font-size:12px;opacity:.75;margin:4px 0}
+#right{flex:0 0 400px;position:sticky;top:56px;height:calc(100vh - 70px);overflow:auto;display:flex;flex-direction:column;gap:12px}
+#recap{margin-top:auto;flex:none;border:2px solid var(--line);background:var(--panel);padding:8px 10px;font-size:12px}
+#recap h4{margin:0 0 4px;font-size:12px;text-transform:uppercase}
+#recap table{width:100%;border-collapse:collapse}
+#recap th,#recap td{padding:2px 4px;text-align:right}
+#recap th:first-child,#recap td:first-child{text-align:left}
+#recap tr.sum td,#recap tr.sum th{border-top:1px solid var(--line)}
+#recap .cur{background:#4b4770}
+#recap td.z{opacity:.35}
+#imp{width:100%;height:220px;font:11px/1.3 ui-monospace,Menlo,monospace;background:#2e2b45;color:var(--ink);border:2px solid var(--line)}
+.egrid .ecard{position:relative}
+.nemici{display:grid;grid-template-columns:repeat(auto-fill,minmax(380px,1fr));gap:16px;align-items:start}
+.nemici .u{font-size:12px;margin-bottom:2px;color:var(--muted)}
+</style></head><body>
+<header>
+  <b>Map editor</b>
+  <button data-act="1">Atto 1</button><button data-act="2">Atto 2</button><button data-act="3">Atto 3</button>
+  <button data-view="enemies">Nemici</button>
+  <span class="sp"></span>
+  <button id="undo" title="Ctrl/Cmd+Z">Annulla</button><button id="redo" title="Ctrl/Cmd+Shift+Z">Ripeti</button>
+  <button id="reset">Ripristina atto</button>
+  <button id="import">Importa</button>
+  <button id="export">Esporta</button>
+</header>
+<div id="mapview"><main>
+  <div id="mapwrap"><div id="map"></div></div>
+  <div id="side"></div>
+  <div id="right"><div id="card"></div><div id="recap"></div></div>
+</main></div>
+<div id="enemies"></div>
+<script type="module">
+// Dev page: the maps, enemies and sprites are read from the game's own modules (ACT_SCRIPTS included), so it never drifts from them.
+import '@fontsource/silkscreen/400.css';
+import '@fontsource/silkscreen/700.css';
+import '@fontsource/chakra-petch/500.css';
+import '@fontsource/chakra-petch/700.css';
+import gameCss from '/src/styles/index.css?inline';
+import { setStringValues, t } from '/src/core/i18n.ts';
+import { VALUES } from '/src/data/values.ts';
+import { ENEMY_LIST } from '/src/data/enemies.ts';
+import { ACT_SCRIPTS, NODE_TYPES } from '/src/game/run.ts';
+import { foeView } from '/src/ui/components/moveText.ts';
+import { drawSprite, preloadArt } from '/src/ui/art/riso.ts';
+import { CREATURES } from '/src/ui/art/creatures.ts';
+import { RELIC_SPRITES } from '/src/ui/art/relics.ts';
+import { PROP_SPRITES, ROOM_SPRITES } from '/src/ui/art/rooms.ts';
+import { ICONS } from '/src/ui/art/icons.ts';
+setStringValues(VALUES);
+await preloadArt({ creatures: { ...CREATURES, ...RELIC_SPRITES, ...ROOM_SPRITES, ...PROP_SPRITES }, icons: ICONS });
+const thumb = async (id) => {
+  const c = document.createElement('canvas'); c.width = c.height = 96;
+  await drawSprite(c.getContext('2d'), id, 0, 0, 96);
+  return c.toDataURL();
+};
+// Every script as editor nodes: ids run on across the acts, so a road's target is unique.
+let idBase = 0;
+const DATA = {
+  types: NODE_TYPES.map((id) => ({ id, name: t(`journey.node.${id}`) })),
+  enemies: await Promise.all(ENEMY_LIST.map(async (e) => ({ id: e.id, name: t(`enemy.${e.id}.name`), act: e.act, tier: e.tier, hp: e.hp, def: e, img: await thumb(e.art) }))),
+  rooms: Object.fromEntries(await Promise.all(Object.keys(ROOM_SPRITES).map(async (id) => [id, await thumb(id)]))),
+  acts: Object.fromEntries(Object.entries(ACT_SCRIPTS).map(([a, list]) => {
+    const base = idBase; idBase += list.length;
+    return [a, list.map((s, i) => ({ id: base + i, floor: s.floor, lane: s.lane, type: s.type, enemy: s.enemy ?? null, next: s.next.map((j) => base + j) }))];
+  })),
+};
+const KEY = 'mapEditor.v2';
+// The game's CSS lives in a shadow root, so enemy sheets look as in the handbook and don't touch this page.
+for (const ff of gameCss.match(/@font-face\s*{[^}]*}/g) ?? []) document.head.appendChild(Object.assign(document.createElement('style'), { textContent: ff }));
+const gameSheet = new CSSStyleSheet();
+gameSheet.replaceSync(gameCss.replace(/:root/g, ':host'));
+function sheetInto(host, id) {
+  const root = host.shadowRoot || host.attachShadow({ mode: 'open' });
+  root.adoptedStyleSheets = [gameSheet];
+  root.replaceChildren(...(id && ENEMY[id] ? [foeView(ENEMY[id].def, true)] : []));
+}
+const showCard = (id) => { const c = document.getElementById('card'); if (id) { c.classList.remove('hasnt'); sheetInto(c, id); } else { c.attachShadow && !c.shadowRoot ? c.attachShadow({ mode: 'open' }) : 0; c.shadowRoot.innerHTML = '<div style="font:13px system-ui;color:#b4aed0;border:2px dashed #8e88b8;padding:16px">Scegli un nodo con un nemico per vedere la sua scheda, come in gioco.</div>'; } };
+const ENEMY = Object.fromEntries(DATA.enemies.map((e) => [e.id, e]));
+const TYPENAME = Object.fromEntries(DATA.types.map((t) => [t.id, t.name]));
+const FIGHTS = { fight: 'normal', elite: 'elite', boss: 'boss' };
+const W = 124, H = 72, FH = 104, XL = { 0: 70, 0.5: 235, 1: 400 }, PADT = 16;
+const clone = (x) => JSON.parse(JSON.stringify(x));
+// Edits are kept between visits, but only while the game's scripts are the ones they started from.
+const BASE = JSON.stringify(DATA.acts);
+let state; try { state = JSON.parse(localStorage.getItem(KEY)); } catch { state = null; }
+const stale = !!state && state.base !== BASE;
+if (!state || !state.acts || stale) state = { acts: clone(DATA.acts) };
+let scrollDown = true, act = 1, sel = null, linking = false, view = 'map', slotWarn = false;
+const hist = [JSON.stringify(state.acts)];
+let hi = 0;
+const save = () => {
+  const snap = JSON.stringify(state.acts);
+  if (snap !== hist[hi]) { hist.length = hi + 1; hist.push(snap); hi++; }
+  try { localStorage.setItem(KEY, JSON.stringify({ base: BASE, acts: state.acts })); } catch {}
+};
+function go(d) {
+  if (hi + d < 0 || hi + d >= hist.length) return;
+  hi += d; state.acts = JSON.parse(hist[hi]);
+  if (sel != null && !nodes().some((n) => n.id === sel)) sel = null;
+  linking = false;
+  try { localStorage.setItem(KEY, JSON.stringify({ base: BASE, acts: state.acts })); } catch {}
+  render();
+}
+const nodes = () => state.acts[act];
+const byId = (id) => nodes().find((n) => n.id === id);
+const esc = (s) => String(s).replace(/[&<>"]/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' })[c]);
+const maxFloor = () => Math.max(1, ...nodes().map((n) => n.floor));
+const rowY = (f) => PADT + (maxFloor() + 1 - f) * FH;
+const pos = (n) => ({ x: XL[n.lane] - W / 2, y: rowY(n.floor) });
+const center = (n) => { const p = pos(n); return { x: p.x + W / 2, y: p.y + H / 2 }; };
+const usedIn = (id) => [1, 2, 3].filter((a) => state.acts[a].some((n) => n.enemy === id));
+
+function roomImg(n) {
+  if (n.enemy && ENEMY[n.enemy]) return ENEMY[n.enemy].img;
+  return DATA.rooms['room.' + n.type] || '';
+}
+
+function renderRecap() {
+  const cnt = (a, type) => state.acts[a].filter((n) => n.type === type).length;
+  const row = (label, f, cls = '') => `<tr class="${cls}"><td>${esc(label)}</td>${[1, 2, 3].map((a) => { const v = f(a); return `<td class="${a === act ? 'cur ' : ''}${v ? '' : 'z'}">${v}</td>`; }).join('')}</tr>`;
+  document.getElementById('recap').innerHTML = `<h4>Riepilogo</h4><table><tr><th></th>${[1, 2, 3].map((a) => `<th class="${a === act ? 'cur' : ''}">Atto ${a}</th>`).join('')}</tr>`
+    + row('Piani', (a) => Math.max(0, ...state.acts[a].map((n) => n.floor)))
+    + DATA.types.map((t) => row(t.id === 'fight' ? 'Nemici (job)' : t.id === 'elite' ? 'Elite (inspection)' : t.name, (a) => cnt(a, t.id))).join('')
+    + row('Stanze totali', (a) => state.acts[a].length, 'sum')
+    + row('Nemici diversi', (a) => new Set(state.acts[a].map((n) => n.enemy).filter(Boolean)).size)
+    + row('Nemici da scegliere', (a) => state.acts[a].filter((n) => FIGHTS[n.type] && !n.enemy).length)
+    + '</table>';
+}
+
+function render() {
+  document.getElementById('undo').disabled = hi === 0;
+  document.getElementById('redo').disabled = hi === hist.length - 1;
+  document.querySelectorAll('header [data-act]').forEach((b) => b.classList.toggle('on', view === 'map' && +b.dataset.act === act));
+  document.querySelector('[data-view=enemies]').classList.toggle('on', view === 'enemies');
+  document.getElementById('mapview').style.display = view === 'map' ? '' : 'none';
+  document.getElementById('enemies').style.display = view === 'enemies' ? 'block' : 'none';
+  if (view === 'enemies') return renderEnemies();
+  renderMap(); renderSide(); renderRecap();
+}
+
+function renderMap() {
+  const mf = maxFloor() + 1;
+  const width = 480, height = PADT * 2 + mf * FH;
+  const map = document.getElementById('map');
+  map.style.width = width + 'px'; map.style.height = height + 'px';
+  let html = '';
+  for (let f = 1; f <= mf; f++) {
+    html += `<div class="flr" style="top:${rowY(f) - 14}px">piano ${f}</div>`;
+    for (const lane of [0, 0.5, 1]) {
+      if (nodes().some((n) => n.floor === f && n.lane === lane)) continue;
+      // A floor is either one node (centre) or two (left/right): hide the slot kinds that would mix.
+      const here = nodes().filter((n) => n.floor === f);
+      if (here.length && (lane === 0.5) !== here.some((n) => n.lane === 0.5)) continue;
+      html += `<div class="slot" data-slot="${f}|${lane}" style="left:${XL[lane] - W / 2}px;top:${rowY(f)}px">+</div>`;
+    }
+  }
+  for (const n of nodes()) {
+    const p = pos(n), e = n.enemy && ENEMY[n.enemy];
+    const needs = FIGHTS[n.type] && !e;
+    const label = e ? esc(e.name) : needs ? 'DA SCEGLIERE' : '';
+    const imgs = roomImg(n);
+    html += `<div class="node k-${n.type} ${needs ? 'bad' : ''} ${sel === n.id ? 'sel' : ''} ${linking && sel !== n.id ? 'target ' + linking : ''}" data-id="${n.id}" style="left:${p.x}px;top:${p.y}px">
+      ${imgs ? `<img src="${imgs}" alt="">` : ''}<div class="txt"><div class="t">${esc(TYPENAME[n.type] || n.type)}</div><div class="n">${label}</div><div class="no">#${n.id}</div></div></div>`;
+  }
+  // Roads: one-way arrows; opposite directions between the same two rooms are offset so both show.
+  let svg = `<svg width="${width}" height="${height}"><defs><marker id="ar" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0L10 5L0 10z" fill="#f1ecde"/></marker></defs>`;
+  for (const n of nodes()) for (const id of n.next) {
+    const m = byId(id); if (!m) continue;
+    const a = center(n), b = center(m);
+    const dx = b.x - a.x, dy = b.y - a.y, len = Math.hypot(dx, dy) || 1, ox = (-dy / len) * 7, oy = (dx / len) * 7;
+    const clip = (c, ux, uy) => { const k = Math.min(ux ? (W / 2 + 3) / Math.abs(ux) : 1e9, uy ? (H / 2 + 3) / Math.abs(uy) : 1e9); return { x: c.x + ux * k, y: c.y + uy * k }; };
+    const s = clip(a, dx / len, dy / len), t2 = clip(b, -dx / len, -dy / len);
+    svg += `<line x1="${s.x + ox}" y1="${s.y + oy}" x2="${t2.x + ox}" y2="${t2.y + oy}" stroke="#f1ecde" stroke-width="2.5" marker-end="url(#ar)"/>`;
+  }
+  map.innerHTML = html + svg + '</svg>';
+  if (scrollDown) { scrollDown = false; window.scrollTo(0, document.body.scrollHeight); }
+}
+
+function enemyCard(e, cur) {
+  const u = usedIn(e.id);
+  return `<div class="ecard ${cur ? 'cur' : ''}" data-enemy="${e.id}" title="${esc(e.name)}">${u.length ? `<span class="u">A${u.join(',')}</span>` : ''}<img src="${e.img}" alt="">${esc(e.name)}<small>${e.hp} HP · atto ${e.act}</small></div>`;
+}
+
+let showAllEnemies = false;
+function renderSide() {
+  const side = document.getElementById('side');
+  const n = sel != null ? byId(sel) : null;
+  showCard(n && n.enemy);
+  if (!n) {
+    side.innerHTML = `<h3>Atto ${act}</h3><div class="hint">Clicca un nodo per modificarlo, o un “+” per aggiungerne uno.</div>
+      <div class="hint">Le frecce sono strade a senso unico. Le mappe sono quelle del gioco (ACT_SCRIPTS): Esporta e incolla a Claude per applicarle.</div>${stale ? '<div class="hint" style="color:#ff8a8a">Le mappe del gioco sono cambiate: le tue modifiche locali precedenti sono state scartate.</div>' : ''}
+      <div class="row"><button class="btn" id="addfloor">Aggiungi piano in fondo</button></div>`;
+    document.getElementById('addfloor').onclick = () => { const f = maxFloor() + 1; nodes().push({ id: nextId(), floor: f, lane: 0.5, type: 'fight', enemy: null, next: [] }); save(); render(); };
+    return;
+  }
+  const tier = FIGHTS[n.type];
+  const list = tier ? DATA.enemies.filter((e) => e.tier === tier && (showAllEnemies || e.act === act)) : [];
+  const typeOpts = DATA.types.map((t) => `<option value="${t.id}" ${t.id === n.type ? 'selected' : ''}>${esc(t.name)}</option>`).join('');
+  const outs = n.next.map((id) => { const m = byId(id); return m ? `<span class="pill">→ #${m.id} ${esc(TYPENAME[m.type])}${m.enemy && ENEMY[m.enemy] ? ' (' + esc(ENEMY[m.enemy].name) + ')' : ''} <button data-unlink="${m.id}">×</button></span>` : ''; }).join('') || '<span class="hint">nessuna uscita</span>';
+  const ins = nodes().filter((o) => o.next.includes(n.id)).map((o) => `#${o.id}`).join(', ') || 'nessuno';
+  side.innerHTML = `<h3>#${n.id} · piano ${n.floor}</h3>
+    <label>Tipo di stanza</label><select id="type">${typeOpts}</select>
+    ${tier ? `<label>Nemico (${tier})</label>
+      <div class="hint"><label style="display:inline;text-transform:none;font-weight:400"><input type="checkbox" id="all" ${showAllEnemies ? 'checked' : ''}> mostra anche gli altri atti</label> · il badge “A1,2” dice dove è già usato</div>
+      <div class="egrid">${list.map((e) => enemyCard(e, e.id === n.enemy)).join('')}</div>` : ''}
+    <label>Strade in uscita</label><div>${outs}</div>
+    <div class="hint">Entra da: ${ins}</div>
+    <div class="row"><button class="btn" id="link">${linking === 'link' ? 'Clicca il nodo di destinazione…' : 'Aggiungi strada →'}</button>
+      <button class="btn" id="swap">${linking === 'swap' ? 'Clicca il nodo con cui scambiare…' : 'Cambia con…'}</button>
+      <button class="btn" id="side-l">Lato</button>
+      <button class="btn" id="ins">Inserisci piano sopra</button>
+      <button class="btn danger" id="del">Elimina nodo</button>
+      <button class="btn danger" id="delfloor">Elimina piano ${n.floor}</button></div>`;
+  side.querySelector('#type').onchange = (ev) => { n.type = ev.target.value; if (!FIGHTS[n.type]) n.enemy = null; else if (n.enemy && ENEMY[n.enemy]?.tier !== FIGHTS[n.type]) n.enemy = null; save(); render(); };
+  const all = side.querySelector('#all'); if (all) all.onchange = () => { showAllEnemies = all.checked; renderSide(); };
+  side.querySelectorAll('[data-enemy]').forEach((el) => { el.onmouseenter = () => showCard(el.dataset.enemy); el.onmouseleave = () => showCard(n.enemy); });
+  side.querySelectorAll('[data-enemy]').forEach((el) => (el.onclick = () => { n.enemy = el.dataset.enemy; save(); render(); }));
+  side.querySelectorAll('[data-unlink]').forEach((el) => (el.onclick = () => { n.next = n.next.filter((i) => i !== +el.dataset.unlink); save(); render(); }));
+  side.querySelector('#link').onclick = () => { linking = linking === 'link' ? false : 'link'; render(); };
+  side.querySelector('#swap').onclick = () => { linking = linking === 'swap' ? false : 'swap'; render(); };
+  side.querySelector('#side-l').onclick = () => { const order = [0, 0.5, 1]; const peers = nodes().filter((o) => o.floor === n.floor && o !== n); const free = order.filter((l) => l !== n.lane && !nodes().some((o) => o.floor === n.floor && o.lane === l) && (peers.length ? (l === 0.5) === peers.some((o) => o.lane === 0.5) : true)); if (free.length) n.lane = free[0]; save(); render(); };
+  side.querySelector('#ins').onclick = () => { for (const o of nodes()) if (o.floor > n.floor) o.floor++; nodes().push({ id: nextId(), floor: n.floor + 1, lane: 0.5, type: 'fight', enemy: null, next: [] }); save(); render(); };
+  side.querySelector('#delfloor').onclick = () => {
+    // The floor goes, the floors above come down, and every road that went through a removed room is joined (what led in now leads on).
+    const gone = new Set(nodes().filter((o) => o.floor === n.floor).map((o) => o.id));
+    for (const x of nodes().filter((o) => gone.has(o.id)))
+      for (const p of nodes().filter((o) => !gone.has(o.id) && o.next.includes(x.id)))
+        for (const to of x.next) if (!gone.has(to) && !p.next.includes(to)) p.next.push(to);
+    state.acts[act] = nodes().filter((o) => !gone.has(o.id));
+    for (const o of nodes()) { o.next = o.next.filter((i) => !gone.has(i)); if (o.floor > n.floor) o.floor--; }
+    sel = null; linking = false; save(); render();
+  };
+  side.querySelector('#del').onclick = () => { state.acts[act] = nodes().filter((o) => o.id !== n.id); for (const o of nodes()) o.next = o.next.filter((i) => i !== n.id); sel = null; linking = false; save(); render(); };
+}
+
+const nextId = () => Math.max(0, ...[1, 2, 3].flatMap((a) => state.acts[a].map((n) => n.id))) + 1;
+
+document.getElementById('map').addEventListener('click', (ev) => {
+  const slot = ev.target.closest('.slot');
+  if (slot) {
+    const [f, lane] = slot.dataset.slot.split('|').map(Number);
+    const n = { id: nextId(), floor: f, lane, type: 'fight', enemy: null, next: [] };
+    nodes().push(n); sel = n.id; linking = false; save(); return render();
+  }
+  const el = ev.target.closest('.node'); if (!el) return;
+  const id = +el.dataset.id;
+  if (linking === 'swap' && sel != null && id !== sel) {
+    // Swap what the two rooms hold (type and enemy); their places and roads stay.
+    const a = byId(sel), b = byId(id);
+    [a.type, b.type] = [b.type, a.type];
+    [a.enemy, b.enemy] = [b.enemy, a.enemy];
+    linking = false; save(); return render();
+  }
+  if (linking && sel != null && id !== sel) {
+    const from = byId(sel);
+    if (from.next.includes(id)) from.next = from.next.filter((i) => i !== id); else from.next.push(id);
+    linking = false; save(); return render();
+  }
+  sel = id; linking = false; render();
+});
+
+function renderEnemies() {
+  const box = document.getElementById('enemies');
+  let html = '<div class="hint">Tutti i nemici del gioco, come nella scheda del manuale. “usato” dice in quali atti compaiono nelle mappe che stai modificando.</div>';
+  for (const a of [1, 2, 3]) for (const tier of ['normal', 'elite', 'boss']) {
+    const l = DATA.enemies.filter((e) => e.act === a && e.tier === tier);
+    if (!l.length) continue;
+    html += `<div class="sec">Atto ${a} · ${tier}</div><div class="nemici">${l.map((e) => { const u = usedIn(e.id); return `<div><div class="u">${u.length ? 'usato in atto ' + u.join(', ') : 'non usato'}</div><div data-sheet="${e.id}"></div></div>`; }).join('')}</div>`;
+  }
+  box.innerHTML = html;
+  box.querySelectorAll('[data-sheet]').forEach((el) => sheetInto(el, el.dataset.sheet));
+}
+
+document.querySelectorAll('header [data-act]').forEach((b) => (b.onclick = () => { act = +b.dataset.act; view = 'map'; sel = null; linking = false; scrollDown = true; render(); }));
+document.querySelector('[data-view=enemies]').onclick = () => { view = view === 'enemies' ? 'map' : 'enemies'; render(); };
+document.addEventListener('keydown', (ev) => { if (ev.key === 'Escape' && linking) { linking = false; render(); } });
+document.getElementById('undo').onclick = () => go(-1);
+document.getElementById('redo').onclick = () => go(1);
+document.addEventListener('keydown', (ev) => {
+  if (!(ev.metaKey || ev.ctrlKey) || ev.target.closest('textarea,select')) return;
+  const k = ev.key.toLowerCase();
+  if (k === 'z') { ev.preventDefault(); go(ev.shiftKey ? 1 : -1); } else if (k === 'y') { ev.preventDefault(); go(1); }
+});
+document.getElementById('reset').onclick = () => { if (confirm(`Ripristinare l'atto ${act} alla mappa originale?`)) { state.acts[act] = clone(DATA.acts[act]); sel = null; save(); render(); } };
+document.getElementById('import').onclick = () => {
+  const dlg = document.createElement('div');
+  dlg.style.cssText = 'position:fixed;inset:0;background:#000a;z-index:20;display:flex;align-items:center;justify-content:center;padding:16px';
+  dlg.innerHTML = '<div style="background:#3b3858;color:#f1ecde;border:2px solid #8e88b8;padding:12px;max-width:760px;width:100%"><div class="hint">Incolla qui il testo esportato (va bene anche solo la parte JSON). Sostituisce la mappa di tutti e 3 gli atti; puoi annullare con Annulla.</div><textarea id="imp"></textarea><div class="hint" id="imperr" style="color:#ff8a8a"></div><div class="row"><button class="btn" id="go">Importa</button><button class="btn" id="cl">Chiudi</button></div></div>';
+  document.body.appendChild(dlg);
+  const ta = dlg.querySelector('#imp'); ta.focus();
+  dlg.querySelector('#cl').onclick = () => dlg.remove();
+  dlg.querySelector('#go').onclick = () => {
+    try { state.acts = parseImport(ta.value); sel = null; linking = false; save(); dlg.remove(); render(); }
+    catch (e) { dlg.querySelector('#imperr').textContent = e.message; }
+  };
+};
+function parseImport(text) {
+  const i = text.indexOf('JSON:');
+  const raw = (i >= 0 ? text.slice(i + 5) : text).trim();
+  let o; try { o = JSON.parse(raw); } catch { throw new Error('JSON non valido.'); }
+  const acts = {};
+  for (const a of [1, 2, 3]) {
+    const list = o[a] ?? o[String(a)];
+    if (!Array.isArray(list)) throw new Error(`Manca l'atto ${a}.`);
+    const ids = new Set();
+    acts[a] = list.map((n) => {
+      if (!n || !Number.isInteger(n.id) || !Number.isInteger(n.floor) || ![0, 0.5, 1].includes(n.lane) || !Array.isArray(n.next)) throw new Error(`Atto ${a}: nodo non valido (${JSON.stringify(n)}).`);
+      if (!TYPENAME[n.type]) throw new Error(`Atto ${a}, #${n.id}: tipo sconosciuto "${n.type}".`);
+      if (n.enemy != null && !ENEMY[n.enemy]) throw new Error(`Atto ${a}, #${n.id}: nemico sconosciuto "${n.enemy}".`);
+      if (ids.has(n.id)) throw new Error(`Atto ${a}: id #${n.id} doppio.`);
+      ids.add(n.id);
+      return { id: n.id, floor: n.floor, lane: n.lane, type: n.type, enemy: n.enemy ?? null, next: n.next.slice() };
+    });
+  }
+  // The boss of an act leads to the first room of the next one, so a road may point into another act.
+  const all = new Set([1, 2, 3].flatMap((a) => acts[a].map((n) => n.id)));
+  for (const a of [1, 2, 3]) for (const n of acts[a]) for (const x of n.next) if (!all.has(x)) throw new Error(`Atto ${a}, #${n.id}: strada verso #${x}, che non esiste.`);
+  return acts;
+}
+document.getElementById('export').onclick = () => {
+  const lines = [];
+  const out = {};
+  for (const a of [1, 2, 3]) {
+    const ns = state.acts[a].slice().sort((x, y) => x.floor - y.floor || x.lane - y.lane);
+    lines.push(`ATTO ${a}`);
+    for (const n of ns) lines.push(`  #${n.id} piano ${n.floor} ${n.lane === 0 ? 'sx' : n.lane === 1 ? 'dx' : 'centro'}: ${n.type}${n.enemy ? ' = ' + n.enemy : ''} -> ${n.next.length ? n.next.map((i) => '#' + i).join(', ') : '(fine)'}`);
+    out[a] = ns.map((n) => ({ id: n.id, floor: n.floor, lane: n.lane, type: n.type, enemy: n.enemy, next: n.next }));
+  }
+  // ACT_SCRIPTS shape (run.ts): rooms by floor then column, roads as indexes in the act's list.
+  const ts = [1, 2, 3].map((a) => {
+    const ns = out[a], at = (id) => ns.findIndex((n) => n.id === id);
+    return `  ${a}: [\n` + ns.map((n, i) => `    /* ${i} */ { floor: ${n.floor}, lane: ${n.lane}, type: '${n.type}', ${n.enemy ? `enemy: '${n.enemy}', ` : ''}next: [${n.next.map(at).join(', ')}] },`).join('\n') + '\n  ],';
+  }).join('\n');
+  const text = lines.join('\n') + '\n\nACT_SCRIPTS:\n' + ts + '\n\nJSON:\n' + JSON.stringify(out);
+  const dlg = document.createElement('div');
+  dlg.style.cssText = 'position:fixed;inset:0;background:#000a;z-index:20;display:flex;align-items:center;justify-content:center;padding:16px';
+  dlg.innerHTML = '<div style="background:#3b3858;color:#f1ecde;border:2px solid #8e88b8;padding:12px;max-width:760px;width:100%"><div class="hint">Copia tutto e incollalo a Claude.</div><textarea id="out" readonly></textarea><div class="row"><button class="btn" id="cp">Copia</button><button class="btn" id="cl">Chiudi</button></div></div>';
+  document.body.appendChild(dlg);
+  const ta = dlg.querySelector('#out'); ta.value = text; ta.select();
+  dlg.querySelector('#cp').onclick = () => { ta.select(); try { navigator.clipboard.writeText(text); } catch { document.execCommand('copy'); } };
+  dlg.querySelector('#cl').onclick = () => dlg.remove();
+};
+render();
+</script></body></html>

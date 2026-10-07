@@ -110,8 +110,8 @@ interface ScriptNode {
   next: number[];
 }
 
-/** An act laid out by hand, floor by floor (the first room opens it, the last one is its boss); built by `addScripted`. Rooms and roads are exactly these. */
-const ACT_SCRIPTS: Record<number, ScriptNode[]> = {
+/** An act laid out by hand, floor by floor (the first room opens it, the last one is its boss); built by `addScripted`. Rooms and roads are exactly these; `dev/map-editor.html` reads and exports it. */
+export const ACT_SCRIPTS: Record<number, ScriptNode[]> = {
   // Act 1, the very first run: the orientation video, a snitch, a gift (so the map isn't only jobs), then two lanes with a rest on each side.
   1: [
     /* 0 */ { floor: 1, lane: 0.5, type: 'fight', enemy: 'hrOrientationVideo', next: [1] },
