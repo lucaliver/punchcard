@@ -458,7 +458,6 @@ export const warriorCards: CardDef[] = [
     vals: [],
     keywords: ['exhaust'],
     art: 'step1',
-    makes: ['step2'],
     play: (c, _v, card) => c.addTempCard('step2', 'draw', card.up),
   },
   // A pair that passes the blame back and forth: each one is used up and brings the other back into the draw pile.
@@ -473,7 +472,6 @@ export const warriorCards: CardDef[] = [
     upVals: [16],
     keywords: ['exhaust'],
     art: 'hotPotato',
-    makes: ['passTheBuck'],
     play: (c, v, card) => {
       c.hit(v[0]);
       c.addTempCard('passTheBuck', 'draw', card.up);
@@ -601,7 +599,6 @@ export const warriorCards: CardDef[] = [
     upVals: [12],
     keywords: ['exhaust'],
     art: 'passTheBuck',
-    makes: ['hotPotato'],
     play: (c, v, card) => {
       c.gainBlock('hero', v[0]);
       c.addTempCard('hotPotato', 'draw', card.up);
@@ -620,7 +617,6 @@ export const warriorCards: CardDef[] = [
     vals: [],
     keywords: ['exhaust'],
     art: 'step2',
-    makes: ['step3'],
     play: (c, _v, card) => c.addTempCard('step3', 'draw', card.up),
   },
   {
@@ -634,7 +630,6 @@ export const warriorCards: CardDef[] = [
     vals: [],
     keywords: ['exhaust'],
     art: 'step3',
-    makes: ['step4'],
     play: (c, _v, card) => c.addTempCard('step4', 'draw', card.up),
   },
   {

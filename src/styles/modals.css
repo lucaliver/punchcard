@@ -245,15 +245,12 @@
   color: var(--tone, var(--k));
   --ink2: var(--k);
 }
-/* the cards this one adds to your piles, each a button that opens its detail */
-.related {
-  width: 100%;
-  display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-  gap: 6px;
-  font-family: var(--font-ui);
-  font-size: 18px;
+.rules .card-ref {
+  /* another card named in the text: tap it to read that card */
+  font-weight: 700;
+  color: var(--p);
+  text-decoration: underline;
+  cursor: pointer;
 }
 
 .deck-grid {

@@ -243,20 +243,16 @@ export function openCardDetail(card: CardInst, onClose?: () => void): ModalHandl
         class: 'detail-meta',
         html: `<span class="rar ${def.rarity}">${t(`rarity.${def.rarity}`)}</span><span class="typ" data-type="${def.type}">${t(`type.${def.type}`)}</span>`,
       }),
-      h('div', { class: 'rules', html: cardText(shown) }),
+      h('div', {
+        class: 'rules',
+        html: cardText(shown),
+        onclick: (e: Event) => {
+          const id = (e.target as HTMLElement).closest<HTMLElement>('.card-ref')?.dataset.card;
+          if (id) openCardDetail({ uid: -1, id, up: showUp });
+        },
+      }),
     );
     if (gloss.length) wrap.append(h('div', { class: 'glossary' }, ...gloss));
-    if (def.makes?.length)
-      wrap.append(
-        h(
-          'div',
-          { class: 'related' },
-          h('span', null, t('detail.related')),
-          ...def.makes.map((id) =>
-            h('button', { class: 'btn small secondary', onclick: () => openCardDetail({ uid: -1, id, up: showUp }) }, t(`card.${id}.name`)),
-          ),
-        ),
-      );
     if (canToggle)
       wrap.append(
         h(

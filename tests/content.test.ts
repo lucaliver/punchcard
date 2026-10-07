@@ -58,7 +58,8 @@ describe('content integrity', () => {
     }
     const ids = new Set(CARD_LIST.map((c) => c.id));
     for (const h of HERO_LIST) for (const id of h.startDeck) expect(ids.has(id), id).toBe(true);
-    for (const c of CARD_LIST) for (const id of c.makes ?? []) expect(ids.has(id) && id !== c.id, `${c.id} makes ${id}`).toBe(true);
+    for (const c of CARD_LIST)
+      for (const m of en[`card.${c.id}.desc`].matchAll(/\[@(\w+)\]/g)) expect(ids.has(m[1]) && m[1] !== c.id, `${c.id} names ${m[1]}`).toBe(true);
     for (const h of HERO_LIST) expect(h.startDeck, h.id).toHaveLength(18);
     for (const c of CARD_LIST)
       if (c.starterOnly)
@@ -259,7 +260,7 @@ describe('numbers in rules text', () => {
 });
 
 describe('translations', () => {
-  const holes = (text: string): string[] => [...text.matchAll(/\{\$?\w+(?=[|}])|\[\w+\]/g)].map((m) => m[0]).sort();
+  const holes = (text: string): string[] => [...text.matchAll(/\{\$?\w+(?=[|}])|\[@?\w+\]/g)].map((m) => m[0]).sort();
 
   const others: Record<string, Record<string, string>> = { it: itStrings, es: esStrings, zh: zhStrings };
   for (const [code, dict] of Object.entries(others)) {

@@ -230,7 +230,7 @@ export function keywordHtml(text: string): string {
 
 /** The same text for places that show no markup (toasts): the keywords as plain names. */
 export function keywordText(text: string): string {
-  return text.replace(/\[(\w+)\]/g, (_, kw: string) => t(`kw.${kw}`));
+  return text.replace(/\[@(\w+)\]/g, (_, id: string) => t(`card.${id}.name`)).replace(/\[(\w+)\]/g, (_, kw: string) => t(`kw.${kw}`));
 }
 
 /** Full rules text as HTML (detail view). */
@@ -242,7 +242,11 @@ export function cardText(card: CardLike): string {
     const upgraded = card.up && def.upVals && def.upVals[idx] !== def.vals[idx];
     return `<span class="num ${upgraded ? 'upg' : ''}">${vals[idx]}</span>`;
   });
-  s = keywordHtml(s);
+  // `[@id]` names another card: bold, coloured and tappable in the detail view (`openCardDetail` listens for `data-card`).
+  s = keywordHtml(s).replace(
+    /\[@(\w+)\]/g,
+    (_, id: string) => `<b class="card-ref" role="button" tabindex="0" data-card="${id}">${t(`card.${id}.name`)}</b>`,
+  );
   const kws = cardKeywordsOf(card).filter((k) => KEYWORD_LINE.includes(k));
   const extra = kws.map((k) => `<b class="kw">${t(`kw.${k}`)}</b>`);
   if (def.type === 'power') extra.unshift(`<b class="kw">${t('kw.power')}</b>`);
