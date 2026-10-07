@@ -488,14 +488,14 @@
   border-left: 0;
   box-shadow: var(--sh) var(--sh) 0 var(--shadow);
 }
-/* a large card's wide art sits centred over both halves (the joined body is behind the card, so the picture rides above it) */
-.card.joined { --join-dir: 1; }
+/* a large card's wide art sits centred over both halves, i.e. over the belt places the card takes (the joined body is behind the card, so the picture rides above it; its left is measured from the art's own edge, a border in from the card's) */
+.card.joined { --join-dir: 1; --join: calc((var(--span) - 1) * var(--slot)); }
 .belt.ltr .card.joined { --join-dir: -1; }
 .card.joined > .c-art { position: relative; z-index: 1; }
 .card.joined > .c-art > .pico.wide {
   position: absolute;
   top: 0;
-  left: calc(50cqw + var(--join-dir) * 50cqw * var(--join) - 1em);
+  left: calc((var(--cw) + var(--join-dir) * (var(--cw) * var(--join) + var(--bw))) / 2 - var(--bw) - 1em);
   font-size: 42cqw;
 }
 /* in the sleeve a large card is one normal card: no welded body (the rule that shows it is more specific, so this one is too) */

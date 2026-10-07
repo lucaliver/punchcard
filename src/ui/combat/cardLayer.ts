@@ -1,6 +1,5 @@
 import { t } from '../../core/i18n';
 import { sfx } from '../../audio/sfx';
-import { CONFIG } from '../../data/config';
 import { HEXES } from '../../data/hexes';
 import { CARDS, cardCostOf, cardKeywordsOf, cardValsOf, isLarge } from '../../data/cards';
 import { STATUSES, statusIcon } from '../../data/statuses';
@@ -114,7 +113,6 @@ export function createCardLayer(v: CombatView): CardLayer {
       toggle(cardEl, 'tall', !!def.tall);
       toggle(cardEl, 'joined', isLarge(def));
       cardEl.style.setProperty('--span', String(span));
-      cardEl.style.setProperty('--join', String(((span - 1) * CONFIG.spacing) / CONFIG.cardWidth));
       cardEl.append(
         isLarge(def)
           ? h(

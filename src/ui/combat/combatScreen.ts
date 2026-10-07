@@ -174,6 +174,8 @@ export function combatScreen(run: RunState, combat: Combat, cb: CombatCallbacks)
     state.cardW = cw;
     state.rowH = Math.round(cw * 1.4) + BELT_ROW_GAP;
     el.style.setProperty('--cw-belt', `${cw}px`);
+    // One belt place in card widths (more than `CONFIG.spacing / CONFIG.cardWidth` when the cards shrank): a large card's body behind it is as long as the places it takes.
+    if (cw) el.style.setProperty('--slot', String((state.beltW * CONFIG.spacing) / cw));
     el.style.setProperty('--belt-row-h', `${state.rowH}px`);
     fitSleeve();
     // What `.sunk` slides away (see combat-belt.css): the action row's height, and how long the slide takes.
