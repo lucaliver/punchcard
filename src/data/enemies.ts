@@ -8,6 +8,9 @@ const ramp: Partial<MoveDef> = { status: [gainStrength] };
 /** Seconds the Factory Siren's song holds you (stunned, on autopilot). */
 const SIREN_SONG = 8;
 
+/** Seconds the Boss's coffee move takes to land: the chore (pay, key in the code, prepare, pour) fits in it with a little to spare. */
+const GET_COFFEE = 22;
+
 /** Seconds the belt serves sushi (the Sushi Chef's special). */
 const ALL_YOU_CAN_EAT = 10;
 
@@ -688,6 +691,21 @@ const defs: EnemyDef[] = [
     ruleBreaker: true,
   },
   {
+    // The Boss wants his coffee now: a window covers your belt and sleeve with the machine's coin slot, keypad and cup bay. Do the chore before the move lands, and the move is off.
+    id: 'coffeeMachine',
+    act: 2,
+    tier: 'normal',
+    hp: 85,
+    art: 'coffeeMachine',
+    main: atk('steamBlast', 7, 6, ramp),
+    every: 2,
+    specials: [
+      { id: 'getBossCoffee', intent: 'charge', windup: GET_COFFEE, dmg: 16, task: 'coffee' },
+      atk('scaldingHot', 14, 9, { intent: 'charge' }),
+    ],
+    ruleBreaker: true,
+  },
+  {
     // Her song ties your hands and the belt keeps running: for a few seconds your cards play themselves, for free, wanted or not.
     id: 'factorySiren',
     act: 3,
@@ -804,6 +822,7 @@ export const DIFFICULTY = [
   'powerSocket',
   'overthinker',
   'sushiChef',
+  'coffeeMachine',
   'changeManager',
   'leaver',
   'wellnessCoach',

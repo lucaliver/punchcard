@@ -4,6 +4,7 @@ import { ANCHOR_POS, BEG_FLAG, CONFIG, EXPIRE_POS } from '../data/config';
 import { STATUSES } from '../data/statuses';
 import { CARDS, CLASS_HIT, cardCostOf, cardKeywordsOf, cardValsOf, fullCostOf, isLarge } from '../data/cards';
 import { HEXES } from '../data/hexes';
+import { CoffeeTask, type CoffeeAction, type CoffeeResult } from './coffee';
 import { RELICS } from '../data/relics';
 import type { TKey } from '../core/i18n';
 import type {
@@ -172,6 +173,10 @@ export class Combat {
   private rustId = 0;
   /** The enemy's window over the belt: `ask` waits for a tap, `install` is the fake progress bar (`t` seconds in). Seconds until the next one while none is up (null: not yet counted). */
   popup: { phase: 'ask' | 'install'; t: number } | null = null;
+  /** The chore the enemy's move has set (`MoveDef.task`): a window covers the belt and the sleeve until it is done or the move lands. */
+  task: CoffeeTask | null = null;
+  /** The chore of the move being charged has been set up already (so a finished one doesn't open again). */
+  private taskSeen = false;
   private popupWait: number | null = null;
   /** The hero has sat through an update: Postpone now takes longer. */
   private updated = false;
@@ -399,15 +404,20 @@ export class Combat {
     return !card.passed && this.keywords(card).includes('pending');
   }
 
+  /** The sleeve is out of reach: sunk (`EnemyDef.deepBelt`) or under the chore window. */
+  private get lowerBarred(): boolean {
+    return this.lowerHidden || !!this.task;
+  }
+
   /**
    * True when this belt card is out of reach, barred by a curse: a wide card (Gatekeeping) stretches left of its face over the cards ahead of it (on both rows if it's
-   * tall), and a row lock (Priority Task) holds its whole row, until paid off. An enemy's window over the belt (`popup`) covers every card.
+   * tall), and a row lock (Priority Task) holds its whole row, until paid off. An enemy's window over the belt (`popup`, `task`) covers every card.
    */
   isCovered(uid: number): boolean {
     const b = this.belt[this.beltIndex(uid)];
     if (!b) return false;
     // The enemy's window is over the whole belt.
-    if (this.popup) return true;
+    if (this.popup || this.task) return true;
     return this.belt.some((w) => {
       if (w === b) return false;
       const def = CARDS[w.card.id];
@@ -495,6 +505,7 @@ export class Combat {
     this.tickFighter('enemy', dt);
     this.tickRust(dt);
     this.tickPopup(dt);
+    this.tickTask(dt);
     if (this.weakSpot) {
       this.weakSpot.t -= dt;
       if (this.weakSpot.t <= 0) this.weakSpot = null;
@@ -650,11 +661,14 @@ export class Combat {
 
   private tickEnemy(dt: number): void {
     const e = this.enemy;
+    // The chore is done: the move is as good as gone while the cup is held up.
+    if (this.task?.phase === 'done') return;
     e.timer += dt * this.enemyTimeRate();
     if (e.timer < e.move.windup) return;
     const move = e.move;
     e.timer = 0;
     e.moveCount++;
+    if (move.task) this.endTask('close');
     this.resolveMove(move);
     if (this.result) return;
     e.move = this.nextEnemyMove();
@@ -1005,7 +1019,7 @@ export class Combat {
     const beltIdx = this.beltIndex(uid);
     const sleeveIdx = this.sleeveIndex(uid);
     // The sleeve is out of reach while it is sunk.
-    if (sleeveIdx >= 0 && this.lowerHidden) return false;
+    if (sleeveIdx >= 0 && this.lowerBarred) return false;
     const card = beltIdx >= 0 ? this.belt[beltIdx].card : sleeveIdx >= 0 ? this.sleeve[sleeveIdx] : null;
     if (!card) return false;
     if (beltIdx >= 0 && this.isCovered(uid)) {
@@ -1148,7 +1162,7 @@ export class Combat {
 
   /** Moves a belt card into the sleeve. If the slot is taken, the two cards swap places. */
   stash(uid: number, slot?: number): boolean {
-    if (this.result || this.intro > 0 || this.lowerHidden) return false;
+    if (this.result || this.intro > 0 || this.lowerBarred) return false;
     const beltIdx = this.beltIndex(uid);
     if (beltIdx < 0) return false;
     const target = slot ?? this.sleeve.indexOf(null);
@@ -1486,7 +1500,7 @@ export class Combat {
   /** The answer to the offer to beg to stay: yes, and the hero is back on their feet (full HP and mana, no debuffs, a spare crystal, Dodge and Strength) for the rest of the fight; no, and it is lost. */
   /** Plays, for free, every card waiting in the sleeve (skipping any that can't be played right now). */
   playSleeve(): void {
-    if (this.lowerHidden) return;
+    if (this.lowerBarred) return;
     for (const card of this.sleeve.filter((c) => c !== null)) {
       if (this.result) return;
       if (this.sleeveIndex(card.uid) < 0 || card.hex || this.isPending(card) || !this.isPlayable(card) || this.ruleBlock(card)) continue;
@@ -1729,6 +1743,7 @@ export class Combat {
   /** The enemy drops the move it is charging and starts on the next one of its pattern. */
   skipEnemyMove(): void {
     const e = this.enemy;
+    this.endTask(this.task ? 'close' : undefined);
     e.timer = 0;
     e.move = this.nextEnemyMove();
     this.events.emit({ type: 'enemyIntent', move: e.move });
@@ -1856,6 +1871,54 @@ export class Combat {
     this.popup = { phase: 'install', t: 0 };
     this.events.emit({ type: 'popup', phase: 'install' });
     return true;
+  }
+
+  /** Sets up the chore of the move being charged, and ends it with the pour. */
+  private tickTask(dt: number): void {
+    if (!this.enemy.move.task) {
+      this.taskSeen = false;
+      return;
+    }
+    if (!this.task) {
+      if (this.taskSeen) return;
+      this.taskSeen = true;
+      this.task = new CoffeeTask(this.rng);
+      this.events.emit({ type: 'task', phase: 'open' });
+      return;
+    }
+    if (!this.task.tick(dt)) return;
+    // The Boss gets his coffee: the move is off, and its maker is left stunned for a moment.
+    this.events.emit({ type: 'task', phase: 'done' });
+    this.say('enemy.coffeeMachine.calm');
+    this.endTask();
+    this.skipEnemyMove();
+    this.applyStatus('enemy', 'stun', 1, CONFIG.coffee.calm);
+  }
+
+  /** Closes the chore window (`phase` tells the UI why: the move landed, or was dropped). */
+  private endTask(phase?: 'close'): void {
+    this.task = null;
+    this.taskSeen = false;
+    if (phase) this.events.emit({ type: 'task', phase });
+  }
+
+  /**
+   * The hero's hand on the machine. A `wrong` one (a coin that bounces, a wrong key, a start with no cup or the wrong sugar) takes `CONFIG.coffee.penalty` s off the move's
+   * countdown, up to `penaltyMax` in all. Returns null when there is no chore to do.
+   */
+  coffee(action: CoffeeAction): CoffeeResult | null {
+    const task = this.task;
+    if (!task || this.result || this.begging) return null;
+    const r = task.act(action);
+    if (r === 'wrong') {
+      const c = CONFIG.coffee;
+      const cut = Math.min(c.penalty, c.penaltyMax - task.fined);
+      task.errors++;
+      task.fined += cut;
+      this.enemy.timer += cut;
+      this.events.emit({ type: 'task', phase: 'wrong' });
+    }
+    return r;
   }
 
   /** The hero scrubs a rust spot with the mop: `amount` of its grime comes off, and it's gone at 0. */

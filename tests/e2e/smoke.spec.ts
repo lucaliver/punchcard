@@ -667,6 +667,83 @@ test("the Nerd's update window covers the belt: Postpone sends it away for a few
   expect(problems).toEqual([]);
 });
 
+test("the Boss's coffee: a chore window covers the belt and the sleeve; pay, key in the code, prepare, and the move is off", async ({ page }) => {
+  const problems = await freshGame(page);
+  await page.getByRole('button', { name: /debug/i }).click();
+  await page.locator('.debug-tabs button').last().click();
+  await page.locator('.debug-foe[data-enemy="coffeeMachine"]').click();
+  await expect(page.locator('.combat')).toBeVisible();
+  const start = page.locator('.js-start');
+  if (await start.count()) await start.click();
+  await expect.poll(() => combat(page, 'return c.intro <= 0;')).toBe(true);
+  // Hurry the machine to its coffee move.
+  await combat(page, 'while (!c.enemy.move.task) c.skipEnemyMove();');
+  const win = page.locator('.task-window.on');
+  await expect(win).toBeVisible();
+  // (it stamps in: measure once it has settled)
+  await page.waitForTimeout(400);
+  // It covers the belt and the sleeve; the enemy's move bar and the ability stay in view (the ability above the window).
+  const box = (await win.boundingBox())!;
+  for (const sel of ['.belt', '.js-sleeve']) {
+    const b = (await page.locator(sel).boundingBox())!;
+    expect(b.y).toBeGreaterThanOrEqual(box.y - 1);
+    expect(b.y + b.height).toBeLessThanOrEqual(box.y + box.height + 1);
+  }
+  const threat = (await page.locator('.threat').boundingBox())!;
+  expect(threat.y + threat.height).toBeLessThanOrEqual(box.y + 1);
+  const ability = (await page.locator('.js-ability').boundingBox())!;
+  expect(
+    await page.evaluate(
+      ([x, y]) => document.elementFromPoint(x, y)?.closest('.js-ability') !== null,
+      [ability.x + ability.width / 2, ability.y + ability.height / 2],
+    ),
+  ).toBe(true);
+  // The Boss's note says what he wants.
+  await expect(page.locator('.tk-drink')).not.toBeEmpty();
+  // Step 1: coins. One goes in by a drag, the rest by taps.
+  const nextCoin = (): Promise<number | null> =>
+    combat(page, "const t = c.task; return t.phase === 'coins' ? (t.coins.find((x) => !x.used && t.fits(x))?.id ?? null) : null;") as Promise<
+      number | null
+    >;
+  const first = (await nextCoin())!;
+  const coin = (await page.locator('.tk-coin').nth(first).boundingBox())!;
+  const slot = (await page.locator('.tk-slot').boundingBox())!;
+  await page.mouse.move(coin.x + coin.width / 2, coin.y + coin.height / 2);
+  await page.mouse.down();
+  await page.mouse.move(slot.x + slot.width / 2, slot.y + slot.height / 2, { steps: 6 });
+  await page.mouse.up();
+  expect(await combat(page, 'return c.task.paid > 0;')).toBe(true);
+  for (let id = await nextCoin(); id !== null; id = await nextCoin()) await page.locator('.tk-coin').nth(id).tap();
+  // Step 2: the code. A wrong key costs seconds off the countdown.
+  await expect(page.locator('.tk-pad')).toBeVisible();
+  const code = (await combat(page, 'return c.task.code;')) as number[];
+  const wrong = (code[0] % 9) + 1;
+  const timer = (await combat(page, 'return c.enemy.timer;')) as number;
+  await page
+    .locator('.tk-key')
+    .nth(wrong - 1)
+    .tap();
+  expect(await combat(page, 'return c.task.errors;')).toBe(1);
+  expect(((await combat(page, 'return c.enemy.timer;')) as number) - timer).toBeGreaterThan(1.5);
+  for (const n of code)
+    await page
+      .locator('.tk-key')
+      .nth(n - 1)
+      .tap();
+  // Step 3: the cup, the sugar, start.
+  await expect(page.locator('.tk-cup')).toBeVisible();
+  await page.locator('.tk-cup').tap();
+  const sugar = (await combat(page, 'return c.task.sugar;')) as number;
+  for (let i = 0; i < sugar; i++) await page.locator('.tk-step-btn').last().tap();
+  await page.locator('.tk-start').tap();
+  await expect(page.locator('.tk-glass')).toBeVisible();
+  // The pour takes a while, then the window goes and the move with it.
+  await expect(win).toBeHidden({ timeout: 10000 });
+  expect(await combat(page, "return c.has('enemy', 'stun');")).toBe(true);
+  expect(await combat(page, 'return c.hero.hp === c.hero.maxHp;')).toBe(true);
+  expect(problems).toEqual([]);
+});
+
 test('handbook history: tapping a run opens its payslip, stationery and deck', async ({ page }) => {
   const problems = await freshGame(page);
   await page.evaluate(() => {

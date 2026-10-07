@@ -54,10 +54,30 @@ const DEBUFFS = ['karoshi', 'chainSmoking', 'waterCooler', 'blackFriday', 'walko
 /** Taps a second the bot gives Conveyor Sis's mana button (about what a thumb does). */
 const TAPS_PER_SECOND = 4;
 
+/** The next right move of the Boss's coffee. */
+function botCoffee(c: Combat): void {
+  const task = c.task;
+  if (!task) return;
+  if (task.phase === 'coins') {
+    const coin = task.coins.find((x) => !x.used && task.fits(x));
+    if (coin) c.coffee({ kind: 'coin', id: coin.id });
+  } else if (task.phase === 'code') c.coffee({ kind: 'key', key: task.code[task.keysDone] });
+  else if (task.phase === 'prep') {
+    if (!task.cup) c.coffee({ kind: 'cup' });
+    else if (task.dial < task.sugar) c.coffee({ kind: 'sugar', by: 1 });
+    else c.coffee({ kind: 'start' });
+  }
+}
+
 export function botDecide(c: Combat, rnd: () => number, opts: BotOpts): void {
   for (let i = 0; c.manaTapOn && i < opts.reaction * TAPS_PER_SECOND; i++) c.tapMana();
   if (rnd() < opts.sloppiness) return;
   if (c.abilityReady()) c.useAbility();
+  // The coffee chore: one right move per decision (a person takes a moment for each), cards are out of reach meanwhile.
+  if (c.task) {
+    botCoffee(c);
+    return;
+  }
   // The IT guy's window: it postpones it, and plays in the seconds that leaves.
   if (c.popup) {
     c.postponeUpdate();

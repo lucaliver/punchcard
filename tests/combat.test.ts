@@ -1,5 +1,7 @@
 import { describe, expect, it } from 'vitest';
 import { Combat, type CombatSetup } from '../src/game/combat';
+import { CoffeeTask } from '../src/game/coffee';
+import { Rng } from '../src/core/rng';
 import { ANCHOR_POS, CONFIG, EXPIRE_POS, relicGuarantee, rewardUpgradeChance } from '../src/data/config';
 import { ENEMIES, enemiesFor } from '../src/data/enemies';
 import { HEROES, VIRULENCE_START } from '../src/data/heroes';
@@ -684,6 +686,101 @@ describe('combat engine', () => {
     expect(c.postponeUpdate()).toBe(true);
     run(c, def.postpone[0] * def.postponeMul - 0.1);
     expect(c.popup).toBeNull();
+  });
+
+  describe("the Boss's coffee", () => {
+    /** The machine's coffee move is up first, then it idles for good. */
+    const coffeeFight = (): Combat => {
+      const idle = { id: 'wait', intent: 'idle', windup: 9999 } as const;
+      const c = setup({
+        enemy: { ...ENEMIES.coffeeMachine, main: idle, specials: [ENEMIES.coffeeMachine.specials[0]], every: 1 },
+        hp: 80,
+        maxHp: 80,
+      });
+      c.skipEnemyMove();
+      return c;
+    };
+    /** Puts in coins the slot takes until the price is paid. */
+    const pay = (c: Combat): void => {
+      const task = c.task!;
+      while (task.phase === 'coins') c.coffee({ kind: 'coin', id: task.coins.find((x) => !x.used && task.fits(x))!.id });
+    };
+    /** Does the whole chore with the right moves, up to pressing start. */
+    const doChore = (c: Combat): void => {
+      const task = c.task!;
+      pay(c);
+      for (const key of task.code) expect(c.coffee({ kind: 'key', key })).toBe('ok');
+      expect(c.coffee({ kind: 'cup' })).toBe('ok');
+      for (let i = 0; i < task.sugar; i++) c.coffee({ kind: 'sugar', by: 1 });
+      expect(c.coffee({ kind: 'start' })).toBe('ok');
+    };
+
+    it('a window covers the belt and the sleeve; doing the chore in time cancels the move and stuns the machine', () => {
+      const c = coffeeFight();
+      const phases: string[] = [];
+      const said: string[] = [];
+      c.events.on((e) => {
+        if (e.type === 'task') phases.push(e.phase);
+        if (e.type === 'speech') said.push(e.key);
+      });
+      expect(c.task).toBeNull();
+      run(c, CONFIG.introTime + 0.1);
+      expect(c.task?.phase).toBe('coins');
+      const uid = c.belt[0].card.uid;
+      expect(c.isCovered(uid)).toBe(true);
+      expect(c.playCard(uid)).toBe(false);
+      expect(c.stash(uid)).toBe(false);
+      // Out of order, a step does nothing and costs nothing.
+      const before = c.enemy.timer;
+      expect(c.coffee({ kind: 'start' })).toBe('ignored');
+      expect(c.enemy.timer).toBe(before);
+      doChore(c);
+      expect(c.task?.phase).toBe('brew');
+      run(c, CONFIG.coffee.brewTime + CONFIG.coffee.doneHold + 0.1);
+      expect(c.task).toBeNull();
+      expect(c.hero.hp).toBe(80);
+      expect(c.has('enemy', 'stun')).toBe(true);
+      expect(phases).toEqual(['open', 'done']);
+      expect(said).toEqual(['enemy.coffeeMachine.calm']);
+      expect(c.isCovered(uid)).toBe(false);
+    });
+
+    it('a mistake takes seconds off the countdown, up to a cap; when it runs out the hit lands and the window closes', () => {
+      const c = coffeeFight();
+      const phases: string[] = [];
+      c.events.on((e) => {
+        if (e.type === 'task') phases.push(e.phase);
+      });
+      run(c, CONFIG.introTime + 0.1);
+      const task = c.task!;
+      pay(c);
+      const wrong = (task.code[0] % CONFIG.coffee.keys) + 1;
+      const t0 = c.enemy.timer;
+      expect(c.coffee({ kind: 'key', key: wrong })).toBe('wrong');
+      expect(c.enemy.timer).toBeCloseTo(t0 + CONFIG.coffee.penalty, 5);
+      for (let i = 0; i < 10; i++) c.coffee({ kind: 'key', key: wrong });
+      expect(task.fined).toBe(CONFIG.coffee.penaltyMax);
+      expect(task.keysDone).toBe(0);
+      run(c, ENEMIES.coffeeMachine.specials[0].windup);
+      expect(c.hero.hp).toBeLessThan(80);
+      expect(phases).toContain('close');
+      expect(phases.filter((x) => x === 'wrong')).toHaveLength(11);
+    });
+
+    it('the slot only takes coins the purse can still make the price with, so any order of good coins pays up', () => {
+      for (let seed = 1; seed <= 60; seed++) {
+        const task = new CoffeeTask(new Rng(seed));
+        for (const coin of task.coins) {
+          if (task.phase !== 'coins') break;
+          const was = task.paid;
+          const fits = task.fits(coin);
+          expect(task.act({ kind: 'coin', id: coin.id }), `seed ${seed}`).toBe(fits ? 'ok' : 'wrong');
+          if (!fits) expect(task.paid).toBe(was);
+        }
+        expect(task.paid, `seed ${seed}`).toBe(task.price);
+        expect(task.phase).toBe('code');
+      }
+    });
   });
 
   it('sleeve slots come from the hero', () => {

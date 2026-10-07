@@ -26,6 +26,7 @@ import { ROOM_SPRITES } from '../src/ui/art/rooms';
 import { ROOM_SCENE } from '../src/ui/components/room';
 import { INK_HEX } from '../src/ui/art/riso';
 import { HEXES } from '../src/data/hexes';
+import { COFFEE_DRINKS } from '../src/data/coffee';
 import { MODIFIER_LIST } from '../src/data/modifiers';
 import { DEBUG_ENEMY, ENEMIES } from '../src/data/enemies';
 import { RELIC_LIST } from '../src/data/relics';
@@ -75,6 +76,13 @@ describe('content integrity', () => {
         h.id,
       ).toEqual(h.startUpgraded);
     }
+  });
+
+  it("the Coffee Machine's drinks and steps are named in every language, and its move is a chore", () => {
+    const keys = [...COFFEE_DRINKS.map((d) => `drink.${d}`), ...['coins', 'code', 'prep', 'brew', 'done'].map((p) => `task.coffee.step.${p}`)];
+    for (const strings of [enStrings, itStrings, esStrings, zhStrings] as Record<string, string>[])
+      for (const k of keys) expect(strings[k], k).toBeTruthy();
+    expect(ENEMIES.coffeeMachine.specials.some((m) => m.task === 'coffee')).toBe(true);
   });
 
   it('the handbook lists every keyword the game explains', () => {

@@ -319,8 +319,13 @@ export interface MoveDef {
   absorb?: boolean;
   /** …and a `release` move adds everything stored to its hit. */
   release?: boolean;
+  /** A chore the hero does while the move charges: a window covers the belt and the sleeve, and doing it in time cancels the move (`Combat.task`). */
+  task?: TaskId;
   fx?: (c: Combat) => void;
 }
+
+/** The chores a move can set. */
+export type TaskId = 'coffee';
 
 export interface EnemyDef {
   id: string;
@@ -584,6 +589,8 @@ export type CombatEvent =
   | { type: 'rust' }
   /** The enemy's window over the belt: it `open`s, goes `install`ing, or `close`s (postponed, or the update is done). */
   | { type: 'popup'; phase: 'open' | 'install' | 'close' }
+  /** The chore window: it `open`s, the hero makes a `wrong` move (the move lands sooner), the chore is `done` in time, or the move lands first (`close`). */
+  | { type: 'task'; phase: 'open' | 'wrong' | 'done' | 'close' }
   | { type: 'end'; result: CombatResult };
 
 export type CombatResult = 'win' | 'lose';

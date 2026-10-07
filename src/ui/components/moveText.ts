@@ -67,6 +67,7 @@ export function moveEffect(m: MoveDef, verbose = false, values: MoveValues = bas
     parts.push(`<span class="fx fx-bad" data-tone="green" data-rule="virus">${icon('virus')}${t('move.fx.infect', { n: m.infect })}</span>`);
   if (m.absorb) parts.push(`<span class="fx fx-block" data-rule="copy">${icon('scanner')}${t('move.fx.absorb')}</span>`);
   if (m.release) parts.push(`<span class="fx fx-dmg" data-rule="copy">${icon('copy')}${t('move.fx.release')}</span>`);
+  if (m.task) parts.push(`<span class="fx" data-tone="amber" data-rule="task">${icon('coffee')}${t('move.fx.task')}</span>`);
   if (m.intent === 'idle') parts.push(`<span class="fx">${t('move.fx.idle')}</span>`);
   if (m.hex) {
     const n = t('move.fx.hexShare', { n: Math.round(m.hex.share * 100) });
@@ -153,6 +154,7 @@ const RULES: Record<string, { icon: string; title: TKey; desc: TKey }> = {
   virus: { icon: 'virus', title: 'rule.virus', desc: 'rule.virus.d' },
   drain: { icon: 'drain', title: 'rule.drain', desc: 'rule.drain.d' },
   copy: { icon: 'scanner', title: 'rule.copy', desc: 'rule.copy.d' },
+  task: { icon: 'coffee', title: 'rule.task', desc: 'rule.task.d' },
 };
 
 /** Inside a move description (threat info, handbook): press a curse, status, hex or rule to learn what it does. */

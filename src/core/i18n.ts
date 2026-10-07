@@ -26,7 +26,9 @@ type DynamicPrefix =
   | 'perk'
   | 'relic'
   | 'memo'
-  | 'hex';
+  | 'hex'
+  | 'drink'
+  | 'task';
 export type TKey = EnKey | `${DynamicPrefix}.${string}`;
 export type Params = Record<string, string | number>;
 

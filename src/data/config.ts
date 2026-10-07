@@ -85,6 +85,24 @@ export const CONFIG = {
   virusCost: 1,
   /** An update window's buttons answer only after it has been up this long (s), so a tap meant for a card doesn't answer it. */
   popupArm: 0.4,
+  /**
+   * The Coffee Machine's chore (`MoveDef.task`, `game/coffee.ts`): `brewTime` s the machine takes to pour and `doneHold` s the finished cup stays up; a mistake takes `penalty` s off the move's countdown
+   * (`penaltyMax` s in all); the Boss then `calm`s down (the enemy is stunned that long). The order: `payCoins` ([min, max]) coins add up to the price and `decoys` more ride along in the purse,
+   * a `codeLength` keys code on a pad of `keys`, `sugar` ([min, max]) sugars out of a dial that goes up to `maxSugar`.
+   */
+  coffee: {
+    brewTime: 3,
+    doneHold: 0.8,
+    penalty: 2,
+    penaltyMax: 8,
+    calm: 3,
+    payCoins: [3, 4],
+    decoys: 3,
+    codeLength: 3,
+    keys: 9,
+    sugar: [1, 3],
+    maxSugar: 4,
+  },
   /** The Weak Spot target shows at least this far (share of the sprite) from every edge. */
   weakSpotMargin: 0.25,
   /** Hours a page can stay open before the home asks for a reload (the game runs offline, so a forgotten tab misses updates). */

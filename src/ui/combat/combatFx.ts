@@ -366,6 +366,18 @@ export function bindCombatFx(v: CombatView, cards: CardLayer, onEnd: (result: 'w
           haptic('alarm');
         } else if (e.phase === 'close') sfx('status');
         break;
+      case 'task':
+        // The chore window: a card held in a finger when it opens is let go; a mistake jolts the move's bar (it lands sooner).
+        if (e.phase === 'open') {
+          cards.cancelDrag();
+          sfx('popup');
+          haptic('alarm');
+        } else if (e.phase === 'wrong') {
+          sfx('error');
+          haptic('hit');
+          v.retrigger(r.intent, 'fined');
+        }
+        break;
       case 'beltPinned':
         sfx('stash');
         haptic('stash');

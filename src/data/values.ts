@@ -76,6 +76,8 @@ export const VALUES = {
   postponeMax: UPDATE_POSTPONE[1],
   postponeMul: UPDATE_POSTPONE_MUL,
   wakePerCard: WAKE_PER_CARD,
+  coffeeCalm: CONFIG.coffee.calm,
+  coffeePenalty: CONFIG.coffee.penalty,
   // Rules on cards
   virusDelay: CONFIG.virusDelay,
   virusCost: CONFIG.virusCost,
