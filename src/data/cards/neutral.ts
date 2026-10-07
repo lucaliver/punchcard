@@ -621,6 +621,27 @@ export const neutralCards: CardDef[] = [
     play: (c, v) => void c.recycleExhausted(v[0]),
   },
   {
+    id: 'directDeposit',
+    face: '{block:0}|{timer:2}{block:1}',
+    cls: 'neutral',
+    type: 'defense',
+    rarity: 'rare',
+    cost: 1,
+    vals: [4, 16, 6],
+    upVals: [6, 22, 6],
+    art: 'directDeposit',
+    play: (c, v) => {
+      c.gainBlock('hero', v[0]);
+      // A deposit still on its way is paid out now: one at a time keeps the timer honest.
+      const due = c.fighter('hero').statuses.directDeposit;
+      if (due) {
+        c.gainBlock('hero', due.v);
+        c.removeStatus('hero', 'directDeposit');
+      }
+      c.applyStatus('hero', 'directDeposit', v[1], v[2]);
+    },
+  },
+  {
     id: 'workersComp',
     face: '{*hp}{block:0}',
     cls: 'neutral',

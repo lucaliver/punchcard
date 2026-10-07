@@ -805,6 +805,15 @@ export const ICONS: Record<string, { el: Element; svg: string; wide?: boolean }>
     svg: `<path d="M32 32V12M32 32L14 42M32 32L50 42" stroke="currentColor" stroke-width="12" stroke-linecap="round"/><circle cx="32" cy="32" r="10"/><circle cx="32" cy="12" r="10"/><circle cx="14" cy="42" r="10"/><circle cx="50" cy="42" r="10"/><g fill="#16121f"><circle cx="32" cy="32" r="4.5"/><circle cx="32" cy="12" r="4"/><circle cx="14" cy="42" r="4"/><circle cx="50" cy="42" r="4"/></g>`,
   },
 
+  directDeposit: {
+    el: 'holy',
+    svg: `<rect x="4" y="14" width="56" height="40"/><path d="M4 14l28 24 28-24" fill="none" stroke="#16121f" stroke-width="3.5" stroke-linejoin="round"/><circle cx="46" cy="44" r="14"/><circle cx="46" cy="44" r="9" fill="#16121f"/><path d="M46 38v12M42 41h6a2.5 2.5 0 0 1 0 5h-5" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"/>`,
+  },
+  companyRetreat: {
+    el: 'necro',
+    svg: `<path d="M32 4c4 10 14 14 14 26a14 14 0 0 1-28 0c0-6 3-10 6-12 0 5 2 8 5 8-3-8-1-16 3-22z"/><path fill="#16121f" d="M32 28c2 5 7 6 7 12a7 7 0 0 1-14 0c0-3 2-5 3-7 0 3 1 4 3 4-2-4-1-6 1-9z"/><path d="M6 52L56 40l2 6L8 58zM8 40l50 12-2 6L6 46z"/>`,
+  },
+
   fireExit: {
     el: 'steel',
     svg: `<path d="M6 4h36v56H6z"/><path d="M12 10h24v44H12z" fill="#16121f"/><circle cx="24" cy="21" r="5"/><path d="M24 27v12M24 31l-8 4M24 31l8-3M24 39l-7 12M24 39l8 10" fill="none" stroke="currentColor" stroke-width="4" stroke-linecap="round"/><path d="M46 24l16 10-16 10z"/>`,

@@ -2414,6 +2414,28 @@ describe('cards that fill the classes out', () => {
     expect(e.stacks('hero', 'multitasking')).toBe(CARDS.fidgetSpinner.vals[0]);
   });
 
+  it('Direct Deposit pays its Block a few seconds later, Company Retreat puts both sides to sleep and heals', () => {
+    const c = quiet();
+    const [now, later, wait] = CARDS.directDeposit.vals;
+    cast(c, 'directDeposit');
+    expect(c.hero.block).toBe(now);
+    run(c, wait - 0.5);
+    c.hero.block = 0;
+    run(c, 1);
+    expect(c.hero.block).toBeGreaterThanOrEqual(later - 1);
+    c.hero.block = 0;
+    cast(c, 'directDeposit');
+    c.hero.block = 0;
+    cast(c, 'directDeposit');
+    expect(c.hero.block).toBe(now + later);
+
+    const d = quiet();
+    cast(d, 'companyRetreat');
+    expect(d.has('enemy', 'stun')).toBe(true);
+    expect(d.has('hero', 'stun')).toBe(true);
+    expect(d.stacks('hero', 'regen')).toBe(CARDS.companyRetreat.vals[1]);
+  });
+
   it('Matador stuns the enemy only when a hit is dodged, Ghost in the Machine stretches the Dodge with every card', () => {
     const c = quiet();
     cast(c, 'matador');

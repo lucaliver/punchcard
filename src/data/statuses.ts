@@ -186,6 +186,8 @@ const defs: StatusDef[] = [
       if (owed > 0) c.damage('hero', side, owed, { raw: true, ignoreBlock: true }, 'hero');
     },
   },
+  // Direct Deposit: `v` Block lands on the hero when the time is up.
+  { id: 'directDeposit', tone: 'teal', kind: 'timed', good: true, icon: 'coin', onEnd: (c, side, s) => c.gainBlock(side, s.v) },
   // Does It Spark Joy?: for a while every card costs `v` mana.
   { id: 'sparkJoy', tone: 'blue', kind: 'timed', good: true, icon: 'priceTag', flatCost: true },
   // Matador: the next hit the hero dodges stuns the enemy for `v` seconds.

@@ -528,6 +528,24 @@ export const necromancerCards: CardDef[] = [
     },
   },
   {
+    id: 'companyRetreat',
+    face: '{stun:0}|{selfStun:0}|{regen:1}',
+    cls: 'necromancer',
+    type: 'skill',
+    rarity: 'epic',
+    cost: 2,
+    vals: [3, 2],
+    upVals: [3, 4],
+    keywords: ['exhaust'],
+    art: 'companyRetreat',
+    // Team building: everyone sits in the circle, nobody works, and you get some rest out of it.
+    play: (c, v) => {
+      c.applyStatus('enemy', 'stun', 1, v[0]);
+      c.applyStatus('hero', 'stun', 1, v[0]);
+      c.applyStatus('hero', 'regen', v[1]);
+    },
+  },
+  {
     id: 'forgottenLunch',
     face: '{*timer}{poison:0}',
     cls: 'necromancer',
