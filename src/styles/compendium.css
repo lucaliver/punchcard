@@ -53,9 +53,12 @@
   font-size: 14px;
   color: var(--k);
   /* the section switch has room for its icon beside the word */
-  flex-direction: row;
-  gap: 6px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
 }
+.section-switch button .pico { font-size: 20px; --ink2: var(--p); }
 /* the run history: one paper line per run, a stamp for how it ended */
 .run-logs {
   display: flex;
