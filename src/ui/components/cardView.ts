@@ -22,39 +22,40 @@ export const TAG_ICON: Record<string, string> = {
 };
 
 /** Glyph kind → icon and the unit shown after its value. */
-export const GLYPHS: Record<string, { icon: string; unit?: string; sign?: string }> = {
+/** A glyph's `tone` is the one of the status or keyword it stands for (the text names it in the same ink: `StatusDef.tone`, `KEYWORD_TONE`). */
+export const GLYPHS: Record<string, { icon: string; unit?: string; sign?: string; tone?: Tone }> = {
   dmg: { icon: 'sword' },
-  block: { icon: 'shield' },
+  block: { icon: 'shield', tone: 'teal' },
   /** Strips the enemy's Block. */
-  breakBlock: { icon: 'shield', sign: '-' },
-  heal: { icon: 'heart', sign: '+' },
-  mana: { icon: 'crystal', sign: '+' },
-  stun: { icon: 'stars', unit: 's' },
+  breakBlock: { icon: 'shield', sign: '-', tone: 'teal' },
+  heal: { icon: 'heart', sign: '+', tone: 'green' },
+  mana: { icon: 'crystal', sign: '+', tone: 'blue' },
+  stun: { icon: 'stars', unit: 's', tone: 'purple' },
   /** You are stunned (not the enemy). */
-  selfStun: { icon: 'ko', unit: 's' },
-  chill: { icon: 'snow', unit: 's' },
-  rush: { icon: 'speedCards', unit: 's' },
-  burn: { icon: 'flame' },
-  str: { icon: 'muscle', sign: '+' },
-  dodge: { icon: 'dodge', unit: 's' },
-  parry: { icon: 'crossed' },
-  hp: { icon: 'blood', sign: '-' },
+  selfStun: { icon: 'ko', unit: 's', tone: 'purple' },
+  chill: { icon: 'snow', unit: 's', tone: 'blue' },
+  rush: { icon: 'speedCards', unit: 's', tone: 'amber' },
+  burn: { icon: 'flame', tone: 'red' },
+  str: { icon: 'muscle', sign: '+', tone: 'red' },
+  dodge: { icon: 'dodge', unit: 's', tone: 'teal' },
+  parry: { icon: 'crossed', tone: 'red' },
+  hp: { icon: 'blood', sign: '-', tone: 'red' },
   grow: { icon: 'growth', sign: '+' },
-  snow: { icon: 'snow' },
+  snow: { icon: 'snow', tone: 'blue' },
   skull: { icon: 'heartbreak' },
   exit: { icon: 'exitSlot' },
   clog: { icon: 'slime' },
-  virus: { icon: 'virus' },
+  virus: { icon: 'virus', tone: 'green' },
   gate: { icon: 'gate' },
   boom: { icon: 'bomb' },
-  drain: { icon: 'crystal', sign: '-' },
-  crystal: { icon: 'crystalSlot', sign: '+' },
-  poison: { icon: 'drop' },
-  thorns: { icon: 'thorns', sign: '+' },
-  regen: { icon: 'redCross', sign: '+' },
-  vuln: { icon: 'crack', unit: 's' },
-  weak: { icon: 'broken', unit: 's' },
-  fort: { icon: 'fortress', unit: 's' },
+  drain: { icon: 'crystal', sign: '-', tone: 'blue' },
+  crystal: { icon: 'crystalSlot', sign: '+', tone: 'blue' },
+  poison: { icon: 'drop', tone: 'green' },
+  thorns: { icon: 'thorns', sign: '+', tone: 'red' },
+  regen: { icon: 'redCross', sign: '+', tone: 'green' },
+  vuln: { icon: 'crack', unit: 's', tone: 'red' },
+  weak: { icon: 'broken', unit: 's', tone: 'purple' },
+  fort: { icon: 'fortress', unit: 's', tone: 'teal' },
   cards: { icon: 'cards' },
   timer: { icon: 'timer', unit: 's' },
   skip: { icon: 'skip' },
@@ -66,7 +67,7 @@ export const GLYPHS: Record<string, { icon: string; unit?: string; sign?: string
   sleeve: { icon: 'hand' },
   tickDown: { icon: 'timer', sign: '-' },
   undo: { icon: 'undo' },
-  auto: { icon: 'autopilot', unit: 's' },
+  auto: { icon: 'autopilot', unit: 's', tone: 'blue' },
   pile: { icon: 'pile' },
   snatch: { icon: 'snatch' },
   pin: { icon: 'pushpin' },
@@ -75,18 +76,18 @@ export const GLYPHS: Record<string, { icon: string; unit?: string; sign?: string
   /** Crumples cards of your deck (the hex's paper ball). */
   crumple: { icon: 'crumple4' },
   sweep: { icon: 'windKey', sign: '+' },
-  manaRegen: { icon: 'crystalUp', unit: 's' },
+  manaRegen: { icon: 'crystalUp', unit: 's', tone: 'blue' },
   /** Multitasking, for seconds or as charges. */
-  multi: { icon: 'bolt2', unit: 's' },
-  dark: { icon: 'bulbOff', unit: 's' },
-  stop: { icon: 'pause', unit: 's' },
+  multi: { icon: 'bolt2', unit: 's', tone: 'purple' },
+  dark: { icon: 'bulbOff', unit: 's', tone: 'purple' },
+  stop: { icon: 'pause', unit: 's', tone: 'purple' },
   shrink: { icon: 'growth', sign: '-' },
   /** Condition: no Block. */
   bare: { icon: 'shieldOff' },
   /** The card's own cost goes down. */
   cheaper: { icon: 'priceTag', sign: '-' },
   /** Max HP, for this fight. */
-  maxHp: { icon: 'heartUp', sign: '+' },
+  maxHp: { icon: 'heartUp', sign: '+', tone: 'green' },
   /** The enemy's buffs (and its Block). */
   buff: { icon: 'up' },
   /** The debuffs you carry. */
@@ -151,8 +152,8 @@ export function cardFace(card: CardLike, combat?: Combat | null): string {
         const g = GLYPHS[k!];
         const val =
           idx !== undefined ? `${g.sign ?? ''}${valueHtml(card, Number(idx), combat)}${g.unit ? `<span class="unit">${g.unit}</span>` : ''}` : '';
-        // Each glyph carries its own ink (`.gk-<kind>`), so a line like {dmg}={block} gets a pink sword and a blue shield.
-        return `<span class="gk gk-${k}">${icon(g.icon)}${val}</span>`;
+        // Each glyph carries its own ink (its tone, else `.gk-<kind>`), so a line like {dmg}={block} gets a pink sword and a teal shield.
+        return `<span class="gk gk-${k}"${g.tone ? ` data-tone="${g.tone}"` : ''}>${icon(g.icon)}${val}</span>`;
       },
     );
     return `<div class="gl">${html}</div>`;
@@ -161,8 +162,8 @@ export function cardFace(card: CardLike, combat?: Combat | null): string {
   return lines.join('') + (combat ? `<div class="c-dark">${icon('bulbOff')}</div>` : '');
 }
 
-/** Keywords that are not statuses but still have a colour: Block is teal. */
-const KEYWORD_TONE: Record<string, Tone> = { block: 'teal' };
+/** Keywords that are not statuses but still have a colour: Block is teal, mana blue. */
+const KEYWORD_TONE: Record<string, Tone> = { block: 'teal', mana: 'blue', crystal: 'blue' };
 
 /** Icons of keywords that have none of their own as a card tag, status or glyph. */
 const KEYWORD_ICON: Record<string, string> = {

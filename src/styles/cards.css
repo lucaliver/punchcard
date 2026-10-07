@@ -129,25 +129,8 @@
 .gl .each .pico { font-size: 1.1em; color: var(--k); --ink2: var(--y); }
 .gk { display: contents; }
 .gk-dmg .pico { color: var(--p); --ink2: var(--y); }
-.gk-block .pico { color: var(--shield); --ink2: var(--p); }
-.gk-mana .pico,
-.gk-chill .pico,
-.gk-snow .pico,
-.gk-rush .pico,
-.gk-dodge .pico { color: var(--b); --ink2: var(--p); }
-.gk-heal .pico,
-.gk-maxHp .pico,
-.gk-regen .pico,
-.gk-hp .pico,
-.gk-str .pico,
-.gk-burn .pico { color: var(--p); --ink2: var(--y); }
-.gk-crystal .pico { color: var(--b); --ink2: var(--y); }
-.gk-poison .pico,
-.gk-virus .pico { color: var(--green); --ink2: var(--y); }
-.gk-weak .pico { color: var(--purple); --ink2: var(--y); }
-.gk-vuln .pico { color: var(--p); --ink2: var(--k); }
-.gk-stun .pico,
-.gk-parry .pico,
+/* a glyph with a tone takes its ink (the same as the status or keyword it stands for) */
+.gk[data-tone] .pico { color: var(--tone); --ink2: var(--tone-hi); }
 .gk-grow .pico,
 .gk-skull .pico,
 .gk-curse .pico,

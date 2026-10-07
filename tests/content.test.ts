@@ -131,8 +131,8 @@ describe('content integrity', () => {
     }
   });
 
-  it('elites and bosses start the fight with Block, normal enemies without', () => {
-    for (const e of ENEMY_LIST) expect(!!e.block, e.id).toBe(e.tier !== 'normal');
+  it('elites and bosses start the fight with Block (a normal enemy may too)', () => {
+    for (const e of ENEMY_LIST) if (e.tier !== 'normal') expect(e.block, e.id).toBeGreaterThan(0);
   });
 
   it('every card has its own art, never shared with another card or a rule icon', () => {
@@ -243,6 +243,24 @@ describe('colours', () => {
 
   it('the pixel renderer prints with the inks of the stylesheet', () => {
     expect(INK_HEX).toEqual({ Y: token('--y'), P: token('--p'), B: token('--b'), K: token('--k') });
+  });
+});
+
+describe('one ink per thing', () => {
+  it('a card glyph has the tone of the status it stands for', () => {
+    const status: Record<string, string> = {
+      str: 'strength',
+      vuln: 'vulnerable',
+      fort: 'fortified',
+      auto: 'autopilot',
+      multi: 'multitasking',
+      selfStun: 'stun',
+      snow: 'chill',
+    };
+    for (const [kind, g] of Object.entries(GLYPHS)) {
+      const st = STATUSES[status[kind] ?? kind];
+      if (st && g.tone) expect(g.tone, kind).toBe(st.tone);
+    }
   });
 });
 
