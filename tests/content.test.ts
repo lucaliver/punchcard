@@ -264,6 +264,15 @@ describe('one ink per thing', () => {
   });
 });
 
+describe('a status with its own name on the hero', () => {
+  it('has the hero-side strings', () => {
+    for (const s of STATUS_ORDER.map((id) => STATUSES[id]).filter((d) => d.selfName)) {
+      expect(en[`status.${s.id}.self`], s.id).toBeTruthy();
+      expect(en[`status.${s.id}.self.d`], s.id).toBeTruthy();
+    }
+  });
+});
+
 describe('numbers in rules text', () => {
   const used = new Set(Object.values(en).flatMap((text) => [...text.matchAll(/\{\$(\w+)\}/g)].map((m) => m[1])));
 

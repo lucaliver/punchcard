@@ -7,7 +7,7 @@ import type { Fighter } from '../../game/combat';
 import type { MoveDef, Side } from '../../game/types';
 import { icon } from '../art/icons';
 import { relicArt } from '../art/relics';
-import { keywordHtml } from '../components/cardView';
+import { keywordHtml, statusDesc, statusName } from '../components/cardView';
 import { openInfo } from '../components/modals';
 import { HALF_ICON, moveIcon, moveTone } from '../components/moveText';
 import { h, onPress, setHtml, setText, toggle } from '../dom';
@@ -72,10 +72,10 @@ export function createHud(v: CombatView, onPassive: () => void): { render(): voi
     openInfo(
       {
         icon: statusIcon(id, side),
-        title: t(`status.${id}`),
+        title: statusName(id, side),
         tag: t(side === 'hero' ? 'status.onYou' : 'status.onEnemy'),
         tagCls: goodForPlayer ? 'good' : 'bad',
-        desc: keywordHtml(t(`status.${id}.d`, { v: s.v })),
+        desc: statusDesc(id, side, s.v),
         extra: [
           def.passive ? '' : timed ? t('status.timeLeft', { s: Math.ceil(s.t) }) : def.kind !== 'timed' ? t('status.stacks', { v: s.v }) : '',
         ].filter(Boolean),
@@ -171,7 +171,7 @@ export function createHud(v: CombatView, onPassive: () => void): { render(): voi
             'data-status': id,
             'data-tone': def.tone,
             html: `${def.span || def.progress ? '<i class="drain"></i>' : ''}${icon(statusIcon(id, side))}<span></span>`,
-            'aria-label': t(`status.${id}`),
+            'aria-label': statusName(id, side),
           });
           onPress(b, () => showStatus(side, id));
           return b;

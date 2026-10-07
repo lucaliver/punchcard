@@ -720,20 +720,21 @@ const defs: EnemyDef[] = [
       {
         id: 'lostLuggage',
         intent: 'curse',
-        windup: 6,
+        windup: 5,
+        // Straight onto the belt: the luggage is there at once, not somewhere down the deck.
         curse: [
-          { id: 'carryOn', n: 1, to: 'draw', hex: 'suitcase' },
-          { id: 'dutyFree', n: 1, to: 'draw', hex: 'suitcase' },
+          { id: 'carryOn', n: 1, to: 'belt', hex: 'suitcase' },
+          { id: 'dutyFree', n: 1, to: 'belt', hex: 'suitcase' },
         ],
       },
       atk('allInclusive', 4, 8, { hits: 3 }),
       {
         id: 'souvenirShop',
         intent: 'curse',
-        windup: 6,
+        windup: 5,
         curse: [
-          { id: 'snowGlobe', n: 1, to: 'draw', hex: 'suitcase' },
-          { id: 'dutyFree', n: 1, to: 'draw', hex: 'suitcase' },
+          { id: 'snowGlobe', n: 2, to: 'draw', hex: 'suitcase' },
+          { id: 'dutyFree', n: 2, to: 'draw', hex: 'suitcase' },
         ],
       },
       atk('overbooked', 18, 11, { intent: 'charge' }),

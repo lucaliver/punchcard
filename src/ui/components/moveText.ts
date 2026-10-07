@@ -1,13 +1,13 @@
 import { type TKey, t } from '../../core/i18n';
 import { CONFIG } from '../../data/config';
 import { HEXES } from '../../data/hexes';
-import { STATUSES } from '../../data/statuses';
+import { STATUSES, statusIcon } from '../../data/statuses';
 import { sfx } from '../../audio/sfx';
 import type { EnemyDef, MoveDef, Tone } from '../../game/types';
 import { creature } from '../art/creatures';
 import { icon, INTENT_ICON } from '../art/icons';
 import { h, onPress } from '../dom';
-import { keywordHtml, UNKNOWN } from './cardView';
+import { keywordHtml, statusDesc, statusName, UNKNOWN } from './cardView';
 import { openCardDetail, openInfo } from './modals';
 
 /**
@@ -49,9 +49,9 @@ export function moveEffect(m: MoveDef, verbose = false, values: MoveValues = bas
     // Tone from the player's point of view: an enemy buff or a debuff on the hero is bad news.
     const bad = st.target === 'hero' ? !STATUSES[st.id].good : STATUSES[st.id].good;
     const { tone, chip, icon: ico } = STATUSES[st.id];
-    const name = chip === 'icon' ? '' : `${t(`status.${st.id}${chip === 'short' ? '.short' : ''}`)} `;
+    const name = chip === 'icon' ? '' : `${chip === 'short' ? t(`status.${st.id}.short`) : statusName(st.id, st.target)} `;
     parts.push(
-      `<span class="fx ${bad ? 'fx-bad' : 'fx-good'}" data-tone="${tone}" data-status="${st.id}" data-v="${st.v ?? 1}">${icon(ico)}${name}<b>${st.t ? `${st.t}s` : `+${st.v ?? 1}`}</b></span>`,
+      `<span class="fx ${bad ? 'fx-bad' : 'fx-good'}" data-tone="${tone}" data-status="${st.id}" data-side="${st.target}" data-v="${st.v ?? 1}">${icon(ico)}${name}<b>${st.t ? `${st.t}s` : `+${st.v ?? 1}`}</b></span>`,
     );
   }
   // Each curse names its card, so the handbook can open it on a press.
@@ -160,14 +160,15 @@ export function bindMoveDetails(root: HTMLElement): void {
   for (const el of root.querySelectorAll<HTMLElement>('[data-card], [data-status], [data-hex], [data-rule]')) {
     onPress(el, () => {
       sfx('tap');
-      const { card, status, v, hex, rule } = el.dataset;
+      const { card, status, v, hex, rule, side } = el.dataset;
       if (card) openCardDetail({ uid: -1, id: card, up: false });
       else if (status) {
         const def = STATUSES[status];
+        const on = side === 'hero' ? 'hero' : 'enemy';
         openInfo({
-          icon: def.icon,
-          title: t(`status.${status}`),
-          desc: keywordHtml(t(`status.${status}.d`, { v: Number(v ?? 1) })),
+          icon: statusIcon(status, on),
+          title: statusName(status, on),
+          desc: statusDesc(status, on, Number(v ?? 1)),
           ink: def.good ? 'good' : 'bad',
         });
       } else if (hex) openInfo({ icon: HEXES[hex].icon, title: t(`hex.${hex}`), desc: t(`hex.${hex}.d`, { n: HEXES[hex].taps }), ink: 'bad' });

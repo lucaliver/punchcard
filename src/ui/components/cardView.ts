@@ -3,7 +3,7 @@ import { CARDS, cardCostOf, cardKeywordsOf, cardValsOf } from '../../data/cards'
 import { PERKS } from '../../data/perks';
 import { STATUSES } from '../../data/statuses';
 import type { Combat } from '../../game/combat';
-import type { CardInst, CardLike, Tone } from '../../game/types';
+import type { CardInst, CardLike, Side, Tone } from '../../game/types';
 import { h } from '../dom';
 import { icon } from '../art/icons';
 
@@ -164,8 +164,13 @@ export function cardFace(card: CardLike, combat?: Combat | null): string {
   return lines.join('') + (combat ? `<div class="c-dark">${icon('bulbOff')}</div>` : '');
 }
 
-/** Keywords that are not statuses but still have a colour: Block is teal, mana blue. */
-const KEYWORD_TONE: Record<string, Tone> = { block: 'teal', mana: 'blue', crystal: 'blue' };
+/** A status's name on a side (a stun reads Asleep on the hero), and its text. */
+export const statusName = (id: string, side: Side): string => t(STATUSES[id].selfName && side === 'hero' ? `status.${id}.self` : `status.${id}`);
+export const statusDesc = (id: string, side: Side, v: number): string =>
+  keywordHtml(t(STATUSES[id].selfName && side === 'hero' ? `status.${id}.self.d` : `status.${id}.d`, { v }));
+
+/** Keywords that are not statuses but still have a colour: Block is teal, mana blue, Asleep (the hero's stun) purple. */
+const KEYWORD_TONE: Record<string, Tone> = { block: 'teal', mana: 'blue', crystal: 'blue', asleep: 'purple' };
 
 /** Icons of keywords that have none of their own as a card tag, status or glyph. */
 const KEYWORD_ICON: Record<string, string> = {
@@ -177,6 +182,7 @@ const KEYWORD_ICON: Record<string, string> = {
   block: 'shield',
   mana: 'crystal',
   crystal: 'crystalSlot',
+  asleep: 'ko',
 };
 
 /** The small icon that goes before a keyword's explanation, in its colour (nothing for a keyword without one). */
@@ -218,6 +224,7 @@ export const KEYWORD_LIST = [
   'burn',
   'chill',
   'stun',
+  'asleep',
   'weak',
   'vulnerable',
   'buff',

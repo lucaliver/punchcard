@@ -88,11 +88,11 @@
   50% { opacity: 0.55; }
 }
 .belt-alarm {
-  /* a flat red wash over the stream, stronger as an enemy's countdown nears its end (`--alarm`, 0 to 1, set in steps) */
+  /* a flat wash (red; an act whose belt is red sets `--belt-alarm`) over the stream, stronger as an enemy's countdown nears its end (`--alarm`, 0 to 1, set in steps) */
   position: absolute;
   inset: 0;
   pointer-events: none;
-  background: var(--red);
+  background: var(--belt-alarm, var(--red));
   opacity: calc(var(--alarm, 0) * 0.55);
 }
 /* the last moments before it goes off: the wash blinks */
@@ -282,8 +282,12 @@
   inset: 0;
   z-index: 1;
   pointer-events: none;
-  background: repeating-linear-gradient(-45deg, var(--k-a20) 0 4px, transparent 4px 16px);
+  background: repeating-linear-gradient(-45deg, var(--k-a27) 0 6px, transparent 6px 14px);
 }
+/* and the card itself is greyed out and sunk: it plainly can't be played yet */
+.card.pending .c-top,
+.card.pending .c-art,
+.card.pending .c-face { opacity: 0.5; filter: grayscale(1); }
 .card.pending .c-tags { z-index: 2; background: var(--y); outline: max(2px, calc(var(--cw) * 0.02)) solid var(--k); }
 
 /* blocked by a rule (No Repeats Policy, a stun…): the rule's icon, in the card type's ink, over the art; a lighter veil */

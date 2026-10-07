@@ -12,7 +12,7 @@ import { creature } from '../art/creatures';
 import { icon } from '../art/icons';
 import { centerOf, cssMs, h } from '../dom';
 import { burst, floatText, haptic, shake } from '../fx/fx';
-import { keywordText } from '../components/cardView';
+import { keywordText, statusName } from '../components/cardView';
 import type { CardLayer } from './cardLayer';
 import type { CombatView } from './view';
 
@@ -139,7 +139,7 @@ export function bindCombatFx(v: CombatView, cards: CardLayer, onEnd: (result: 'w
       case 'status': {
         const def = STATUSES[e.id];
         const p = v.pointOf(e.target);
-        floatText(p.x, p.y - 36, t(`status.${e.id}`), 'status').dataset.tone = def.tone;
+        floatText(p.x, p.y - 36, statusName(e.id, e.target), 'status').dataset.tone = def.tone;
         sfx(def.good ? 'status' : 'debuff');
         if (def.burst) burst(def.burst.kind, p.x, p.y, def.burst.n);
         break;

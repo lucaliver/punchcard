@@ -197,6 +197,8 @@ export interface StatusDef {
   passive?: boolean;
   /** A trait the player isn't told about: no chip in the status row, no line in the pre-fight traits or the handbook (Update Needed: the window is the surprise). */
   hidden?: true;
+  /** On the hero it has its own name and text (`status.<id>.self`, `.self.d`, and a keyword of its own in the card texts): stunned vs asleep. */
+  selfName?: true;
   /** Icon when the status is on the hero, if it must read differently there (you stunned vs the enemy stunned). */
   selfIcon?: string;
   /** While active, its amount (`v`) counts as Strength: extra damage for attack cards (a timed one is a temporary boost). */

@@ -352,6 +352,7 @@ const defs: StatusDef[] = [
     icon: 'stars',
     look: 'stunned',
     selfIcon: 'ko',
+    selfName: true,
     timeMul: 0,
     handsTied: true,
     canPlay: (_c, side) => (side === 'hero' ? 'combat.stunned' : null),

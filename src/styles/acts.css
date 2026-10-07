@@ -40,6 +40,8 @@
   --night-dot: #5a2038;
   --belt: #451a2c;
   --belt-dot: #55223a;
+  /* the belt's red warning would vanish on this red belt */
+  --belt-alarm: var(--y);
   --foe-bg: #ecd3dc;
   --map-wall: #d8a83066;
   --map-hall: #4f1d33;
