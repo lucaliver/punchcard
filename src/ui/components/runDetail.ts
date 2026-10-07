@@ -9,7 +9,8 @@ import { relicArt } from '../art/relics';
 import { h, onPress, stagger } from '../dom';
 import { cardView } from './cardView';
 import { groupCopies, openCardDetail, sortCards } from './modals';
-import { slipRows } from './shareSlip';
+import { icon } from '../art/icons';
+import { payslipImage, type ShareSlip, shareImage, slipRows } from './shareSlip';
 
 /** A run of the handbook's history, opened: its payslip, the stationery it had and the deck it ended with. */
 export function openRunDetail(r: RunLog): ModalHandle {
@@ -26,6 +27,30 @@ export function openRunDetail(r: RunLog): ModalHandle {
     ),
     h('div', { class: 'slip-stamp' }, r.result === 'win' ? t('end.slip.paid') : t('end.slip.void')),
   );
+  const won = r.result === 'win';
+  const shareable: ShareSlip = {
+    hero: r.hero,
+    title: t(won ? 'end.victory' : 'end.defeat'),
+    employee: t('end.slip.employee', { hero, a: r.act, n: r.floor }),
+    rows,
+    won,
+    stamp: won ? t('end.slip.paid') : t('end.slip.void'),
+    deck: groupCopies(sortCards(r.deck.map((c, i) => ({ ...c, uid: i })))),
+    act: r.act,
+    floor: r.floor,
+    begged: r.begged,
+    time: r.time,
+    relics: r.relics,
+  };
+  const share = h('button', {
+    class: 'btn secondary block act-btn',
+    html: `${icon('share')}<span>${t('end.share')}</span>`,
+    onclick: async () => {
+      sfx('tap');
+      const blob = await payslipImage(shareable);
+      if (blob) await shareImage(blob, 'punchcard-payslip.png', t('end.shareText', { url: location.href.split('#')[0] }));
+    },
+  });
   const relics = r.relics.map((id) =>
     h('div', { class: 'hero-feature', html: `${relicArt(id)}<div><b>${t(`relic.${id}.name`)}</b>${t(`relic.${id}.d`, { n: RELICS[id].n })}</div>` }),
   );
@@ -54,6 +79,7 @@ export function openRunDetail(r: RunLog): ModalHandle {
         html: `<div class="sheet-art">${creature(r.hero)}</div><div><h3>${hero}</h3><span>${t(`history.${r.result}`)}</span></div>`,
       }),
       slip,
+      share,
       ...(relics.length ? [h('h4', { class: 'sheet-relics' }, t('hero.relics')), h('div', { class: 'hero-features' }, ...relics)] : []),
       h('h4', { class: 'sheet-relics' }, t('history.deck', { n: r.deck.length })),
       grid,

@@ -105,9 +105,11 @@ meta.actsReached = Array.isArray(meta.actsReached)
     l.hero in HEROES &&
     'result' in l &&
     (l.result === 'win' || l.result === 'lose' || l.result === 'abandon') &&
-    ['act', 'floor', 'kills', 'cards', 'pay', 'elites', 'damageTaken', 'memos', 'at'].every(
+    ['act', 'floor', 'kills', 'cards', 'pay', 'elites', 'damageTaken', 'memos', 'time', 'at'].every(
       (k) => k in l && isNum((l as Record<string, unknown>)[k]),
     ) &&
+    'begged' in l &&
+    typeof l.begged === 'boolean' &&
     'deck' in l &&
     Array.isArray(l.deck) &&
     l.deck.every(

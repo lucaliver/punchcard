@@ -415,6 +415,9 @@ export interface RunLog {
   /** The deck and relics it ended with (the detail a tap on the history line opens). */
   deck: { id: string; up: boolean; perks?: string[] }[];
   relics: string[];
+  /** Seconds spent in fights, and whether the hero begged to stay: the payslip's small print. */
+  time: number;
+  begged: boolean;
   /** When the run ended (ms since the epoch). */
   at: number;
 }

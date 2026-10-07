@@ -5,7 +5,7 @@ import { CARD_LIST, CARDS, RARITY_ORDER, cardCostOf, cardKeywordsOf, rewardPool 
 import { PERKS } from '../data/perks';
 import { RELIC_LIST, RELICS, relicSum } from '../data/relics';
 import { ACT_DEFS, actDef } from '../data/acts';
-import { CONFIG, type RewardKind, relicGuarantee, relicOdds, rewardGuarantee, rewardOdds, rewardUpgradeChance } from '../data/config';
+import { BEG_FLAG, CONFIG, type RewardKind, relicGuarantee, relicOdds, rewardGuarantee, rewardOdds, rewardUpgradeChance } from '../data/config';
 import { MODIFIERS, resolveMods } from '../data/modifiers';
 import { ENEMIES, enemiesFor } from '../data/enemies';
 import { HERO_LIST, HEROES, starterCards } from '../data/heroes';
@@ -720,6 +720,8 @@ const runLog = (run: RunState, result: RunLog['result']): RunLog => {
     memos: run.mods.length,
     deck: run.deck.map(({ id, up, perks }) => (perks?.length ? { id, up, perks } : { id, up })),
     relics: [...run.relics],
+    time: run.stats.time,
+    begged: !!run.relicFlags[BEG_FLAG],
     at: Date.now(),
   };
 };

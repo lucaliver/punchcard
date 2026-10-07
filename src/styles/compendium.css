@@ -33,13 +33,15 @@
 .compendium .scroll > .sub { margin: 12px 0; }
 .section-switch {
   max-width: 100%;
-  overflow-x: auto;
-  scrollbar-width: none;
+  /* the sections sit on two rows (three to a row) so the switch never scrolls */
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
 }
-.section-switch::-webkit-scrollbar { display: none; }
+.section-switch button:nth-child(3n + 1) { border-left: 0; }
+.section-switch button:nth-child(n + 4) { border-top: var(--line) solid var(--k); }
 .section-switch button {
-  /* each as wide as its word, a size down from the settings' switch: six sections can be wider than a phone, then the switch scrolls */
-  flex: 1 0 auto;
+  min-width: 0;
+  min-height: 44px;
   padding: 0 8px;
   font-size: 14px;
   color: var(--k);
