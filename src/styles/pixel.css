@@ -24,6 +24,8 @@
   height: 1em;
   vertical-align: -0.15em;
 }
+/* a wide icon is drawn on a 2:1 grid */
+.pico.wide { width: 2em; }
 .pico::before,
 .pico::after {
   content: '';

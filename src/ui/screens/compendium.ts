@@ -23,8 +23,28 @@ const tabsNow = (): CardClass[] => [...HERO_LIST.filter((hd) => !heroHidden(hd.i
 
 const tabLabel = (c: CardClass): string => t(`compendium.tab.${c}`);
 
+const CLASS_ICON: Record<CardClass, string> = {
+  warrior: 'sword',
+  mage: 'bolt2',
+  necromancer: 'bone',
+  rogue: 'stickyFingers',
+  neutral: 'cards',
+  curse: 'skull',
+};
+
 type Section = 'cards' | 'enemies' | 'relics' | 'keywords' | 'records' | 'history';
 const SECTIONS: Section[] = ['cards', 'enemies', 'relics', 'keywords', 'records', 'history'];
+const SECTION_ICON: Record<Section, string> = {
+  cards: 'cards',
+  enemies: 'clipboard',
+  relics: 'stapler',
+  keywords: 'book',
+  records: 'medal',
+  history: 'lateClock',
+};
+
+/** A tab button's face: its pixel icon, then its word. */
+const tabFace = (iconId: string, label: string): string => `${icon(iconId)}<span>${label}</span>`;
 
 /** Every page of the handbook in the order a swipe turns through them: a class of cards, an act of enemies, then the single pages. */
 interface Page {
@@ -172,20 +192,17 @@ export function compendiumScreen(onBack: () => void): Screen {
   const render = (): void => {
     sectionSwitch.replaceChildren(
       ...SECTIONS.map((sct) =>
-        h(
-          'button',
-          {
-            role: 'tab',
-            'aria-selected': String(sct === section),
-            'aria-pressed': String(sct === section),
-            onclick: () => {
-              sfx('tap');
-              section = sct;
-              render();
-            },
+        h('button', {
+          role: 'tab',
+          'aria-selected': String(sct === section),
+          'aria-pressed': String(sct === section),
+          html: tabFace(SECTION_ICON[sct], t(`compendium.${sct}`)),
+          onclick: () => {
+            sfx('tap');
+            section = sct;
+            render();
           },
-          t(`compendium.${sct}`),
-        ),
+        }),
       ),
     );
     sub.textContent =
@@ -226,19 +243,16 @@ export function compendiumScreen(onBack: () => void): Screen {
     foes.replaceChildren(...foeViews.filter((f) => f.act === act).map((f) => f.el));
     tabs.replaceChildren(
       ...classes.map((c) =>
-        h(
-          'button',
-          {
-            role: 'tab',
-            'aria-selected': String(c === tab),
-            onclick: () => {
-              sfx('tap');
-              tab = c;
-              render();
-            },
+        h('button', {
+          role: 'tab',
+          'aria-selected': String(c === tab),
+          html: tabFace(CLASS_ICON[c], tabLabel(c)),
+          onclick: () => {
+            sfx('tap');
+            tab = c;
+            render();
           },
-          tabLabel(c),
-        ),
+        }),
       ),
     );
     const cards = sortCards(cardList.filter((c) => c.cls === tab).map((c) => ({ uid: -1, id: c.id, up: false })));

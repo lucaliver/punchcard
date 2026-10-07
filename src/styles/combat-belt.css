@@ -485,8 +485,19 @@
   border-left: 0;
   box-shadow: var(--sh) var(--sh) 0 var(--shadow);
 }
+/* a large card's wide art sits centred over both halves (the joined body is behind the card, so the picture rides above it) */
+.card.joined { --join-dir: 1; }
+.belt.ltr .card.joined { --join-dir: -1; }
+.card.joined > .c-art { position: relative; z-index: 1; }
+.card.joined > .c-art > .pico.wide {
+  position: absolute;
+  top: 0;
+  left: calc(50cqw + var(--join-dir) * 50cqw * var(--join) - 1em);
+  font-size: 42cqw;
+}
 /* in the sleeve a large card is one normal card: no welded body (the rule that shows it is more specific, so this one is too) */
 .sleeve-slot .card.joined .c-join { display: none; }
+.sleeve-slot .card.joined > .c-art > .pico.wide { position: relative; left: auto; font-size: 34cqw; }
 .sleeve-slot .card.joined :is(.hex-cover, .steal-hand) { left: 0; right: 0; }
 
 /* Lockout: the gate hangs over the lane below too (tall cards always ride the top lane). */

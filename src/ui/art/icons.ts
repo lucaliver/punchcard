@@ -3,7 +3,7 @@ import { pixelIcon } from './riso';
 /**
  * Silhouette icons on a 64×64 grid. They use `currentColor` so the context tints them;
  * a few parts use fixed colours for readability (potion liquids, eyes).
- * `el` picks the card art background (element theme).
+ * `el` picks the card art background (element theme). A `wide` one is drawn on a 128×64 grid (the large cards' art).
  */
 export type Element = 'steel' | 'fire' | 'ice' | 'arcane' | 'blood' | 'nature' | 'shadow' | 'holy' | 'curse' | 'necro';
 
@@ -45,7 +45,7 @@ const crumple = [
   `<path d="M12 4l18 3 16-4 6 11-3 14 5 14-5 18-20-4-16 5-4-15 4-14-5-14z"/><path ${CREASE} d="M14 22l20 8 16-6M12 44l22-4 14 8M30 8l-4 18 6 16M44 10l-4 14"/>`,
 ];
 
-export const ICONS: Record<string, { el: Element; svg: string }> = {
+export const ICONS: Record<string, { el: Element; svg: string; wide?: boolean }> = {
   ...Object.fromEntries(crumple.map((svg, i) => [`crumple${4 - i}`, { el: 'shadow' as Element, svg }])),
   // ---- warrior
   sword: { el: 'steel', svg: sword },
@@ -876,15 +876,18 @@ export const ICONS: Record<string, { el: Element; svg: string }> = {
   },
   carryOn: {
     el: 'steel',
-    svg: `<path d="M28 14V4h8v10"/><rect x="14" y="14" width="36" height="40" rx="4"/><path fill="#16121f" d="M21 14h3v40h-3zM40 14h3v40h-3z"/><circle cx="22" cy="58" r="4"/><circle cx="42" cy="58" r="4"/>`,
+    wide: true,
+    svg: `<path d="M50 14V3h28v11h-5V8H55v6z"/><rect x="6" y="14" width="116" height="40" rx="6"/><path fill="#16121f" d="M30 14h4v40h-4zM94 14h4v40h-4zM42 28h44v4H42z"/><circle cx="22" cy="58" r="5"/><circle cx="106" cy="58" r="5"/>`,
   },
   dutyFree: {
     el: 'steel',
-    svg: `<path d="M26 4h12v10l6 8v34c0 3-2 4-4 4H24c-2 0-4-1-4-4V22l6-8z"/><rect x="24" y="30" width="16" height="16" fill="#16121f"/><rect x="28" y="34" width="8" height="3" /><rect x="28" y="40" width="8" height="3" />`,
+    wide: true,
+    svg: `<path d="M97 24V8h8v16zM23 24V14h8v10z"/><path d="M44 22v-9c0-6 6-10 12-10h16c6 0 12 4 12 10v9h-6v-9c0-2-3-4-6-4H56c-3 0-6 2-6 4v9z"/><path d="M12 22h104l-6 40H18z"/><rect x="40" y="32" width="48" height="16" fill="#16121f"/><rect x="46" y="36" width="36" height="3"/><rect x="46" y="42" width="24" height="3"/>`,
   },
   snowGlobe: {
     el: 'steel',
-    svg: `<circle cx="32" cy="26" r="21"/><path fill="#16121f" d="M32 12l3 8 8 1-6 5 2 8-7-4-7 4 2-8-6-5 8-1z"/><rect x="14" y="44" width="36" height="14" rx="3"/><path fill="#16121f" d="M18 50h28v3H18z"/>`,
+    wide: true,
+    svg: `<g transform="translate(32 0)"><circle cx="32" cy="26" r="21"/><path fill="#16121f" d="M32 12l3 8 8 1-6 5 2 8-7-4-7 4 2-8-6-5 8-1z"/></g><rect x="10" y="44" width="108" height="16" rx="3"/><path fill="#16121f" d="M16 50h96v3H16z"/><circle cx="14" cy="22" r="3"/><circle cx="26" cy="34" r="2.5"/><circle cx="108" cy="16" r="3"/><circle cx="116" cy="32" r="2.5"/><circle cx="98" cy="36" r="2"/>`,
   },
   down: { el: 'shadow', svg: `<path d="M32 60L8 34h14V4h20v30h14z"/>` },
   shutdown: {

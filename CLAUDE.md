@@ -196,7 +196,7 @@ NOTE: italian translations may not be litteral english translation, or could kee
 ### Pixel art and audio
 
 Icons (`ICONS`) and creatures (`CREATURES`) are SVG written for the ink palette and rasterised at boot by `art/riso.ts`;
-`icon(id)` / `creature(id)` / `relicArt(id)` return the pixel versions. `dev/art.html` (dev server) previews them all; `dev/og.html` composes the link-preview image `public/og.png` (1200×630) from the same sprites and cards: redraw it after art changes (screenshot `#og`). Audio: `sfx(id)`,
+`icon(id)` / `creature(id)` / `relicArt(id)` return the pixel versions. An icon with `wide: true` is drawn on a 128×64 grid (`.pico.wide`, 2em wide): the `large` cards' art (carry-on, duty free, snow globe), which the belt centres over both halves of the card (`.card.joined > .c-art`) and the sleeve shows in one. `dev/art.html` (dev server) previews them all; `dev/og.html` composes the link-preview image `public/og.png` (1200×630) from the same sprites and cards: redraw it after art changes (screenshot `#og`). Audio: `sfx(id)`,
 `playMusic(track)`, `playTemporaryMusic`/`endTemporaryMusic`; tracks are data in `music.ts`.
 
 ## Testing

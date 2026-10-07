@@ -101,6 +101,8 @@ export interface Sprite {
 
 const sprites = new Map<string, Sprite>();
 const masks = new Map<string, string>();
+/** Icons drawn on a 128×64 grid: twice as wide as high (the large cards' art spans their two belt places). */
+const wideIcons = new Set<string>();
 
 function loadImage(src: string): Promise<HTMLImageElement> {
   return new Promise((resolve, reject) => {
@@ -208,16 +210,17 @@ async function buildSprite(svgBody: string, size: number): Promise<Sprite> {
   return out;
 }
 
-/** Rasterises a 64×64 icon to a 1-bit alpha mask (light pixels on, dark details off). */
-async function buildMask(svgBody: string, size: number): Promise<string> {
+/** Rasterises a 64×64 icon (128×64 when `wide`) to a 1-bit alpha mask (light pixels on, dark details off). */
+async function buildMask(svgBody: string, size: number, wide: boolean): Promise<string> {
+  const w = wide ? size * 2 : size;
   const img = await loadSvg(
-    `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" width="${size}" height="${size}" fill="#fff" color="#fff">${svgBody}</svg>`,
+    `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ${wide ? 128 : 64} 64" width="${w}" height="${size}" fill="#fff" color="#fff">${svgBody}</svg>`,
   );
-  const [c, g] = canvas(size, size);
-  g.drawImage(img, 0, 0, size, size);
-  const im = g.getImageData(0, 0, size, size);
+  const [c, g] = canvas(w, size);
+  g.drawImage(img, 0, 0, w, size);
+  const im = g.getImageData(0, 0, w, size);
   const d = im.data;
-  for (let i = 0; i < size * size; i++) {
+  for (let i = 0; i < w * size; i++) {
     const lum = (d[i * 4] + d[i * 4 + 1] + d[i * 4 + 2]) / 3;
     const v = d[i * 4 + 3] > 100 && lum > 110 ? 255 : 0;
     d[i * 4] = d[i * 4 + 1] = d[i * 4 + 2] = 0;
@@ -235,13 +238,14 @@ export const ICON_RES = 20;
  * The vector sources are passed in (not imported) so this renderer doesn't depend on the art modules,
  * which themselves use it: no import cycle.
  */
-export async function preloadArt(src: { creatures: Record<string, string>; icons: Record<string, { svg: string }> }): Promise<void> {
+export async function preloadArt(src: { creatures: Record<string, string>; icons: Record<string, { svg: string; wide?: boolean }> }): Promise<void> {
   const jobs: Promise<void>[] = [];
   for (const [id, body] of Object.entries(src.creatures)) {
     jobs.push(buildSprite(body, SPRITE_RES).then((s) => void sprites.set(id, s)));
   }
   for (const [id, ic] of Object.entries(src.icons)) {
-    jobs.push(buildMask(ic.svg, ICON_RES).then((m) => void masks.set(id, m)));
+    if (ic.wide) wideIcons.add(id);
+    jobs.push(buildMask(ic.svg, ICON_RES, !!ic.wide).then((m) => void masks.set(id, m)));
   }
   await Promise.all(jobs);
 }
@@ -284,14 +288,16 @@ export async function drawIcon(g: CanvasRenderingContext2D, id: string, x: numbe
   cg.globalCompositeOperation = 'source-in';
   cg.fillStyle = color;
   cg.fillRect(0, 0, c.width, c.height);
+  // A wide icon keeps its 2:1 shape, centred on the square it is given.
+  const w = (size * img.width) / img.height;
   g.save();
   g.imageSmoothingEnabled = false;
-  g.drawImage(c, x, y, size, size);
+  g.drawImage(c, x - (w - size) / 2, y, w, size);
   g.restore();
 }
 
 /** HTML for a pixel icon, tinted by CSS `color` (with a misregistered shadow in `--ink2`). */
 export function pixelIcon(id: string, cls = ''): string {
   const m = masks.get(id) ?? masks.get('star');
-  return `<i class="pico ${cls}" aria-hidden="true" style="--m:url('${m}')"></i>`;
+  return `<i class="pico ${wideIcons.has(id) ? 'wide ' : ''}${cls}" aria-hidden="true" style="--m:url('${m}')"></i>`;
 }
