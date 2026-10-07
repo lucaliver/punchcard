@@ -868,11 +868,13 @@ export const ICONS: Record<string, { el: Element; svg: string; wide?: boolean }>
   },
   luggage: {
     el: 'steel',
-    svg: `<path d="M20 4h24v10h-6V10H26v4h-6z"/><rect x="4" y="14" width="56" height="44" rx="6"/><path fill="#16121f" d="M4 33h56v4H4zM12 24h8v6h-8zM44 24h8v6h-8z"/><rect x="28" y="30" width="8" height="10"/>`,
+    wide: true,
+    svg: `<path d="M48 4h32v10h-6V10H54v4h-6z"/><rect x="4" y="14" width="120" height="46" rx="7"/><path fill="#16121f" d="M4 35h120v4H4zM16 24h14v8H16zM98 24h14v8H98z"/><rect x="58" y="32" width="12" height="12"/>`,
   },
   luggageOpen: {
     el: 'steel',
-    svg: `<path d="M20 0h24v9h-6V5H26v4h-6z"/><rect x="6" y="9" width="52" height="19" rx="5"/><path fill="#16121f" d="M6 17h52v3H6zM14 22h8v4h-8zM42 22h8v4h-8z"/><rect x="4" y="34" width="56" height="24" rx="6"/><path fill="#16121f" d="M10 38h44v6H10zM4 51h56v3H4z"/>`,
+    wide: true,
+    svg: `<path d="M48 0h32v8h-6V4H54v4h-6z"/><rect x="8" y="8" width="112" height="22" rx="6"/><path fill="#16121f" d="M8 18h112v3H8zM18 24h14v4H18zM96 24h14v4H96z"/><rect x="4" y="36" width="120" height="26" rx="7"/><path fill="#16121f" d="M12 40h104v7H12zM4 54h120v3H4z"/>`,
   },
   carryOn: {
     el: 'steel',
