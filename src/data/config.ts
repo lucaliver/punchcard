@@ -166,7 +166,7 @@ const REWARD_ODDS: Record<RewardKind, [Rarity, number][][]> = {
 export const rewardOdds = (kind: RewardKind, act: number): [Rarity, number][] => REWARD_ODDS[kind][Math.min(act, REWARD_ODDS[kind].length) - 1];
 
 /** Chance, per act (later acts use the last), that one card of a reward offer comes already upgraded. */
-const REWARD_UPGRADE_CHANCE = [0.15, 0.35, 0.7];
+const REWARD_UPGRADE_CHANCE = [0.3, 0.5, 0.8];
 
 export const rewardUpgradeChance = (act: number): number => REWARD_UPGRADE_CHANCE[Math.min(act, REWARD_UPGRADE_CHANCE.length) - 1];
 

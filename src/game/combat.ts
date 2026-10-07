@@ -103,6 +103,8 @@ export class Combat {
   readonly relicFlags: Record<string, number>;
 
   time = 0;
+  /** Total HP the hero lost to damage in this fight (the debug log's line). */
+  damageTaken = 0;
   intro: number = CONFIG.introTime;
   result: CombatResult | null = null;
 
@@ -1419,7 +1421,10 @@ export class Combat {
     target.hp -= lost;
     this.events.emit({ type: 'damage', target: to, amount: dmg - blocked, blocked, source, hitIndex, kind: opts.kind ?? 'hit' });
     if (lost > 0) for (const [id, s] of Object.entries(target.statuses)) if (this.has(to, id)) STATUSES[id].onHurt?.(this, to, s, lost);
-    if (lost > 0 && to === 'hero') this.hurtLog.push({ t: this.time, n: lost });
+    if (lost > 0 && to === 'hero') {
+      this.damageTaken += lost;
+      this.hurtLog.push({ t: this.time, n: lost });
+    }
 
     if (source === 'enemy' && to === 'hero') {
       this.heroDef.hooks.onHeroHit?.(this, lost);

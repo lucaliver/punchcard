@@ -13,6 +13,7 @@ import { actDef } from './data/acts';
 import { CONFIG, type RewardKind } from './data/config';
 import { ENEMIES } from './data/enemies';
 import { VALUES } from './data/values';
+import { logFight, resetFightLog, saveFightLog } from './ui/components/debugLog';
 import { Combat } from './game/combat';
 import {
   abandonRun,
@@ -125,12 +126,14 @@ function startRun(hero: HeroId): void {
   const first = startingFirstRun();
   const scripted = unmetActs(SCRIPTED_ACTS);
   run = newRun(hero, first ? FIRST_RUN_SEED : randomSeed(), scripted, !first && memosOpen(hero) ? chosenMemos() : []);
+  resetFightLog();
   goJourney();
 }
 
 /** Debug: a fresh run whose first fight is against the chosen enemy. */
 function debugFight(hero: HeroId, enemy: string, cards: string[], bigHp: boolean): void {
   run = newRun(hero, randomSeed());
+  resetFightLog();
   if (bigHp) run.hp = run.maxHp = CONFIG.debugHp;
   for (const id of cards) addCard(run, id);
   run.nodes[run.current].enemy = enemy;
@@ -236,6 +239,7 @@ function afterCombat(combat: Combat): void {
   playMusic('menu');
   const node = currentNode(r);
   trackFight(r, combat.enemy.def.id, combat.result === 'win');
+  logFight(r, combat);
   if (combat.result === 'lose' || (combat.result === 'win' && node.next.length === 0)) {
     endRun(r, combat.result === 'win');
     return;
@@ -265,12 +269,14 @@ function nextNode(): void {
 
 function endRun(r: RunState, won: boolean): void {
   trackRun(r, won ? 'win' : 'lose');
+  saveFightLog(won ? 'won' : 'lost');
   show(endScreen(r, won, finishRun(r, won), goHeroSelect, goTitle));
 }
 
 function abandon(): void {
   if (run) {
     trackRun(run, 'abandon');
+    saveFightLog('abandoned');
     abandonRun(run);
   } else clearRun();
   run = null;

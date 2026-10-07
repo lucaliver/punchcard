@@ -565,8 +565,8 @@
   border: var(--line) solid var(--k);
   box-shadow: 6px 6px 0 var(--p);
   rotate: -1.5deg;
-  /* it is stamped on once the title has landed, then keeps beckoning: it pulses like a call to action */
-  animation: stamp-in 0.2s steps(2) 1.2s both, cta-pulse 0.9s steps(2) 1.4s infinite;
+  /* it is stamped on at once, then keeps beckoning: it pulses like a call to action */
+  animation: stamp-in 0.2s steps(2) both, cta-pulse 0.9s steps(2) 0.2s infinite;
   font: inherit;
   cursor: pointer;
 }
