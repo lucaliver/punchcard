@@ -347,7 +347,17 @@ const defs: StatusDef[] = [
   // Root access (sudo): no rule can stop the hero's cards.
   { id: 'rootAccess', tone: 'blue', kind: 'timed', good: true, icon: 'terminal', ignoresRules: true },
   { id: 'multitasking', tone: 'purple', kind: 'timed', good: true, icon: 'bolt2', showStacks: true, span: CONFIG.multitaskingWindow },
-  { id: 'plague', tone: 'green', kind: 'stacks', good: true, icon: 'wrench' },
+  // Plague (a power): every attack the hero plays also applies `v` Poison.
+  {
+    id: 'plague',
+    tone: 'green',
+    kind: 'stacks',
+    good: true,
+    icon: 'wrench',
+    onCardPlayed: (c, side, def) => {
+      if (def.type === 'attack') c.applyStatus('enemy', 'poison', c.stacks(side, 'plague'), 0, true);
+    },
+  },
   // Slacking off (v = amount per second), until the hero plays another card.
   {
     id: 'bareMinimum',
@@ -376,7 +386,7 @@ const defs: StatusDef[] = [
     tick: everySecond((c, side, _n, s) => void c.damage(side, side === 'hero' ? 'enemy' : 'hero', s.v, { kind: 'blunt' }, side)),
     onCardPlayed: endOnPlay('grindset'),
   },
-  { id: 'virulence', tone: 'green', kind: 'stacks', good: true, icon: 'biohazard' },
+  { id: 'virulence', tone: 'green', kind: 'stacks', good: true, icon: 'biohazard', dotBonus: 'poison' },
   // Steel Toes: every attack played gives `v` Block.
   {
     id: 'steelToes',

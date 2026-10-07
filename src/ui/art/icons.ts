@@ -814,6 +814,24 @@ export const ICONS: Record<string, { el: Element; svg: string; wide?: boolean }>
     svg: `<path d="M32 4c4 10 14 14 14 26a14 14 0 0 1-28 0c0-6 3-10 6-12 0 5 2 8 5 8-3-8-1-16 3-22z"/><path fill="#16121f" d="M32 28c2 5 7 6 7 12a7 7 0 0 1-14 0c0-3 2-5 3-7 0 3 1 4 3 4-2-4-1-6 1-9z"/><path d="M6 52L56 40l2 6L8 58zM8 40l50 12-2 6L6 46z"/>`,
   },
 
+  // ---- the heist movies
+  lupin: {
+    el: 'shadow',
+    svg: `<rect x="16" y="4" width="32" height="30"/><rect x="4" y="32" width="56" height="8" rx="2"/><rect x="16" y="24" width="32" height="6" fill="#16121f"/><path d="M6 46h52v8c-6 4-12 2-16-2H22c-4 4-10 6-16 2z"/><ellipse cx="21" cy="50" rx="5" ry="3" fill="#16121f"/><ellipse cx="43" cy="50" rx="5" ry="3" fill="#16121f"/>`,
+  },
+  catchMeIfYouCan: {
+    el: 'steel',
+    svg: `<path d="M2 30L62 4 44 60 30 40z"/><path d="M30 40L62 4M30 40v16l8-10" fill="none" stroke="#16121f" stroke-width="3" stroke-linejoin="round"/>`,
+  },
+  theItalianJob: {
+    el: 'blood',
+    svg: `<path d="M2 38h60v14H2z"/><path d="M12 38l8-16h22l12 16z"/><path fill="#16121f" d="M22 36l5-11h6v11zM36 36V25h6l7 11z"/><circle cx="18" cy="52" r="9"/><circle cx="46" cy="52" r="9"/><circle cx="18" cy="52" r="4" fill="#16121f"/><circle cx="46" cy="52" r="4" fill="#16121f"/>`,
+  },
+  oceansEleven: {
+    el: 'holy',
+    svg: `<rect x="4" y="4" width="56" height="56"/><rect x="10" y="10" width="44" height="44" fill="#16121f"/><circle cx="32" cy="32" r="13"/><circle cx="32" cy="32" r="5" fill="#16121f"/><path d="M32 17v6M32 41v6M17 32h6M41 32h6" stroke="#16121f" stroke-width="3"/><rect x="50" y="29" width="8" height="6"/>`,
+  },
+
   fireExit: {
     el: 'steel',
     svg: `<path d="M6 4h36v56H6z"/><path d="M12 10h24v44H12z" fill="#16121f"/><circle cx="24" cy="21" r="5"/><path d="M24 27v12M24 31l-8 4M24 31l8-3M24 39l-7 12M24 39l8 10" fill="none" stroke="currentColor" stroke-width="4" stroke-linecap="round"/><path d="M46 24l16 10-16 10z"/>`,

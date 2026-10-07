@@ -231,6 +231,8 @@ export interface StatusDef {
   handsTied?: true;
   /** A debuff that hurts whoever carries it the same way, so the hero can hand it to the enemy (CC the Boss). */
   passable?: true;
+  /** While active on the hero, its amount (`v`) adds to every tick of this damage-over-time status on the enemy (Virulent Form). */
+  dotBonus?: string;
   /** While active on the hero, its amount (`v`) adds to the discount a card falling into a full sleeve gives (Light Fingers). */
   catchBonus?: true;
   /** While active on the hero, every card with a mana cost costs its amount (`v`) instead, X cards keep theirs (Does It Spark Joy?). */
@@ -381,8 +383,6 @@ export interface HeroHooks {
   onCardExpired?: (c: Combat, card: CombatCard) => void;
   /** Called when the hero applies a status to the enemy. */
   onEnemyStatus?: (c: Combat, id: string, v: number) => void;
-  /** Extra damage per tick of a damage-over-time status on the enemy. */
-  enemyDotBonus?: (c: Combat, id: string) => number;
   onHeroHit?: (c: Combat, dmg: number) => void;
   /** Extra flat damage for hero damage from a card of the given type. */
   bonusDamage?: (c: Combat, def: CardDef | null) => number;

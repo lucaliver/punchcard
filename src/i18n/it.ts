@@ -1255,6 +1255,16 @@ const it: Record<EnKey, string> = {
   'card.matador.desc': '[dodge] per {0}s. Se schivi un colpo, [stun] il nemico per {1}s.',
   'card.companyProperty.name': 'Proprietà Aziendale',
   'card.companyProperty.desc': 'Fai {0} danni. Prendi una carta a caso dalla pila degli scarti e mettila nella manica.',
+  'card.lupin.name': 'Lupin',
+  'card.lupin.desc':
+    'Aggiungi {0} carte comuni a caso di altre classi al tuo mazzo: potenziate, accartocciate e con {1} di costo in meno per lo scontro.',
+  'card.catchMeIfYouCan.name': 'Prova a Prendermi',
+  'card.catchMeIfYouCan.desc': 'Aggiungi {0} carte rare a caso di altre classi alla tua manica: potenziate e accartocciate.',
+  'card.theItalianJob.name': "Un Colpo all'Italiana",
+  'card.theItalianJob.desc': 'Aggiungi {0} carte epiche a caso di altre classi alla tua manica: potenziate e accartocciate.',
+  'card.oceansEleven.name': "Ocean's Eleven",
+  'card.oceansEleven.desc':
+    'Aggiungi {0} carte leggendarie a caso di altre classi alla tua manica: accartocciate e con {1} di costo in meno per lo scontro.',
   'card.shredder.name': 'Tritadocumenti',
   'card.shredder.desc': 'Ogni volta che una carta si esaurisce, ottieni {0} di [block].',
   'card.recyclingDay.name': 'Giornata del Riciclo',

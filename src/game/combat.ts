@@ -2,8 +2,9 @@ import { Emitter } from '../core/emitter';
 import { Rng } from '../core/rng';
 import { ANCHOR_POS, BEG_FLAG, CONFIG, EXPIRE_POS } from '../data/config';
 import { STATUSES } from '../data/statuses';
-import { CARDS, CLASS_HIT, cardCostOf, cardKeywordsOf, cardValsOf, fullCostOf, isLarge } from '../data/cards';
+import { CARDS, CARD_LIST, CLASS_HIT, cardCostOf, cardKeywordsOf, cardValsOf, fullCostOf, isLarge } from '../data/cards';
 import { HEXES } from '../data/hexes';
+import { HEROES } from '../data/heroes';
 import { CoffeeTask, type CoffeeAction, type CoffeeResult } from './coffee';
 import { RELICS } from '../data/relics';
 import type { TKey } from '../core/i18n';
@@ -19,6 +20,7 @@ import type {
   EnemyDef,
   HeroDef,
   MoveDef,
+  Rarity,
   RustSpot,
   Side,
   StatusDef,
@@ -653,13 +655,20 @@ export class Combat {
       if (f.statuses[id] !== s || STATUSES[id].kind !== 'dot' || s.v <= 0) continue;
       if (STATUSES[id].heals) this.heal(side, s.v);
       else {
-        const bonus = side === 'enemy' ? (this.heroDef.hooks.enemyDotBonus?.(this, id) ?? 0) : 0;
+        const bonus = side === 'enemy' ? this.dotBonus(id) : 0;
         this.damage(side === 'hero' ? 'enemy' : 'hero', side, s.v + bonus, { raw: true, ignoreBlock: true, kind: id }, 'dot');
       }
       s.v--;
       if (s.v <= 0) delete f.statuses[id];
       if (this.result) return;
     }
+  }
+
+  /** What the hero's statuses add to every tick of a damage-over-time status on the enemy (`StatusDef.dotBonus`). */
+  private dotBonus(dot: string): number {
+    let n = 0;
+    for (const [id, s] of Object.entries(this.hero.statuses)) if (STATUSES[id].dotBonus === dot && this.has('hero', id)) n += s.v;
+    return n;
   }
 
   /** A status another one holds up (`StatusDef.keeps`) doesn't run out. */
@@ -1271,6 +1280,28 @@ export class Combat {
       got++;
     }
     return got;
+  }
+
+  /**
+   * Lifts `n` different cards of this rarity from the other heroes (never the hired hero's own, the neutral ones, or a hero still in the works) for this fight:
+   * into the sleeve (what doesn't fit goes to the discard pile) or into the draw pile. `up` upgrades them, `cheaper` takes mana off, `hex` hexes each one.
+   * Returns how many came.
+   */
+  loot(rarity: Rarity, n: number, to: 'sleeve' | 'draw', opts: { up?: boolean; cheaper?: number; hex?: string } = {}): number {
+    const theirs = (cls: CardDef['cls']): boolean =>
+      cls !== 'neutral' && cls !== 'curse' && cls !== this.heroDef.id && !('debug' in (HEROES[cls].unlock ?? {}));
+    const pool = CARD_LIST.filter(
+      (d) => d.rarity === rarity && theirs(d.cls) && !d.starterOnly && !d.pack && !d.pair && d.play && !d.keywords?.includes('unplayable'),
+    );
+    const picks = this.rng.shuffle(pool).slice(0, n);
+    for (const def of picks) {
+      const extra: Partial<CombatCard> = {};
+      if (opts.cheaper) extra.cut = opts.cheaper;
+      if (opts.hex) extra.hex = { id: opts.hex, left: HEXES[opts.hex].taps, t: HEXES[opts.hex].thaw };
+      if (to === 'sleeve') this.addToSleeve(def.id, !!opts.up, extra);
+      else this.addTempCard(def.id, 'draw', !!opts.up, 0, extra);
+    }
+    return picks.length;
   }
 
   /** A temporary copy of a card goes into the sleeve, or, with no room, into the discard pile. */

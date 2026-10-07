@@ -2436,6 +2436,39 @@ describe('cards that fill the classes out', () => {
     expect(d.stacks('hero', 'regen')).toBe(CARDS.companyRetreat.vals[1]);
   });
 
+  it("the heist cards loot other classes: crumpled, upgraded or cheaper by rarity, never the hero's own or neutral cards", () => {
+    const c = setup({ hero: HEROES.rogue, deck: deckOf(Array(6).fill('borrowedStapler')) });
+    c.enemy.move = { id: 'wait', intent: 'defend', windup: 999 };
+    run(c, CONFIG.introTime + 0.01);
+    c.hero.mana = c.hero.maxMana = 10;
+    const before = c.draw.length;
+    expect(c.loot('common', 3, 'draw', { up: true, cheaper: 1, hex: 'crumple' })).toBe(3);
+    const fresh = c.draw.filter((x) => x.temp && x.hex);
+    expect(fresh).toHaveLength(3);
+    expect(c.draw.length).toBe(before + 3);
+    for (const card of fresh) {
+      expect(card.up).toBe(true);
+      expect(card.cut).toBe(1);
+      expect(card.hex?.left).toBe(4);
+      const def = CARDS[card.id];
+      expect(def.rarity).toBe('common');
+      expect(['warrior', 'mage', 'necromancer']).toContain(def.cls);
+    }
+    expect(c.loot('legendary', 2, 'sleeve', { cheaper: 1, hex: 'crumple' })).toBe(2);
+    const held = c.sleeve.filter((x) => x !== null);
+    expect(held).toHaveLength(2);
+    for (const card of held) expect(CARDS[card.id].rarity).toBe('legendary');
+  });
+
+  it('a stolen Boris and Virulent Form still work for a hero who is not the Necromancer', () => {
+    const c = quiet();
+    cast(c, 'boris');
+    cast(c, 'punch');
+    expect(c.stacks('enemy', 'poison')).toBe(CARDS.boris.vals[0]);
+    cast(c, 'classStruggle');
+    expect(c.stacks('hero', 'virulence')).toBe(CARDS.classStruggle.vals[0]);
+  });
+
   it('Matador stuns the enemy only when a hit is dodged, Ghost in the Machine stretches the Dodge with every card', () => {
     const c = quiet();
     cast(c, 'matador');

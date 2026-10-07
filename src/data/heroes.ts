@@ -93,13 +93,6 @@ const necromancer: HeroDef = {
   hooks: {
     // Virulence: the enemy starts with Poison.
     onCombatStart: (c) => c.applyStatus('enemy', 'poison', VIRULENCE_START, 0, true),
-    // Virulent Form: its stacks add to every Poison tick.
-    enemyDotBonus: (c, id) => (id === 'poison' ? c.stacks('hero', 'virulence') : 0),
-    // Plague: Attacks also apply Poison.
-    onCardPlayed: (c, _card, def) => {
-      const plague = c.stacks('hero', 'plague');
-      if (plague > 0 && def.type === 'attack') c.applyStatus('enemy', 'poison', plague, 0, true);
-    },
   },
 };
 
