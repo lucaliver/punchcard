@@ -5,6 +5,8 @@ export const CONFIG = {
   /** The made-up voice that reads a speech bubble: base pitch range (Hz, picked per speaker) and ms per letter. */
   voicePitch: [150, 420],
   voiceMs: 42,
+  /** Milliseconds an enemy's speech bubble stays up once all its text is there. */
+  speechHold: 2500,
   /** Beg to stay (the first time a run's hero would be let go): the Dodge seconds, the Strength and the mana crystals it brings back. */
   beg: { dodge: 5, strength: 5, crystals: 1 },
   /** Runs the handbook's history keeps (the newest). */
@@ -87,7 +89,7 @@ export const CONFIG = {
   popupArm: 0.4,
   /**
    * The Coffee Machine's chore (`MoveDef.task`, `game/coffee.ts`): `brewTime` s the machine takes to pour and `doneHold` s the finished cup stays up; a mistake takes `penalty` s off the move's countdown
-   * (`penaltyMax` s in all); the Boss then `calm`s down (the enemy is stunned that long). The order: a `price` ([min, max] cents) paid with `payCoins` ([min, max]) coins, `decoys` more in the purse,
+   * (`penaltyMax` s in all); the Boss then `calm`s down (the enemy is stunned that long). The order: a `price` ([min, max] cents) paid with `payCoins` ([min, max]) coins, `decoys` more in the purse (no fewer than `minCoins` of them ever make the price),
    * a `codeLength` keys code on a pad of `keys`, `sugar` ([min, max]) sugars out of a dial that goes up to `maxSugar`.
    */
   coffee: {
@@ -97,7 +99,8 @@ export const CONFIG = {
     penaltyMax: 8,
     calm: 3,
     price: [60, 250],
-    payCoins: [3, 5],
+    payCoins: [4, 5],
+    minCoins: 4,
     decoys: 3,
     codeLength: 3,
     keys: 9,

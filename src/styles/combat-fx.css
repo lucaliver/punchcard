@@ -599,8 +599,8 @@
   border: var(--line) solid var(--k);
   box-shadow: 4px 4px 0 var(--shadow);
   pointer-events: none;
-  /* first, then the half-HP notice (.hint-toast.alert) takes the same spot: `SPEECH_MS` in combatFx.ts */
-  animation: speech 3s steps(1) both;
+  /* it stays until combatFx.ts adds `.out` (typing time plus `CONFIG.speechHold`); a note meant to follow it waits for that */
+  animation: speech-in 0.2s steps(2) both;
 }
 .speech::after {
   content: '';
@@ -615,10 +615,12 @@
 }
 /* the part of the line not typed yet takes its room without showing */
 .speech .unsaid { visibility: hidden; }
-@keyframes speech {
-  0% { scale: 0.6; opacity: 0; }
-  4%, 92% { scale: 1; opacity: 1; }
-  100% { opacity: 0; }
+.speech.out { animation: speech-out 0.25s steps(2) both; }
+@keyframes speech-in {
+  from { scale: 0.6; opacity: 0; }
+}
+@keyframes speech-out {
+  to { opacity: 0; }
 }
 
 /* coach marks (first fight, first Kamikaze): one element lit, the rest dimmed, a paper note next to it */

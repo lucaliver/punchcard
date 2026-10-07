@@ -769,6 +769,20 @@ describe('combat engine', () => {
       expect(phases.filter((x) => x === 'wrong')).toHaveLength(11);
     });
 
+    it('no handful of coins fewer than the minimum ever makes the price, and a price has cents', () => {
+      for (let seed = 1; seed <= 200; seed++) {
+        const task = new CoffeeTask(new Rng(seed));
+        const n = task.coins.length;
+        for (let mask = 1; mask < 1 << n; mask++) {
+          const picked = task.coins.filter((_, i) => mask & (1 << i));
+          if (picked.reduce((sum, x) => sum + x.value, 0) === task.price)
+            expect(picked.length, `seed ${seed}`).toBeGreaterThanOrEqual(CONFIG.coffee.minCoins);
+        }
+        expect(task.price).toBeGreaterThanOrEqual(CONFIG.coffee.price[0]);
+        expect(task.price).toBeLessThanOrEqual(CONFIG.coffee.price[1]);
+      }
+    });
+
     it('the slot only takes coins the purse can still make the price with, so any order of good coins pays up', () => {
       for (let seed = 1; seed <= 60; seed++) {
         const task = new CoffeeTask(new Rng(seed));

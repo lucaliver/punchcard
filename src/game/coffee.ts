@@ -26,6 +26,12 @@ export interface CoffeeCoin {
 const reaches = (values: number[], sum: number): boolean =>
   sum === 0 || values.some((v, i) => v <= sum && reaches([...values.slice(0, i), ...values.slice(i + 1)], sum - v));
 
+/** The fewest coins of the purse that add up to exactly `sum` (Infinity when none do). */
+const fewest = (values: number[], sum: number): number =>
+  sum === 0
+    ? 0
+    : Math.min(...values.map((v, i) => (v <= sum ? 1 + fewest([...values.slice(0, i), ...values.slice(i + 1)], sum - v) : Infinity)), Infinity);
+
 /**
  * One order of the Boss's coffee: pay the price with the right coins, key in the drink's code, put the cup and the spoon (not the fork) under the spout, dial the sugar and press start.
  * Pure state, driven by `Combat.coffee` (which turns a `wrong` into lost seconds) and ticked by simulated time.
@@ -51,18 +57,21 @@ export class CoffeeTask {
 
   constructor(rng: Rng) {
     const c = CONFIG.coffee;
-    // Coins that add up to a believable price (a handful of tries, then a sure one).
-    let pay: number[] = [100, 50, 20];
-    for (let i = 0; i < 50; i++) {
+    // A believable price, and a purse where no handful of coins fewer than `minCoins` makes it (a few tries, then a sure purse).
+    let values: number[] = [100, 50, 20, 10, 5, 5, 20];
+    let pay = 4;
+    for (let i = 0; i < 100; i++) {
       const tryPay = Array.from({ length: rng.int(c.payCoins[0], c.payCoins[1]) }, () => rng.pick(COFFEE_COINS));
       const sum = tryPay.reduce((a, b) => a + b, 0);
       if (sum < c.price[0] || sum > c.price[1]) continue;
-      pay = tryPay;
+      const purse = [...tryPay, ...Array.from({ length: c.decoys }, () => rng.pick(COFFEE_COINS))];
+      if (fewest(purse, sum) < c.minCoins) continue;
+      values = purse;
+      pay = tryPay.length;
       break;
     }
-    const decoys = Array.from({ length: c.decoys }, () => rng.pick(COFFEE_COINS));
-    this.price = pay.reduce((a, b) => a + b, 0);
-    this.coins = rng.shuffle([...pay, ...decoys]).map((value, id) => ({ id, value, used: false }));
+    this.price = values.slice(0, pay).reduce((a, b) => a + b, 0);
+    this.coins = rng.shuffle(values).map((value, id) => ({ id, value, used: false }));
     this.drink = rng.pick(COFFEE_DRINKS);
     this.sugar = rng.int(c.sugar[0], c.sugar[1]);
     this.code = Array.from({ length: c.codeLength }, () => rng.int(1, c.keys));

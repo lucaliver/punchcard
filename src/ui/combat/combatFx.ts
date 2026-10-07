@@ -35,9 +35,9 @@ const HIT_OFFSETS: [number, number][] = [
   [40, -34],
 ];
 
-/** How long an enemy's speech bubble stays up (ms) before the note spelling out its half-HP trait (keep equal to `.speech` in CSS). */
+/** The time (ms) an enemy's line is typed out in, at most (70% of it; a short line is typed at the voice's own pace). The bubble then stays up for `CONFIG.speechHold` more. */
 const SPEECH_MS = 3000;
-/** A passive's bubble (Paradigm Shift) is a short quip: its note waits for it the same way. */
+/** A passive's bubble (Paradigm Shift) is a short quip, typed faster. */
 const QUIP_MS = 1500;
 
 /** Hit-stop (s) by damage dealt: the fight freezes for a beat on heavy hits, longer on huge ones. */
@@ -53,18 +53,24 @@ export function bindCombatFx(v: CombatView, cards: CardLayer, onEnd: (result: 'w
   /** Hexes (and Inflation) already explained this fight (one hint each). */
   const hexHinted = new Set<string>();
 
-  /** An enemy's speech bubble over the stage (one at a time); it lasts `ms`, then goes by itself. */
+  /** An enemy's speech bubble over the stage (one at a time): it is typed out within `ms`, stays `CONFIG.speechHold` ms once all the text is there, then goes by itself. */
   const speak = (text: string, ms = SPEECH_MS): void => {
     r.stage.querySelector('.speech')?.remove();
     clearInterval(typing);
+    clearTimeout(hideTimer);
     // The line is typed out letter by letter (the unsaid part keeps the bubble's size) while the enemy's voice reads it, in a pitch of its own.
     const said = h('span', null);
     const unsaid = h('span', { class: 'unsaid' }, text);
-    const bubble = h('div', { class: 'speech', style: { animationDuration: `${ms}ms` }, 'aria-label': text }, said, unsaid);
-    bubble.addEventListener('animationend', () => bubble.remove());
+    const bubble = h('div', { class: 'speech', 'aria-label': text }, said, unsaid);
     r.stage.append(bubble);
     const letters = [...text];
     const gap = Math.min(CONFIG.voiceMs, (ms * 0.7) / Math.max(1, letters.length));
+    const total = gap * letters.length + CONFIG.speechHold;
+    speechEnd = performance.now() + total;
+    hideTimer = window.setTimeout(() => {
+      bubble.classList.add('out');
+      bubble.addEventListener('animationend', () => bubble.remove());
+    }, total);
     const [lo, hi] = CONFIG.voicePitch;
     const id = v.combat.enemy.def.id;
     voice(text, lo + ([...id].reduce((sum, c) => sum + c.charCodeAt(0) * 7, 0) % (hi - lo)), gap);
@@ -77,6 +83,10 @@ export function bindCombatFx(v: CombatView, cards: CardLayer, onEnd: (result: 'w
     }, gap);
   };
   let typing = 0;
+  let hideTimer = 0;
+  /** When the bubble on screen will have gone: a note meant to follow it waits until then. */
+  let speechEnd = 0;
+  const speechLeft = (): number => Math.max(0, speechEnd - performance.now());
 
   const onEvent = (e: CombatEvent): void => {
     switch (e.type) {
@@ -329,7 +339,7 @@ export function bindCombatFx(v: CombatView, cards: CardLayer, onEnd: (result: 'w
         // what its half-HP trait just did (the belt speeds up, it hits harder…).
         const def = v.combat.enemy.def;
         if (def.halfSpeech) speak(t(`enemy.${def.id}.speech`));
-        v.toast(keywordText(t(`enemy.${def.id}.half`)), true, def.halfSpeech ? SPEECH_MS : 0);
+        v.toast(keywordText(t(`enemy.${def.id}.half`)), true, def.halfSpeech ? speechLeft() : 0);
         // Its true face: the sprite changes for good.
         const art = v.combat.enemy.def.halfArt;
         const riso = r.enemyArt.querySelector('.riso');
@@ -387,7 +397,7 @@ export function bindCombatFx(v: CombatView, cards: CardLayer, onEnd: (result: 'w
         v.state.ltr = !v.state.ltr;
         r.belt.classList.toggle('ltr', v.state.ltr);
         // The turn comes half a second into the bubble; the note follows once it has gone.
-        v.toast(t('combat.beltReversed'), false, QUIP_MS - CONFIG.beltTurnPause * 1000);
+        v.toast(t('combat.beltReversed'), false, speechLeft());
         sfx('machinery');
         break;
       case 'lowerSink':
@@ -461,6 +471,7 @@ export function bindCombatFx(v: CombatView, cards: CardLayer, onEnd: (result: 'w
   const unsubscribe = v.combat.events.on(onEvent);
   return () => {
     clearInterval(typing);
+    clearTimeout(hideTimer);
     unsubscribe();
   };
 }
