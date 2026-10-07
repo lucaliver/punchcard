@@ -176,6 +176,14 @@ const SOUNDS = {
     tone(1320, 0.07, { type: 'square', vol: 0.05, delay: 0.65 });
     tone(1320, 0.07, { type: 'square', vol: 0.05, delay: 0.78 });
   },
+  /** The coffee is served: a rising little fanfare ending on a bell. */
+  served: () => {
+    [784, 988, 1175].forEach((f, i) => {
+      tone(f, 0.1, { type: 'square', vol: 0.06, delay: i * 0.09 });
+    });
+    tone(1568, 0.6, { type: 'sine', vol: 0.14, delay: 0.3 });
+    tone(2352, 0.4, { type: 'sine', vol: 0.06, delay: 0.3 });
+  },
   /** A coin drops into the machine's slot: a bright double clink. */
   coin: () => {
     tone(2200, 0.05, { type: 'square', vol: 0.05 });

@@ -17,12 +17,32 @@
   background-repeat: no-repeat;
   border: var(--line) solid var(--k);
   box-shadow: var(--off) var(--off) 0 var(--shadow);
-  animation: stamp-in 0.15s steps(2);
 }
 .task-window.on { display: flex; }
+.task-window.entering { animation: stamp-in 0.15s steps(2); }
+/* a served cup: the window flashes green, then shrinks away (it lets the belt through at once) */
+.task-window.served { animation: task-served 0.4s steps(2) 3; }
+.task-window.leaving { pointer-events: none; animation: task-out 0.4s steps(4) forwards; }
+@keyframes task-served {
+  50% { border-color: var(--mint); }
+}
+@keyframes task-out {
+  to { scale: 0.4; opacity: 0; translate: 0 30px; }
+}
 /* the ability button rides over the window's corner */
 .combat.tasking .ability-btn { z-index: calc(var(--z-belt-window) + 1); }
-.task-window.jolt { animation: shake-s 0.25s steps(2); }
+/* a mistake: the window shakes and flashes red, it never goes away */
+.task-window.jolt { animation: task-jolt 0.3s steps(3); }
+.task-window.jolt .tk-lcd { animation: task-jolt-lcd 0.3s steps(3); }
+@keyframes task-jolt {
+  0%, 100% { translate: 0 0; }
+  25% { translate: -5px 0; border-color: var(--red); }
+  50% { translate: 5px 0; border-color: var(--red); }
+  75% { translate: -3px 0; border-color: var(--red); }
+}
+@keyframes task-jolt-lcd {
+  0%, 75% { background: var(--red); color: var(--paper); }
+}
 /* a mistake: the move's bar flashes (the move lands sooner) */
 .threat.fined { animation: task-fined 0.5s steps(2); }
 @keyframes task-fined {
@@ -264,7 +284,7 @@
   clip-path: polygon(0 0, 100% 0, 85% 100%, 15% 100%);
 }
 .tk-liquid { position: absolute; left: 0; right: 0; bottom: 0; height: calc(var(--fill) * 100%); background: var(--wood-edge); border-top: 3px solid var(--rust); }
-.tk-spoon { position: absolute; right: 6px; bottom: 22px; font-size: 52px; color: var(--coin-silver); rotate: 14deg; }
+.tk-spoon { position: absolute; right: 6px; bottom: 22px; font-size: 52px; color: var(--coin-silver); rotate: 194deg; }
 .tk-steam { display: none; position: absolute; left: 14px; right: 14px; bottom: 64px; height: 30px; justify-content: space-around; }
 .tk-brew.served .tk-steam { display: flex; }
 .tk-steam i { width: 4px; height: 14px; background: var(--paper); animation: steam-up 0.8s steps(4) infinite; }
@@ -273,4 +293,26 @@
 @keyframes steam-up {
   from { translate: 0 12px; opacity: 1; }
   to { translate: 0 -8px; opacity: 0; }
+}
+
+/* served: the cup hops, steam rises, sparks fly out, the display lights up */
+.task-window.served .tk-lcd { color: var(--void); background: var(--mint); }
+.tk-brew.served .tk-cupbig { animation: cup-hop 0.4s steps(2) 3; }
+@keyframes cup-hop {
+  50% { translate: 0 -8px; }
+}
+.tk-sparks { display: none; position: absolute; left: 50%; bottom: 56px; }
+.tk-brew.served .tk-sparks { display: block; }
+.tk-sparks i {
+  position: absolute;
+  width: 6px;
+  height: 6px;
+  background: var(--y);
+  rotate: var(--a);
+  animation: spark-out 0.6s steps(5) infinite;
+}
+.tk-sparks i:nth-child(even) { background: var(--p); }
+@keyframes spark-out {
+  from { transform: translateY(0); opacity: 1; }
+  to { transform: translateY(-54px); opacity: 0; }
 }

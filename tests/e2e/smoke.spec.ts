@@ -732,6 +732,9 @@ test("the Boss's coffee: a chore window covers the belt and the sleeve; pay, key
     .nth(wrong - 1)
     .tap();
   expect(await combat(page, 'return c.task.errors;')).toBe(1);
+  // The window shakes and flashes but never goes away (no opacity dip).
+  await page.waitForTimeout(80);
+  expect(await page.evaluate(() => getComputedStyle(document.querySelector('.task-window')!).opacity)).toBe('1');
   expect(((await combat(page, 'return c.enemy.timer;')) as number) - timer).toBeGreaterThan(1.5);
   for (const n of code)
     await page
@@ -756,7 +759,8 @@ test("the Boss's coffee: a chore window covers the belt and the sleeve; pay, key
   for (let i = 0; i < sugar; i++) await page.locator('.tk-step-btn').last().tap();
   await page.locator('.tk-start').tap();
   await expect(page.locator('.tk-brew')).toBeVisible();
-  // The pour takes a while, then the window goes and the move with it.
+  // The pour takes a while; the served cup is celebrated, then the window leaves and the move with it.
+  await expect(page.locator('.task-window.served')).toBeVisible({ timeout: 10000 });
   await expect(win).toBeHidden({ timeout: 12000 });
   expect(await combat(page, "return c.has('enemy', 'stun');")).toBe(true);
   expect(await combat(page, 'return c.hero.hp === c.hero.maxHp;')).toBe(true);

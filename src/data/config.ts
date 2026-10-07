@@ -92,7 +92,7 @@ export const CONFIG = {
    */
   coffee: {
     brewTime: 5,
-    doneHold: 0.8,
+    doneHold: 1.6,
     penalty: 2,
     penaltyMax: 8,
     calm: 3,

@@ -14,6 +14,10 @@ const DRAG_PX = 8;
 const DROP_SLACK = 14;
 /** Steps of the cup filling up (motion is stepped). */
 const FILL_STEPS = 20;
+/** Sparks that fly off the served cup. */
+const SPARKS = 8;
+/** Frames after which a window that is leaving is closed even if its animation never ended. */
+const LEAVE_FRAMES = 90;
 /** The window's four steps, in order (the pour and the served cup are still the fourth). */
 const STEPS: Record<CoffeePhase, number> = { coins: 1, code: 2, place: 3, sugar: 4, brew: 4, done: 4 };
 const STEP_COUNT = 4;
@@ -70,6 +74,23 @@ export function createTaskWindow(v: CombatView): { render(): void } {
   let spot: HTMLElement | null = null;
   let dialNum: HTMLElement | null = null;
   let glass: HTMLElement | null = null;
+
+  /** Whether the window is up, whether the last cup was served, and whether it is on its way out. */
+  let on = false;
+  let served = false;
+  let leaving = false;
+  let leaveFrames = 0;
+  const hide = (): void => {
+    on = false;
+    served = false;
+    leaving = false;
+    el.classList.remove('leaving', 'served');
+    toggle(el, 'on', false);
+    toggle(v.el, 'tasking', false);
+  };
+  el.addEventListener('animationend', (ev) => {
+    if (ev.target === el && leaving) hide();
+  });
 
   const blocked = (): boolean => state.paused || state.waiting || state.ended;
   const send = (a: CoffeeAction, from: HTMLElement): CoffeeResult | null => {
@@ -222,6 +243,7 @@ export function createTaskWindow(v: CombatView): { render(): void } {
       h('div', { class: 'tk-cupbig' }, h('div', { class: 'tk-cupin' }, h('i', { class: 'tk-liquid' }))),
       h('span', { class: 'tk-spoon', html: icon('spoon') }),
       h('div', { class: 'tk-steam' }, h('i'), h('i'), h('i')),
+      h('div', { class: 'tk-sparks' }, ...Array.from({ length: SPARKS }, (_, i) => h('i', { style: { '--a': `${(i * 360) / SPARKS}deg` } }))),
     );
     refs.stage.replaceChildren(glass);
   };
@@ -246,7 +268,7 @@ export function createTaskWindow(v: CombatView): { render(): void } {
     else if (task.phase === 'sugar') buildSugar(task);
     else if (task.phase === 'brew') buildBrew();
     else if (task.phase === 'done' && was !== 'brew') buildBrew();
-    if (task.phase === 'done') sfx('ding');
+    if (task.phase === 'done') sfx('served');
   };
 
   /**
@@ -265,13 +287,33 @@ export function createTaskWindow(v: CombatView): { render(): void } {
   return {
     render() {
       const task = combat.isOver ? null : combat.task;
-      toggle(el, 'on', !!task);
-      toggle(v.el, 'tasking', !!task);
       if (!task) {
         shown = null;
         built = null;
+        // A served cup sends the window off with an animation (the engine has let go of the belt already); anything else closes it at once.
+        if (on && !leaving) {
+          if (served && !combat.isOver) {
+            leaving = true;
+            leaveFrames = 0;
+            el.classList.add('leaving');
+          } else hide();
+        }
+        // The animation's end closes it; this is only for a tab whose animations don't run.
+        else if (leaving && ++leaveFrames > LEAVE_FRAMES) hide();
         return;
       }
+      if (leaving) {
+        leaving = false;
+        el.classList.remove('leaving');
+      }
+      if (!on) {
+        on = true;
+        toggle(el, 'on', true);
+        toggle(v.el, 'tasking', true);
+        retrigger(el, 'entering');
+      }
+      served = task.phase === 'done';
+      toggle(el, 'served', served);
       sync(task);
       const phase = task.phase;
       setText(refs.step, `${STEPS[phase]}/${STEP_COUNT}`);
