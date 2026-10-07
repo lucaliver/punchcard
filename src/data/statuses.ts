@@ -147,6 +147,28 @@ const defs: StatusDef[] = [
       if (def.type === 'attack') c.applyStatus('enemy', 'chill', 1, c.stacks(side, 'coldOpen'));
     },
   },
+  // Paper Trail (a power): every attack the hero plays also makes the enemy Vulnerable for `v` seconds.
+  {
+    id: 'paperTrail',
+    tone: 'red',
+    kind: 'stacks',
+    good: true,
+    icon: 'crack',
+    onCardPlayed: (c, side, def) => {
+      if (def.type === 'attack') c.applyStatus('enemy', 'vulnerable', 1, c.stacks(side, 'paperTrail'));
+    },
+  },
+  // Blue Collar Blues: for a while, every attack the hero plays rushes the belt for `v` seconds.
+  {
+    id: 'blueCollarBlues',
+    tone: 'amber',
+    kind: 'timed',
+    good: true,
+    icon: 'speedCards',
+    onCardPlayed: (c, side, def) => {
+      if (def.type === 'attack') c.rushBelt(c.stacks(side, 'blueCollarBlues'));
+    },
+  },
   // Forty Tabs Open (a power): a Multitasking charge every few seconds, whatever you play.
   {
     id: 'fortyTabs',

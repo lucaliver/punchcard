@@ -544,6 +544,46 @@ export const warriorCards: CardDef[] = [
     art: 'skillIssue',
     play: (c, v) => c.applyStatus('enemy', 'vulnerable', 1, v[0]),
   },
+  // Vulnerable gets a Block card, a payoff and a power
+  {
+    id: 'inspectorGadget',
+    face: '{block:0}|{vuln:1}',
+    cls: 'warrior',
+    type: 'defense',
+    rarity: 'rare',
+    cost: 3,
+    vals: [10, 6],
+    upVals: [14, 8],
+    art: 'inspectorGadget',
+    play: (c, v) => {
+      c.gainBlock('hero', v[0]);
+      c.applyStatus('enemy', 'vulnerable', 1, v[1]);
+    },
+  },
+  {
+    id: 'spanishInquisition',
+    face: '{dmg:0}|{?vuln}{dmg:1}',
+    cls: 'warrior',
+    type: 'attack',
+    rarity: 'rare',
+    cost: 3,
+    vals: [8, 12],
+    upVals: [11, 16],
+    art: 'spanishInquisition',
+    play: (c, v) => void c.hit(c.has('enemy', 'vulnerable') ? v[1] : v[0]),
+  },
+  {
+    id: 'paperTrail',
+    face: '{*dmg}{vuln:0}',
+    cls: 'warrior',
+    type: 'power',
+    rarity: 'epic',
+    cost: 3,
+    vals: [1],
+    upVals: [2],
+    art: 'paperTrail',
+    play: (c, v) => c.applyStatus('hero', 'paperTrail', v[0]),
+  },
   {
     id: 'eightHours',
     face: '{cards:0}={copy}',

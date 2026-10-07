@@ -544,6 +544,18 @@ export const neutralCards: CardDef[] = [
     },
   },
   {
+    id: 'blueCollarBlues',
+    face: '{*dmg}{rush:1}|{timer:0}',
+    cls: 'neutral',
+    type: 'skill',
+    rarity: 'rare',
+    cost: 2,
+    vals: [15, 2],
+    upVals: [20, 2],
+    art: 'blueCollarBlues',
+    play: (c, v) => c.applyStatus('hero', 'blueCollarBlues', v[1], v[0]),
+  },
+  {
     id: 'workersComp',
     face: '{*hp}{block:0}',
     cls: 'neutral',

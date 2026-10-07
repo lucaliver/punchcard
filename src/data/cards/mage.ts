@@ -470,6 +470,68 @@ export const mageCards: CardDef[] = [
     art: 'twoFactorAuth',
     play: (c, v) => c.gainBlock('hero', c.stacks('hero', 'multitasking') * v[0]),
   },
+  // Rush with Block, Burn with Poison, Multitasking turned into Burn and mana
+  {
+    id: 'fastTrack',
+    face: '{block:0}|{rush:1}',
+    cls: 'mage',
+    type: 'defense',
+    rarity: 'rare',
+    cost: 2,
+    vals: [8, 4],
+    upVals: [11, 6],
+    art: 'fastTrack',
+    play: (c, v) => {
+      c.gainBlock('hero', v[0]);
+      c.rushBelt(v[1]);
+    },
+  },
+  {
+    id: 'smokeBreak',
+    face: '{burn:0}|{poison:1}',
+    cls: 'mage',
+    type: 'attack',
+    rarity: 'rare',
+    cost: 3,
+    vals: [3, 3],
+    upVals: [4, 4],
+    art: 'smokeBreak',
+    play: (c, v) => {
+      c.applyStatus('enemy', 'burn', v[0]);
+      c.applyStatus('enemy', 'poison', v[1]);
+    },
+  },
+  {
+    id: 'overclocked',
+    face: '{burn:0}×{multi}',
+    cls: 'mage',
+    type: 'skill',
+    rarity: 'epic',
+    cost: 2,
+    vals: [2],
+    upVals: [3],
+    art: 'overclocked',
+    play: (c, v) => {
+      const charges = c.stacks('hero', 'multitasking');
+      c.removeStatus('hero', 'multitasking');
+      if (charges > 0) c.applyStatus('enemy', 'burn', v[0] * charges);
+    },
+  },
+  {
+    id: 'pettyCash',
+    face: '{dmg:0}|{mana:1}×{multi}',
+    cls: 'mage',
+    type: 'attack',
+    rarity: 'epic',
+    cost: 2,
+    vals: [4, 1],
+    upVals: [6, 1],
+    art: 'pettyCash',
+    play: (c, v) => {
+      c.hit(v[0]);
+      c.gainMana(v[1] * c.stacks('hero', 'multitasking'));
+    },
+  },
   {
     id: 'cloudBackup',
     face: '{block:0}|{sleeve}{block:1}',

@@ -2105,6 +2105,78 @@ describe('cards that fill the classes out', () => {
     expect(c.has('hero', 'stun')).toBe(true);
   });
 
+  it('Inspector Gadget, Hold Music, Eye Roll and Bathroom Break pair a debuff with Block, damage or a dodge', () => {
+    const c = quiet();
+    cast(c, 'inspectorGadget');
+    expect(c.hero.block).toBe(CARDS.inspectorGadget.vals[0]);
+    expect(c.has('enemy', 'vulnerable')).toBe(true);
+    cast(c, 'holdMusic');
+    expect(c.has('enemy', 'weak')).toBe(true);
+    c.removeStatus('enemy', 'weak');
+    const hp = c.enemy.hp;
+    cast(c, 'eyeRoll');
+    expect(c.enemy.hp).toBeLessThan(hp);
+    expect(c.has('enemy', 'weak')).toBe(true);
+    cast(c, 'bathroomBreak');
+    expect(c.has('hero', 'dodge')).toBe(true);
+  });
+
+  it('Fast Track rushes, Smoke Break burns and poisons, Sedative in the Coffee stuns the enemy and puts the hero to sleep', () => {
+    const c = quiet();
+    cast(c, 'fastTrack');
+    expect(c.hero.block).toBe(CARDS.fastTrack.vals[0]);
+    expect(c.has('hero', 'rush')).toBe(true);
+    cast(c, 'smokeBreak');
+    expect(c.stacks('enemy', 'burn')).toBe(CARDS.smokeBreak.vals[0]);
+    expect(c.stacks('enemy', 'poison')).toBe(CARDS.smokeBreak.vals[1]);
+    cast(c, 'sedativeInTheCoffee');
+    expect(c.has('enemy', 'stun')).toBe(true);
+    expect(c.has('hero', 'stun')).toBe(true);
+    expect(c.stacks('enemy', 'poison')).toBeGreaterThan(CARDS.smokeBreak.vals[1]);
+  });
+
+  it('Spanish Inquisition hits harder on a vulnerable enemy, Paper Trail makes every attack leave the enemy vulnerable', () => {
+    const c = quiet();
+    let before = c.enemy.hp;
+    cast(c, 'spanishInquisition');
+    const plain = before - c.enemy.hp;
+    c.applyStatus('enemy', 'vulnerable', 1, 5);
+    before = c.enemy.hp;
+    cast(c, 'spanishInquisition');
+    expect(before - c.enemy.hp).toBeGreaterThan(plain * 1.5);
+
+    const d = quiet();
+    cast(d, 'paperTrail');
+    expect(d.has('enemy', 'vulnerable')).toBe(false);
+    cast(d, 'punch');
+    expect(d.has('enemy', 'vulnerable')).toBe(true);
+  });
+
+  it('Overclocked turns Multitasking charges into Burn, Petty Cash into mana', () => {
+    const c = quiet();
+    c.chargeMultitasking();
+    c.chargeMultitasking();
+    c.chargeMultitasking();
+    c.hero.mana = 0;
+    cast(c, 'pettyCash');
+    expect(c.hero.mana).toBeGreaterThanOrEqual(3 * CARDS.pettyCash.vals[1]);
+    cast(c, 'overclocked');
+    expect(c.stacks('enemy', 'burn')).toBe(3 * CARDS.overclocked.vals[0]);
+    expect(c.stacks('hero', 'multitasking')).toBe(0);
+  });
+
+  it('Blue Collar Blues rushes the belt on every attack while it lasts', () => {
+    const c = quiet();
+    cast(c, 'blueCollarBlues');
+    expect(c.has('hero', 'rush')).toBe(false);
+    cast(c, 'punch');
+    expect(c.has('hero', 'rush')).toBe(true);
+    c.removeStatus('hero', 'rush');
+    run(c, CARDS.blueCollarBlues.vals[0] + 1);
+    cast(c, 'punch');
+    expect(c.has('hero', 'rush')).toBe(false);
+  });
+
   it("Cold Open chills on every attack, Forty Tabs Open charges Multitasking, Free Coffee pours mana, Workers' Comp blocks after a hurt", () => {
     const c = quiet();
     cast(c, 'coldOpen');

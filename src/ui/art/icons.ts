@@ -668,6 +668,56 @@ export const ICONS: Record<string, { el: Element; svg: string }> = {
     svg: `<path d="M16 50a13 13 0 0 1 2-26 16 16 0 0 1 30-2 14 14 0 0 1 0 28z"/><path d="M32 46V28M24 35l8-8 8 8" fill="none" stroke="#16121f" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/>`,
   },
 
+  // ---- combo fillers (a debuff with Block, a status with a status)
+  blueCollarBlues: {
+    el: 'steel',
+    svg: `<path d="M20 24a14 14 0 0 1 28 0" fill="none" stroke="currentColor" stroke-width="5"/><rect x="14" y="24" width="46" height="34" rx="4"/><rect x="14" y="36" width="46" height="5" fill="#16121f"/><rect x="33" y="31" width="8" height="14" fill="#16121f"/><path d="M2 30h8M0 40h8M2 50h8" stroke="currentColor" stroke-width="3.5" stroke-linecap="round"/>`,
+  },
+  inspectorGadget: {
+    el: 'steel',
+    svg: `<path d="M12 34c0-14 6-22 16-22s16 8 16 22z"/><path d="M2 38c0-4 12-6 26-6s26 2 26 6-12 8-26 8S2 42 2 38z"/><path fill="#16121f" d="M12 29h32v5H12z"/><circle cx="46" cy="44" r="10" fill="none" stroke="currentColor" stroke-width="5"/><path d="M53 51l8 9" stroke="currentColor" stroke-width="6" stroke-linecap="round"/>`,
+  },
+  holdMusic: {
+    el: 'arcane',
+    svg: `<path d="M6 28c0-12 12-18 26-18s26 6 26 18v10H46V28c0-4-6-8-14-8s-14 4-14 8v10H6z"/><rect x="4" y="32" width="18" height="16" rx="4"/><rect x="42" y="32" width="18" height="16" rx="4"/><path fill="#16121f" d="M30 58V44l10-3v11" stroke="#16121f" stroke-width="3"/><circle cx="27" cy="58" r="4" fill="#16121f"/><circle cx="37" cy="55" r="4" fill="#16121f"/>`,
+  },
+  fastTrack: {
+    el: 'arcane',
+    svg: `<path d="M4 14h56v12a6 6 0 0 0 0 12v12H4V38a6 6 0 0 0 0-12z"/><g fill="#16121f"><path d="M14 22l12 10-12 10zM28 22l12 10-12 10z"/><rect x="46" y="20" width="6" height="24"/></g>`,
+  },
+  bathroomBreak: {
+    el: 'shadow',
+    svg: `<rect x="10" y="4" width="44" height="56"/><rect x="16" y="10" width="32" height="44" fill="#16121f"/><circle cx="32" cy="21" r="5"/><path d="M26 28h12l3 14h-4l-1 10h-4l-1-8-1 8h-4l-1-10h-4z"/>`,
+  },
+  eyeRoll: {
+    el: 'curse',
+    svg: `<path d="M2 34C12 16 22 10 32 10s20 6 30 24C52 52 42 56 32 56S12 52 2 34z"/><circle cx="32" cy="24" r="13" fill="#16121f"/><circle cx="32" cy="22" r="5"/><path d="M6 24c8-8 16-11 26-11s18 3 26 11" fill="none" stroke="#16121f" stroke-width="3" stroke-linecap="round"/>`,
+  },
+  smokeBreak: {
+    el: 'fire',
+    svg: `<rect x="4" y="46" width="42" height="12"/><rect x="4" y="46" width="13" height="12" fill="#16121f" opacity=".45"/><rect x="46" y="46" width="10" height="12" fill="#16121f"/><g ${S} stroke-width="6"><path d="M52 40c-6-7 6-10 0-17s6-10 0-17M36 40c-6-7 6-10 0-17"/></g>`,
+  },
+  sedativeInTheCoffee: {
+    el: 'necro',
+    svg: `<path d="M6 26h38v18a14 14 0 0 1-14 14H20A14 14 0 0 1 6 44z"/><path d="M44 31h5a7 7 0 0 1 0 14h-5" fill="none" stroke="currentColor" stroke-width="5"/><path fill="#16121f" d="M10 30h30v4H10z"/><g transform="rotate(-30 28 14)"><rect x="12" y="8" width="32" height="13" rx="6.5"/><path fill="#16121f" d="M28 8h9a6.5 6.5 0 0 1 0 13h-9z"/></g>`,
+  },
+  spanishInquisition: {
+    el: 'blood',
+    svg: `<path d="M32 2l15 34H17z"/><rect x="12" y="34" width="40" height="26" rx="7"/><g fill="#16121f"><rect x="19" y="43" width="9" height="4"/><rect x="36" y="43" width="9" height="4"/><path d="M29 6h6v8h6v5h-6v8h-6v-8h-6v-5h6z" opacity=".5"/></g>`,
+  },
+  paperTrail: {
+    el: 'steel',
+    svg: `<path d="M12 4h30l10 10v46H12z"/><path fill="#16121f" opacity=".4" d="M42 4l10 10H42z"/><path d="M20 52c8-3 6-9 12-11s12-1 12-9-8-8-12-6-6-9-12-10" fill="none" stroke="#16121f" stroke-width="5" stroke-dasharray="7 5"/><circle cx="20" cy="52" r="4.5" fill="#16121f"/>`,
+  },
+  overclocked: {
+    el: 'fire',
+    svg: `<rect x="14" y="14" width="36" height="36"/><g stroke="currentColor" stroke-width="4"><path d="M22 4v10M32 4v10M42 4v10M22 50v10M32 50v10M42 50v10M4 22h10M4 32h10M4 42h10M50 22h10M50 32h10M50 42h10"/></g><rect x="21" y="21" width="22" height="22" fill="#16121f"/><path d="M34 22l-9 12h6l-3 9 11-13h-6z"/>`,
+  },
+  pettyCash: {
+    el: 'holy',
+    svg: `<path d="M6 32h52v26H6z"/><path d="M10 18h44l4 14H6z"/><rect x="28" y="30" width="8" height="10" fill="#16121f"/><circle cx="32" cy="9" r="8"/><circle cx="32" cy="9" r="4" fill="#16121f"/>`,
+  },
+
   fireExit: {
     el: 'steel',
     svg: `<path d="M6 4h36v56H6z"/><path d="M12 10h24v44H12z" fill="#16121f"/><circle cx="24" cy="21" r="5"/><path d="M24 27v12M24 31l-8 4M24 31l8-3M24 39l-7 12M24 39l8 10" fill="none" stroke="currentColor" stroke-width="4" stroke-linecap="round"/><path d="M46 24l16 10-16 10z"/>`,

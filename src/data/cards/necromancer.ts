@@ -464,6 +464,53 @@ export const necromancerCards: CardDef[] = [
       c.applyStatus('enemy', 'stun', 1, v[1]);
     },
   },
+  // Weak with Block and with damage, Poison with Stun
+  {
+    id: 'holdMusic',
+    face: '{block:0}|{weak:1}',
+    cls: 'necromancer',
+    type: 'defense',
+    rarity: 'common',
+    cost: 2,
+    vals: [7, 4],
+    upVals: [10, 6],
+    art: 'holdMusic',
+    play: (c, v) => {
+      c.gainBlock('hero', v[0]);
+      c.applyStatus('enemy', 'weak', 1, v[1]);
+    },
+  },
+  {
+    id: 'eyeRoll',
+    face: '{dmg:0}|{weak:1}',
+    cls: 'necromancer',
+    type: 'attack',
+    rarity: 'common',
+    cost: 1,
+    vals: [4, 4],
+    upVals: [6, 6],
+    art: 'eyeRoll',
+    play: (c, v) => {
+      c.hit(v[0]);
+      c.applyStatus('enemy', 'weak', 1, v[1]);
+    },
+  },
+  {
+    id: 'sedativeInTheCoffee',
+    face: '{poison:0}|{stun:1}|{selfStun:2}',
+    cls: 'necromancer',
+    type: 'attack',
+    rarity: 'epic',
+    cost: 4,
+    vals: [6, 3, 2],
+    upVals: [9, 4, 2],
+    art: 'sedativeInTheCoffee',
+    play: (c, v) => {
+      c.applyStatus('enemy', 'poison', v[0]);
+      c.applyStatus('enemy', 'stun', 1, v[1]);
+      c.applyStatus('hero', 'stun', 1, v[2]);
+    },
+  },
   {
     id: 'forgottenLunch',
     face: '{*timer}{poison:0}',

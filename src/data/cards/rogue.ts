@@ -146,6 +146,21 @@ export const rogueCards: CardDef[] = [
     play: (c, v) => c.gainBlock('hero', v[0]),
   },
   {
+    id: 'bathroomBreak',
+    face: '{dodge:0}|{vuln:1}',
+    cls: 'rogue',
+    type: 'defense',
+    rarity: 'rare',
+    cost: 2,
+    vals: [2, 6],
+    upVals: [3, 8],
+    art: 'bathroomBreak',
+    play: (c, v) => {
+      c.applyStatus('hero', 'dodge', 1, v[0]);
+      c.applyStatus('enemy', 'vulnerable', 1, v[1]);
+    },
+  },
+  {
     id: 'employeeDiscount',
     face: '{dmg:0}|{hp:1}{cheaper:2}',
     cls: 'rogue',
