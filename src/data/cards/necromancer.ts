@@ -512,6 +512,34 @@ export const necromancerCards: CardDef[] = [
     },
   },
   {
+    id: 'hrMediation',
+    face: '{weak:0}|{block:1}×{weak}',
+    cls: 'necromancer',
+    type: 'defense',
+    rarity: 'rare',
+    cost: 2,
+    vals: [3, 2, 16],
+    upVals: [4, 3, 24],
+    art: 'hrMediation',
+    // The mediator first leans on the enemy, then feeds on the tension: Block per second of Weak it has left.
+    play: (c, v) => {
+      c.applyStatus('enemy', 'weak', 1, v[0]);
+      c.gainBlock('hero', Math.min(v[2], Math.floor(c.fighter('enemy').statuses.weak?.t ?? 0) * v[1]));
+    },
+  },
+  {
+    id: 'rescheduleMeeting',
+    face: '{tickDown:0}',
+    cls: 'necromancer',
+    type: 'skill',
+    rarity: 'rare',
+    cost: 2,
+    vals: [3],
+    upVals: [5],
+    art: 'rescheduleMeeting',
+    play: (c, v) => c.delayEnemy(v[0]),
+  },
+  {
     id: 'forgottenLunch',
     face: '{*timer}{poison:0}',
     cls: 'necromancer',

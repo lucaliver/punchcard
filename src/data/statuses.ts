@@ -169,6 +169,54 @@ const defs: StatusDef[] = [
       if (def.type === 'attack') c.rushBelt(c.stacks(side, 'blueCollarBlues'));
     },
   },
+  // Shredder (a power): every card the hero uses up gives `v` Block.
+  { id: 'shredder', tone: 'teal', kind: 'stacks', good: true, icon: 'burntPaper', onExhaust: (c, side, s) => c.gainBlock(side, s.v) },
+  // Buy Now, Pay Later (on the enemy): it counts the HP the enemy loses meanwhile (`e`), and when time is up bills it `v`% of that again (raw, Block can't stop it).
+  {
+    id: 'buyNowPayLater',
+    tone: 'red',
+    kind: 'timed',
+    good: false,
+    icon: 'debt',
+    onHurt: (_c, _side, s, lost) => {
+      s.e = (s.e ?? 0) + lost;
+    },
+    onEnd: (c, side, s) => {
+      const owed = Math.floor(((s.e ?? 0) * s.v) / 100);
+      if (owed > 0) c.damage('hero', side, owed, { raw: true, ignoreBlock: true }, 'hero');
+    },
+  },
+  // Does It Spark Joy?: for a while every card costs `v` mana.
+  { id: 'sparkJoy', tone: 'blue', kind: 'timed', good: true, icon: 'priceTag', flatCost: true },
+  // Matador: the next hit the hero dodges stuns the enemy for `v` seconds.
+  {
+    id: 'matador',
+    tone: 'teal',
+    kind: 'timed',
+    good: true,
+    icon: 'crossed',
+    onDodge: (c, side, s) => {
+      c.applyStatus('enemy', 'stun', 1, s.v);
+      c.removeStatus(side, 'matador');
+    },
+  },
+  // Ghost in the Machine: while the hero dodges, every card played makes the Dodge (and this) last `v` seconds longer.
+  {
+    id: 'ghostInTheMachine',
+    tone: 'teal',
+    kind: 'timed',
+    good: true,
+    icon: 'dodge',
+    tick: (c, side) => {
+      if (!c.has(side, 'dodge')) c.removeStatus(side, 'ghostInTheMachine');
+    },
+    onCardPlayed: (c, side) => {
+      const f = c.fighter(side);
+      const more = c.stacks(side, 'ghostInTheMachine');
+      if (f.statuses.dodge) f.statuses.dodge.t += more;
+      if (f.statuses.ghostInTheMachine) f.statuses.ghostInTheMachine.t += more;
+    },
+  },
   // Forty Tabs Open (a power): a Multitasking charge every few seconds, whatever you play.
   {
     id: 'fortyTabs',

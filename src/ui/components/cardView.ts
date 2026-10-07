@@ -86,6 +86,10 @@ export const GLYPHS: Record<string, { icon: string; unit?: string; sign?: string
   bare: { icon: 'shieldOff' },
   /** The card's own cost goes down. */
   cheaper: { icon: 'priceTag', sign: '-' },
+  /** A price every card is set to. */
+  price: { icon: 'priceTag' },
+  /** A card is used up (the Exhaust keyword). */
+  exhaust: { icon: 'burntPaper' },
   /** Max HP, for this fight. */
   maxHp: { icon: 'heartUp', sign: '+', tone: 'green' },
   /** The enemy's buffs (and its Block). */
@@ -110,9 +114,8 @@ export function cardName(card: CardInst): string {
   return t(`card.${card.id}.name`);
 }
 
-/** The cost number on a card face (for a card On Credit, what it will owe). */
-export function cardCostLabel(card: CardLike): string {
-  const cost = cardCostOf(card);
+/** The cost number on a card face (for a card On Credit, what it will owe); in a fight `cost` is what `Combat.costOf` says. */
+export function cardCostLabel(card: CardLike, cost = cardCostOf(card)): string {
   return cost < 0 ? 'X' : String(cost);
 }
 

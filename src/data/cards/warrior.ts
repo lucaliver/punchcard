@@ -584,6 +584,93 @@ export const warriorCards: CardDef[] = [
     art: 'paperTrail',
     play: (c, v) => c.applyStatus('hero', 'paperTrail', v[0]),
   },
+  // Strength and Thorns get a payoff and cheap entries, Vulnerable a timing trick, missing HP a hitter
+  {
+    id: 'legDay',
+    face: '{block:0}|+{1}/{str}',
+    cls: 'warrior',
+    type: 'defense',
+    rarity: 'rare',
+    cost: 2,
+    vals: [6, 3],
+    upVals: [8, 4],
+    art: 'legDay',
+    shown: (c, v) => [v[0] + v[1] * c.strengthOf('hero'), v[1]],
+    play: (c, v) => c.gainBlock('hero', v[0] + v[1] * c.strengthOf('hero')),
+  },
+  {
+    id: 'whistleblower',
+    face: '{vuln:0}|{?vuln}×2',
+    cls: 'warrior',
+    type: 'skill',
+    rarity: 'rare',
+    cost: 1,
+    vals: [5],
+    upVals: [7],
+    art: 'whistleblower',
+    play: (c, v) => {
+      const left = c.has('enemy', 'vulnerable') ? c.fighter('enemy').statuses.vulnerable.t : 0;
+      c.applyStatus('enemy', 'vulnerable', 1, left > 0 ? left : v[0]);
+    },
+  },
+  {
+    id: 'fleshWound',
+    face: '{dmg:0}|+{1}/{hp}',
+    cls: 'warrior',
+    type: 'attack',
+    rarity: 'rare',
+    cost: 2,
+    vals: [4, 4],
+    upVals: [6, 3],
+    dmg: [0],
+    art: 'fleshWound',
+    // The more it hurts, the harder it hits: +1 damage per v[1] HP missing.
+    shown: (c, v) => [v[0] + Math.floor((c.hero.maxHp - c.hero.hp) / v[1]), v[1]],
+    play: (c, v) => void c.hit(v[0] + Math.floor((c.hero.maxHp - c.hero.hp) / v[1])),
+  },
+  {
+    id: 'cactusOnTheDesk',
+    face: '{block:0}|{thorns:1}',
+    cls: 'warrior',
+    type: 'defense',
+    rarity: 'common',
+    cost: 2,
+    vals: [6, 1],
+    upVals: [9, 2],
+    art: 'cactusOnTheDesk',
+    play: (c, v) => {
+      c.gainBlock('hero', v[0]);
+      c.applyStatus('hero', 'thorns', v[1]);
+    },
+  },
+  {
+    id: 'pumpIron',
+    face: '{dmg:0}|{str:1}',
+    cls: 'warrior',
+    type: 'attack',
+    rarity: 'epic',
+    cost: 2,
+    vals: [6, 1],
+    upVals: [9, 2],
+    art: 'pumpIron',
+    play: (c, v) => {
+      c.hit(v[0]);
+      c.applyStatus('hero', 'strength', v[1]);
+    },
+  },
+  {
+    id: 'buyNowPayLater',
+    face: '{timer:0}|{dmg:1}%',
+    cls: 'warrior',
+    type: 'skill',
+    rarity: 'epic',
+    cost: 2,
+    vals: [6, 50],
+    upVals: [8, 60],
+    dmg: [],
+    art: 'buyNowPayLater',
+    play: (c, v) => c.applyStatus('enemy', 'buyNowPayLater', v[1], v[0]),
+  },
   {
     id: 'eightHours',
     face: '{cards:0}={copy}',

@@ -233,6 +233,8 @@ export interface StatusDef {
   passable?: true;
   /** While active on the hero, its amount (`v`) adds to the discount a card falling into a full sleeve gives (Light Fingers). */
   catchBonus?: true;
+  /** While active on the hero, every card with a mana cost costs its amount (`v`) instead, X cards keep theirs (Does It Spark Joy?). */
+  flatCost?: true;
   /** While active on the hero, the next card that costs mana is free and takes one stack with it (Lost Badge). */
   freeNext?: true;
   /** While active on the hero, no card rule (`canPlay`) applies (Root access). */
@@ -255,8 +257,12 @@ export interface StatusDef {
   onEnemyStatus?: (c: Combat, id: string, s: StatusVal) => void;
   /** The enemy carrying it just took a lethal hit: return true to survive it (the status removes itself if it was a one-off). */
   onDeath?: (c: Combat, side: Side, s: StatusVal) => boolean;
-  /** A timed status just ran out on its carrier. */
-  onEnd?: (c: Combat, side: Side) => void;
+  /** A timed status just ran out on its carrier (`s` is what it held). */
+  onEnd?: (c: Combat, side: Side, s: StatusVal) => void;
+  /** A hit on the carrier was just turned away by `immune` (Matador). */
+  onDodge?: (c: Combat, side: Side, s: StatusVal) => void;
+  /** One of the hero's cards was just used up for this fight (played with Exhaust or Consume, scrapped from the sleeve, or swept off the belt): not a power, not a card that vanished some other way (Shredder). */
+  onExhaust?: (c: Combat, side: Side, s: StatusVal, card: CombatCard) => void;
   /** A card of the hero's just left the belt unplayed. */
   onExpire?: (c: Combat, side: Side, s: StatusVal) => void;
   /** While active on the enemy, a rust spot lands on the belt every `every` seconds, and the belt's speed drops along an ease-in-out sine of their share of `max` (`max` spots stop it dead: little at first, most of it in the middle, then it creeps to a halt; from the `warn` share of `max` on, the mop shakes and blinks). The hero scrubs them off with the mop. */

@@ -350,9 +350,17 @@ export class Combat {
 
   /** What playing the card takes from the mana now: nothing for a card On Credit (its cost becomes a debt, see `resolvePlay`), or when a badge makes the next one free. */
   cardCost(card: CardInst): number {
-    const cost = cardCostOf(card);
+    const cost = this.costOf(card);
     if (cost > 0 && this.keywords(card).includes('credit')) return 0;
     return cost > 0 && this.freeNextId() ? 0 : cost;
+  }
+
+  /** What a card costs before credit and free passes: its own cost, or the one a status sets for every card (`StatusDef.flatCost`; X cards keep theirs). */
+  costOf(card: CardInst): number {
+    const cost = cardCostOf(card);
+    if (cost < 0) return cost;
+    for (const [id, s] of Object.entries(this.hero.statuses)) if (STATUSES[id].flatCost && this.has('hero', id)) return s.v;
+    return cost;
   }
 
   /** The status that makes the next paid card free (`StatusDef.freeNext`), if one is up. */
@@ -628,7 +636,7 @@ export class Combat {
         s.t -= dt;
         if (s.t <= 0) {
           delete f.statuses[id];
-          def.onEnd?.(this, side);
+          def.onEnd?.(this, side, s);
         }
       } else if (def.kind === 'dot' && s.v > 0) {
         hasDot = true;
@@ -1082,7 +1090,7 @@ export class Combat {
     // X is all the mana there is; a free card still counts it, without spending it.
     const spent = cost < 0 ? this.hero.mana : cost;
     if (!free) this.hero.mana -= spent;
-    const nominal = cardCostOf(card);
+    const nominal = this.costOf(card);
     // On Credit: no mana now, but the regeneration stops for as many seconds as the card costs.
     if (!free && nominal > 0 && this.keywords(card).includes('credit')) this.applyStatus('hero', 'overdrawn', 1, nominal);
     else {
@@ -1134,8 +1142,10 @@ export class Combat {
     const kw = kws;
     if (kw.includes('consume')) {
       if (!card.temp) this.consumed.push(card.uid);
-      this.exhaust.push(card);
-    } else if (kw.includes('exhaust') || def.type === 'power') {
+      this.exhaustCard(card);
+    } else if (kw.includes('exhaust')) {
+      this.exhaustCard(card);
+    } else if (def.type === 'power') {
       this.exhaust.push(card);
     } else {
       this.discard.push(card);
@@ -1227,7 +1237,7 @@ export class Combat {
       this.sleeve[i] = null;
       worth += Math.max(0, fullCostOf(card));
       delete card.disc;
-      this.exhaust.push(card);
+      this.exhaustCard(card);
       this.events.emit({ type: 'cardDiscarded', card });
     }
     return worth;
@@ -1366,7 +1376,7 @@ export class Combat {
   }
 
   /** Strength of a side: the stacks of every status that counts as Strength while active. */
-  private strengthOf(side: Side): number {
+  strengthOf(side: Side): number {
     let n = 0;
     for (const [id, s] of Object.entries(this.fighter(side).statuses)) if (STATUSES[id].strength && this.has(side, id)) n += s.v;
     return n;
@@ -1411,7 +1421,10 @@ export class Combat {
 
     // Dodge: immune to every kind of damage while it lasts.
     if (this.flag(to, 'immune')) {
-      if (to === 'hero' && source === 'enemy') this.events.emit({ type: 'text', target: 'hero', key: 'combat.dodged', tone: 'good' });
+      if (to === 'hero' && source === 'enemy') {
+        this.events.emit({ type: 'text', target: 'hero', key: 'combat.dodged', tone: 'good' });
+        for (const [id, s] of Object.entries(target.statuses)) if (this.has(to, id)) STATUSES[id].onDodge?.(this, to, s);
+      }
       return 0;
     }
 
@@ -1718,10 +1731,16 @@ export class Combat {
     const cards = this.belt.splice(0).map((b) => b.card);
     for (const card of cards) {
       this.shedHex(card);
-      this.exhaust.push(card);
+      this.exhaustCard(card);
       this.events.emit({ type: 'cardDiscarded', card });
     }
     return cards.length;
+  }
+
+  /** Uses a card up for this fight and lets the statuses that watch for it (`StatusDef.onExhaust`) react. */
+  private exhaustCard(card: CombatCard): void {
+    this.exhaust.push(card);
+    for (const [id, s] of Object.entries(this.hero.statuses)) if (this.has('hero', id)) STATUSES[id].onExhaust?.(this, 'hero', s, card);
   }
 
   /** Shuffles up to `n` random cards exhausted this fight back into the draw pile (never consumed or temporary ones). Returns how many. */
@@ -2060,6 +2079,11 @@ export class Combat {
   hurryEnemy(s: number): void {
     const e = this.enemy;
     e.timer = Math.min(e.move.windup, e.timer + s);
+  }
+
+  /** Pushes the enemy's current move back by `s` seconds (never before the start of its wind-up). */
+  delayEnemy(s: number): void {
+    this.enemy.timer = Math.max(0, this.enemy.timer - s);
   }
 
   /** The belt card closest to the exit: the one a steal takes. */

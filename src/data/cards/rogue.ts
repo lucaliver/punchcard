@@ -161,6 +161,21 @@ export const rogueCards: CardDef[] = [
     },
   },
   {
+    id: 'companyProperty',
+    face: '{dmg:0}|{addCard}{sleeve}',
+    cls: 'rogue',
+    type: 'attack',
+    rarity: 'common',
+    cost: 2,
+    vals: [5],
+    upVals: [7],
+    art: 'companyProperty',
+    play: (c, v) => {
+      c.hit(v[0]);
+      c.retrieve(1, 'sleeve');
+    },
+  },
+  {
     id: 'employeeDiscount',
     face: '{dmg:0}|{hp:1}{cheaper:2}',
     cls: 'rogue',

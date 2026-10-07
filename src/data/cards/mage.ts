@@ -1,4 +1,8 @@
+import type { Combat } from '../../game/combat';
 import type { CardDef } from '../../game/types';
+
+/** Whole seconds of Rush the belt has left (Any% Speedrun). */
+const rushLeft = (c: Combat): number => (c.has('hero', 'rush') ? Math.floor(c.fighter('hero').statuses.rush.t) : 0);
 
 export const mageCards: CardDef[] = [
   // Starters
@@ -530,6 +534,83 @@ export const mageCards: CardDef[] = [
     play: (c, v) => {
       c.hit(v[0]);
       c.gainMana(v[1] * c.stacks('hero', 'multitasking'));
+    },
+  },
+  // Poison into Burn, Rush with a payoff, Dodge with teeth, a tap-spam charger
+  {
+    id: 'spontaneousCombustion',
+    face: '{poison}|{burn}',
+    cls: 'mage',
+    type: 'skill',
+    rarity: 'rare',
+    cost: 2,
+    vals: [3],
+    upVals: [2],
+    art: 'spontaneousCombustion',
+    play: (c, v) => {
+      const poison = c.fighter('enemy').statuses.poison;
+      if (!poison) return;
+      c.removeStatus('enemy', 'poison');
+      c.applyStatus('enemy', 'burn', Math.ceil(poison.v / v[0]));
+    },
+  },
+  {
+    id: 'speedrun',
+    face: '{dmg:0}|+{1}/{rush}',
+    cls: 'mage',
+    type: 'attack',
+    rarity: 'rare',
+    cost: 2,
+    vals: [4, 3],
+    upVals: [5, 4],
+    dmg: [0],
+    art: 'speedrun',
+    shown: (c, v) => [v[0] + v[1] * rushLeft(c), v[1]],
+    play: (c, v) => void c.hit(v[0] + v[1] * rushLeft(c)),
+  },
+  {
+    id: 'matador',
+    face: '{dodge:0}|{?dodge}{stun:1}',
+    cls: 'mage',
+    type: 'defense',
+    rarity: 'epic',
+    cost: 2,
+    vals: [2, 3],
+    upVals: [3, 4],
+    art: 'matador',
+    play: (c, v) => {
+      c.applyStatus('hero', 'dodge', 1, v[0]);
+      c.applyStatus('hero', 'matador', v[1], v[0]);
+    },
+  },
+  {
+    id: 'ghostInTheMachine',
+    face: '{dodge:0}|{*cards}{dodge:1}',
+    cls: 'mage',
+    type: 'defense',
+    rarity: 'rare',
+    cost: 2,
+    vals: [3, 0.5],
+    upVals: [4, 0.5],
+    art: 'ghostInTheMachine',
+    play: (c, v) => {
+      c.applyStatus('hero', 'dodge', 1, v[0]);
+      c.applyStatus('hero', 'ghostInTheMachine', v[1], v[0]);
+    },
+  },
+  {
+    id: 'fidgetSpinner',
+    face: '{multi}×{0}',
+    cls: 'mage',
+    type: 'skill',
+    rarity: 'rare',
+    cost: 1,
+    vals: [1],
+    upVals: [2],
+    keywords: ['fleeting', 'echo'],
+    art: 'fidgetSpinner',
+    play: (c, v) => {
+      for (let i = 0; i < v[0]; i++) c.chargeMultitasking();
     },
   },
   {

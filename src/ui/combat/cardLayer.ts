@@ -2,7 +2,7 @@ import { t } from '../../core/i18n';
 import { sfx } from '../../audio/sfx';
 import { CONFIG } from '../../data/config';
 import { HEXES } from '../../data/hexes';
-import { CARDS, cardKeywordsOf, cardValsOf, isLarge } from '../../data/cards';
+import { CARDS, cardCostOf, cardKeywordsOf, cardValsOf, isLarge } from '../../data/cards';
 import { STATUSES, statusIcon } from '../../data/statuses';
 import type { CombatCard } from '../../game/types';
 import { icon } from '../art/icons';
@@ -393,11 +393,13 @@ export function createCardLayer(v: CombatView): CardLayer {
       const k = Math.min(1, (hs.mana + hs.manaTimer / hs.regen) / cost);
       ce.el.style.setProperty('--charge', String(Math.floor(k * CHARGE_STEPS) / CHARGE_STEPS));
     }
-    // Inflation raises the cost mid-fight: the label follows, in red.
-    setText(ce.cost, cardCostLabel(card));
-    toggle(ce.cost, 'taxed', !!card.tax || !!card.virus);
+    // Inflation raises the cost mid-fight, a status can set it for every card: the label follows, in red when dearer, in yellow when cheaper.
+    const price = combat.costOf(card);
+    const own = cardCostOf(card);
+    setText(ce.cost, cardCostLabel(card, price));
+    toggle(ce.cost, 'taxed', !!card.tax || !!card.virus || price > own);
     // The sleeve's discount shows in yellow; a card On Credit shows what it will owe, not what it costs now.
-    toggle(ce.cost, 'sale', !!card.disc);
+    toggle(ce.cost, 'sale', !!card.disc || price < own);
     toggle(ce.cost, 'credit', cardKeywordsOf(card).includes('credit'));
     toggle(ce.el, 'sick', !!card.virus);
     if (!card.virus !== !ce.virusEl) {

@@ -2274,6 +2274,152 @@ describe('cards that fill the classes out', () => {
     expect(c.has('hero', 'rush')).toBe(false);
   });
 
+  it('Leg Day adds Block per Strength, Pump Iron and Flesh Wound hit by what the hero has, Cactus on the Desk gives Block and Thorns', () => {
+    const c = quiet();
+    c.applyStatus('hero', 'strength', 2);
+    cast(c, 'legDay');
+    expect(c.hero.block).toBe(CARDS.legDay.vals[0] + 2 * CARDS.legDay.vals[1]);
+    cast(c, 'cactusOnTheDesk');
+    expect(c.stacks('hero', 'thorns')).toBe(CARDS.cactusOnTheDesk.vals[1]);
+
+    const d = quiet();
+    cast(d, 'pumpIron');
+    expect(d.stacks('hero', 'strength')).toBe(CARDS.pumpIron.vals[1]);
+
+    const e = quiet();
+    e.hero.hp = e.hero.maxHp - 2 * CARDS.fleshWound.vals[1];
+    const hp = e.enemy.hp;
+    cast(e, 'fleshWound');
+    expect(hp - e.enemy.hp).toBe(CARDS.fleshWound.vals[0] + 2);
+  });
+
+  it('Whistleblower doubles the Vulnerable time the enemy has left, Kick Him When He is Down needs a stunned enemy', () => {
+    const c = quiet();
+    cast(c, 'whistleblower');
+    const first = c.fighter('enemy').statuses.vulnerable.t;
+    expect(first).toBe(CARDS.whistleblower.vals[0]);
+    cast(c, 'whistleblower');
+    expect(c.fighter('enemy').statuses.vulnerable.t).toBe(2 * first);
+
+    const d = quiet();
+    let hp = d.enemy.hp;
+    cast(d, 'kickHimWhenHesDown');
+    const plain = hp - d.enemy.hp;
+    d.applyStatus('enemy', 'stun', 1, 5);
+    hp = d.enemy.hp;
+    cast(d, 'kickHimWhenHesDown');
+    expect(hp - d.enemy.hp).toBeGreaterThan(plain);
+  });
+
+  it('Spontaneous Combustion turns Poison into Burn, HR Mediation weakens first and then gives Block, Reschedule the Meeting pushes the enemy back', () => {
+    const c = quiet();
+    c.applyStatus('enemy', 'poison', 9);
+    cast(c, 'spontaneousCombustion');
+    expect(c.has('enemy', 'poison')).toBe(false);
+    expect(c.stacks('enemy', 'burn')).toBe(Math.ceil(9 / CARDS.spontaneousCombustion.vals[0]));
+
+    const d = quiet();
+    cast(d, 'hrMediation');
+    expect(d.has('enemy', 'weak')).toBe(true);
+    expect(d.hero.block).toBe(CARDS.hrMediation.vals[0] * CARDS.hrMediation.vals[1]);
+
+    const e = quiet();
+    e.enemy.timer = 5;
+    cast(e, 'rescheduleMeeting');
+    expect(e.enemy.timer).toBe(5 - CARDS.rescheduleMeeting.vals[0]);
+  });
+
+  it('Buy Now, Pay Later bills the enemy for a share of what it lost meanwhile, once the time is up', () => {
+    const c = quiet();
+    const [time, share] = CARDS.buyNowPayLater.vals;
+    cast(c, 'buyNowPayLater');
+    let hp = c.enemy.hp;
+    cast(c, 'punch');
+    const lost = hp - c.enemy.hp;
+    hp = c.enemy.hp;
+    run(c, time - 1);
+    expect(c.enemy.hp).toBe(hp);
+    run(c, 2);
+    expect(hp - c.enemy.hp).toBe(Math.floor((lost * share) / 100));
+  });
+
+  it('Does It Spark Joy? makes every card cost the same for a while, but not an X card', () => {
+    const c = quiet();
+    const card = (id: string) => ({ uid: 999, id, up: false });
+    cast(c, 'sparkJoy');
+    const price = CARDS.sparkJoy.vals[1];
+    expect(c.costOf(card('wallStreet'))).toBe(price);
+    expect(c.costOf(card('staticShock'))).toBe(price);
+    expect(c.costOf(card('declareBankruptcy'))).toBeLessThan(0);
+    run(c, CARDS.sparkJoy.vals[0] + 1);
+    expect(c.costOf(card('wallStreet'))).toBe(CARDS.wallStreet.cost);
+  });
+
+  it('Shredder gives Block for every card used up, but not for a power or a plain play', () => {
+    const c = quiet();
+    cast(c, 'shredder');
+    expect(c.hero.block).toBe(0);
+    cast(c, 'punch');
+    expect(c.hero.block).toBe(0);
+    cast(c, 'lunchBreak');
+    expect(c.hero.block).toBe(CARDS.shredder.vals[0]);
+    c.addTempCard('punch', 'belt');
+    c.addTempCard('punch', 'belt');
+    c.hero.block = 0;
+    const n = c.exhaustBelt();
+    expect(c.hero.block).toBe(n * CARDS.shredder.vals[0]);
+  });
+
+  it('Recycling Day brings exhausted cards back, Company Property hits and pockets a card from the discard pile', () => {
+    const c = quiet();
+    c.exhaust.push({ uid: 50, id: 'punch', up: false, bonus: 0, temp: false });
+    cast(c, 'recyclingDay');
+    expect(c.draw.some((x) => x.uid === 50)).toBe(true);
+    expect(c.exhaust.some((x) => x.uid === 50)).toBe(false);
+
+    const d = quiet();
+    d.discard.push({ uid: 60, id: 'punch', up: false, bonus: 0, temp: false });
+    const hp = d.enemy.hp;
+    cast(d, 'companyProperty');
+    expect(d.enemy.hp).toBeLessThan(hp);
+    expect(d.sleeve.some((x) => x?.uid === 60)).toBe(true);
+  });
+
+  it('Lunch Break heals and stops the belt, Any% Speedrun pays for the Rush left, Fidget Spinner charges Multitasking', () => {
+    const c = quiet();
+    c.hero.hp = 40;
+    cast(c, 'lunchBreak');
+    expect(c.hero.hp).toBe(40 + CARDS.lunchBreak.vals[0]);
+    expect(c.has('hero', 'stalled')).toBe(true);
+
+    const d = quiet();
+    d.rushBelt(4);
+    const hp = d.enemy.hp;
+    cast(d, 'speedrun');
+    expect(hp - d.enemy.hp).toBe(CARDS.speedrun.vals[0] + 4 * CARDS.speedrun.vals[1]);
+
+    const e = quiet();
+    cast(e, 'fidgetSpinner');
+    expect(e.stacks('hero', 'multitasking')).toBe(CARDS.fidgetSpinner.vals[0]);
+  });
+
+  it('Matador stuns the enemy only when a hit is dodged, Ghost in the Machine stretches the Dodge with every card', () => {
+    const c = quiet();
+    cast(c, 'matador');
+    expect(c.has('enemy', 'stun')).toBe(false);
+    const hp = c.hero.hp;
+    c.damage('enemy', 'hero', 10, { raw: true }, 'enemy');
+    expect(c.hero.hp).toBe(hp);
+    expect(c.has('enemy', 'stun')).toBe(true);
+    expect(c.has('hero', 'matador')).toBe(false);
+
+    const d = quiet();
+    cast(d, 'ghostInTheMachine');
+    const left = d.fighter('hero').statuses.dodge.t;
+    cast(d, 'punch');
+    expect(d.fighter('hero').statuses.dodge.t).toBeCloseTo(left + CARDS.ghostInTheMachine.vals[1]);
+  });
+
   it("Cold Open chills on every attack, Forty Tabs Open charges Multitasking, Free Coffee pours mana, Workers' Comp blocks after a hurt", () => {
     const c = quiet();
     cast(c, 'coldOpen');

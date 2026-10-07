@@ -718,6 +718,84 @@ export const ICONS: Record<string, { el: Element; svg: string }> = {
     svg: `<path d="M6 32h52v26H6z"/><path d="M10 18h44l4 14H6z"/><rect x="28" y="30" width="8" height="10" fill="#16121f"/><circle cx="32" cy="9" r="8"/><circle cx="32" cy="9" r="4" fill="#16121f"/>`,
   },
 
+  // ---- archetype fillers (strength, thorns, exhaust, rush, dodge, echo, ...)
+  legDay: {
+    el: 'steel',
+    svg: `<rect x="2" y="12" width="60" height="6"/><rect x="6" y="4" width="8" height="22" rx="2"/><rect x="50" y="4" width="8" height="22" rx="2"/><path d="M18 24h12l-3 36H17zM34 24h12l1 36H37z"/><path fill="#16121f" d="M18 40h12M34 40h12" stroke="#16121f" stroke-width="3"/>`,
+  },
+  kickHimWhenHesDown: {
+    el: 'steel',
+    svg: `<path d="M10 4h22v26l22 8v16H6V30z"/><rect x="6" y="50" width="52" height="8" fill="#16121f"/><path d="M12 12h16" stroke="#16121f" stroke-width="3"/><path d="M56 24l6-4M58 34l5 0M54 14l4-6" stroke="currentColor" stroke-width="3.5" stroke-linecap="round"/>`,
+  },
+  spontaneousCombustion: {
+    el: 'fire',
+    svg: `<path d="M32 4c10 14 18 24 18 34a18 18 0 0 1-36 0c0-10 8-20 18-34z"/><path fill="#16121f" d="M32 24c3 7 10 9 10 17a10 10 0 0 1-20 0c0-5 3-8 5-10 0 4 2 6 4 6-2-5-1-9 1-13z"/>`,
+  },
+  hrMediation: {
+    el: 'necro',
+    svg: `<path d="M4 6h34v22H18l-8 8v-8H4z"/><path d="M26 22h34v22h-6v8l-8-8H26z" fill="#16121f" stroke="currentColor" stroke-width="3" stroke-linejoin="round"/><g fill="#16121f"><rect x="19" y="10" width="4" height="10"/><rect x="19" y="22" width="4" height="4"/></g><g fill="currentColor"><circle cx="34" cy="33" r="2.5"/><circle cx="43" cy="33" r="2.5"/><circle cx="52" cy="33" r="2.5"/></g>`,
+  },
+  whistleblower: {
+    el: 'steel',
+    svg: `<circle cx="42" cy="38" r="18"/><path d="M4 26h30v14H12z"/><circle cx="42" cy="38" r="7" fill="#16121f"/><path d="M42 20c2-8 10-14 18-12" fill="none" stroke="currentColor" stroke-width="3.5" stroke-linecap="round"/><path d="M6 8l8 6M4 16l8 3" stroke="currentColor" stroke-width="3.5" stroke-linecap="round"/>`,
+  },
+  lunchBreak: {
+    el: 'nature',
+    svg: `<path d="M4 28C4 16 16 8 32 8s28 8 28 20z"/><path d="M4 44h56v6a8 8 0 0 1-8 8H12a8 8 0 0 1-8-8z"/><path fill="#16121f" d="M4 32h56v6l-6 4-6-4-6 4-6-4-6 4-6-4-6 4-6-4z"/>`,
+  },
+  buyNowPayLater: {
+    el: 'holy',
+    svg: `<rect x="2" y="10" width="54" height="38" rx="4"/><rect x="2" y="18" width="54" height="8" fill="#16121f"/><rect x="8" y="34" width="14" height="8" fill="#16121f"/><circle cx="46" cy="44" r="16"/><circle cx="46" cy="44" r="11" fill="#16121f"/><path d="M46 36v9h7" fill="none" stroke="currentColor" stroke-width="3.5" stroke-linecap="round"/>`,
+  },
+  sparkJoy: {
+    el: 'holy',
+    svg: `${star4(30, 30, 28)}${star4(54, 54, 9)}${star4(10, 54, 7)}${star4(52, 10, 7)}`,
+  },
+  matador: {
+    el: 'blood',
+    svg: `<rect x="4" y="2" width="5" height="60"/><path d="M12 8c10 7 20-6 30 0s12 2 18 0v32c-6 2-8 6-18 0s-20 7-30 0z"/><path d="M24 14v26M36 12v28M48 14v24" stroke="#16121f" stroke-width="2.5" opacity=".45"/>`,
+  },
+  rescheduleMeeting: {
+    el: 'necro',
+    svg: `<rect x="6" y="10" width="52" height="48"/><rect x="6" y="10" width="52" height="12" fill="#16121f"/><rect x="16" y="4" width="6" height="12"/><rect x="42" y="4" width="6" height="12"/><path d="M16 42h26m0 0l-8-8m8 8l-8 8" fill="none" stroke="#16121f" stroke-width="4.5" stroke-linecap="round" stroke-linejoin="round"/>`,
+  },
+  companyProperty: {
+    el: 'steel',
+    svg: `<path d="M6 12h34l18 20-18 20H6z"/><circle cx="16" cy="32" r="4.5" fill="#16121f"/><path d="M26 22v20M32 22v20M38 22v20" stroke="#16121f" stroke-width="3.5"/><path d="M29 22v20M35 22v20" stroke="currentColor" stroke-width="1.5"/>`,
+  },
+  officeShredder: {
+    el: 'steel',
+    svg: `<rect x="6" y="8" width="52" height="22" rx="3"/><rect x="12" y="16" width="40" height="5" fill="#16121f"/><path d="M12 32v26M21 32v20M30 32v28M39 32v18M48 32v24" stroke="currentColor" stroke-width="4" stroke-linecap="round"/><path d="M24 2h16v8H24z"/>`,
+  },
+  recyclingDay: {
+    el: 'nature',
+    svg: `<rect x="6" y="8" width="52" height="8"/><rect x="24" y="2" width="16" height="7"/><path d="M12 18h40l-4 42H16z"/><path d="M32 28a9 9 0 1 0 9 8" fill="none" stroke="#16121f" stroke-width="4"/><path d="M42 26v11h-11" fill="none" stroke="#16121f" stroke-width="4" stroke-linejoin="round"/>`,
+  },
+  fleshWound: {
+    el: 'blood',
+    svg: `<g transform="rotate(-35 32 32)"><rect x="0" y="18" width="64" height="28" rx="14"/><rect x="21" y="18" width="22" height="28" fill="#16121f" opacity=".4"/><g fill="#16121f"><circle cx="9" cy="28" r="2"/><circle cx="9" cy="36" r="2"/><circle cx="55" cy="28" r="2"/><circle cx="55" cy="36" r="2"/><circle cx="16" cy="32" r="2"/><circle cx="48" cy="32" r="2"/></g></g>`,
+  },
+  cactusOnTheDesk: {
+    el: 'nature',
+    svg: `<rect x="25" y="4" width="14" height="46" rx="7"/><path d="M25 36H16a4 4 0 0 1-4-4V20h6v8h7zM39 30h9a4 4 0 0 0 4-4V14h-6v8h-7z"/><path d="M16 46h32l-4 14H20z"/><path d="M32 14v6M32 28v6M20 24v3M44 20v3" stroke="#16121f" stroke-width="2.5" stroke-linecap="round"/>`,
+  },
+  pumpIron: {
+    el: 'steel',
+    svg: `<rect x="16" y="28" width="32" height="8"/><rect x="4" y="14" width="12" height="36" rx="3"/><rect x="48" y="14" width="12" height="36" rx="3"/><rect x="0" y="22" width="4" height="20"/><rect x="60" y="22" width="4" height="20"/><path d="M9 20v24M55 20v24" stroke="#16121f" stroke-width="2.5" opacity=".5"/>`,
+  },
+  speedrun: {
+    el: 'arcane',
+    svg: `<circle cx="32" cy="36" r="24"/><circle cx="32" cy="36" r="18" fill="#16121f"/><path d="M32 36V22M32 36l10 7" fill="none" stroke="currentColor" stroke-width="4" stroke-linecap="round"/><rect x="26" y="2" width="12" height="7"/><rect x="29" y="8" width="6" height="6"/><path d="M54 14l6-5" stroke="currentColor" stroke-width="5" stroke-linecap="round"/>`,
+  },
+  ghostInTheMachine: {
+    el: 'arcane',
+    svg: `<rect x="4" y="4" width="56" height="42"/><rect x="10" y="10" width="44" height="30" fill="#16121f"/><path d="M32 14c-7 0-11 5-11 11v13l4-3 3 3 4-3 4 3 3-3 4 3V25c0-6-4-11-11-11z"/><g fill="#16121f"><circle cx="28" cy="25" r="2.5"/><circle cx="36" cy="25" r="2.5"/></g><path d="M26 46h12l3 10H23z"/><rect x="16" y="56" width="32" height="5"/>`,
+  },
+  fidgetSpinner: {
+    el: 'arcane',
+    svg: `<path d="M32 32V12M32 32L14 42M32 32L50 42" stroke="currentColor" stroke-width="12" stroke-linecap="round"/><circle cx="32" cy="32" r="10"/><circle cx="32" cy="12" r="10"/><circle cx="14" cy="42" r="10"/><circle cx="50" cy="42" r="10"/><g fill="#16121f"><circle cx="32" cy="32" r="4.5"/><circle cx="32" cy="12" r="4"/><circle cx="14" cy="42" r="4"/><circle cx="50" cy="42" r="4"/></g>`,
+  },
+
   fireExit: {
     el: 'steel',
     svg: `<path d="M6 4h36v56H6z"/><path d="M12 10h24v44H12z" fill="#16121f"/><circle cx="24" cy="21" r="5"/><path d="M24 27v12M24 31l-8 4M24 31l8-3M24 39l-7 12M24 39l8 10" fill="none" stroke="currentColor" stroke-width="4" stroke-linecap="round"/><path d="M46 24l16 10-16 10z"/>`,
