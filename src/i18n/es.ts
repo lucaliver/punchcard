@@ -1246,8 +1246,6 @@ const es: Record<EnKey, string> = {
   'card.sparkJoy.desc': 'Durante {0}s, cada carta cuesta {1} de [mana].',
   'card.matador.name': 'Matador',
   'card.matador.desc': '[dodge] durante {0}s. Si esquivas un golpe, [stun] al enemigo durante {1}s.',
-  'card.rescheduleMeeting.name': 'Reprogramar la reunión',
-  'card.rescheduleMeeting.desc': 'El movimiento actual del enemigo llega {0}s más tarde.',
   'card.companyProperty.name': 'Propiedad de la empresa',
   'card.companyProperty.desc': 'Haz {0} de daño. Lleva una carta al azar de tu pila de descarte a tu manga.',
   'card.shredder.name': 'Trituradora',

@@ -1240,8 +1240,6 @@ const en = {
   'card.sparkJoy.desc': 'For {0}s, every card costs {1} [mana].',
   'card.matador.name': 'Matador',
   'card.matador.desc': '[dodge] for {0}s. If a hit is dodged, [stun] the enemy for {1}s.',
-  'card.rescheduleMeeting.name': 'Reschedule the Meeting',
-  'card.rescheduleMeeting.desc': "The enemy's current move comes {0}s later.",
   'card.companyProperty.name': 'Company Property',
   'card.companyProperty.desc': 'Deal {0} damage. Take a random card from your discard pile into your sleeve.',
   'card.shredder.name': 'Shredder',

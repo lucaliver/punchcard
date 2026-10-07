@@ -1230,8 +1230,6 @@ const zh: Record<EnKey, string> = {
   'card.sparkJoy.desc': '{0} 秒内，每张牌都花费 {1} 点[mana]。',
   'card.matador.name': '斗牛士',
   'card.matador.desc': '[dodge] {0} 秒。如果你闪避了一次攻击，[stun]敌人 {1} 秒。',
-  'card.rescheduleMeeting.name': '改期会议',
-  'card.rescheduleMeeting.desc': '敌人当前的招式推迟 {0} 秒。',
   'card.companyProperty.name': '公司财产',
   'card.companyProperty.desc': '造成 {0} 点伤害。从你的弃牌堆随机取一张牌放入袖口。',
   'card.shredder.name': '碎纸机',

@@ -150,10 +150,10 @@ export const rogueCards: CardDef[] = [
     face: '{dodge:0}|{vuln:1}',
     cls: 'rogue',
     type: 'defense',
-    rarity: 'rare',
-    cost: 2,
+    rarity: 'epic',
+    cost: 3,
     vals: [2, 6],
-    upVals: [3, 8],
+    upVals: [4, 10],
     art: 'bathroomBreak',
     play: (c, v) => {
       c.applyStatus('hero', 'dodge', 1, v[0]);

@@ -2313,7 +2313,7 @@ describe('cards that fill the classes out', () => {
     expect(hp - d.enemy.hp).toBeGreaterThan(plain);
   });
 
-  it('Spontaneous Combustion turns Poison into Burn, HR Mediation weakens first and then gives Block, Reschedule the Meeting pushes the enemy back', () => {
+  it('Spontaneous Combustion turns Poison into Burn, HR Mediation weakens first and then gives Block', () => {
     const c = quiet();
     c.applyStatus('enemy', 'poison', 9);
     cast(c, 'spontaneousCombustion');
@@ -2324,11 +2324,6 @@ describe('cards that fill the classes out', () => {
     cast(d, 'hrMediation');
     expect(d.has('enemy', 'weak')).toBe(true);
     expect(d.hero.block).toBe(CARDS.hrMediation.vals[0] * CARDS.hrMediation.vals[1]);
-
-    const e = quiet();
-    e.enemy.timer = 5;
-    cast(e, 'rescheduleMeeting');
-    expect(e.enemy.timer).toBe(5 - CARDS.rescheduleMeeting.vals[0]);
   });
 
   it('Buy Now, Pay Later bills the enemy for a share of what it lost meanwhile, once the time is up', () => {

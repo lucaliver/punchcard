@@ -768,10 +768,6 @@ export const ICONS: Record<string, { el: Element; svg: string }> = {
     el: 'blood',
     svg: `<rect x="4" y="2" width="5" height="60"/><path d="M12 8c10 7 20-6 30 0s12 2 18 0v32c-6 2-8 6-18 0s-20 7-30 0z"/><path d="M24 14v26M36 12v28M48 14v24" stroke="#16121f" stroke-width="2.5" opacity=".45"/>`,
   },
-  rescheduleMeeting: {
-    el: 'necro',
-    svg: `<rect x="6" y="10" width="52" height="48"/><rect x="6" y="10" width="52" height="12" fill="#16121f"/><rect x="16" y="4" width="6" height="12"/><rect x="42" y="4" width="6" height="12"/><path d="M16 42h26m0 0l-8-8m8 8l-8 8" fill="none" stroke="#16121f" stroke-width="4.5" stroke-linecap="round" stroke-linejoin="round"/>`,
-  },
   companyProperty: {
     el: 'steel',
     svg: `<path d="M6 12h34l18 20-18 20H6z"/><circle cx="16" cy="32" r="4.5" fill="#16121f"/><path d="M26 22v20M32 22v20M38 22v20" stroke="#16121f" stroke-width="3.5"/><path d="M29 22v20M35 22v20" stroke="currentColor" stroke-width="1.5"/>`,

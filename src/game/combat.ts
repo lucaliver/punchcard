@@ -2082,11 +2082,6 @@ export class Combat {
     e.timer = Math.min(e.move.windup, e.timer + s);
   }
 
-  /** Pushes the enemy's current move back by `s` seconds (never before the start of its wind-up). */
-  delayEnemy(s: number): void {
-    this.enemy.timer = Math.max(0, this.enemy.timer - s);
-  }
-
   /** The belt card closest to the exit: the one a steal takes. */
   private stealIndex(): number {
     let idx = 0;

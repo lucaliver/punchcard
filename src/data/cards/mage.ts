@@ -498,7 +498,7 @@ export const mageCards: CardDef[] = [
     rarity: 'rare',
     cost: 3,
     vals: [3, 3],
-    upVals: [4, 4],
+    upVals: [5, 5],
     art: 'smokeBreak',
     play: (c, v) => {
       c.applyStatus('enemy', 'burn', v[0]);
@@ -543,9 +543,9 @@ export const mageCards: CardDef[] = [
     cls: 'mage',
     type: 'skill',
     rarity: 'rare',
-    cost: 2,
-    vals: [3],
-    upVals: [2],
+    cost: 1,
+    vals: [2],
+    upVals: [1],
     art: 'spontaneousCombustion',
     play: (c, v) => {
       const poison = c.fighter('enemy').statuses.poison;
@@ -588,8 +588,8 @@ export const mageCards: CardDef[] = [
     face: '{dodge:0}|{*cards}{dodge:1}',
     cls: 'mage',
     type: 'defense',
-    rarity: 'rare',
-    cost: 2,
+    rarity: 'epic',
+    cost: 3,
     vals: [3, 0.5],
     upVals: [4, 0.5],
     art: 'ghostInTheMachine',
