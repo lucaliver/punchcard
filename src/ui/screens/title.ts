@@ -118,8 +118,8 @@ export function titleScreen(cb: TitleCallbacks): Screen {
     stale.hidden = Date.now() - OPENED_AT < CONFIG.staleHours * 3600_000;
   };
 
-  // TEMPORARY test hook: `?rate` in the address shows the note at once. After a couple of runs: a note asking for stars; a tap opens the review window, and once it is sent the note goes.
-  const rate = h('div', { class: 'rate-banner', hidden: !(ratingDue() || location.search.includes('rate')) });
+  // After a couple of runs: a note asking for stars; a tap opens the review window, and once it is sent the note goes.
+  const rate = h('div', { class: 'rate-banner', hidden: !ratingDue() });
   const stars = starRow((n) => {
     sfx('tap');
     stars.set(n);
