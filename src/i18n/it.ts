@@ -198,6 +198,7 @@ const it: Record<EnKey, string> = {
   'hero.new': 'Nuovo!',
   'hero.unlock.finishRun': 'Gioca una partita con {hero} per sbloccarlo.',
   'hero.unlock.reachBoss': "Raggiungi il boss dell'Atto {n} per sbloccarlo.",
+  'hero.unlock.allStamped': "Batti il boss dell'Atto {n} con tutti gli altri eroi per sbloccarlo.",
   'hero.starterDeck': 'Mazzo iniziale',
   'memo.title': 'Circolari della direzione',
   'memo.intro': 'La direzione ha delle idee per il tuo prossimo turno. Ogni circolare che affiggi rende la giornata più dura.',

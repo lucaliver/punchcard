@@ -2726,9 +2726,9 @@ describe('cross-training', () => {
   it("offers two cards of each class but the hero's own, and taking one grows the deck", () => {
     const r = newRun('warrior', 5);
     const offer = rollCrossTraining(r);
-    expect(offer).toHaveLength(2 * 2);
+    expect(offer).toHaveLength(3 * 2);
     expect(new Set(offer.map((c) => c.id)).size).toBe(offer.length);
-    for (const cls of ['mage', 'necromancer']) expect(offer.filter((c) => c.cls === cls)).toHaveLength(CONFIG.crossTrainPerClass);
+    for (const cls of ['mage', 'necromancer', 'rogue']) expect(offer.filter((c) => c.cls === cls)).toHaveLength(CONFIG.crossTrainPerClass);
     const deck = r.deck.length;
     crossTrain(r, offer[0].id);
     expect(r.deck).toHaveLength(deck + 1);

@@ -289,7 +289,10 @@ export function setMemo(id: string, on: boolean): void {
 
 /** Records progress that can unlock heroes (a run finished with a hero, an act boss reached). Returns the heroes it unlocked. */
 export function progress(met: (u: HeroUnlock) => boolean): HeroId[] {
-  const unlocked = HERO_LIST.filter((hd) => hd.unlock && !('debug' in hd.unlock) && !heroUnlocked(hd.id) && met(hd.unlock)).map((hd) => hd.id);
+  // A stamp condition reads the records, so it is checked on every call, whatever `met` says.
+  const done = (hd: { id: HeroId }, u: HeroUnlock): boolean =>
+    met(u) || ('allStamped' in u && HERO_LIST.every((other) => other.id === hd.id || hasStamp(other.id, u.allStamped)));
+  const unlocked = HERO_LIST.filter((hd) => hd.unlock && !('debug' in hd.unlock) && !heroUnlocked(hd.id) && done(hd, hd.unlock)).map((hd) => hd.id);
   if (!unlocked.length) return unlocked;
   meta.heroes.push(...unlocked);
   meta.fresh.push(...unlocked);

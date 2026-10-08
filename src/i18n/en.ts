@@ -196,6 +196,7 @@ const en = {
   'hero.new': 'New!',
   'hero.unlock.finishRun': 'Play a run with {hero} to unlock.',
   'hero.unlock.reachBoss': 'Reach the boss of Act {n} to unlock.',
+  'hero.unlock.allStamped': 'Beat the boss of Act {n} with every other hero to unlock.',
   'hero.starterDeck': 'Starter deck',
   'memo.title': 'Management memos',
   'memo.intro': 'Management has ideas for your next shift. Every memo you pin up makes the day harder.',

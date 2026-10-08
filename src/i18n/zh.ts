@@ -195,6 +195,7 @@ const zh: Record<EnKey, string> = {
   'hero.new': '新！',
   'hero.unlock.finishRun': '用{hero}玩一局即可解锁。',
   'hero.unlock.reachBoss': '到达第 {n} 幕的头目即可解锁。',
+  'hero.unlock.allStamped': '用其他所有英雄击败第 {n} 幕的老板即可解锁。',
   'hero.starterDeck': '初始牌组',
   'memo.title': '管理层通知',
   'memo.intro': '管理层对你的下一个班次有些想法。你贴上的每一张通知都会让这一天更难熬。',

@@ -19,7 +19,9 @@ const unlockText = (u: HeroUnlock): string =>
     ? t('hero.unlock.finishRun', { hero: t(`hero.${u.finishRun}.name`) })
     : 'reachBoss' in u
       ? t('hero.unlock.reachBoss', { n: u.reachBoss })
-      : '';
+      : 'allStamped' in u
+        ? t('hero.unlock.allStamped', { n: u.allStamped })
+        : '';
 
 function slide(hero: HeroDef, index: number): HTMLElement {
   const id = hero.id;

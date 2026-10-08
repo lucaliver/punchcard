@@ -435,8 +435,8 @@ export interface RunLog {
   at: number;
 }
 
-/** How a hero is unlocked: finish a run (win or lose) with another hero, reach the boss of an act, or (a hero still in the works) only through the debug menu's unlock-all. */
-export type HeroUnlock = { finishRun: HeroId } | { reachBoss: number } | { debug: true };
+/** How a hero is unlocked: finish a run (win or lose) with another hero, reach the boss of an act, beat the boss of an act with every other hero, or (a hero still in the works) only through the debug menu's unlock-all. */
+export type HeroUnlock = { finishRun: HeroId } | { reachBoss: number } | { allStamped: number } | { debug: true };
 
 /**
  * A management memo: an optional handicap for a run, open to a hero that has won a full day. Several can be active at once;

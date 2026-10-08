@@ -9,7 +9,8 @@ import zhStrings from '../src/i18n/zh';
 /** Indexed as a plain dictionary: these tests check keys that are built at runtime. */
 const en: Record<string, string> = enStrings;
 import { CARD_LIST, CARDS } from '../src/data/cards';
-import { cardHidden, heroHidden, heroUnlocked, progress, unlockAll } from '../src/game/meta';
+import { cardHidden, heroHidden, heroUnlocked, progress, stampAct } from '../src/game/meta';
+import type { HeroId } from '../src/game/types';
 import { KEYWORD_LIST } from '../src/ui/components/cardView';
 import { ACT_DEFS } from '../src/data/acts';
 import { rewardOdds, rewardUpgradeChance } from '../src/data/config';
@@ -310,21 +311,36 @@ describe('translations', () => {
   }
 });
 
-describe('a hero still in the works', () => {
-  it('stays hidden, with all its cards, until the debug unlock-all hires them', () => {
-    expect(HEROES.rogue.unlock).toEqual({ debug: true });
-    expect(heroUnlocked('rogue')).toBe(false);
-    expect(heroHidden('rogue')).toBe(true);
-    const own = CARD_LIST.filter((c) => c.cls === 'rogue');
-    expect(own.length).toBeGreaterThan(0);
-    for (const c of own) expect(cardHidden(c.id), c.id).toBe(true);
-    expect(cardHidden('punch')).toBe(false);
-    // No progress can hire them: only unlock-all does.
-    progress(() => true);
-    expect(heroHidden('rogue')).toBe(true);
-    unlockAll([], [], []);
+describe('the Rogue', () => {
+  it('a hero still in the works stays hidden, with all its cards, until the debug unlock-all hires them', () => {
+    const real = HEROES.rogue.unlock;
+    HEROES.rogue.unlock = { debug: true };
+    try {
+      expect(heroUnlocked('rogue')).toBe(false);
+      expect(heroHidden('rogue')).toBe(true);
+      const own = CARD_LIST.filter((c) => c.cls === 'rogue');
+      expect(own.length).toBeGreaterThan(0);
+      for (const c of own) expect(cardHidden(c.id), c.id).toBe(true);
+      expect(cardHidden('punch')).toBe(false);
+      // No progress can hire them: only unlock-all does.
+      progress(() => true);
+      expect(heroHidden('rogue')).toBe(true);
+    } finally {
+      HEROES.rogue.unlock = real;
+    }
+  });
+
+  it('is hired once every other hero has beaten the last act', () => {
+    expect(HEROES.rogue.unlock).toEqual({ allStamped: ACT_DEFS.length });
     expect(heroHidden('rogue')).toBe(false);
-    for (const c of own) expect(cardHidden(c.id), c.id).toBe(false);
+    expect(heroUnlocked('rogue')).toBe(false);
+    progress(() => false);
+    expect(heroUnlocked('rogue')).toBe(false);
+    for (const hero of ['warrior', 'mage']) stampAct(hero as HeroId, ACT_DEFS.length);
+    expect(progress(() => false)).toEqual([]);
+    stampAct('necromancer', ACT_DEFS.length);
+    expect(progress(() => false)).toEqual(['rogue']);
+    expect(heroUnlocked('rogue')).toBe(true);
   });
 
   it('has a full set of cards: every rarity, and a starter deck of only basic cards', () => {

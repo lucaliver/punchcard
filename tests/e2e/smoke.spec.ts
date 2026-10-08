@@ -6,7 +6,7 @@ test('title, hero select and journey render without errors', async ({ page }) =>
   const problems = await freshGame(page);
   await expect(page.locator('.title-screen .logo')).toHaveText(/punchcard/i);
   await page.getByRole('button', { name: /new run/i }).click();
-  await expect(page.locator('.hero-slide')).toHaveCount(3);
+  await expect(page.locator('.hero-slide')).toHaveCount(4);
   // Carousel: the hero in view is the one that starts.
   await page.locator('.hero-arrow.next').click();
   await expect(page.locator('.hero-dot').nth(1)).toHaveAttribute('aria-current', 'true');
@@ -429,10 +429,10 @@ test('closing the pause menu keeps the fight paused while another window is stil
   expect(await clock()).toBe(before);
 });
 
-test('heroes 2 and 3 start locked: padlock, how to unlock, no start', async ({ page }) => {
+test('heroes 2 to 4 start locked: padlock, how to unlock, no start', async ({ page }) => {
   const problems = await freshGame(page, { locked: true });
   await page.getByRole('button', { name: /new run/i }).click();
-  await expect(page.locator('.hero-slide.locked')).toHaveCount(2);
+  await expect(page.locator('.hero-slide.locked')).toHaveCount(3);
   await page.locator('.hero-arrow.next').click();
   await expect(page.locator('.hero-select')).toHaveAttribute('data-hero', 'mage');
   await expect(page.locator('.hero-slide.current .hero-unlock')).toBeVisible();
@@ -1038,13 +1038,13 @@ test('lost and found: three relics, keeping one', async ({ page }) => {
   expect(await page.evaluate('window.__game.run.relics.length')).toBe(1);
 });
 
-test('cross-training: four cards of the other classes, taking one', async ({ page }) => {
+test('cross-training: six cards of the other classes, taking one', async ({ page }) => {
   await freshGame(page, { veteran: true });
   await page.getByRole('button', { name: /new run/i }).click();
   await page.getByRole('button', { name: /start shift/i }).click();
   const floor = await roomFloor(page, 'crossTraining');
   await page.getByRole('button', { name: new RegExp(`enter floor ${floor}`, 'i') }).click();
-  await expect(page.locator('.cross-offer .card')).toHaveCount(4);
+  await expect(page.locator('.cross-offer .card')).toHaveCount(6);
   const take = page.getByRole('button', { name: /take it/i });
   await expect(take).toBeDisabled();
   const deck = (await page.evaluate('window.__game.run.deck.length')) as number;

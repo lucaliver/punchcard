@@ -1,3 +1,4 @@
+import { ACT_DEFS } from './acts';
 import { CONFIG } from './config';
 import type { HeroDef, HeroId } from '../game/types';
 
@@ -103,8 +104,7 @@ const necromancer: HeroDef = {
 
 const rogue: HeroDef = {
   id: 'rogue',
-  // Still in the works: only the debug menu's unlock-all hires them, and until then none of their cards turns up anywhere.
-  unlock: { debug: true },
+  unlock: { allStamped: ACT_DEFS.length },
   hp: 50,
   maxMana: 3,
   regen: 1.25,
