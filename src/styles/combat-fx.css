@@ -108,7 +108,7 @@
 }
 .floater.dmg { --splat: var(--splat-dmg); }
 .floater.hurt { --splat: var(--splat-hurt); }
-.floater.k-poison { --splat: var(--green); }
+.floater.k-poison { --splat: var(--tone-toxic); }
 .floater.k-burn { --splat: var(--splat-burn); }
 /* burn: a flame-shaped blot with no drips, so fire reads differently from blood */
 .floater.k-burn::before {

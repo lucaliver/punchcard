@@ -21,6 +21,9 @@
   /* Overprints (multiply of two inks on paper) */
   --red: #f63a1e;
   --rust: #c25a1c;
+  /* Blood: the drop of lost HP, and the burst of a hit */
+  --blood: #d4142e;
+  --blood-hi: #ff7a7a;
   --green: #2a8a4a;
   --purple: #4a2aa0;
   /* Meanings: Block is teal, mana is bright blue, the scanner and the copy flash are mint, ice is pale blue */
@@ -56,6 +59,8 @@
   --tone-amber-hi: var(--y);
   --tone-mint: #1a9a80;
   --tone-mint-hi: #8ae8d0;
+  --tone-toxic: #7f9414;
+  --tone-toxic-hi: #d6ec4c;
   /* What a bar or a chip shows when nothing is said (an idle move) */
   --intent-idle-hi: #9a94ac;
   /* Inks with transparency (there is no color-mix for Safari 16): the base ink, then its alpha in percent */
@@ -166,6 +171,7 @@
 [data-tone='teal'] { --tone: var(--tone-teal); --tone-hi: var(--tone-teal-hi); }
 [data-tone='amber'] { --tone: var(--tone-amber); --tone-hi: var(--tone-amber-hi); }
 [data-tone='mint'] { --tone: var(--tone-mint); --tone-hi: var(--tone-mint-hi); }
+[data-tone='toxic'] { --tone: var(--tone-toxic); --tone-hi: var(--tone-toxic-hi); }
 
 [hidden] {
   display: none !important;

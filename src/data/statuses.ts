@@ -275,7 +275,7 @@ const defs: StatusDef[] = [
   // Forgotten Lunch (a power): `v` Poison on the enemy every few seconds.
   {
     id: 'forgottenLunch',
-    tone: 'green',
+    tone: 'toxic',
     kind: 'stacks',
     good: true,
     icon: 'biohazard',
@@ -350,7 +350,7 @@ const defs: StatusDef[] = [
   // Plague (a power): every attack the hero plays also applies `v` Poison.
   {
     id: 'plague',
-    tone: 'green',
+    tone: 'toxic',
     kind: 'stacks',
     good: true,
     icon: 'wrench',
@@ -386,7 +386,7 @@ const defs: StatusDef[] = [
     tick: everySecond((c, side, _n, s) => void c.damage(side, side === 'hero' ? 'enemy' : 'hero', s.v, { kind: 'blunt' }, side)),
     onCardPlayed: endOnPlay('grindset'),
   },
-  { id: 'virulence', tone: 'green', kind: 'stacks', good: true, icon: 'biohazard', dotBonus: 'poison' },
+  { id: 'virulence', tone: 'toxic', kind: 'stacks', good: true, icon: 'biohazard', dotBonus: 'poison' },
   // Steel Toes: every attack played gives `v` Block.
   {
     id: 'steelToes',
@@ -409,7 +409,7 @@ const defs: StatusDef[] = [
     burst: { kind: 'fire', n: 10 },
     onAttack: (c, side, s) => void c.damage(side === 'enemy' ? 'hero' : 'enemy', side, s.v, { raw: true, ignoreBlock: true, kind: 'burn' }, 'dot'),
   },
-  { id: 'poison', tone: 'green', kind: 'dot', good: false, passable: true, halves: true, icon: 'poisonBottle' },
+  { id: 'poison', tone: 'toxic', kind: 'dot', good: false, passable: true, halves: true, icon: 'poisonBottle' },
   { id: 'weak', tone: 'purple', kind: 'timed', good: false, passable: true, icon: 'broken', dealtMul: 0.75 },
   { id: 'vulnerable', tone: 'red', kind: 'timed', good: false, passable: true, icon: 'crack', takenMul: 1.5 },
   {

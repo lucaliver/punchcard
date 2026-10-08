@@ -689,7 +689,7 @@ const it: Record<EnKey, string> = {
   'status.burn': 'Ustione',
   'status.burn.d': 'Subisce {v} danni ogni volta che attacca. Non svanisce mai.',
   'status.poison': 'Veleno',
-  'status.poison.d': 'Subisce danni pari a metà di {v} (per eccesso) ogni {$dotEvery}s.',
+  'status.poison.d': 'Subisce danni pari a metà {v} ogni {$dotEvery}s.',
   'status.weak': 'Debole',
   'status.weak.d': 'Fa il {$weakPct}% di danni in meno.',
   'status.vulnerable': 'Vulnerabile',

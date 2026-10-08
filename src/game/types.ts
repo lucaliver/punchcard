@@ -174,7 +174,7 @@ export type StatusKind = 'timed' | 'stacks' | 'dot';
 
 /** The ink a status or keyword is written in: poison and life green, fire and force red, control purple, the rest blue. */
 /** The colour of what something does (`--tone-*` in tokens.css): a status, a keyword, an enemy move. */
-export type Tone = 'green' | 'red' | 'purple' | 'blue' | 'teal' | 'amber' | 'mint';
+export type Tone = 'green' | 'red' | 'purple' | 'blue' | 'teal' | 'amber' | 'mint' | 'toxic';
 
 export interface StatusDef {
   id: string;

@@ -129,6 +129,7 @@
 .gl .each .pico { font-size: 1.1em; color: var(--k); --ink2: var(--y); }
 .gk { display: contents; }
 .gk-dmg .pico { color: var(--p); --ink2: var(--y); }
+.gk-hp .pico { color: var(--blood); --ink2: var(--blood-hi); }
 /* a glyph with a tone takes its ink (the same as the status or keyword it stands for) */
 .gk[data-tone] .pico { color: var(--tone); --ink2: var(--tone-hi); }
 .gk-grow .pico,

@@ -4,7 +4,7 @@
 
 - [x] il mazzo base del negromante dovrebbe avere una carta che gli dia mana attuale; anche quello del rogue
 
-- [x] cambiamo il funzionamento base del veleno: fa danno pari a metà delle cariche (arrotondate per eccesso) ogni secondo e perde 1 carica
+- [x] cambiamo il funzionamento base del veleno: fa danno pari a metà delle cariche ogni secondo e perde 1 carica
 
 - [x] semplifichiamo la passiva del ladro in "ogni carta che cade dal nastro sconta di 1 una carta casuale nella sleeve" ; dagli solo 3 sleeves
 
