@@ -409,7 +409,7 @@ const defs: StatusDef[] = [
     burst: { kind: 'fire', n: 10 },
     onAttack: (c, side, s) => void c.damage(side === 'enemy' ? 'hero' : 'enemy', side, s.v, { raw: true, ignoreBlock: true, kind: 'burn' }, 'dot'),
   },
-  { id: 'poison', tone: 'green', kind: 'dot', good: false, passable: true, halves: true, icon: 'drop' },
+  { id: 'poison', tone: 'green', kind: 'dot', good: false, passable: true, halves: true, icon: 'poisonBottle' },
   { id: 'weak', tone: 'purple', kind: 'timed', good: false, passable: true, icon: 'broken', dealtMul: 0.75 },
   { id: 'vulnerable', tone: 'red', kind: 'timed', good: false, passable: true, icon: 'crack', takenMul: 1.5 },
   {

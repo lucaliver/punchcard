@@ -50,7 +50,7 @@ export const GLYPHS: Record<string, { icon: string; unit?: string; sign?: string
   boom: { icon: 'bomb' },
   drain: { icon: 'crystal', sign: '-', tone: 'blue' },
   crystal: { icon: 'crystalSlot', sign: '+', tone: 'blue' },
-  poison: { icon: 'drop', tone: 'green' },
+  poison: { icon: 'poisonBottle', tone: 'green' },
   thorns: { icon: 'thorns', sign: '+', tone: 'red' },
   regen: { icon: 'redCross', sign: '+', tone: 'green' },
   vuln: { icon: 'crack', unit: 's', tone: 'red' },

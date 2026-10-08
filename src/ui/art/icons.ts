@@ -173,7 +173,11 @@ export const ICONS: Record<string, { el: Element; svg: string; wide?: boolean }>
     el: 'holy',
     svg: `<ellipse cx="19" cy="32" rx="16" ry="14"/><ellipse cx="45" cy="32" rx="16" ry="14"/><ellipse cx="19" cy="32" rx="7" ry="5" fill="#16121f"/><ellipse cx="45" cy="32" rx="7" ry="5" fill="#16121f"/>`,
   },
-  drop: { el: 'nature', svg: `<path d="M32 5c8 14 17 24 17 36a17 17 0 0 1-34 0c0-12 9-22 17-36z"/>` },
+  // A green potion bottle with a skull label and a cork
+  poisonBottle: {
+    el: 'nature',
+    svg: `<rect x="25" y="2" width="14" height="7" fill="#16121f"/><path d="M26 9h12v12l14 20c3 9-2 19-12 19H24C14 60 9 50 12 41l14-20z"/><path fill="#16121f" d="M32 36a7 7 0 0 0-7 7c0 3 1 5 3 6v3h8v-3c2-1 3-3 3-6a7 7 0 0 0-7-7z"/><path ${HI} d="M16 42l12-18v-3h-2l-14 20z"/>`,
+  },
   broken: {
     el: 'shadow',
     svg: `<path d="M52 5h7v7L44 27l-7-7z"/><path d="M34 23l7 7-11 11-3-6-4 1z"/><path d="M13 33l18 18-4 4L9 37z"/><path d="M17 45l4 4-9 9-4-4z"/>`,
