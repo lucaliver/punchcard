@@ -30,6 +30,20 @@ export const rogueCards: CardDef[] = [
     play: (c, v) => c.gainBlock('hero', v[0]),
   },
 
+  {
+    id: 'slushFund',
+    face: '{mana:0}',
+    cls: 'rogue',
+    type: 'skill',
+    rarity: 'common',
+    starterOnly: true,
+    cost: 0,
+    vals: [2],
+    upVals: [3],
+    art: 'slushFund',
+    play: (c, v) => c.gainMana(v[0]),
+  },
+
   // Commons
   {
     id: 'shoplifting',

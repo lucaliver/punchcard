@@ -186,6 +186,7 @@ const KEYWORD_ICON: Record<string, string> = {
   mana: 'crystal',
   crystal: 'crystalSlot',
   asleep: 'ko',
+  x: 'xCost',
 };
 
 /** The small icon that goes before a keyword's explanation, in its colour (nothing for a keyword without one). */

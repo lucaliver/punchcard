@@ -12,11 +12,12 @@ export function starterCards(hero: HeroDef): { id: string; up: boolean }[] {
 export const THICK_SKIN = { below: 15, mul: 1.3 };
 /** Virulence (Necromancer passive): every enemy starts the fight with this much Poison. */
 export const VIRULENCE_START = 3;
-/** Overtime (Warrior ability): attacks deal this many times as much, for this long (s). */
+/** Overtime (Warrior ability): attacks deal this many times as much, for this long (s); the hero also gains this much Block, held for as long. */
 export const OVERTIME_MULT = 2;
+export const OVERTIME_BLOCK = 12;
 export const OVERTIME_TIME = 10;
-/** Sticky Fingers (Rogue passive): with the sleeve full, a card falling off the belt takes this much off the cost of every card in it, until played. */
-export const STICKY_FINGERS = { discount: 1 };
+/** Sticky Fingers (Rogue passive): a card falling off the belt takes this much off the cost of a random card in the sleeve, until played. */
+export const STICKY_FINGERS = 1;
 /** Time Theft (Mage ability): the enemy is stunned and the belt rushed for this long (s). */
 export const TIME_THEFT = 5;
 
@@ -36,7 +37,11 @@ const warrior: HeroDef = {
   ability: {
     id: 'overtime',
     cost: 6,
-    use: (c) => c.applyStatus('hero', 'overtime', 1, OVERTIME_TIME),
+    use: (c) => {
+      c.applyStatus('hero', 'overtime', 1, OVERTIME_TIME);
+      c.applyStatus('hero', 'fortified', 1, OVERTIME_TIME);
+      c.gainBlock('hero', OVERTIME_BLOCK);
+    },
   },
   hooks: {
     damageMult: (c, def) => (def?.type === 'attack' && c.has('hero', 'overtime') ? OVERTIME_MULT : 1),
@@ -80,7 +85,7 @@ const necromancer: HeroDef = {
   maxMana: 2,
   regen: 1.25,
   blockDecay: 0.9,
-  startDeck: [...rep('skeletonCrew', 6), ...rep('karlMarx', 6), ...rep('toxicMemo', 4), 'coffee', 'italianEspresso'],
+  startDeck: [...rep('skeletonCrew', 6), ...rep('karlMarx', 5), 'graveyardBrew', ...rep('toxicMemo', 4), 'coffee', 'italianEspresso'],
   startUpgraded: ['skeletonCrew', 'karlMarx'],
   sleeve: 3,
   ink: 'var(--green)',
@@ -104,15 +109,15 @@ const rogue: HeroDef = {
   maxMana: 3,
   regen: 1.25,
   blockDecay: 1.0,
-  startDeck: [...rep('borrowedStapler', 8), ...rep('hideTheEvidence', 7), 'coffee', 'coffee', 'italianEspresso'],
+  startDeck: [...rep('borrowedStapler', 7), ...rep('hideTheEvidence', 7), 'slushFund', 'coffee', 'coffee', 'italianEspresso'],
   startUpgraded: ['borrowedStapler', 'hideTheEvidence'],
-  sleeve: 4,
-  catchesFalls: STICKY_FINGERS,
+  sleeve: 3,
+  fallDiscount: STICKY_FINGERS,
   ink: 'var(--rust)',
   ability: {
     id: 'stocktake',
     cost: 6,
-    // Everything on the belt falls at once: the sleeve fills up, and what doesn't fit makes it cheaper.
+    // Everything on the belt falls at once, each card making a card in the sleeve cheaper.
     use: (c) => void c.dropBelt(),
   },
   hooks: {},

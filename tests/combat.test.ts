@@ -1661,7 +1661,7 @@ describe('statuses that work through their data', () => {
     const hp = c.enemy.hp;
     run(c, CONFIG.dotInterval + 0.1);
     expect(c.hero.hp).toBe(53);
-    expect(c.enemy.hp).toBe(hp - 3);
+    expect(c.enemy.hp).toBe(hp - 2);
     expect(c.stacks('hero', 'regen')).toBe(2);
     expect(c.stacks('enemy', 'poison')).toBe(2);
   });
@@ -2616,7 +2616,7 @@ describe('Fine Print and the Golden Parachute', () => {
     c.applyStatus('enemy', 'poison', 4);
     const before = c.enemy.hp;
     run(c, CONFIG.dotInterval + 0.05);
-    expect(before - c.enemy.hp).toBe(4);
+    expect(before - c.enemy.hp).toBe(2);
     // A hit smaller than the cut deals nothing, never heals.
     const now = c.enemy.hp;
     c.hit(1);
@@ -3609,32 +3609,29 @@ describe('the Rogue', () => {
     return -100 - slot;
   };
 
-  it('has four sleeve slots and catches every card that falls, except curses', () => {
+  it('has three sleeve slots; a falling card does not land in it', () => {
     const c = rogueFight();
-    expect(c.sleeve).toHaveLength(4);
+    expect(c.sleeve).toHaveLength(3);
     onBelt(c, 'borrowedStapler');
-    onBelt(c, 'hideTheEvidence');
     onBelt(c, 'gatekeeping');
-    expect(CARDS.gatekeeping.type).toBe('curse');
     c.dropBelt();
-    expect(c.sleeve.map((x) => x?.id)).toEqual(['borrowedStapler', 'hideTheEvidence', undefined, undefined]);
-    expect(c.discard.map((x) => x.id)).toEqual(['gatekeeping']);
+    expect(c.sleeve.every((x) => x === null)).toBe(true);
+    expect(c.discard.map((x) => x.id)).toEqual(['borrowedStapler', 'gatekeeping']);
   });
 
-  it('a fall into a full sleeve cuts every card in it by 1, again each time, never below 0, until the card is played', () => {
+  it('every fall cuts one random card of the sleeve by 1, never below 0, until the card is played', () => {
     const c = rogueFight();
-    for (const id of ['borrowedStapler', 'hideTheEvidence', 'shoplifting', 'fenceIt']) inSleeve(c, id);
-    const costs = (): number[] => c.sleeve.map((x) => (x ? c.cardCost(x) : -1));
-    expect(costs()).toEqual([3, 3, 3, 2]);
+    for (const id of ['borrowedStapler', 'hideTheEvidence', 'shoplifting']) inSleeve(c, id);
+    const total = (): number => c.sleeve.reduce((n, x) => n + (x ? c.cardCost(x) : 0), 0);
+    expect(total()).toBe(9);
     onBelt(c, 'punch');
     c.dropBelt();
-    expect(costs()).toEqual([2, 2, 2, 1]);
-    expect(c.discard.map((x) => x.id)).toEqual(['punch']);
-    for (let i = 0; i < 4; i++) {
+    expect(total()).toBe(8);
+    for (let i = 0; i < 12; i++) {
       onBelt(c, 'punch');
       c.dropBelt();
     }
-    expect(costs()).toEqual([0, 0, 0, 0]);
+    expect(total()).toBe(0);
     // Played, a card is back at its own cost.
     const first = c.sleeve[0]!;
     expect(c.playCard(first.uid)).toBe(true);
@@ -3643,24 +3640,23 @@ describe('the Rogue', () => {
 
   it('Light Fingers makes the cut deeper', () => {
     const c = rogueFight();
-    for (const id of ['borrowedStapler', 'hideTheEvidence', 'shoplifting', 'fenceIt']) inSleeve(c, id);
+    inSleeve(c, 'borrowedStapler');
     c.applyStatus('hero', 'lightFingers', 1);
     onBelt(c, 'punch');
     c.dropBelt();
-    expect(c.sleeve.map((x) => (x ? c.cardCost(x) : -1))).toEqual([1, 1, 1, 0]);
+    expect(c.cardCost(c.sleeve[0]!)).toBe(1);
   });
 
-  it('Stocktake drops the whole belt: the sleeve fills up and the rest makes it cheaper', () => {
+  it('Stocktake drops the whole belt: each card that falls cheapens a card in the sleeve', () => {
     const c = rogueFight();
-    for (let i = 0; i < 6; i++) onBelt(c, 'borrowedStapler');
+    inSleeve(c, 'borrowedStapler');
+    for (let i = 0; i < 2; i++) onBelt(c, 'punch');
     c.hero.mana = c.abilityCost();
     c.hero.maxMana = Math.max(c.hero.maxMana, c.abilityCost());
     c.hero.mana = c.abilityCost();
     expect(c.useAbility()).toBe(true);
     expect(c.belt).toHaveLength(0);
-    expect(c.sleeve.every((x) => x !== null)).toBe(true);
-    // Two cards did not fit: each one cut the four in the sleeve by 1.
-    expect(c.sleeve.map((x) => (x ? c.cardCost(x) : -1))).toEqual([1, 1, 1, 1]);
+    expect(c.cardCost(c.sleeve[0]!)).toBe(1);
     expect(c.discard).toHaveLength(2);
   });
 
@@ -3743,7 +3739,7 @@ describe('the Rogue', () => {
     const seen: string[] = [];
     c.events.on((e) => void (e.type === 'sleeveGrew' ? seen.push(e.type) : null));
     expect(c.playCard(onBelt(c, 'lostAndFound'))).toBe(true);
-    expect(c.sleeve).toHaveLength(5);
+    expect(c.sleeve).toHaveLength(4);
     expect(seen).toEqual(['sleeveGrew']);
   });
 

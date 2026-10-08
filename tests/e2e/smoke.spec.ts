@@ -1155,7 +1155,7 @@ test('a stun covers the belt with one veil, not a badge on every card', async ({
   await expect(page.locator('.belt-stun.on')).toHaveCount(0);
 });
 
-test('the Rogue, once hired, catches every falling card in a sleeve of four that fits on the screen', async ({ page }) => {
+test('the Rogue, once hired, has a sleeve of three that fits on the screen, and a fall makes a card in it cheaper', async ({ page }) => {
   const problems = await freshGame(page, { heroes: ['rogue'] });
   await page.getByRole('button', { name: /new run/i }).click();
   await expect(page.locator('.hero-slide')).toHaveCount(4);
@@ -1166,11 +1166,13 @@ test('the Rogue, once hired, catches every falling card in a sleeve of four that
   const start = page.locator('.js-start');
   if (await start.count()) await start.click();
   await expect.poll(() => page.evaluate(() => (window as unknown as { __combat: { intro: number } }).__combat.intro <= 0)).toBe(true);
-  await expect(page.locator('.sleeve-slot')).toHaveCount(4);
-  const caught = (await combat(page, 'const n = c.belt.length; c.dropBelt(); return Math.min(n, 4);')) as number;
-  expect(caught).toBeGreaterThan(0);
-  await expect(page.locator('.sleeve-slot .card')).toHaveCount(caught);
-  // The four slots fit in the room left of the ability button.
+  await expect(page.locator('.sleeve-slot')).toHaveCount(3);
+  const cost = (await combat(
+    page,
+    "c.addToSleeve('borrowedStapler'); const card = c.sleeve.find((x) => x); c.dropBelt(); return card.disc ?? 0;",
+  )) as number;
+  expect(cost).toBeGreaterThan(0);
+  // The three slots fit in the room left of the ability button.
   const fits = await page.evaluate(() => {
     const room = document.querySelector('.sleeve')!.getBoundingClientRect();
     return [...document.querySelectorAll('.sleeve-slot')].every((s) => {
@@ -1179,8 +1181,8 @@ test('the Rogue, once hired, catches every falling card in a sleeve of four that
     });
   });
   expect(fits).toBe(true);
-  // A fifth slot (Lost & Found Box) joins them.
+  // A fourth slot (Lost & Found Box) joins them.
   await combat(page, 'c.addSleeveSlot();');
-  await expect(page.locator('.sleeve-slot')).toHaveCount(5);
+  await expect(page.locator('.sleeve-slot')).toHaveCount(4);
   expect(problems).toEqual([]);
 });

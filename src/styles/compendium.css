@@ -253,7 +253,7 @@
 }
 .relic-line { position: relative; }
 .relic-line .riso { flex: none; width: 48px; height: 48px; }
-.relic-line b {
+.relic-line b:not(.kw) {
   display: block;
   font-family: var(--font-ui);
   font-size: 18px;

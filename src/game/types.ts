@@ -233,7 +233,9 @@ export interface StatusDef {
   passable?: true;
   /** While active on the hero, its amount (`v`) adds to every tick of this damage-over-time status on the enemy (Virulent Form). */
   dotBonus?: string;
-  /** While active on the hero, its amount (`v`) adds to the discount a card falling into a full sleeve gives (Light Fingers). */
+  /** A damage-over-time status that ticks for half its amount, rounded up (Poison), then loses 1 as usual. */
+  halves?: true;
+  /** While active on the hero, its amount (`v`) adds to the discount a falling card gives (Light Fingers). */
   catchBonus?: true;
   /** While active on the hero, every card with a mana cost costs its amount (`v`) instead, X cards keep theirs (Does It Spark Joy?). */
   flatCost?: true;
@@ -475,8 +477,8 @@ export interface HeroDef {
   startUpgraded: string[];
   /** Sleeve slots. */
   sleeve: number;
-  /** Every card (but a curse) falling off the belt lands in the sleeve instead of being lost; with the sleeve full, every card in it costs `discount` less until played (Sticky Fingers). */
-  catchesFalls?: { discount: number };
+  /** Every card falling off the belt takes this much off the cost of one random card in the sleeve, until it is played (Sticky Fingers). */
+  fallDiscount?: number;
   starterRelic?: string;
   /** The status that is this hero's passive: it leads the hero's status row (empty too) in place of a passive icon. */
   passiveStatus?: string;

@@ -505,6 +505,14 @@ export const ICONS: Record<string, { el: Element; svg: string; wide?: boolean }>
     el: 'nature',
     svg: `<circle cx="32" cy="32" r="27"/><g fill="#16121f"><rect x="20" y="18" width="7" height="11"/><rect x="37" y="18" width="7" height="11"/><path d="M16 36h32c-2 9-8 14-16 14s-14-5-16-14z"/></g>`,
   },
+  xCost: {
+    el: 'arcane',
+    svg: `<path d="M8 4h14l10 16L42 4h14L40 32l16 28H42L32 44 22 60H8l16-28z"/>`,
+  },
+  graveyardBrew: {
+    el: 'necro',
+    svg: `<rect x="18" y="10" width="28" height="48" rx="4"/><rect x="20" y="4" width="24" height="8"/><path fill="#16121f" d="M36 16 22 36h9l-3 14 14-22h-9z"/>`,
+  },
   unionCard: {
     el: 'necro',
     svg: `<rect x="10" y="12" width="44" height="48" rx="3"/><rect x="26" y="4" width="12" height="12"/><g fill="#16121f"><circle cx="32" cy="30" r="7"/><path d="M19 50c2-9 7-11 13-11s11 2 13 11z"/></g>`,
@@ -1606,6 +1614,10 @@ export const ICONS: Record<string, { el: Element; svg: string; wide?: boolean }>
   borrowedStapler: {
     el: 'steel',
     svg: `<path d="M4 44h56v10H4z"/><path d="M4 44c0-8 8-14 20-18l32-10c4-1 6 2 6 5v23z"/><path ${HI} d="M12 40c4-5 10-8 16-10l22-8-26 12z"/><path fill="#16121f" d="M50 36h10v3H50zM8 48h20v3H8z"/>`,
+  },
+  slushFund: {
+    el: 'shadow',
+    svg: `<rect x="4" y="18" width="56" height="30" rx="2"/><circle cx="32" cy="33" r="9" fill="#16121f"/><path fill="#16121f" d="M10 24h6v4h-6zM48 38h6v4h-6z"/><path ${HI} d="M4 18h56v4H4z"/><circle cx="32" cy="33" r="4"/>`,
   },
   hideTheEvidence: {
     el: 'shadow',

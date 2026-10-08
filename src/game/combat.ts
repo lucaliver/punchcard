@@ -653,10 +653,11 @@ export class Combat {
     f.dotTimer -= CONFIG.dotInterval;
     for (const [id, s] of Object.entries(f.statuses)) {
       if (f.statuses[id] !== s || STATUSES[id].kind !== 'dot' || s.v <= 0) continue;
-      if (STATUSES[id].heals) this.heal(side, s.v);
+      const amount = STATUSES[id].halves ? Math.ceil(s.v / 2) : s.v;
+      if (STATUSES[id].heals) this.heal(side, amount);
       else {
         const bonus = side === 'enemy' ? this.dotBonus(id) : 0;
-        this.damage(side === 'hero' ? 'enemy' : 'hero', side, s.v + bonus, { raw: true, ignoreBlock: true, kind: id }, 'dot');
+        this.damage(side === 'hero' ? 'enemy' : 'hero', side, amount + bonus, { raw: true, ignoreBlock: true, kind: id }, 'dot');
       }
       s.v--;
       if (s.v <= 0) delete f.statuses[id];
@@ -983,39 +984,22 @@ export class Combat {
     this.shedHex(card);
     card.passed = true;
     if (def.sweep) card.bonus = 0;
-    const caught = this.catchesFalls(card);
-    if (caught) {
-      // Caught on the way down: it waits in the sleeve, or, with no room, makes every card there cheaper and is lost.
-      if (!this.pocket(card)) this.cheapenSleeve(this.catchDiscount());
-    } else this.events.emit({ type: 'cardExpired', card });
+    this.events.emit({ type: 'cardExpired', card });
+    this.cheapenRandom(this.fallDiscount());
     this.withCard(card, def, () => def.onExpire?.(this, this.cardVals(card), card));
     this.heroDef.hooks.onCardExpired?.(this, card);
     for (const id of this.relics) RELICS[id]?.hooks?.onCardExpired?.(this, card);
     for (const side of ['hero', 'enemy'] as const) {
       for (const [id, s] of Object.entries(this.fighter(side).statuses)) if (this.has(side, id)) STATUSES[id].onExpire?.(this, side, s);
     }
-    if (caught && this.sleeveIndex(card.uid) >= 0) return;
     // A piece of sushi that slipped off is gone, not shuffled back into the deck.
     if (def.pair) {
       if (this.picked === card.uid) this.picked = null;
       return;
     }
     delete card.disc;
-    if (caught) this.events.emit({ type: 'cardExpired', card });
     if (this.keywords(card).includes('fleeting')) this.exhaust.push(card);
     else this.discard.push(card);
-  }
-
-  /** Whether the hero's passive catches this card as it falls (everything but a curse). */
-  private catchesFalls(card: CombatCard): boolean {
-    return !!this.heroDef.catchesFalls && !isCurse(card) && !CARDS[card.id].pair;
-  }
-
-  /** The mana a card falling into a full sleeve takes off every card in it: the passive's, and what powers add (`StatusDef.catchBonus`). */
-  private catchDiscount(): number {
-    let n = this.heroDef.catchesFalls?.discount ?? 0;
-    for (const [id, s] of Object.entries(this.hero.statuses)) if (STATUSES[id].catchBonus && this.has('hero', id)) n += s.v;
-    return n;
   }
 
   /** Puts the card into the first free sleeve slot. Returns false when the sleeve is full. */
@@ -1025,6 +1009,13 @@ export class Combat {
     this.sleeve[slot] = card;
     this.events.emit({ type: 'cardStashed', card, slot });
     return true;
+  }
+
+  /** The mana a falling card takes off a random card in the sleeve: the passive's, and what powers add (`StatusDef.catchBonus`). */
+  private fallDiscount(): number {
+    let n = this.heroDef.fallDiscount ?? 0;
+    for (const [id, s] of Object.entries(this.hero.statuses)) if (STATUSES[id].catchBonus && this.has('hero', id)) n += s.v;
+    return n;
   }
 
   // --------------------------------------------------------- player actions
@@ -1215,11 +1206,21 @@ export class Combat {
   /** Every card in the sleeve costs `n` mana less until it is next played (never below 0). */
   cheapenSleeve(n: number, except?: number): void {
     if (n <= 0) return;
-    for (const card of this.sleeveCards(except)) {
-      if (isCurse(card)) continue;
-      card.disc = Math.min((card.disc ?? 0) + n, Math.max(0, fullCostOf(card)));
-    }
+    for (const card of this.sleeveCards(except)) this.cheapen(card, n);
     this.events.emit({ type: 'sleeveCheaper' });
+  }
+
+  /** One random card of the sleeve costs `n` mana less until it is next played (a fall, with `HeroDef.fallDiscount`). */
+  cheapenRandom(n: number): void {
+    const cards = this.sleeveCards().filter((card) => !isCurse(card));
+    if (n <= 0 || !cards.length) return;
+    this.cheapen(this.rng.pick(cards), n);
+    this.events.emit({ type: 'sleeveCheaper' });
+  }
+
+  private cheapen(card: CombatCard, n: number): void {
+    if (isCurse(card)) return;
+    card.disc = Math.min((card.disc ?? 0) + n, Math.max(0, fullCostOf(card)));
   }
 
   /** Every belt card slips off at once, the one nearest the exit first, as if it had fallen off the end. Returns how many. */
