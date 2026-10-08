@@ -9,6 +9,7 @@ import { randomSeed } from './core/rng';
 import { setSfxVolume, unlockAudio } from './audio/sfx';
 import { musicTrack, playMusic, setMusicVolume, suspendMusic } from './audio/music';
 import { trackFight, trackRun } from './analytics';
+import { sendCrash } from './feedback/firebase';
 import { actDef } from './data/acts';
 import { CONFIG, type RewardKind } from './data/config';
 import { ENEMIES } from './data/enemies';
@@ -295,6 +296,7 @@ function catchCrashes(): void {
     suspendMusic(true);
     const msg = err instanceof Error ? `${err.name}: ${err.message}` : String(err);
     const report = [`Punchcard ${__APP_VERSION__}`, navigator.userAgent, (err instanceof Error && err.stack) || msg].join('\n');
+    sendCrash(report);
     const modal = openModal({
       title: t('crash.title'),
       body: h('div', null, h('p', null, t('crash.body')), h('code', { class: 'crash-detail' }, msg)),

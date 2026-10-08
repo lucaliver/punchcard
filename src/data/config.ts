@@ -19,6 +19,8 @@ export const CONFIG = {
   ratingGood: 4,
   /** Longest review text kept (characters). */
   reviewMax: 500,
+  /** Longest crash report (characters) sent to the `crashes` collection. */
+  crashMax: 2000,
   /** Seconds between two stats hits (`src/analytics/`): a burst is spread out instead of sent at once. */
   statsGap: 0.4,
   /** Seconds for a card to cross one full belt width. */

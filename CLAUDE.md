@@ -162,6 +162,8 @@ New enemy rules are statuses (`statuses.ts`): `microsleep`, `rateLimit` (`capsHi
 
 Once `CONFIG.ratingAfterRuns` runs are over (`meta.history`) and none has been sent (`meta.rated`), the home shows a `.rate-banner` with five stars (`ratingDue`, `title.ts`); a star opens the review window (`reviewModal.ts`: stars, free text up to `CONFIG.reviewMax`, Send). `src/feedback/firebase.ts` files it in the Firestore collection `reviews` (REST, no SDK: `stars`, `text`, `version`, `locale`, `at`); the project is `VITE_FIREBASE_PROJECT_ID`/`VITE_FIREBASE_API_KEY` (repository variables `FIREBASE_PROJECT_ID`/`FIREBASE_API_KEY` in the Pages workflow; the key is public by design). Unset = nothing is sent. Firestore rules must allow only `create` on `reviews` (no read, update or delete). On failure the window stays open and says so.
 
+**Crash reports**: `catchCrashes` (`main.ts`) also calls `sendCrash(report)` (`firebase.ts`): the same text as the Machine jam's Copy button (version, browser, stack, cut at `CONFIG.crashMax`) goes, fire and forget, to the Firestore collection `crashes` (`report`, `version`, `locale`, `at`; rules: only `create`). It follows the `analytics` switch. To remove: delete `sendCrash`, its call and import, `CONFIG.crashMax`, and this paragraph.
+
 ### i18n
 
 `t(key)` is typed: literal ids must exist in `en.ts`. Runtime-built keys use known prefixes (`card.`, `enemy.`, `move.`,
