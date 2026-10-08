@@ -9,7 +9,7 @@ import { BOARD_CUT_TIME, COFFEE_EVERY, FLICKER_EVERY, FORKLIFT_BLOCK, LUNCH_EVER
 import { CARD_LIST, CARDS, RARITY_ORDER, cardCostOf, cardKeywordsOf } from '../src/data/cards';
 import { HEXES } from '../src/data/hexes';
 import { RELICS } from '../src/data/relics';
-import { hasStamp, memosOpen, runHistory, stampAct } from '../src/game/meta';
+import { hasStamp, markRated, memosOpen, ratingDue, runHistory, stampAct, unlockAll } from '../src/game/meta';
 import { ACT_DEFS } from '../src/data/acts';
 import {
   applyCombat,
@@ -2726,13 +2726,25 @@ describe('cross-training', () => {
   it("offers two cards of each class but the hero's own, and taking one grows the deck", () => {
     const r = newRun('warrior', 5);
     const offer = rollCrossTraining(r);
-    expect(offer).toHaveLength(3 * 2);
-    expect(new Set(offer.map((c) => c.id)).size).toBe(offer.length);
-    for (const cls of ['mage', 'necromancer', 'rogue']) expect(offer.filter((c) => c.cls === cls)).toHaveLength(CONFIG.crossTrainPerClass);
+    // A hero not hired yet (the Rogue) has no card on offer.
+    expect(offer.some((c) => c.cls === 'rogue')).toBe(false);
+    unlockAll([], [], []);
+    const hired = rollCrossTraining(newRun('warrior', 5));
+    expect(hired).toHaveLength(3 * 2);
+    expect(new Set(hired.map((c) => c.id)).size).toBe(hired.length);
+    for (const cls of ['mage', 'necromancer', 'rogue']) expect(hired.filter((c) => c.cls === cls)).toHaveLength(CONFIG.crossTrainPerClass);
     const deck = r.deck.length;
-    crossTrain(r, offer[0].id);
+    crossTrain(r, hired[0].id);
     expect(r.deck).toHaveLength(deck + 1);
     expect(r.cleared).toBe(true);
+  });
+});
+
+describe('rating', () => {
+  it('is asked for once enough runs are over, and never again after it is sent', () => {
+    expect(ratingDue()).toBe(runHistory().length >= CONFIG.ratingAfterRuns);
+    markRated();
+    expect(ratingDue()).toBe(false);
   });
 });
 

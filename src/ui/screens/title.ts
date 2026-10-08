@@ -2,7 +2,7 @@ import { t } from '../../core/i18n';
 import { CONFIG } from '../../data/config';
 import { sfx } from '../../audio/sfx';
 import { ENEMY_LIST } from '../../data/enemies';
-import { enemyMet, neverPlayed, signContract } from '../../game/meta';
+import { enemyMet, neverPlayed, ratingDue, signContract } from '../../game/meta';
 import { currentNode, type RunState, totalFloors } from '../../game/run';
 import { burst, haptic } from '../fx/fx';
 import type { Screen } from '../app';
@@ -13,6 +13,7 @@ import { propArt } from '../art/rooms';
 import { debugButton } from '../components/debugMenu';
 import { darkEyes, dropLetters, motes } from '../components/decor';
 import { openHowTo, openInfo, openSettings } from '../components/modals';
+import { openReview, starRow } from '../components/reviewModal';
 
 export interface TitleCallbacks {
   /** The run in progress, if any: the time card shows it and clocks back in. */
@@ -117,10 +118,22 @@ export function titleScreen(cb: TitleCallbacks): Screen {
     stale.hidden = Date.now() - OPENED_AT < CONFIG.staleHours * 3600_000;
   };
 
+  // After a couple of runs: a note asking for stars; a tap opens the review window, and once it is sent the note goes.
+  const rate = h('div', { class: 'rate-banner', hidden: !ratingDue() });
+  const stars = starRow((n) => {
+    sfx('tap');
+    stars.set(n);
+    openReview(n, () => {
+      rate.hidden = true;
+    });
+  });
+  rate.append(h('span', null, t('rate.banner')), stars.el);
+
   const el = h(
     'div',
     { class: 'screen title-screen' },
     stale,
+    rate,
     poster,
     h('div', { class: 'desk' }, card, h('div', { class: 'desk-clock', html: creature('timeClock') })),
     h(

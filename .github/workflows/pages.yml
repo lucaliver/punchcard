@@ -29,6 +29,9 @@ jobs:
         env:
           # Count endpoint of the stats service (repository variable); empty = no stats.
           VITE_STATS_URL: ${{ vars.STATS_URL }}
+          # Firebase project of the reviews (repository variables); empty = reviews are not sent.
+          VITE_FIREBASE_PROJECT_ID: ${{ vars.FIREBASE_PROJECT_ID }}
+          VITE_FIREBASE_API_KEY: ${{ vars.FIREBASE_API_KEY }}
       - uses: actions/checkout@v4
         with:
           ref: beta

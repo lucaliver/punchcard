@@ -255,6 +255,45 @@
   box-shadow: var(--off) var(--off) 0 var(--shadow);
 }
 .stale-banner[hidden] { display: none; }
+
+/* after a couple of runs: a paper note asking for stars */
+.rate-banner {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  width: min(100%, 360px);
+  padding: 8px 10px;
+  font-size: 13px;
+  background: var(--paper);
+  color: var(--k);
+  border: var(--line) solid var(--k);
+  box-shadow: var(--off) var(--off) 0 var(--shadow);
+}
+.rate-banner[hidden] { display: none; }
+.rate-stars { display: flex; justify-content: center; gap: 2px; }
+.rate-star {
+  width: 44px;
+  height: 44px;
+  font-size: 30px;
+  background: none;
+  border: 0;
+  color: var(--p);
+  opacity: 0.35;
+}
+.rate-star.on { opacity: 1; }
+.rate-form { display: grid; gap: 10px; }
+.rate-text {
+  width: 100%;
+  padding: 8px;
+  font: inherit;
+  font-size: 16px;
+  color: var(--k);
+  background: var(--paper);
+  border: var(--line) solid var(--k);
+  resize: none;
+}
+.rate-note { min-height: 1.2em; font-size: 13px; }
 .menu {
   display: grid;
   grid-template-columns: 1fr 1fr;

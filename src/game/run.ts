@@ -10,7 +10,7 @@ import { MODIFIERS, resolveMods } from '../data/modifiers';
 import { ENEMIES, enemiesFor } from '../data/enemies';
 import { HERO_LIST, HEROES, starterCards } from '../data/heroes';
 import type { Combat, CombatSetup } from './combat';
-import { discover, heroHidden, logRun, progress, type RunRecord, recordFight, recordRun, seeRelics, stampAct } from './meta';
+import { discover, heroHidden, heroUnlocked, logRun, progress, type RunRecord, recordFight, recordRun, seeRelics, stampAct } from './meta';
 import type { CardDef, CardInst, EnemyDef, HeroId, RelicDef, RunLog } from './types';
 
 export const NODE_TYPES = ['fight', 'elite', 'rest', 'promotion', 'copy', 'tailor', 'lostFound', 'vending', 'crossTraining', 'boss'] as const;
@@ -610,13 +610,13 @@ export function vend(run: RunState, rarity: keyof typeof CONFIG.vendingHp): Card
   return card;
 }
 
-/** Cross-Training: `crossTrainPerClass` cards from each class but the hero's own, to take one of (rarities as after a normal fight of the act). */
+/** Cross-Training: `crossTrainPerClass` cards from each class but the hero's own (and not a hero still to be hired), to take one of (rarities as after a normal fight of the act). */
 export function rollCrossTraining(run: RunState): CardDef[] {
   const rng = rngOf(run);
   const odds = rewardOdds('fight', currentNode(run).act);
   const offer: CardDef[] = [];
   for (const hero of HERO_LIST) {
-    if (hero.id === run.hero || heroHidden(hero.id)) continue;
+    if (hero.id === run.hero || heroHidden(hero.id) || !heroUnlocked(hero.id)) continue;
     const own: CardDef[] = [];
     for (let tries = 0; own.length < CONFIG.crossTrainPerClass && tries < 80; tries++) {
       const rarity = rng.weighted(odds, ([, w]) => w)[0];

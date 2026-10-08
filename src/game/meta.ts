@@ -33,6 +33,8 @@ interface Meta {
   actsReached: number[];
   /** The runs played, newest first (`CONFIG.historyMax` of them). */
   history: RunLog[];
+  /** A review has been sent: the home stops asking for one. */
+  rated: boolean;
 }
 
 const NO_RECORDS: Records = {
@@ -63,6 +65,7 @@ const meta: Meta = load('meta', {
   records: { ...NO_RECORDS },
   actsReached: [],
   history: [],
+  rated: false,
 });
 // Saved data is untrusted: keep only known hero ids.
 for (const k of ['heroes', 'fresh'] as const) meta[k] = Array.isArray(meta[k]) ? meta[k].filter((id) => id in HEROES) : [];
@@ -71,6 +74,7 @@ meta.met = Array.isArray(meta.met) ? meta.met.filter((id) => typeof id === 'stri
 meta.relics = Array.isArray(meta.relics) ? meta.relics.filter((id) => typeof id === 'string' && id in RELICS) : [];
 if (typeof meta.runs !== 'number') meta.runs = 0;
 meta.signed = meta.signed === true;
+meta.rated = meta.rated === true;
 {
   const valid = (s: unknown): s is string => {
     if (typeof s !== 'string') return false;
@@ -132,6 +136,13 @@ meta.actsReached = Array.isArray(meta.actsReached)
 export const contractSigned = (): boolean => meta.signed;
 export function signContract(): void {
   meta.signed = true;
+  store('meta', meta);
+}
+
+/** The home asks for a review: `CONFIG.ratingAfterRuns` runs are over and none has been sent yet. */
+export const ratingDue = (): boolean => !meta.rated && meta.history.length >= CONFIG.ratingAfterRuns;
+export function markRated(): void {
+  meta.rated = true;
   store('meta', meta);
 }
 

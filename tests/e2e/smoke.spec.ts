@@ -1038,13 +1038,13 @@ test('lost and found: three relics, keeping one', async ({ page }) => {
   expect(await page.evaluate('window.__game.run.relics.length')).toBe(1);
 });
 
-test('cross-training: six cards of the other classes, taking one', async ({ page }) => {
+test('cross-training: four cards of the hired classes (not the Rogue yet), taking one', async ({ page }) => {
   await freshGame(page, { veteran: true });
   await page.getByRole('button', { name: /new run/i }).click();
   await page.getByRole('button', { name: /start shift/i }).click();
   const floor = await roomFloor(page, 'crossTraining');
   await page.getByRole('button', { name: new RegExp(`enter floor ${floor}`, 'i') }).click();
-  await expect(page.locator('.cross-offer .card')).toHaveCount(6);
+  await expect(page.locator('.cross-offer .card')).toHaveCount(4);
   const take = page.getByRole('button', { name: /take it/i });
   await expect(take).toBeDisabled();
   const deck = (await page.evaluate('window.__game.run.deck.length')) as number;
@@ -1184,5 +1184,25 @@ test('the Rogue, once hired, has a sleeve of three that fits on the screen, and 
   // A fourth slot (Lost & Found Box) joins them.
   await combat(page, 'c.addSleeveSlot();');
   await expect(page.locator('.sleeve-slot')).toHaveCount(4);
+  expect(problems).toEqual([]);
+});
+
+test('after two runs the home asks for stars, then a review window sends it', async ({ page }) => {
+  const problems = await freshGame(page, { veteran: true });
+  await expect(page.locator('.rate-banner')).toBeHidden();
+  await page.evaluate(() => {
+    const log = { hero: 'warrior', result: 'lose', begged: false, deck: [], relics: [] } as Record<string, unknown>;
+    for (const k of ['act', 'floor', 'kills', 'cards', 'pay', 'elites', 'damageTaken', 'memos', 'time', 'at']) log[k] = 1;
+    const meta = JSON.parse(localStorage.getItem('cardstone+:meta') ?? '{}');
+    localStorage.setItem('cardstone+:meta', JSON.stringify({ ...meta, history: [log, log] }));
+  });
+  await page.reload();
+  await page.locator('.splash, .title-screen').first().waitFor();
+  await expect(page.locator('.rate-banner')).toBeVisible();
+  await page.locator('.rate-banner .rate-star').nth(3).click();
+  await expect(page.locator('.rate-form .rate-star.on')).toHaveCount(4);
+  await page.locator('.rate-text').fill('Great shift');
+  await page.getByRole('button', { name: /send review/i }).click();
+  await expect(page.locator('.rate-banner')).toBeHidden();
   expect(problems).toEqual([]);
 });
