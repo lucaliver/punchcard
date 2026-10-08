@@ -15,6 +15,8 @@ export const CONFIG = {
   debugHp: 500,
   /** Runs finished (won, lost or abandoned) before the home asks for a rating. */
   ratingAfterRuns: 2,
+  /** Stars from which a rating counts as a good one (the review asks what was liked, not what was not). */
+  ratingGood: 4,
   /** Longest review text kept (characters). */
   reviewMax: 500,
   /** Seconds between two stats hits (`src/analytics/`): a burst is spread out instead of sent at once. */

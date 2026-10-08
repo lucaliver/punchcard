@@ -256,32 +256,39 @@
 }
 .stale-banner[hidden] { display: none; }
 
-/* after a couple of runs: a paper note asking for stars */
+/* after a couple of runs: a loud yellow ticket asking for stars */
 .rate-banner {
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 4px;
+  gap: 2px;
   width: min(100%, 360px);
-  padding: 8px 10px;
-  font-size: 13px;
-  background: var(--paper);
+  padding: 10px 10px 6px;
+  background: var(--y);
   color: var(--k);
   border: var(--line) solid var(--k);
   box-shadow: var(--off) var(--off) 0 var(--shadow);
+  rotate: -1deg;
 }
+.rate-banner > span { font-family: var(--font-ui); font-size: 22px; line-height: 1; text-align: center; }
 .rate-banner[hidden] { display: none; }
 .rate-stars { display: flex; justify-content: center; gap: 2px; }
 .rate-star {
-  width: 44px;
-  height: 44px;
-  font-size: 30px;
+  width: 48px;
+  height: 48px;
+  font-size: 36px;
   background: none;
   border: 0;
-  color: var(--p);
-  opacity: 0.35;
+  color: var(--k);
+  opacity: 0.4;
 }
-.rate-star.on { opacity: 1; }
+.rate-star.on { color: var(--p); opacity: 1; }
+.rate-banner .rate-star { color: var(--paper); opacity: 1; animation: star-wobble 1.6s steps(2) infinite; }
+.rate-banner .rate-star:nth-child(2n) { animation-delay: -0.4s; }
+.rate-banner .rate-star:nth-child(3n) { animation-delay: -0.9s; }
+@keyframes star-wobble {
+  50% { rotate: 8deg; scale: 1.1; }
+}
 .rate-form { display: grid; gap: 10px; }
 .rate-text {
   width: 100%;

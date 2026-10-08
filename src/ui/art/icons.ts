@@ -156,6 +156,11 @@ export const ICONS: Record<string, { el: Element; svg: string; wide?: boolean }>
   // ---- statuses & intents
   muscle: { el: 'blood', svg: muscle },
   star: { el: 'arcane', svg: star4(32, 32, 28) },
+  /** A five-pointed star (the rating). */
+  starFive: {
+    el: 'holy',
+    svg: `<path d="M32.0 5.0L39.3 23.9L59.6 25.0L43.9 37.9L49.0 57.5L32.0 46.5L15.0 57.5L20.1 37.9L4.4 25.0L24.7 23.9z"/><path ${HI} d="M32 12l5 13-9 5z"/>`,
+  },
   thorns: { el: 'nature', svg: `<path d="M32 4l5 16 14-8-6 15 15 5-15 5 6 15-14-8-5 16-5-16-14 8 6-15-15-5 15-5-6-15 14 8z"/>` },
   helm: { el: 'steel', svg: `<path d="M10 34C10 18 20 6 32 6s22 12 22 28v22H40V40H24v16H10z"/><path fill="#16121f" d="M18 30h28v6H18z"/>` },
   leaf: {
