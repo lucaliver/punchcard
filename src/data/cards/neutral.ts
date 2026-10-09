@@ -1113,7 +1113,7 @@ export const neutralCards: CardDef[] = [
   // The trap among them: never part of the order, and eating it hurts.
   {
     id: 'sushiFugu',
-    face: '{hp:0}',
+    face: '',
     cls: 'neutral',
     type: 'skill',
     rarity: 'special',
