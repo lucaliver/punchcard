@@ -227,9 +227,3 @@ Icons (`ICONS`) and creatures (`CREATURES`) are SVG written for the ink palette 
 - Before the first run after a rename or a removed field, `grep` for the old name in `src`, `tests` and `dev`: `tsc` already points at the stale tests, so fix them in the same pass instead of finding them one run at a time.
 - A screenshot is a throw-away spec (in `tests/e2e/` if `screenshots/` is not covered by the config) that you **delete before committing** (`git status` must not list it). Pitfalls that cost reruns: never overwrite `c.enemy.move` with a partial move (the HUD throws and the Machine jam window sends the page back to the title); `addTempCard(…, 'belt')` drops the card to the discard pile when the belt has no room, so add the card you want to see first, on an empty belt (`c.belt.length = 0`), and wait before adding the next; when the picture looks wrong, listen to `pageerror` before guessing; clip the shot to the area you changed.
 - Unrelated edits of the owner in the working tree (balancing, notes) are theirs: stage your own files by path, never `git add -A` unless they ask for it.
-
-## Known technical debt
-
-- Pixel-art caching (deferred: generation is fast).
-- Biome covers lint and format (no ESLint with TS 7).
-- The balance bot underplays the Mage's chaining and spends abilities as soon as it can.
