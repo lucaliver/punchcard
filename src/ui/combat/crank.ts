@@ -4,7 +4,8 @@ import type { CombatView } from './view';
 
 /**
  * The crank knob that turns a shut-off belt (`EnemyDef.beltOff`): grab it anywhere and turn it around its centre. The knob follows
- * the finger's angle and every full clockwise turn moves the belt `CONFIG.crankTurn` belt widths (counter-clockwise takes it back).
+ * the finger's angle and
+ * every full clockwise turn moves the belt `CONFIG.crankTurn` belt widths; counter-clockwise does nothing (the knob stays put).
  */
 export function bindCrank(v: CombatView): void {
   const { combat, r, state } = v;
@@ -38,6 +39,8 @@ export function bindCrank(v: CombatView): void {
     // The shortest way round, so crossing the ±180° seam is not a jump.
     const step = ((((now - drag.last) % 360) + 540) % 360) - 180;
     drag.last = now;
+    // One way only: turning back neither moves the knob nor the belt.
+    if (step <= 0) return;
     angle += step;
     r.crank.style.setProperty('--turn', `${Math.round(angle)}deg`);
     combat.crankBelt((step / 360) * CONFIG.crankTurn);

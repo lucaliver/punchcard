@@ -88,6 +88,8 @@ export interface CombatSetup {
   beltMul?: number;
   /** The hero may beg to stay once if this fight is lost (needs the run's flag `BEG_FLAG` unset too). */
   canBeg?: boolean;
+  /** Sleeve slots the run has lost for good (Life Insurance). */
+  sleeveLost?: number;
 }
 
 interface DamageOpts {
@@ -163,6 +165,10 @@ export class Combat {
   private runBeltMul = 1;
   /** Deck uids permanently removed (potions). */
   consumed: number[] = [];
+  /** How many times each deck copy with `CardDef.tenure` has been played in the run so far, counting this fight (the run keeps it). */
+  tenured: Record<number, number> = {};
+  /** Sleeve slots lost for good this fight: they leave the sleeve from the next fight on (Life Insurance). */
+  sleeveLost = 0;
   cardsPlayed = 0;
   /** The last card the hero played this fight (rules such as "not the same type twice"). */
   lastPlayed: CardDef | null = null;
@@ -225,6 +231,7 @@ export class Combat {
       beltMul *= m.beltSpeed ?? 1;
       prewarm = Math.max(prewarm, m.startBelt ?? 0);
     }
+    sleeve = Math.max(1, sleeve - (setup.sleeveLost ?? 0));
     this.regenMul = regenMul;
     this.runBeltMul = beltMul;
     this.canBeg = !!setup.canBeg && !this.relicFlags[BEG_FLAG];
@@ -796,21 +803,14 @@ export class Combat {
   }
 
   /**
-   * The player cranks a shut-off belt by `move` belt widths (negative: back towards the entry, as far as the rearmost card allows):
+   * The player cranks a shut-off belt by `move` belt widths (it only turns one way: a backward turn does nothing):
    * every row moves together, and new cards arrive as if the belt had run that far.
    */
   crankBelt(move: number): void {
-    if (!this.beltDead || this.result || this.intro > 0 || move === 0) return;
-    let travel = move;
-    if (move > 0) {
-      for (let row = 0; row < this.beltRows; row++) this.moveRow(row, move);
-    } else {
-      const free = this.belt.filter((b) => !b.pinned);
-      travel = -Math.min(-move, Math.max(0, Math.min(...free.map((b) => b.pos))));
-      for (const b of free) b.pos += travel;
-    }
-    this.beltCranked += travel;
-    this.settleBelt(travel, 0);
+    if (!this.beltDead || this.result || this.intro > 0 || move <= 0) return;
+    for (let row = 0; row < this.beltRows; row++) this.moveRow(row, move);
+    this.beltCranked += move;
+    this.settleBelt(move, 0);
   }
 
   /** Opens every belt row (the ones an enemy kept shut). */
@@ -1135,6 +1135,10 @@ export class Combat {
     this.replaying = false;
     this.withCard(card, def, () => def.play?.(this, vals, card), row);
     if (def.sweep) card.bonus = 0;
+    if (def.tenure && !card.temp) {
+      card.tenure = (card.tenure ?? 0) + 1;
+      this.tenured[card.uid] = card.tenure;
+    }
     if (def.type === 'attack') this.removeStatus('hero', 'crit');
     if (this.result === 'lose') return;
 
@@ -1542,6 +1546,7 @@ export class Combat {
       }
     }
     if (this.hero.hp <= 0) {
+      if (this.insured()) return;
       for (const id of this.relics) {
         if (RELICS[id]?.hooks?.onDeath?.(this)) {
           this.events.emit({ type: 'relic', id });
@@ -1555,6 +1560,17 @@ export class Combat {
       }
       this.end('lose');
     }
+  }
+
+  /** True when a status on the hero lets them survive a lethal hit (Life Insurance). */
+  private insured(): boolean {
+    for (const [id, s] of Object.entries(this.hero.statuses)) if (this.has('hero', id) && STATUSES[id].onDeath?.(this, 'hero', s)) return true;
+    return false;
+  }
+
+  /** `n` sleeve slots are lost for good: the run takes them off from the next fight on (Life Insurance). */
+  loseSleeveSlots(n: number): void {
+    this.sleeveLost += n;
   }
 
   /** True when a status on the enemy lets it survive a lethal hit (Golden Parachute). */

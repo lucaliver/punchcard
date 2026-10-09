@@ -6,7 +6,7 @@ import { ANCHOR_POS, CONFIG, EXPIRE_POS, relicGuarantee, rewardUpgradeChance } f
 import { ENEMIES, enemiesFor } from '../src/data/enemies';
 import { HEROES, VIRULENCE_START } from '../src/data/heroes';
 import { BOARD_CUT_TIME, COFFEE_EVERY, FLICKER_EVERY, FORKLIFT_BLOCK, LUNCH_EVERY, SMILE_HEAL, STATUSES, TABS_EVERY } from '../src/data/statuses';
-import { CARD_LIST, CARDS, RARITY_ORDER, cardCostOf, cardKeywordsOf } from '../src/data/cards';
+import { CARD_LIST, CARDS, RARITY_ORDER, cardCostOf, cardKeywordsOf, cardValsOf } from '../src/data/cards';
 import { HEXES } from '../src/data/hexes';
 import { RELICS } from '../src/data/relics';
 import { hasStamp, markRated, memosOpen, ratingDue, runHistory, stampAct, unlockAll } from '../src/game/meta';
@@ -101,9 +101,10 @@ describe('combat engine', () => {
     c.crankBelt(step);
     expect(Math.max(...c.belt.map((b) => b.pos))).toBeCloseTo(front + step);
     expect(c.beltCranked).toBeCloseTo(step);
-    // Back towards the entry: stops once the rearmost card is at the entry.
+    // The crank only turns one way: a backward turn changes nothing.
+    const rear = Math.min(...c.belt.map((b) => b.pos));
     c.crankBelt(-5);
-    expect(Math.min(...c.belt.map((b) => b.pos))).toBeCloseTo(0);
+    expect(Math.min(...c.belt.map((b) => b.pos))).toBe(rear);
     // Dragging the belt far deals new cards on both rows.
     for (let i = 0; i < 200; i++) c.crankBelt(0.01);
     expect(new Set(c.belt.map((b) => b.row)).size).toBe(2);
@@ -3875,5 +3876,117 @@ describe('the Rogue', () => {
     expect(c.hero.block).toBe(12);
     expect(c.stacks('enemy', 'strength')).toBe(0);
     expect(c.stacks('hero', 'strength')).toBe(3);
+  });
+});
+
+describe('Rise and Grind, Seniority, Tenure, Life Insurance, Nervous Breakdown', () => {
+  const quiet = (over: Partial<CombatSetup> = {}): Combat => {
+    const c = setup({ deck: deckOf(Array(8).fill('punch')), ...over });
+    c.enemy.move = { id: 'wait', intent: 'defend', windup: 999 };
+    c.enemy.hp = c.enemy.maxHp = 500;
+    run(c, CONFIG.introTime + 0.01);
+    c.hero.mana = c.hero.maxMana = 10;
+    c.belt.length = 0;
+    return c;
+  };
+  const lethal = (c: Combat): void => void c.damage('enemy', 'hero', 999, { raw: true }, 'enemy');
+
+  it('Rise and Grind stays on the belt: every tap costs HP and gives Strength', () => {
+    const c = quiet();
+    c.addTempCard('riseAndGrind', 'belt');
+    const uid = c.belt[0].card.uid;
+    const [hp, str] = CARDS.riseAndGrind.vals;
+    expect(c.playCard(uid, 'auto')).toBe(true);
+    expect(c.playCard(uid, 'auto')).toBe(true);
+    expect(c.belt.some((b) => b.card.uid === uid)).toBe(true);
+    expect(c.hero.hp).toBe(80 - 2 * hp);
+    expect(c.stacks('hero', 'strength')).toBe(2 * str);
+  });
+
+  it('Nervous Breakdown spends every Multitasking charge in one blow, then the hero falls asleep', () => {
+    const c = quiet();
+    for (let i = 0; i < 3; i++) c.chargeMultitasking();
+    const hp = c.enemy.hp;
+    c.addTempCard('nervousBreakdown', 'belt');
+    expect(c.playCard(c.belt[0].card.uid, 'auto')).toBe(true);
+    const [dmg, sleep] = CARDS.nervousBreakdown.vals;
+    expect(hp - c.enemy.hp).toBe(3 * dmg);
+    expect(c.stacks('hero', 'multitasking')).toBe(0);
+    expect(c.has('hero', 'stun')).toBe(true);
+    expect(c.hero.statuses.stun.t).toBeCloseTo(sleep);
+  });
+
+  it('Seniority and Tenure grow with every play, in every fight of the run, up to their cap', () => {
+    for (const id of ['seniority', 'tenure']) {
+      const [base, step, cap] = CARDS[id].vals;
+      const copy = (tenure: number): CardInst => ({ uid: 1, id, up: false, tenure });
+      expect(cardValsOf(copy(0))[0]).toBe(base);
+      expect(cardValsOf(copy(3))[0]).toBe(base + 3 * step);
+      expect(cardValsOf(copy(99))[0]).toBe(cap);
+    }
+    const r = newRun('warrior', 3);
+    r.deck = Array.from({ length: 6 }, (_, i) => ({ uid: 900 + i, id: 'seniority', up: false }));
+    const c = new Combat({ ...combatSetup(r), hp: 80, maxHp: 80 });
+    c.enemy.move = { id: 'wait', intent: 'defend', windup: 999 };
+    c.enemy.block = 0;
+    run(c, CONFIG.introTime + 0.01);
+    c.hero.mana = c.hero.maxMana = 10;
+    const card = c.belt.find((b) => b.card.id === 'seniority' && !b.card.hex)?.card;
+    expect(card).toBeDefined();
+    const hp = c.enemy.hp;
+    c.playCard(card?.uid ?? 0, 'auto');
+    expect(hp - c.enemy.hp).toBe(CARDS.seniority.vals[0]);
+    applyCombat(r, c);
+    const played = r.deck.find((x) => x.uid === card?.uid);
+    expect(played?.tenure).toBe(1);
+    // The next fight starts from where it left off.
+    expect(cardValsOf(played as CardInst)[0]).toBe(CARDS.seniority.vals[0] + CARDS.seniority.vals[1]);
+  });
+
+  it('Life Insurance pays out the first lethal hit once; the second one is final', () => {
+    const c = quiet({ hero: HEROES.necromancer, hp: 50, maxHp: 50 });
+    c.addTempCard('lifeInsurance', 'belt');
+    expect(c.playCard(c.belt[0].card.uid, 'auto')).toBe(true);
+    const [heal, slots] = CARDS.lifeInsurance.vals;
+    expect(c.stacks('hero', 'lifeInsurance')).toBe(heal);
+    lethal(c);
+    expect(c.result).toBeNull();
+    expect(c.hero.hp).toBe(heal);
+    expect(c.has('hero', 'lifeInsurance')).toBe(false);
+    expect(c.sleeveLost).toBe(slots);
+    // A card the fight made up has no deck copy to lose.
+    expect(c.consumed).toEqual([]);
+    lethal(c);
+    expect(c.result).toBe('lose');
+  });
+
+  it('Life Insurance tears its own card out of the deck, and the sleeve stays smaller for the next fights', () => {
+    const r = newRun('necromancer', 5);
+    r.deck = Array.from({ length: 6 }, (_, i) => ({ uid: 901 + i, id: 'lifeInsurance', up: false }));
+    const first = new Combat({ ...combatSetup(r), hp: 50, maxHp: 50 });
+    first.enemy.move = { id: 'wait', intent: 'defend', windup: 999 };
+    first.enemy.hp = first.enemy.maxHp = 500;
+    const slots = first.sleeve.length;
+    run(first, CONFIG.introTime + 0.01);
+    first.hero.mana = first.hero.maxMana = 10;
+    const policy = first.belt.find((b) => b.card.id === 'lifeInsurance' && !b.card.hex)?.card;
+    expect(policy).toBeDefined();
+    expect(first.playCard(policy?.uid ?? 0, 'auto')).toBe(true);
+    lethal(first);
+    expect(first.consumed).toEqual([policy?.uid]);
+    applyCombat(r, first);
+    expect(r.deck).toHaveLength(5);
+    expect(r.deck.some((c) => c.uid === policy?.uid)).toBe(false);
+    expect(r.sleeveLost).toBe(CARDS.lifeInsurance.vals[1]);
+    expect(new Combat(combatSetup(r)).sleeve.length).toBe(slots - CARDS.lifeInsurance.vals[1]);
+  });
+
+  it('a hero with a single slot never loses it', () => {
+    const r = newRun('warrior', 5);
+    const c = new Combat(combatSetup(r));
+    c.loseSleeveSlots(3);
+    applyCombat(r, c);
+    expect(r.sleeveLost).toBe(0);
+    expect(new Combat(combatSetup(r)).sleeve.length).toBe(HEROES.warrior.sleeve);
   });
 });
