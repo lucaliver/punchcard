@@ -6,6 +6,7 @@ import { CARDS, CARD_LIST, CLASS_HIT, cardCostOf, cardKeywordsOf, cardValsOf, fu
 import { HEXES } from '../data/hexes';
 import { HEROES } from '../data/heroes';
 import { CoffeeTask, type CoffeeAction, type CoffeeResult } from './coffee';
+import { ShellGame, type ShellResult } from './shells';
 import { RELICS } from '../data/relics';
 import type { TKey } from '../core/i18n';
 import type {
@@ -62,6 +63,8 @@ export interface EnemyState extends Fighter {
   /** Index of the next special move. */
   specialIdx: number;
   halfTriggered: boolean;
+  /** The phase it is in (0: the first, `EnemyDef.phases[phase - 1]` after that). */
+  phase: number;
   dmgScale: number;
   /** Damage stored by an absorbing move, dealt back by the next releasing one. */
   stored: number;
@@ -144,6 +147,8 @@ export class Combat {
   /** Seconds the dragged card has been held at the end of the belt. */
   private dragEdge = 0;
   private rowAdded = false;
+  /** How fast the belt runs in the boss's current phase (`BeltSetting.mul`). */
+  private phaseBeltMul: number;
   /** The belt is shut off (`EnemyDef.beltOff`): it only moves when the player turns the crank (`crankBelt`). */
   beltDead = false;
   /** Mana only comes back by tapping the button (`EnemyDef.manaTap`, `tapMana`). */
@@ -196,6 +201,8 @@ export class Combat {
   popup: { phase: 'ask' | 'install'; t: number } | null = null;
   /** The chore the enemy's move has set (`MoveDef.task`): a window covers the belt and the sleeve until it is done or the move lands. */
   task: CoffeeTask | null = null;
+  /** Same, when the chore is the Board's shell game (`MoveDef.task` = 'shells'). */
+  shells: ShellGame | null = null;
   /** The chore of the move being charged has been set up already (so a finished one doesn't open again). */
   private taskSeen = false;
   private popupWait: number | null = null;
@@ -213,7 +220,8 @@ export class Combat {
     this.heroDef = setup.hero;
     this.relics = setup.relics;
     this.relicFlags = setup.relicFlags;
-    this.beltRows = setup.beltRows ?? CONFIG.beltRows;
+    this.beltRows = setup.beltRows ?? setup.enemy.belt?.rows ?? CONFIG.beltRows;
+    this.phaseBeltMul = setup.enemy.belt?.mul ?? 1;
     this.rowsOpen = Math.min(setup.enemy.startRows ?? this.beltRows, this.beltRows);
     const h = setup.hero;
 
@@ -270,6 +278,7 @@ export class Combat {
       mainsLeft: e.every,
       specialIdx: 0,
       halfTriggered: false,
+      phase: 0,
       dmgScale: setup.scale.dmg,
       stored: 0,
       mem: {},
@@ -436,7 +445,7 @@ export class Combat {
 
   /** The sleeve is out of reach: sunk (`EnemyDef.deepBelt`) or under the chore window. */
   private get lowerBarred(): boolean {
-    return this.lowerHidden || !!this.task;
+    return this.lowerHidden || !!this.task || !!this.shells;
   }
 
   /**
@@ -447,7 +456,7 @@ export class Combat {
     const b = this.belt[this.beltIndex(uid)];
     if (!b) return false;
     // The enemy's window is over the whole belt.
-    if (this.popup || this.task) return true;
+    if (this.popup || this.task || this.shells) return true;
     return this.belt.some((w) => {
       if (w === b) return false;
       const def = CARDS[w.card.id];
@@ -502,7 +511,7 @@ export class Combat {
   }
 
   beltRate(): number {
-    return (this.beltRows > 1 ? CONFIG.twoRowSpeed : 1) * this.runBeltMul * this.beltBoost();
+    return (this.beltRows > 1 ? CONFIG.twoRowSpeed : 1) * this.runBeltMul * this.phaseBeltMul * this.beltBoost();
   }
 
   /** How much statuses speed the belt up (Rush, Hurry, Crunch), slow it down (Slowdown, rust) or stop it (Stalled, full rust, or about to turn around): 1 when none does. */
@@ -700,7 +709,7 @@ export class Combat {
   private tickEnemy(dt: number): void {
     const e = this.enemy;
     // The chore is done: the move is as good as gone while the cup is held up.
-    if (this.task?.phase === 'done') return;
+    if (this.task?.phase === 'done' || this.shells?.phase === 'done') return;
     e.timer += dt * this.enemyTimeRate();
     if (e.timer < e.move.windup) return;
     const move = e.move;
@@ -717,7 +726,7 @@ export class Combat {
   private nextEnemyMove(): MoveDef {
     this.enemy.mem.cut = 0;
     const e = this.enemy;
-    const d = e.def;
+    const d = this.foe;
     if (e.mainsLeft > 0 || !d.specials.length) {
       e.mainsLeft--;
       return d.main;
@@ -837,12 +846,18 @@ export class Combat {
   enemyStrike(): void {
     if (this.enemyTimeRate() === 0) return;
     this.events.emit({ type: 'text', target: 'enemy', key: 'combat.micromanaged', tone: 'bad' });
-    this.resolveMove(this.enemy.def.main);
+    this.resolveMove(this.foe.main);
+  }
+
+  /** The pattern the enemy fights with now: its current phase's, or its own when it has none. */
+  get foe(): Pick<EnemyDef, 'main' | 'specials' | 'every'> {
+    const e = this.enemy;
+    return (e.phase ? e.def.phases?.[e.phase - 1] : undefined) ?? e.def;
   }
 
   /** The special move the enemy will use next (for the UI countdown). */
   nextSpecial(): MoveDef | null {
-    const d = this.enemy.def;
+    const d = this.foe;
     return d.specials.length ? d.specials[this.enemy.specialIdx % d.specials.length] : null;
   }
 
@@ -1545,6 +1560,7 @@ export class Combat {
         this.events.emit({ type: 'enrage' });
       }
     }
+    for (const phases = e.def.phases; phases && e.phase < phases.length && e.hp <= e.maxHp * phases[e.phase].at; ) this.enterPhase(e.phase + 1);
     if (this.hero.hp <= 0) {
       if (this.insured()) return;
       for (const id of this.relics) {
@@ -1560,6 +1576,34 @@ export class Combat {
       }
       this.end('lose');
     }
+  }
+
+  /** A boss crosses into its next phase (`EnemyDef.phases`): the belt changes, and it starts its new pattern from the top. */
+  private enterPhase(index: number): void {
+    const e = this.enemy;
+    const p = e.def.phases![index - 1];
+    e.phase = index;
+    e.mainsLeft = p.every;
+    e.specialIdx = 0;
+    this.phaseBeltMul = p.belt.mul;
+    this.setBeltRows(p.belt.rows);
+    this.skipEnemyMove();
+    this.events.emit({ type: 'phase', index });
+  }
+
+  /** The belt gets `rows` rows: cards on a row that goes away are discarded; an extra row opens at once unless the belt was shut down. */
+  private setBeltRows(rows: number): void {
+    if (rows === this.beltRows) return;
+    const wasOpen = this.rowsOpen >= this.beltRows;
+    for (const b of this.belt.filter((x) => x.row >= rows)) {
+      this.shedHex(b.card);
+      this.discard.push(b.card);
+      this.events.emit({ type: 'cardDiscarded', card: b.card });
+    }
+    this.belt = this.belt.filter((x) => x.row < rows);
+    this.beltRows = rows;
+    this.rowsOpen = wasOpen ? rows : Math.min(this.rowsOpen, rows);
+    this.events.emit({ type: 'rows' });
   }
 
   /** True when a status on the hero lets them survive a lethal hit (Life Insurance). */
@@ -1847,7 +1891,7 @@ export class Combat {
   /** The enemy drops the move it is charging and starts on the next one of its pattern. */
   skipEnemyMove(): void {
     const e = this.enemy;
-    this.endTask(this.task ? 'close' : undefined);
+    this.endTask(this.task || this.shells ? 'close' : undefined);
     e.timer = 0;
     e.move = this.nextEnemyMove();
     this.events.emit({ type: 'enemyIntent', move: e.move });
@@ -1977,52 +2021,68 @@ export class Combat {
     return true;
   }
 
-  /** Sets up the chore of the move being charged, and ends it with the pour. */
+  /** Sets up the chore of the move being charged, and ends it when it is done (the pour of the coffee, the right card of the shell game). */
   private tickTask(dt: number): void {
-    if (!this.enemy.move.task) {
+    const kind = this.enemy.move.task;
+    if (!kind) {
       this.taskSeen = false;
       return;
     }
-    if (!this.task) {
+    const chore = this.task ?? this.shells;
+    const id = this.enemy.def.id;
+    if (!chore) {
       if (this.taskSeen) return;
       this.taskSeen = true;
-      this.task = new CoffeeTask(this.rng);
+      if (kind === 'coffee') this.task = new CoffeeTask(this.rng);
+      else this.shells = new ShellGame(this.rng);
       this.events.emit({ type: 'task', phase: 'open' });
-      this.say('enemy.coffeeMachine.order');
+      this.say(`enemy.${id}.order`);
       return;
     }
-    if (!this.task.tick(dt)) return;
-    // The Boss gets his coffee: the move is off, and its maker is left stunned for a moment.
+    if (!chore.tick(dt)) return;
+    // The chore is done: the move is off, and its maker is left stunned for a moment.
     this.events.emit({ type: 'task', phase: 'done' });
-    this.say('enemy.coffeeMachine.calm');
+    this.say(`enemy.${id}.calm`);
     this.endTask();
     this.skipEnemyMove();
-    this.applyStatus('enemy', 'stun', 1, CONFIG.coffee.calm);
+    this.applyStatus('enemy', 'stun', 1, CONFIG[kind].calm);
   }
 
   /** Closes the chore window (`phase` tells the UI why: the move landed, or was dropped). */
   private endTask(phase?: 'close'): void {
     this.task = null;
+    this.shells = null;
     this.taskSeen = false;
     if (phase) this.events.emit({ type: 'task', phase });
   }
 
+  /** A mistake in a chore takes `c.penalty` s off the move's countdown, up to `c.penaltyMax` in all. */
+  private fine(chore: { errors: number; fined: number }, c: { penalty: number; penaltyMax: number }): void {
+    const cut = Math.min(c.penalty, c.penaltyMax - chore.fined);
+    chore.errors++;
+    chore.fined += cut;
+    this.enemy.timer += cut;
+    this.events.emit({ type: 'task', phase: 'wrong' });
+  }
+
   /**
-   * The hero's hand on the machine. A `wrong` one (a coin that bounces, a wrong key, a start with no cup or the wrong sugar) takes `CONFIG.coffee.penalty` s off the move's
-   * countdown, up to `penaltyMax` in all. Returns null when there is no chore to do.
+   * The hero's hand on the machine. A `wrong` one (a coin that bounces, a wrong key, a start with no cup or the wrong sugar) is fined (`fine`).
+   * Returns null when there is no chore to do.
    */
   coffee(action: CoffeeAction): CoffeeResult | null {
     const task = this.task;
     if (!task || this.result || this.begging) return null;
     const r = task.act(action);
-    if (r === 'wrong') {
-      const c = CONFIG.coffee;
-      const cut = Math.min(c.penalty, c.penaltyMax - task.fined);
-      task.errors++;
-      task.fined += cut;
-      this.enemy.timer += cut;
-      this.events.emit({ type: 'task', phase: 'wrong' });
-    }
+    if (r === 'wrong') this.fine(task, CONFIG.coffee);
+    return r;
+  }
+
+  /** The hero turns over the card in this place of the shell game; a wrong one is fined. Returns null when there is no game on. */
+  pickShell(place: number): ShellResult | null {
+    const game = this.shells;
+    if (!game || this.result || this.begging) return null;
+    const r = game.pick(place);
+    if (r === 'wrong') this.fine(game, CONFIG.shells);
     return r;
   }
 

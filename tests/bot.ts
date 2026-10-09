@@ -71,6 +71,11 @@ export function botDecide(c: Combat, rnd: () => number, opts: BotOpts): void {
   for (let i = 0; c.manaTapOn && i < opts.reaction * TAPS_PER_SECOND; i++) c.tapMana();
   if (rnd() < opts.sloppiness) return;
   if (c.abilityReady()) c.useAbility();
+  // The shell game: the bot keeps its eye on the right card and picks it as soon as the cards stop.
+  if (c.shells) {
+    if (c.shells.phase === 'pick') c.pickShell(c.shells.prizePlace);
+    return;
+  }
   // The coffee chore: one right move per decision (a person takes a moment for each), cards are out of reach meanwhile.
   if (c.task) {
     botCoffee(c);

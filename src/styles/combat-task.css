@@ -316,3 +316,59 @@
   from { transform: translateY(0); opacity: 1; }
   to { transform: translateY(-54px); opacity: 0; }
 }
+
+/* The Board's chore: three covered cards on the table; they show their faces, turn over, swap places, and one is picked. A card is a lane (its place from the left is `--pos`, fractional while it swaps) */
+/* wide enough that a lane is about as wide as a card is tall over 1.4 */
+.sh-table { position: relative; width: 100%; max-width: 340px; max-height: 100%; aspect-ratio: 2.2; margin: 0 auto; }
+.sh-card {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: calc(var(--pos, 0) * 33.3333%);
+  width: 33.3333%;
+  display: flex;
+  justify-content: center;
+  padding: 6px 5px;
+  background: none;
+  border: 0;
+}
+.sh-card:disabled { opacity: 1; }
+.sh-in {
+  position: relative;
+  height: 100%;
+  max-width: 100%;
+  aspect-ratio: 5 / 7;
+  translate: 0 calc(var(--lift, 0) * -100%);
+  border: var(--line) solid var(--k);
+  box-shadow: var(--off) var(--off) 0 var(--shadow);
+}
+.sh-back, .sh-front { position: absolute; inset: 0; display: grid; place-items: center; font-size: 34px; }
+/* the back: board-pink with a stamped gavel */
+.sh-back {
+  color: var(--paper);
+  background-color: var(--p);
+  background-image: radial-gradient(circle, var(--k) 1.5px, transparent 2px);
+  background-size: 8px 8px;
+}
+.sh-front {
+  display: none;
+  flex-direction: column;
+  gap: 2px;
+  align-content: center;
+  color: var(--k);
+  background: var(--paper);
+}
+.sh-front small { font-family: var(--font-ui); font-size: 15px; line-height: 1; text-align: center; text-transform: uppercase; }
+.sh-front[data-prize='1'] { background: var(--y); }
+.sh-front[data-prize='0'] { color: var(--red); }
+.sh-card.up .sh-back { display: none; }
+.sh-card.up .sh-front { display: grid; }
+.sh-card.up .sh-in, .sh-card:not(.up) .sh-in { animation: sh-flip 0.2s steps(2); }
+@keyframes sh-flip {
+  from { scale: 0.2 1; }
+}
+.sh-card.bounce { animation: shake-s 0.25s steps(2); }
+.sh-card.prize .sh-in { animation: cup-hop 0.4s steps(2) 3; }
+@media (hover: hover) and (pointer: fine) {
+  .sh-card:not(:disabled):hover .sh-in { translate: 0 -4px; }
+}

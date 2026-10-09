@@ -67,7 +67,7 @@ export function moveEffect(m: MoveDef, verbose = false, values: MoveValues = bas
     parts.push(`<span class="fx fx-bad" data-tone="green" data-rule="virus">${icon('virus')}${t('move.fx.infect', { n: m.infect })}</span>`);
   if (m.absorb) parts.push(`<span class="fx fx-block" data-rule="copy">${icon('scanner')}${t('move.fx.absorb')}</span>`);
   if (m.release) parts.push(`<span class="fx fx-dmg" data-rule="copy">${icon('copy')}${t('move.fx.release')}</span>`);
-  if (m.task) parts.push(`<span class="fx" data-tone="amber" data-rule="task">${icon('coffee')}${t('move.fx.task')}</span>`);
+  if (m.task) parts.push(`<span class="fx" data-tone="amber" data-rule="${m.task}">${icon(RULES[m.task].icon)}${t('move.fx.task')}</span>`);
   if (m.intent === 'idle') parts.push(`<span class="fx">${t('move.fx.idle')}</span>`);
   if (m.hex) {
     const n = t('move.fx.hexShare', { n: Math.round(m.hex.share * 100) });
@@ -78,7 +78,7 @@ export function moveEffect(m: MoveDef, verbose = false, values: MoveValues = bas
 }
 
 /**
- * An enemy's whole attack pattern: the main attack, the specials it uses in turn, then its passives and enrage.
+ * An enemy's whole attack pattern: the main attack, the specials it uses in turn, then its passives and enrage; a boss with phases lists each one under its own heading.
  * In a fight, `mark` highlights the move being charged and the next special.
  */
 export function movePattern(e: EnemyDef, values: MoveValues = baseValues, mark?: { now: MoveDef; next: MoveDef | null }): string {
@@ -87,11 +87,19 @@ export function movePattern(e: EnemyDef, values: MoveValues = baseValues, mark?:
     const tone = moveTone(m);
     return `<li class="${cls}" data-intent="${m.intent}"${tone ? ` data-tone="${tone}"` : ''}><span class="mi">${icon(moveIcon(m))}</span><span class="mn">${t(`move.${m.id}`)}</span><span class="me">${moveEffect(m, false, values)}</span><span class="mt">${m.windup.toFixed(1)}s</span></li>`;
   };
-  const every = e.specials.length ? `<li class="foe-every">${t('compendium.every', { n: e.every })}</li>` : '';
+  const moves = (p: Pick<EnemyDef, 'main' | 'specials' | 'every'>): string =>
+    `${row(p.main)}${p.specials.length ? `<li class="foe-every">${t('compendium.every', { n: p.every })}</li>` : ''}${p.specials.map(row).join('')}`;
   const traits = enemyTraits(e)
     .map((x) => `<p class="foe-half">${icon(x.icon)}${x.name ? `<b>${x.name}</b><i class="sep"></i>` : ''}<span>${x.desc}</span></p>`)
     .join('');
-  return `<ul class="foe-moves">${row(e.main)}${every}${e.specials.map(row).join('')}</ul>${traits}`;
+  if (!e.phases) return `<ul class="foe-moves">${moves(e)}</ul>${traits}`;
+  const phases = [e, ...e.phases]
+    .map(
+      (p, i) =>
+        `<li class="foe-phase"><b>${t('compendium.phase', { n: i + 1 })}</b> ${keywordHtml(t(`enemy.${e.id}.phase${i + 1}.d`))}</li>${moves(p)}`,
+    )
+    .join('');
+  return `<ul class="foe-moves">${phases}</ul>${traits}`;
 }
 
 /**
@@ -155,7 +163,8 @@ const RULES: Record<string, { icon: string; title: TKey; desc: TKey }> = {
   virus: { icon: 'virus', title: 'rule.virus', desc: 'rule.virus.d' },
   drain: { icon: 'drain', title: 'rule.drain', desc: 'rule.drain.d' },
   copy: { icon: 'scanner', title: 'rule.copy', desc: 'rule.copy.d' },
-  task: { icon: 'coffee', title: 'rule.task', desc: 'rule.task.d' },
+  coffee: { icon: 'coffee', title: 'rule.task', desc: 'rule.task.d' },
+  shells: { icon: 'gavel', title: 'rule.shells', desc: 'rule.shells.d' },
 };
 
 /** Inside a move description (threat info, handbook): press a curse, status, hex or rule to learn what it does. */

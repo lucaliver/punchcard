@@ -1359,8 +1359,22 @@ ${shadow}
 <g class="limb"><path d="M34 100c-14 0-22-8-24-22" stroke="#120e18" stroke-width="12" fill="none" stroke-linecap="round"/><path d="M34 100c-14 0-22-8-24-22" stroke="#5a5a78" stroke-width="6" fill="none" stroke-linecap="round"/><circle cx="12" cy="66" r="15" fill="url(#cs-g)" ${OUT}/><path d="M4 62c2-6 8-8 14-6" stroke="#fff" stroke-width="3" fill="none" stroke-linecap="round" opacity=".7"/></g>
 <g class="limb"><path d="M166 100c14 0 22-8 24-22" stroke="#120e18" stroke-width="12" fill="none" stroke-linecap="round"/><path d="M166 100c14 0 22-8 24-22" stroke="#5a5a78" stroke-width="6" fill="none" stroke-linecap="round"/><circle cx="188" cy="66" r="15" fill="url(#cs-g)" ${OUT}/><path d="M180 62c2-6 8-8 14-6" stroke="#fff" stroke-width="3" fill="none" stroke-linecap="round" opacity=".7"/></g>`;
 
-/** The Board: three porcelain-masked directors in hats on one brass-and-steel chassis, a silent grin, a frown and a monocle, ticker tape pouring from its chest. */
-const theBoard = `
+/** Where the Board's three necks run (left, right, middle), and where each is cut short when its head is lost. */
+const BOARD_NECK = {
+  left: { path: 'M66 108c0-10-4-20-8-28', stump: 'M66 108c0-6-2-10-4-14', cap: [62, 94] },
+  right: { path: 'M134 108c0-10 4-20 8-28', stump: 'M134 108c0-6 2-10 4-14', cap: [138, 94] },
+  mid: { path: 'M100 104V84', stump: 'M100 104V84', cap: [100, 84] },
+} as const;
+/** A neck with its head, or a stump with a brass cap and a spark where the head was. */
+const boardNeck = (n: (typeof BOARD_NECK)[keyof typeof BOARD_NECK], alive: boolean): string => {
+  const d = alive ? n.path : n.stump;
+  const [x, y] = n.cap;
+  const cut = alive
+    ? ''
+    : `<circle cx="${x}" cy="${y}" r="8" fill="url(#tb-b)" ${OUT}/><path d="M${x} ${y - 24}l4 12 10-2-8 8 6 10-12-6-10 6 4-10-8-8 10 2z" fill="#ffd900" ${OUT}/>`;
+  return `<path d="${d}" stroke="#120e18" stroke-width="13" fill="none" stroke-linecap="round"/><path d="${d}" stroke="url(#tb-s)" stroke-width="8" fill="none" stroke-linecap="round"/>${cut}`;
+};
+const boardBody = `
 <defs>${rg('tb-m', '#ffffff', '#b8b0d0')}${rg('tb-b', '#ffe8a0', '#8a5a10')}${rg('tb-s', '#6a76c8', '#141c60')}</defs>
 ${shadow}
 <!-- ticker tape pouring out -->
@@ -1371,21 +1385,31 @@ ${shadow}
 <g fill="#8a5a10" ${OUT}><circle cx="46" cy="130" r="3.5"/><circle cx="154" cy="130" r="3.5"/><circle cx="60" cy="158" r="3.5"/><circle cx="140" cy="158" r="3.5"/></g>
 <path d="M62 126c10 14 66 14 76 0v10c-10 14-66 14-76 0z" fill="#120e18"/><path d="M70 130h60" stroke="#ffd900" stroke-width="3" stroke-dasharray="6 4"/>
 <g class="limb" fill="url(#tb-b)" ${OUT}><circle cx="100" cy="150" r="16"/><path d="M100 138v24M88 150h24M92 140l16 20M108 140l-16 20" stroke="#8a5a10" stroke-width="3" fill="none"/></g>
-<!-- three necks and three porcelain masks -->
-<path d="M66 108c0-10-4-20-8-28M134 108c0-10 4-20 8-28M100 104V84" stroke="#120e18" stroke-width="13" fill="none" stroke-linecap="round"/><path d="M66 108c0-10-4-20-8-28M134 108c0-10 4-20 8-28M100 104V84" stroke="url(#tb-s)" stroke-width="8" fill="none" stroke-linecap="round"/>
+`;
+const boardLeft = `
 <!-- left: bowler, calm smile -->
 <ellipse cx="46" cy="64" rx="26" ry="28" fill="url(#tb-m)" ${OUT}/>
 <path d="M28 46c0-14 8-20 18-20s18 6 18 20z" fill="url(#tb-s)" ${OUT}/><path d="M22 46h48" stroke="#120e18" stroke-width="5"/>
 <path d="M34 62c3-4 7-4 10 0M50 62c3-4 7-4 10 0" stroke="#120e18" stroke-width="3.5" fill="none" stroke-linecap="round"/><path d="M36 76c6 8 16 8 22 0" stroke="#120e18" stroke-width="3.5" fill="none" stroke-linecap="round"/><circle cx="32" cy="72" r="4" fill="#ff8ac8" opacity=".7"/><circle cx="62" cy="72" r="4" fill="#ff8ac8" opacity=".7"/>
+`;
+const boardRight = `
 <!-- right: crown, frown -->
 <ellipse cx="154" cy="64" rx="26" ry="28" fill="url(#tb-m)" ${OUT}/>
 <path d="M134 40l8 10 6-12 6 12 6-12 8 14z" fill="url(#tb-b)" ${OUT}/>
 <g class="eye" fill="#120e18"><circle cx="144" cy="64" r="4"/><circle cx="164" cy="64" r="4"/></g><path d="M136 56l16 6M172 56l-16 6" stroke="#120e18" stroke-width="3.5" stroke-linecap="round"/><path d="M142 80c6-6 16-6 22 0" stroke="#120e18" stroke-width="3.5" fill="none" stroke-linecap="round"/>
+`;
+const boardMid = `
 <!-- middle: top hat, monocle, deadpan -->
 <ellipse cx="100" cy="52" rx="28" ry="30" fill="url(#tb-m)" ${OUT}/>
 <path d="M80 26V4h40v22z" fill="url(#tb-s)" ${OUT}/><rect x="80" y="16" width="40" height="6" fill="#ff3d9a"/><path d="M72 28h56" stroke="#120e18" stroke-width="5" stroke-linecap="round"/>
 <g ${OUT}><ellipse cx="88" cy="50" rx="6" ry="5" fill="#120e18"/></g><circle cx="112" cy="50" r="10" fill="none" stroke="#ffd900" stroke-width="3"/><g class="eye" fill="#120e18"><circle cx="112" cy="50" r="4"/></g><path d="M112 60c2 12 4 18 8 26" stroke="#ffd900" stroke-width="2" fill="none"/>
 <path d="M86 68h28" stroke="#120e18" stroke-width="3.5" stroke-linecap="round"/><path d="M90 64l4 0M106 64h4" stroke="#120e18" stroke-width="0"/>`;
+/** The Board, one head lost per phase (`EnemyDef.phases`): three porcelain-masked directors in hats on one brass-and-steel chassis (a silent grin, a frown, a monocle), ticker tape pouring from its chest. */
+const board = (left: boolean, right: boolean): string =>
+  `${boardBody}${boardNeck(BOARD_NECK.left, left)}${boardNeck(BOARD_NECK.right, right)}${boardNeck(BOARD_NECK.mid, true)}${left ? boardLeft : ''}${right ? boardRight : ''}${boardMid}`;
+const theBoard = board(true, true);
+const theBoardTwo = board(true, false);
+const theBoardOne = board(false, false);
 
 /** Power Socket: a cheeky two-prong plug with a rubber cable tail, a cream round body, big eyes, stubby arms and yellow sparks arcing all around it. */
 const powerSocket = `
@@ -1584,6 +1608,8 @@ export const CREATURES: Record<string, string> = {
   touristAngry,
   conveyorSis,
   theBoard,
+  theBoardTwo,
+  theBoardOne,
   punchClock,
   smokeDetector,
   microwave,

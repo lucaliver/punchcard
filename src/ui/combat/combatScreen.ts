@@ -25,6 +25,7 @@ import { clockText } from '../screens/journey';
 import { createCardLayer } from './cardLayer';
 import { bindCombatFx } from './combatFx';
 import { createTaskWindow } from './coffeeWindow';
+import { createShellWindow } from './shellWindow';
 import { createHud } from './hud';
 import { ABILITY_ICON, createCombatView, PASSIVE_ICON } from './view';
 
@@ -45,8 +46,8 @@ const ENEMY_MAX = 256;
 const ENEMY_ZOOM = 1.6;
 /** Pixels between the two rows of a two-row belt. */
 const BELT_ROW_GAP = 10;
-/** Tallest a belt card may be, as a share of the screen height, with one and with two rows. */
-const CARD_MAX_H = { one: 0.118, two: 0.092 };
+/** Tallest a belt card may be, as a share of the screen height, with one, two and three rows. */
+const CARD_MAX_H = [0.118, 0.118, 0.092, 0.066];
 /** Pixels after which the belt's track pattern repeats (the scroll wraps there). */
 const TRACK_PERIOD = 26;
 /** Most simulation steps run in one frame; past that the fight drops the lag instead of spiralling. */
@@ -78,6 +79,7 @@ export function combatScreen(run: RunState, combat: Combat, cb: CombatCallbacks)
   const cards = createCardLayer(v);
   const hud = createHud(v, () => passiveInfo());
   const taskWindow = createTaskWindow(v);
+  const shellWindow = createShellWindow(v);
 
   /** The time card on the belt: stamped IN as the fight starts (then it leaves), OUT when it's won (it stays). */
   const timeCard = (kind: 'in' | 'out', time: string, done?: () => void): void => {
@@ -175,7 +177,7 @@ export function combatScreen(run: RunState, combat: Combat, cb: CombatCallbacks)
   const layout = (): void => {
     state.beltW = r.belt.clientWidth || el.clientWidth;
     // Cards follow the belt width, but shrink on short screens so the layout always fits (more with two rows).
-    const cw = Math.round(Math.min(state.beltW * CONFIG.cardWidth, el.clientHeight * (combat.beltRows > 1 ? CARD_MAX_H.two : CARD_MAX_H.one)));
+    const cw = Math.round(Math.min(state.beltW * CONFIG.cardWidth, el.clientHeight * CARD_MAX_H[Math.min(combat.beltRows, CARD_MAX_H.length - 1)]));
     state.cardW = cw;
     state.rowH = Math.round(cw * 1.4) + BELT_ROW_GAP;
     el.style.setProperty('--cw-belt', `${cw}px`);
@@ -204,6 +206,8 @@ export function combatScreen(run: RunState, combat: Combat, cb: CombatCallbacks)
       r.enemyArt.style.setProperty('--by', String(y1));
     });
   };
+
+  v.relayout = layout;
 
   // ------------------------------------------------------------------ controls
   // ------------------------------------------------------------------ inspectables (hold to learn)
@@ -238,7 +242,7 @@ export function combatScreen(run: RunState, combat: Combat, cb: CombatCallbacks)
   const moveInfo = (): void => {
     const e = combat.enemy;
     const special = combat.nextSpecial();
-    const upcoming = special && e.move === e.def.main ? special : null;
+    const upcoming = special && e.move === combat.foe.main ? special : null;
     const sheet = info({
       icon: moveIcon(e.move),
       title: t(`move.${e.move.id}`),
@@ -519,6 +523,7 @@ export function combatScreen(run: RunState, combat: Combat, cb: CombatCallbacks)
     }
     hud.render();
     taskWindow.render();
+    shellWindow.render();
     cards.render();
     const draggedSeen = lastDragged;
     lastDragged = combat.beltCranked;

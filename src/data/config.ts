@@ -132,6 +132,22 @@ export const CONFIG = {
     sugar: [1, 3],
     maxSugar: 4,
   },
+  /**
+   * The Board's chore (`MoveDef.task` = 'shells', `game/shells.ts`): `cards` covered cards show their faces for `showTime` s, then swap places `swaps` times, `swapTime` s each;
+   * a wrong pick is shown for `revealTime` s and the round restarts, the right one stays up `doneHold` s. A mistake takes `penalty` s off the move's countdown (`penaltyMax` s in all);
+   * done in time, the Board is stunned `calm` s.
+   */
+  shells: {
+    cards: 3,
+    showTime: 1.5,
+    swaps: 7,
+    swapTime: 0.45,
+    revealTime: 1.1,
+    doneHold: 1.4,
+    penalty: 2,
+    penaltyMax: 6,
+    calm: 3,
+  },
   /** The Weak Spot target shows at least this far (share of the sprite) from every edge. */
   weakSpotMargin: 0.25,
   /** Hours a page can stay open before the home asks for a reload (the game runs offline, so a forgotten tab misses updates). */

@@ -347,8 +347,27 @@ export interface MoveDef {
   fx?: (c: Combat) => void;
 }
 
-/** The chores a move can set. */
-export type TaskId = 'coffee';
+/** The chores a move can set: the Boss's coffee, or the Board's shell game with three covered cards. */
+export type TaskId = 'coffee' | 'shells';
+
+/** How the belt runs while a boss is in a phase: how many rows it has and how fast it goes (a multiplier on top of everything else). */
+export interface BeltSetting {
+  rows: number;
+  mul: number;
+}
+
+/**
+ * One phase of a boss, from the share `at` (0–1) of its maximum HP down: it changes its look and its whole pattern, and the belt changes with it.
+ * Phase 1 is the `EnemyDef` itself (its `main`, `specials`, `every`, `art`, `belt`); `EnemyDef.phases` are the ones that follow, in order.
+ */
+export interface EnemyPhase {
+  at: number;
+  art: string;
+  main: MoveDef;
+  specials: MoveDef[];
+  every: number;
+  belt: BeltSetting;
+}
 
 export interface EnemyDef {
   id: string;
@@ -381,6 +400,10 @@ export interface EnemyDef {
   halfSecret?: boolean;
   /** Belt rows open at the start of the fight (the rest stay shut until `openBeltRows`). */
   startRows?: number;
+  /** The belt in the first phase (rows and speed); a boss's later `phases` each carry their own. */
+  belt?: BeltSetting;
+  /** The phases after the first (`enemy.<id>.phase<N>` is what it says on entering phase N, and `.phase<N>.d` the note under it). */
+  phases?: EnemyPhase[];
   /** Seconds into the fight when the part of the screen under the belt slides away (the sleeve and the ability go with it, the mana bar stays) and, `CONFIG.sinkTime` later, a third belt row opens in its place (`enemy.<id>.deep`, `enemy.<id>.speech`). */
   deepBelt?: number;
   /** A surprise (no pre-fight line): seconds into the fight when the belt shuts off for good; from then on the player turns it by hand with a crank knob (`Combat.crankBelt`). It says `enemy.<id>.speech`. */
@@ -609,6 +632,8 @@ export type CombatEvent =
   /** `deepBelt`: the lower part of the screen slides down, out of reach (the extra row opens `CONFIG.sinkTime` later: `rowAdded`). */
   | { type: 'lowerSink' }
   | { type: 'rowAdded' }
+  /** A boss's phase gave the belt a new number of rows (`Combat.beltRows`). */
+  | { type: 'rows' }
   /** `beltOff`: the belt is shut off; it only moves under the player's finger now. */
   | { type: 'beltDead' }
   /** `manaTap`: mana no longer comes back by itself; the tap button is up. */
@@ -620,6 +645,8 @@ export type CombatEvent =
   | { type: 'popup'; phase: 'open' | 'install' | 'close' }
   /** The chore window: it `open`s, the hero makes a `wrong` move (the move lands sooner), the chore is `done` in time, or the move lands first (`close`). */
   | { type: 'task'; phase: 'open' | 'wrong' | 'done' | 'close' }
+  /** A boss enters its next phase (`index` from 1): new look, new pattern, a new belt. */
+  | { type: 'phase'; index: number }
   | { type: 'end'; result: CombatResult };
 
 export type CombatResult = 'win' | 'lose';

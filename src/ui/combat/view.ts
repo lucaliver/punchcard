@@ -44,6 +44,8 @@ export interface CombatView {
   banner(text: string, bad?: boolean): void;
   /** Pauses the fight while something is being inspected (set by the combat screen). */
   inspect(open: boolean): void;
+  /** Measures the cards and the enemy's room again (the belt got another number of rows). */
+  relayout(): void;
 }
 
 function markup(run: RunState, combat: Combat): string {
@@ -213,6 +215,9 @@ export function createCombatView(run: RunState, combat: Combat): CombatView {
       el.append(tEl);
     },
     inspect() {
+      /* replaced by the combat screen */
+    },
+    relayout() {
       /* replaced by the combat screen */
     },
     banner(text, bad = false) {

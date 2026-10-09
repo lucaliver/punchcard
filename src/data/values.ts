@@ -78,6 +78,8 @@ export const VALUES = {
   wakePerCard: WAKE_PER_CARD,
   coffeeCalm: CONFIG.coffee.calm,
   coffeePenalty: CONFIG.coffee.penalty,
+  shellsCalm: CONFIG.shells.calm,
+  shellsPenalty: CONFIG.shells.penalty,
   // Rules on cards
   virusDelay: CONFIG.virusDelay,
   virusCost: CONFIG.virusCost,

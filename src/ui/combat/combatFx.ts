@@ -469,6 +469,28 @@ export function bindCombatFx(v: CombatView, cards: CardLayer, onEnd: (result: 'w
         r.belt.style.setProperty('--rows', String(v.combat.beltRows));
         sfx('machinery');
         break;
+      case 'rows':
+        // A boss's phase changed the belt: the rows grow or shrink in steps and the cards are measured again to fit.
+        v.el.classList.add('deep');
+        r.belt.style.setProperty('--rows', String(v.combat.beltRows));
+        v.relayout();
+        sfx('machinery');
+        break;
+      case 'phase': {
+        // The boss loses a head: the sprite changes for good, it says its line and a note spells out what changed.
+        const def = v.combat.enemy.def;
+        const p = v.enemyPoint();
+        const art = def.phases?.[e.index - 1]?.art;
+        const riso = r.enemyArt.querySelector('.riso');
+        if (art && riso) riso.outerHTML = creature(art);
+        speak(t(`enemy.${def.id}.phase${e.index + 1}`));
+        v.toast(keywordText(t(`enemy.${def.id}.phase${e.index + 1}.d`)), true, speechLeft());
+        burst('blood', p.x, p.y, 30, 1.4);
+        sfx('enrage');
+        haptic('alarm');
+        shake('big');
+        break;
+      }
       case 'rowsOpen':
       case 'rowsClose':
         r.belt.classList.remove('row-opening', 'row-closing');

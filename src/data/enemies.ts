@@ -11,6 +11,12 @@ const SIREN_SONG = 8;
 /** Seconds the Boss's coffee move takes to land: the chore (pay, key in the code, cup and spoon, sugar, pour) fits in it with a little to spare. */
 const GET_COFFEE = 26;
 
+/** The Board's belt multipliers: phase 1 crawls (with a third row), phase 2 runs. */
+const BOARD_SLOW = 0.7;
+const BOARD_FAST = 1.5;
+/** Seconds the Board's audit takes to land: a couple of rounds of the shell game fit in it. */
+const AUDIT = 18;
+
 /** Seconds the belt serves sushi (the Sushi Chef's special). */
 const ALL_YOU_CAN_EAT = 10;
 
@@ -785,22 +791,46 @@ const defs: EnemyDef[] = [
     ruleBreaker: true,
   },
   {
-    // Three directors in one chassis: it starts angry (Block, Strength); each third of its HP you take, one more loses patience (faster, then the belt is cut).
+    // Three directors in one chassis, and a head lost in each phase (300 HP: 300–200, 200–100, 100–0). Phase 1 pins you down with a slow, crowded belt of
+    // paperwork (three rows), phase 2 is a stampede (two fast rows, theft and a big hit), phase 3 is the audit: a shell game with three covered cards.
     id: 'theBoard',
     act: 3,
     tier: 'boss',
-    hp: 260,
+    hp: 300,
     block: 70,
     art: 'theBoard',
     main: atk('gavel', 9, 6, ramp),
     every: 2,
     specials: [
       { id: 'motionToCut', intent: 'curse', windup: 6, curse: [{ id: 'debt', n: 1, to: 'belt' }], status: [gainStrength] },
-      { id: 'hostileTakeover', intent: 'steal', windup: 5, steal: 2, status: [gainStrength] },
       { id: 'quarterlyTargets', intent: 'curse', windup: 7, curse: [{ id: 'deadline', n: 2, to: 'belt' }] },
-      atk('liquidation', 26, 12, { intent: 'charge' }),
     ],
-    start: [{ id: 'boardroom' }, { id: 'strength', v: 2 }],
+    belt: { rows: 3, mul: BOARD_SLOW },
+    phases: [
+      {
+        at: 2 / 3,
+        art: 'theBoardTwo',
+        main: atk('gavel', 10, 5, ramp),
+        every: 2,
+        specials: [
+          { id: 'hostileTakeover', intent: 'steal', windup: 5, steal: 2, status: [gainStrength] },
+          atk('liquidation', 26, 12, { intent: 'charge' }),
+        ],
+        belt: { rows: 2, mul: BOARD_FAST },
+      },
+      {
+        at: 1 / 3,
+        art: 'theBoardOne',
+        main: atk('gavel', 11, 5, ramp),
+        every: 2,
+        specials: [
+          { id: 'payrollAudit', intent: 'charge', windup: AUDIT, dmg: 24, task: 'shells' },
+          atk('liquidation', 26, 12, { intent: 'charge' }),
+        ],
+        belt: { rows: 2, mul: 1 },
+      },
+    ],
+    start: [{ id: 'strength', v: 2 }],
   },
 ];
 
@@ -872,8 +902,8 @@ export const DEBUG_ENEMY: EnemyDef = {
 export const ENEMIES: Record<string, EnemyDef> = Object.fromEntries([...defs, DEBUG_ENEMY].map((e) => [e.id, e]));
 export const ENEMY_LIST: readonly EnemyDef[] = [...defs].sort((a, b) => DIFFICULTY.indexOf(a.id) - DIFFICULTY.indexOf(b.id));
 
-/** Main attack followed by the specials, for lists such as the compendium. */
-export const enemyMoves = (e: EnemyDef): MoveDef[] => [e.main, ...e.specials];
+/** Main attack followed by the specials (then those of each later phase), for lists such as the compendium. */
+export const enemyMoves = (e: EnemyDef): MoveDef[] => [e.main, ...e.specials, ...(e.phases ?? []).flatMap((p) => [p.main, ...p.specials])];
 
 /** Enemies of an act and tier, easiest first. */
 export const enemiesFor = (act: number, tier: EnemyDef['tier']): EnemyDef[] =>

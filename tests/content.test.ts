@@ -129,6 +129,23 @@ describe('content integrity', () => {
     for (const e of ENEMY_LIST.filter((x) => x.onHalf)) expect(CREATURES[e.halfArt ?? ''], e.id).toBeTruthy();
   });
 
+  it('every phase of a boss has its sprite, its lines in every language, falls below the one before, and a belt', () => {
+    for (const e of ENEMY_LIST.filter((x) => x.phases)) {
+      expect(e.tier, e.id).toBe('boss');
+      expect(CREATURES[e.art], e.id).toBeTruthy();
+      let at = 1;
+      for (const [i, p] of e.phases!.entries()) {
+        expect(p.at, e.id).toBeLessThan(at);
+        at = p.at;
+        expect(CREATURES[p.art], p.art).toBeTruthy();
+        expect(p.belt.rows).toBeGreaterThan(0);
+        for (const strings of [enStrings, itStrings, esStrings, zhStrings] as Record<string, string>[])
+          for (const k of [`enemy.${e.id}.phase${i + 2}`, `enemy.${e.id}.phase${i + 2}.d`, `enemy.${e.id}.phase1.d`])
+            expect(strings[k], k).toBeTruthy();
+      }
+    }
+  });
+
   it('every enemy past the first three can grow stronger, except the ones with nothing to hit with or a single move', () => {
     const exempt = ['toxicCoworker', 'guyAsleep', 'overthinker'];
     for (const e of ENEMY_LIST.slice(3)) {

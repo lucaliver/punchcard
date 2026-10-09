@@ -249,7 +249,7 @@ export function createHud(v: CombatView, onPassive: () => void): { render(): voi
     }
     // Countdown to the special move (left of the enemy's HP): its icon and in how many attacks it comes.
     const special = combat.nextSpecial();
-    const isMain = m === e.def.main && !!special;
+    const isMain = m === combat.foe.main && !!special;
     const nextSig = isMain && special ? `${special.id}|${e.mainsLeft + 1}` : '';
     if (r.intentNext.dataset.sig !== nextSig) {
       r.intentNext.dataset.sig = nextSig;

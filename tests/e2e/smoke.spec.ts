@@ -771,6 +771,46 @@ test("the Boss's coffee: a chore window covers the belt and the sleeve; pay, key
   expect(problems).toEqual([]);
 });
 
+test('the Board: a head lost at each third of its HP changes the belt, and the audit is a shell game with covered cards', async ({ page }) => {
+  const problems = await freshGame(page);
+  await page.getByRole('button', { name: /debug/i }).click();
+  await page.locator('.debug-tabs button').last().click();
+  await page.locator('.debug-foe[data-enemy="theBoard"]').click();
+  await expect(page.locator('.combat')).toBeVisible();
+  const start = page.locator('.js-start');
+  if (await start.count()) await start.click();
+  await expect.poll(() => combat(page, 'return c.intro <= 0;')).toBe(true);
+  const rows = (): Promise<string> => page.locator('.belt').evaluate((el) => (el as HTMLElement).style.getPropertyValue('--rows'));
+  // Phase 1: three rows. A third of its HP later it loses a head, and the belt is back to two rows.
+  expect(await rows()).toBe('3');
+  const face = (): Promise<string> => page.locator('.enemy-art .riso').evaluate((el) => el.outerHTML);
+  const first = await face();
+  await combat(page, "c.enemy.block = 0; c.damage('hero', 'enemy', c.enemy.hp - 200, { raw: true }, 'hero');");
+  await expect.poll(rows).toBe('2');
+  expect(await face()).not.toBe(first);
+  // Phase 3: the audit covers the belt with three covered cards; the right one ends it.
+  await combat(page, "c.damage('hero', 'enemy', c.enemy.hp - 100, { raw: true }, 'hero');");
+  await combat(page, 'while (!c.enemy.move.task) c.skipEnemyMove();');
+  const win = page.locator('.shell-window.on');
+  await expect(win).toBeVisible();
+  await expect(page.locator('.sh-card')).toHaveCount(3);
+  await expect.poll(() => combat(page, "return c.shells.phase === 'pick';"), { timeout: 15000 }).toBe(true);
+  const prize = (await combat(page, 'return c.shells.prize;')) as number;
+  await page
+    .locator('.sh-card')
+    .nth((prize + 1) % 3)
+    .tap();
+  await expect(page.locator('.shell-window.jolt, .shell-window.on')).toBeVisible();
+  expect(await combat(page, 'return c.shells.errors;')).toBe(1);
+  await expect.poll(() => combat(page, "return c.shells.phase === 'pick';"), { timeout: 15000 }).toBe(true);
+  const right = (await combat(page, 'return c.shells.prize;')) as number;
+  await page.locator('.sh-card').nth(right).tap();
+  await expect(page.locator('.shell-window.served')).toBeVisible();
+  await expect(win).toBeHidden({ timeout: 12000 });
+  expect(await combat(page, "return c.has('enemy', 'stun');")).toBe(true);
+  expect(problems).toEqual([]);
+});
+
 test('after the first run the home points at the handbook, once', async ({ page }) => {
   const problems = await freshGame(page);
   const hint = page.locator('.handbook-hint');
