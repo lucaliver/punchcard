@@ -210,5 +210,3 @@
 /* cost lowered by a perk (Budget Cut) or by the sleeve's discount */
 .card .c-cost.cheap,
 .card .c-cost.sale { color: var(--y); }
-/* On Credit: what it will owe, not what it costs now: a dashed ring around the number */
-.card .c-cost.credit { outline: max(1px, 0.8cqw) dashed var(--paper); outline-offset: -2.5cqw; }

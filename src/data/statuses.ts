@@ -332,8 +332,6 @@ const defs: StatusDef[] = [
       c.applyStatus(side, 'krustyKrab', -1, 0, true);
     },
   },
-  // Overdrawn (the debt of a card On Credit): no mana comes back while it lasts, one second per mana the card cost.
-  { id: 'overdrawn', tone: 'blue', kind: 'timed', good: false, icon: 'debt', regenMul: 0 },
   // Pocket Lint and Clean Getaway (Rogue powers): every card slipping off the belt (caught in the sleeve or not) deals damage / gives Block for `v`.
   {
     id: 'pocketLint',

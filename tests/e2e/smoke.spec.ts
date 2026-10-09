@@ -1268,7 +1268,7 @@ test('the Rogue, once hired, has a sleeve of three that fits on the screen, and 
   await expect(page.locator('.sleeve-slot')).toHaveCount(3);
   const cost = (await combat(
     page,
-    "c.addToSleeve('borrowedStapler'); const card = c.sleeve.find((x) => x); c.dropBelt(); return card.disc ?? 0;",
+    "c.discard.push({ uid: 900, id: 'borrowedStapler', up: false, bonus: 0, temp: false }); c.retrieve(1, 'sleeve'); const card = c.sleeve.find((x) => x); c.dropBelt(); return card.disc ?? 0;",
   )) as number;
   expect(cost).toBeGreaterThan(0);
   // The three slots fit in the room left of the ability button.

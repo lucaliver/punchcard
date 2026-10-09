@@ -378,14 +378,13 @@ export class Combat {
     return CARDS[card.id].shown?.(this, vals, card as CombatCard) ?? vals;
   }
 
-  /** What playing the card takes from the mana now: nothing for a card On Credit (its cost becomes a debt, see `resolvePlay`), or when a badge makes the next one free. */
+  /** What playing the card takes from the mana now: nothing when a badge makes the next one free. */
   cardCost(card: CardInst): number {
     const cost = this.costOf(card);
-    if (cost > 0 && this.keywords(card).includes('credit')) return 0;
     return cost > 0 && this.freeNextId() ? 0 : cost;
   }
 
-  /** What a card costs before credit and free passes: its own cost, or the one a status sets for every card (`StatusDef.flatCost`; X cards keep theirs). */
+  /** What a card costs before free passes: its own cost, or the one a status sets for every card (`StatusDef.flatCost`; X cards keep theirs). */
   costOf(card: CardInst): number {
     const cost = cardCostOf(card);
     if (cost < 0) return cost;
@@ -1120,12 +1119,8 @@ export class Combat {
     const spent = cost < 0 ? this.hero.mana : cost;
     if (!free) this.hero.mana -= spent;
     const nominal = this.costOf(card);
-    // On Credit: no mana now, but the regeneration stops for as many seconds as the card costs.
-    if (!free && nominal > 0 && this.keywords(card).includes('credit')) this.applyStatus('hero', 'overdrawn', 1, nominal);
-    else {
-      const badge = this.freeNextId();
-      if (badge && !free && cost === 0 && nominal > 0) this.applyStatus('hero', badge, -1, 0, true);
-    }
+    const badge = this.freeNextId();
+    if (badge && !free && cost === 0 && nominal > 0) this.applyStatus('hero', badge, -1, 0, true);
     const row = beltIdx >= 0 ? this.belt[beltIdx].row : -1;
     // An Echo card on the belt is played again and again: it stays where it is (unless it is used up some other way); from the sleeve it is spent as usual.
     const kws = this.keywords(card);
@@ -1317,11 +1312,11 @@ export class Combat {
   }
 
   /**
-   * Lifts `n` different cards of this rarity from the other heroes (never the hired hero's own, the neutral ones, or a hero still in the works) for this fight:
-   * into the sleeve (what doesn't fit goes to the discard pile) or into the draw pile. `up` upgrades them, `cheaper` takes mana off, `hex` hexes each one.
+   * Lifts `n` different cards of this rarity from the other heroes (never the hired hero's own, the neutral ones, or a hero still in the works) for this fight,
+   * into the draw pile. `up` upgrades them, `cheaper` takes mana off, `hex` hexes each one.
    * Returns how many came.
    */
-  loot(rarity: Rarity, n: number, to: 'sleeve' | 'draw', opts: { up?: boolean; cheaper?: number; hex?: string } = {}): number {
+  loot(rarity: Rarity, n: number, opts: { up?: boolean; cheaper?: number; hex?: string } = {}): number {
     const theirs = (cls: CardDef['cls']): boolean =>
       cls !== 'neutral' && cls !== 'curse' && cls !== this.heroDef.id && !('debug' in (HEROES[cls].unlock ?? {}));
     const pool = CARD_LIST.filter(
@@ -1332,18 +1327,9 @@ export class Combat {
       const extra: Partial<CombatCard> = {};
       if (opts.cheaper) extra.cut = opts.cheaper;
       if (opts.hex) extra.hex = { id: opts.hex, left: HEXES[opts.hex].taps, t: HEXES[opts.hex].thaw };
-      if (to === 'sleeve') this.addToSleeve(def.id, !!opts.up, extra);
-      else this.addTempCard(def.id, 'draw', !!opts.up, 0, extra);
+      this.addTempCard(def.id, 'draw', !!opts.up, 0, extra);
     }
     return picks.length;
-  }
-
-  /** A temporary copy of a card goes into the sleeve, or, with no room, into the discard pile. */
-  addToSleeve(id: string, up = false, extra: Partial<CombatCard> = {}): void {
-    const card: CombatCard = { uid: -++this.tempUid, id, up, bonus: 0, temp: true, ...extra };
-    if (this.pocket(card)) return;
-    this.discard.push(card);
-    this.events.emit({ type: 'cardAdded', card, to: 'discard' });
   }
 
   /** Plays, for free, the playable belt card nearest the exit. Returns it, or null when none can be played (Inside Job). */

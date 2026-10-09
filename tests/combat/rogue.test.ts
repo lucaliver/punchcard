@@ -76,31 +76,6 @@ describe('the Rogue', () => {
     expect(c.discard).toHaveLength(2);
   });
 
-  it('a card On Credit costs no mana, and stops the mana from coming back for as many seconds as it costs', () => {
-    const c = rogueFight(['borrowedStapler']);
-    const uid = onBelt(c, 'hushMoney');
-    c.hero.mana = 0;
-    expect(c.canAfford(c.belt[0].card)).toBe(true);
-    expect(c.playCard(uid)).toBe(true);
-    expect(c.hero.block).toBe(CARDS.hushMoney.vals[0]);
-    expect(c.hero.mana).toBe(0);
-    expect(c.hero.statuses.overdrawn.t).toBeCloseTo(CARDS.hushMoney.cost);
-    run(c, 2);
-    expect(c.hero.mana).toBe(0);
-    run(c, 1.1);
-    run(c, c.hero.regen + 0.1);
-    expect(c.hero.mana).toBe(1);
-  });
-
-  it('a card On Credit owes what it costs now: the sleeve discount lowers the debt', () => {
-    const c = rogueFight();
-    const uid = inSleeve(c, 'inventoryShrinkage');
-    c.sleeve[0]!.disc = 2;
-    c.hero.mana = 0;
-    expect(c.playCard(uid)).toBe(true);
-    expect(c.hero.statuses.overdrawn.t).toBeCloseTo(CARDS.inventoryShrinkage.cost - 2);
-  });
-
   it('Fire Sale uses up the sleeve and deals damage by the original costs, discounts ignored', () => {
     const c = rogueFight(['borrowedStapler']);
     inSleeve(c, 'borrowedStapler');
@@ -159,7 +134,7 @@ describe('the Rogue', () => {
     expect(seen).toEqual(['sleeveGrew']);
   });
 
-  it('Inside Job plays the next card of the belt for free and keeps a copy in the sleeve', () => {
+  it('Inside Job plays the next card of the belt for free and shuffles a copy into the draw pile, and is used up', () => {
     const c = rogueFight();
     const stapler = onBelt(c, 'borrowedStapler');
     c.belt[0].pos = 0.5;
@@ -171,7 +146,8 @@ describe('the Rogue', () => {
     expect(c.enemy.hp).toBe(hp - CARDS.borrowedStapler.vals[0]);
     expect(c.hero.mana).toBe(0);
     expect(c.belt.some((b) => b.card.uid === stapler)).toBe(false);
-    expect(c.sleeve.filter((x) => x?.id === 'borrowedStapler')).toHaveLength(1);
+    expect(c.draw.filter((x) => x.temp && x.id === 'borrowedStapler')).toHaveLength(1);
+    expect(c.exhaust.some((x) => x.id === 'insideJob')).toBe(true);
   });
 
   it('Lost Property and Dumpster Dive bring cards back from the discard pile, never a curse', () => {

@@ -2,7 +2,7 @@ import { t } from '../../core/i18n';
 import { sfx } from '../../audio/sfx';
 import { CONFIG } from '../../data/config';
 import { HEXES } from '../../data/hexes';
-import { CARDS, cardCostOf, cardKeywordsOf, cardValsOf, isLarge } from '../../data/cards';
+import { CARDS, cardCostOf, cardValsOf, isLarge } from '../../data/cards';
 import { STATUSES, statusIcon } from '../../data/statuses';
 import type { CombatCard } from '../../game/types';
 import { icon } from '../art/icons';
@@ -397,9 +397,8 @@ export function createCardLayer(v: CombatView): CardLayer {
     const own = cardCostOf(card);
     setText(ce.cost, cardCostLabel(card, price));
     toggle(ce.cost, 'taxed', !!card.tax || !!card.virus || price > own);
-    // The sleeve's discount shows in yellow; a card On Credit shows what it will owe, not what it costs now.
+    // The sleeve's discount shows in yellow.
     toggle(ce.cost, 'sale', !!card.disc || price < own);
-    toggle(ce.cost, 'credit', cardKeywordsOf(card).includes('credit'));
     toggle(ce.el, 'sick', !!card.virus);
     if (!card.virus !== !ce.virusEl) {
       ce.virusEl?.remove();

@@ -840,7 +840,7 @@ describe('cards that fill the classes out', () => {
     run(c, CONFIG.introTime + 0.01);
     c.hero.mana = c.hero.maxMana = 10;
     const before = c.draw.length;
-    expect(c.loot('common', 3, 'draw', { up: true, cheaper: 1, hex: 'crumple' })).toBe(3);
+    expect(c.loot('common', 3, { up: true, cheaper: 1, hex: 'crumple' })).toBe(3);
     const fresh = c.draw.filter((x) => x.temp && x.hex);
     expect(fresh).toHaveLength(3);
     expect(c.draw.length).toBe(before + 3);
@@ -852,10 +852,10 @@ describe('cards that fill the classes out', () => {
       expect(def.rarity).toBe('common');
       expect(['warrior', 'mage', 'necromancer']).toContain(def.cls);
     }
-    expect(c.loot('legendary', 2, 'sleeve', { cheaper: 1, hex: 'crumple' })).toBe(2);
-    const held = c.sleeve.filter((x) => x !== null);
-    expect(held).toHaveLength(2);
-    for (const card of held) expect(CARDS[card.id].rarity).toBe('legendary');
+    expect(c.loot('legendary', 2, { cheaper: 1, hex: 'crumple' })).toBe(2);
+    const legends = c.draw.filter((x) => x.temp && CARDS[x.id].rarity === 'legendary');
+    expect(legends).toHaveLength(2);
+    expect(c.draw.length).toBe(before + 5);
   });
 
   it('a stolen Boris and Virulent Form still work for a hero who is not the Necromancer', () => {

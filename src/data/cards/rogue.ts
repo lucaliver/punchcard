@@ -102,7 +102,6 @@ export const rogueCards: CardDef[] = [
     cost: 2,
     upCost: 1,
     vals: [4],
-    keywords: ['credit'],
     art: 'salaryAdvance',
     play: (c, v) => c.gainMana(v[0]),
   },
@@ -153,9 +152,8 @@ export const rogueCards: CardDef[] = [
     type: 'defense',
     rarity: 'rare',
     cost: 3,
-    vals: [18],
-    upVals: [24],
-    keywords: ['credit'],
+    vals: [14],
+    upVals: [18],
     art: 'hushMoney',
     play: (c, v) => c.gainBlock('hero', v[0]),
   },
@@ -200,7 +198,7 @@ export const rogueCards: CardDef[] = [
     vals: [3, 1],
     upVals: [4, 1],
     art: 'lupin',
-    play: (c, v) => void c.loot('common', v[0], 'draw', { up: true, cheaper: v[1], hex: 'crumple' }),
+    play: (c, v) => void c.loot('common', v[0], { up: true, cheaper: v[1], hex: 'crumple' }),
   },
   {
     id: 'catchMeIfYouCan',
@@ -212,7 +210,7 @@ export const rogueCards: CardDef[] = [
     upCost: 1,
     vals: [3],
     art: 'catchMeIfYouCan',
-    play: (c, v) => void c.loot('rare', v[0], 'sleeve', { up: true, hex: 'crumple' }),
+    play: (c, v) => void c.loot('rare', v[0], { up: true, hex: 'crumple' }),
   },
   {
     id: 'theItalianJob',
@@ -224,7 +222,7 @@ export const rogueCards: CardDef[] = [
     vals: [2],
     upVals: [3],
     art: 'theItalianJob',
-    play: (c, v) => void c.loot('epic', v[0], 'sleeve', { up: true, hex: 'crumple' }),
+    play: (c, v) => void c.loot('epic', v[0], { up: true, hex: 'crumple' }),
   },
   {
     id: 'oceansEleven',
@@ -236,7 +234,7 @@ export const rogueCards: CardDef[] = [
     vals: [2, 1],
     upVals: [2, 2],
     art: 'oceansEleven',
-    play: (c, v) => void c.loot('legendary', v[0], 'sleeve', { cheaper: v[1], hex: 'crumple' }),
+    play: (c, v) => void c.loot('legendary', v[0], { cheaper: v[1], hex: 'crumple' }),
   },
   {
     id: 'employeeDiscount',
@@ -297,18 +295,19 @@ export const rogueCards: CardDef[] = [
   },
   {
     id: 'insideJob',
-    face: '{copy}{sleeve}',
+    face: '{copy}{pile}',
     cls: 'rogue',
     type: 'skill',
     rarity: 'legendary',
     cost: 4,
     upCost: 3,
     vals: [],
+    keywords: ['exhaust'],
     art: 'insideJob',
-    // The next card to come off the belt is played for free; the Rogue keeps a copy of it up their sleeve.
+    // The next card to come off the belt is played for free; a copy of it is shuffled into the draw pile.
     play: (c) => {
       const next = c.playNextBelt();
-      if (next) c.addToSleeve(next.id, next.up, { perks: next.perks, fleeting: next.fleeting });
+      if (next) c.addTempCard(next.id, 'draw', next.up, 0, { perks: next.perks, fleeting: next.fleeting });
     },
   },
   {
@@ -367,7 +366,6 @@ export const rogueCards: CardDef[] = [
     cost: 5,
     vals: [30],
     upVals: [40],
-    keywords: ['credit'],
     art: 'inventoryShrinkage',
     play: (c, v) => void c.hit(v[0]),
   },
