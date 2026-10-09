@@ -1430,6 +1430,11 @@ export const ICONS: Record<string, { el: Element; svg: string; wide?: boolean }>
     el: 'steel',
     svg: `<rect x="28" y="2" width="8" height="10" transform="rotate(0 32 32)"/><rect x="28" y="2" width="8" height="10" transform="rotate(30 32 32)"/><rect x="28" y="2" width="8" height="10" transform="rotate(60 32 32)"/><rect x="28" y="2" width="8" height="10" transform="rotate(90 32 32)"/><rect x="28" y="2" width="8" height="10" transform="rotate(120 32 32)"/><rect x="28" y="2" width="8" height="10" transform="rotate(150 32 32)"/><rect x="28" y="2" width="8" height="10" transform="rotate(180 32 32)"/><rect x="28" y="2" width="8" height="10" transform="rotate(210 32 32)"/><rect x="28" y="2" width="8" height="10" transform="rotate(240 32 32)"/><rect x="28" y="2" width="8" height="10" transform="rotate(270 32 32)"/><rect x="28" y="2" width="8" height="10" transform="rotate(300 32 32)"/><rect x="28" y="2" width="8" height="10" transform="rotate(330 32 32)"/><circle cx="32" cy="32" r="25"/><circle cx="32" cy="32" r="18" fill="none" stroke="#16121f" stroke-width="3"/><path fill="#16121f" d="M29 9h6v22h-6z"/><circle cx="32" cy="32" r="5" fill="#16121f"/>`,
   },
+  // An arrow curling clockwise around a circle: the way the Power Socket's crank is turned.
+  turnCw: {
+    el: 'holy',
+    svg: `<path ${S} stroke-width="5" d="M10.4 44.5A25 25 0 1 1 55.5 40.6"/><path d="M61.6 42.8L49.4 38.3L52.4 49z"/>`,
+  },
   // VIP Treatment: a velvet rope between two posts.
   vipRope: {
     el: 'steel',

@@ -122,7 +122,7 @@ function markup(run: RunState, combat: Combat): string {
     </section>
     <section class="mana-row">${icon('crystal')}<div class="mana-pips"></div><div class="mana-num"></div><button class="mana-tap" aria-label="${t('combat.manaTap')}">${icon('crystal')}<b>+${CONFIG.manaTapAmount}</b></button></section>
     <section class="action-row">
-      <div class="crank" aria-hidden="true">${icon('crank')}</div>
+      <div class="crank" aria-hidden="true">${icon('crank')}<i class="crank-ring">${icon('turnCw')}</i></div>
       <div class="sleeve js-sleeve"></div>
       <button class="ability-btn js-ability" aria-label="${t(`hero.${heroId}.ability`)}">
         <div class="charge"></div>${icon(ABILITY_ICON[heroId])}<span class="acost">${icon('crystal')}${combat.abilityCost()}</span><span class="albl">${t(`hero.${heroId}.ability`)}</span>

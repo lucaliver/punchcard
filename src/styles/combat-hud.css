@@ -116,8 +116,14 @@
   -webkit-user-select: none;
   color: var(--paper);
 }
-.crank .pico { font-size: calc(var(--cw) * 1.4); transform: rotate(var(--turn, 0deg)); }
-.combat.belt-dead .crank { display: grid; }
+.crank { position: relative; }
+.crank > .pico { font-size: calc(var(--cw) * 0.95); transform: rotate(var(--turn, 0deg)); }
+/* the clockwise arrow around the gear stays still while the gear turns */
+.crank-ring { position: absolute; inset: 0; display: grid; place-items: center; pointer-events: none; color: var(--y); }
+.crank-ring .pico { font-size: calc(var(--cw) * 1.4); }
+/* the belt is dead: the gear sits between the sleeve and the ability, nearer the middle of the thumb's reach */
+.combat.belt-dead .crank { display: grid; order: 1; }
+.combat.belt-dead .ability-btn { order: 2; }
 .crank.turning { color: var(--y); }
 /* untouched for 3 s (since it came up, or since the last turn): it blinks to say "turn me"; a touch (.turning) stops it */
 .combat.belt-dead .crank:not(.turning) { animation: crank-blink 0.8s steps(1) 3s infinite; }
