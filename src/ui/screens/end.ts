@@ -143,7 +143,7 @@ export function endScreen(run: RunState, won: boolean, end: RunEnd, onAgain: (he
     el,
     enter() {
       image = payslipImage(slip);
-      playMusic(won ? 'victory' : 'menu');
+      playMusic(won ? 'victory' : 'defeat');
       if (!won) return;
       // A few bursts of ink "confetti" around the title.
       let n = 0;

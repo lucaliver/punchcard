@@ -7,7 +7,20 @@
  */
 import { audioGraph, onAudioUnlock, resumeAudio } from './sfx';
 
-export type TrackId = 'menu' | 'map' | 'combat' | 'combat2' | 'combat3' | 'map2' | 'map3' | 'elite' | 'boss' | 'rest' | 'pause' | 'victory';
+export type TrackId =
+  | 'menu'
+  | 'map'
+  | 'combat'
+  | 'combat2'
+  | 'combat3'
+  | 'map2'
+  | 'map3'
+  | 'elite'
+  | 'boss'
+  | 'rest'
+  | 'pause'
+  | 'victory'
+  | 'defeat';
 
 /** [step (0-15), midi note, length in 16th steps] */
 type NoteEv = [number, number, number];
@@ -614,6 +627,48 @@ const TRACKS: Record<TrackId, Track> = {
     leadVoice: 'pulse',
     drums: ['k...k...k...k...', '....s.......s.ss', 'h.h.h.h.h.h.h.h.'],
     pad: false,
+    gain: 0.8,
+  },
+  // Game over: a slow funeral march in D minor that still lifts its head. Long, proud lead notes over a heavy beat.
+  defeat: {
+    bpm: 72,
+    chords: [
+      { root: 38, tones: MIN }, // Dm
+      { root: 46, tones: MAJ }, // Bb
+      { root: 43, tones: MIN }, // Gm
+      { root: 45, tones: MAJ }, // A
+    ],
+    bass: [0, _, _, _, _, _, 0, _, 7, _, _, _, _, _, _, _],
+    bassWave: 'triangle',
+    arp: [0, _, _, _, 1, _, _, _, 2, _, _, _, 1, _, _, _],
+    arpOctave: 4,
+    lead: [
+      [
+        [0, D5, 4],
+        [4, F5, 4],
+        [8, A5, 8],
+      ],
+      [
+        [0, G5, 6],
+        [6, F5, 2],
+        [8, D5, 8],
+      ],
+      [
+        [0, G5, 4],
+        [4, F5, 4],
+        [8, D5, 4],
+        [12, Bb4, 4],
+      ],
+      [
+        [0, Cs5, 4],
+        [4, E5, 4],
+        [8, E5, 8],
+      ],
+    ],
+    leadOn: () => true,
+    leadVoice: 'pulse',
+    drums: ['k.......k.t.....', '........s.......'],
+    pad: true,
     gain: 0.8,
   },
   // Pause: a slow, hushed music box. Sparse bells over soft pads, no drums.
