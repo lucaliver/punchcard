@@ -1448,7 +1448,7 @@ export const ICONS: Record<string, { el: Element; svg: string; wide?: boolean }>
   // An arrow curling clockwise around a circle: the way the Power Socket's crank is turned.
   turnCw: {
     el: 'holy',
-    svg: `<path ${S} stroke-width="5" d="M10.4 44.5A25 25 0 1 1 55.5 40.6"/><path d="M61.6 42.8L49.4 38.3L52.4 49z"/>`,
+    svg: `<path ${S} stroke-width="5" d="M10.4 44.5A25 25 0 1 1 55.5 40.6"/><path d="M63 43.5L47 37.5L50.7 54z"/>`,
   },
   // VIP Treatment: a velvet rope between two posts.
   vipRope: {

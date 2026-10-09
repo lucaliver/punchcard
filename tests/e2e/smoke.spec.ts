@@ -127,7 +127,7 @@ test('the combat layout never moves when statuses appear', async ({ page }) => {
 
 test('compendium shows cards, enemies and relics in separate sections', async ({ page }) => {
   const problems = await freshGame(page);
-  await page.getByRole('button', { name: /handbook/i }).click();
+  await page.locator('.menu').getByRole('button', { name: /handbook/i }).click();
   await expect(page.locator('.comp-grid .card').first()).toBeVisible();
   await expect(page.locator('.foe').first()).toBeHidden();
   await page.getByRole('tab', { name: /personnel/i }).click();
@@ -794,7 +794,7 @@ test('handbook history: tapping a run opens its payslip, stationery and deck', a
     localStorage.setItem('cardstone+:meta', JSON.stringify(meta));
   });
   await page.reload();
-  await page.getByRole('button', { name: /handbook/i }).click();
+  await page.locator('.menu').getByRole('button', { name: /handbook/i }).click();
   await page.getByRole('tab', { name: /history/i }).click();
   await page.locator('.run-log').first().click();
   await expect(page.locator('.run-detail .payslip')).toBeVisible();
@@ -809,7 +809,7 @@ test('debug: Unlock all hires every hero and reveals every card and enemy in the
   await page.getByRole('button', { name: /debug/i }).click();
   await page.getByRole('button', { name: /unlock all/i }).click();
   await page.getByRole('button', { name: 'Close' }).click();
-  await page.getByRole('button', { name: /handbook/i }).click();
+  await page.locator('.menu').getByRole('button', { name: /handbook/i }).click();
   await expect(page.locator('.card.undiscovered')).toHaveCount(0);
   await page.getByRole('tab', { name: /personnel/i }).click();
   await expect(page.locator('.foe h3', { hasText: '????' })).toHaveCount(0);
@@ -821,7 +821,7 @@ test('debug: Unlock all hires every hero and reveals every card and enemy in the
 
 test('handbook: the ? button explains how to read a card', async ({ page }) => {
   await freshGame(page);
-  await page.getByRole('button', { name: /handbook/i }).click();
+  await page.locator('.menu').getByRole('button', { name: /handbook/i }).click();
   await page.getByRole('button', { name: /how to read a card/i }).click();
   await expect(page.locator('.anatomy .spot')).toHaveCount(6);
 });
@@ -955,7 +955,7 @@ test('holding the version in Settings opens the reset confirmation', async ({ pa
 
 test('handbook: enemies not met yet are silhouettes with no move pattern', async ({ page }) => {
   await freshGame(page);
-  await page.getByRole('button', { name: /handbook/i }).click();
+  await page.locator('.menu').getByRole('button', { name: /handbook/i }).click();
   await page.getByRole('tab', { name: /personnel/i }).click();
   await expect(page.locator('.foe.undiscovered').first()).toBeVisible();
   await expect(page.locator('.foe.undiscovered .move, .foe.undiscovered [data-status]')).toHaveCount(0);
@@ -963,7 +963,7 @@ test('handbook: enemies not met yet are silhouettes with no move pattern', async
 
 test('handbook: pressing a status in a move pattern explains it', async ({ page }) => {
   await freshGame(page, { met: ENEMY_LIST.map((e) => e.id) });
-  await page.getByRole('button', { name: /handbook/i }).click();
+  await page.locator('.menu').getByRole('button', { name: /handbook/i }).click();
   await page.getByRole('tab', { name: /personnel/i }).click();
   await page.locator('.foe [data-status]').first().click();
   await expect(page.locator('.modal .info')).toBeVisible();

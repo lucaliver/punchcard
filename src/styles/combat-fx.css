@@ -295,20 +295,20 @@
   position: absolute;
   left: -10%;
   right: -10%;
-  height: 20%;
+  height: 16%;
   background: var(--k);
   border-block: 6px solid var(--p);
   rotate: -5deg;
 }
-.bi-bar.top { top: 22%; animation: bi-from-left 0.4s steps(5) both; }
-.bi-bar.bot { top: 52%; animation: bi-from-right 0.4s steps(5) both; }
+.bi-bar.top { top: 31%; animation: bi-from-left 0.4s steps(5) both; }
+.bi-bar.bot { top: 51%; animation: bi-from-right 0.4s steps(5) both; }
 @keyframes bi-from-left { from { translate: -120% 0; } }
 @keyframes bi-from-right { from { translate: 120% 0; } }
 .bi-name {
   position: absolute;
   left: 0;
   right: 0;
-  top: 41%;
+  top: 44%;
   display: flex;
   flex-direction: column;
   align-items: center;

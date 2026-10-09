@@ -13,6 +13,8 @@ export async function freshGame(
   page.on('console', (m) => {
     if (m.type() === 'error' || m.type() === 'warning') problems.push(m.text());
   });
+  // The debug menus' fight recap window is not what these tests are about: it is closed whenever it shows.
+  await page.addLocatorHandler(page.locator('.modal:has(.recap)'), (recap) => recap.getByRole('button', { name: 'Next' }).click());
   page.on('pageerror', (e) => problems.push(`pageerror: ${e.message}`));
   await page.goto('/');
   await page.evaluate(
