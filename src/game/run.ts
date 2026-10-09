@@ -135,7 +135,7 @@ export const ACT_SCRIPTS: Record<number, ScriptNode[]> = {
   // Act 2, the first time it is reached: a rule-breaker opens it, every room kind shows once, and the Tailor is on offer.
   2: [
     /* 0 */ { floor: 1, lane: 0.5, type: 'fight', enemy: 'exaggeratedGirl', next: [1, 2] },
-    /* 1 */ { floor: 2, lane: 0, type: 'fight', enemy: 'nightJanitor', next: [3] },
+    /* 1 */ { floor: 2, lane: 0, type: 'fight', enemy: 'veteran', next: [3] },
     /* 2 */ { floor: 2, lane: 1, type: 'promotion', next: [4] },
     /* 3 */ { floor: 3, lane: 0, type: 'vending', next: [5, 4] },
     /* 4 */ { floor: 3, lane: 1, type: 'fight', enemy: 'officeChair', next: [6] },
