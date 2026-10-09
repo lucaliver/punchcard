@@ -7,6 +7,9 @@ export const CONFIG = {
   voiceMs: 42,
   /** Milliseconds an enemy's speech bubble stays up once all its text is there. */
   speechHold: 2500,
+  /** An enemy under this many HP (and alive) is heard breathing: a heartbeat every `heartbeatGap` seconds until it falls. */
+  enemyLowHp: 15,
+  heartbeatGap: 0.9,
   /** Beg to stay (the first time a run's hero would be let go): the Dodge seconds, the Strength and the mana crystals it brings back. */
   beg: { dodge: 5, strength: 5, crystals: 1 },
   /** Runs the handbook's history keeps (the newest). */

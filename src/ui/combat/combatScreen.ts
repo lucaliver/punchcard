@@ -68,6 +68,8 @@ export function combatScreen(run: RunState, combat: Combat, cb: CombatCallbacks)
   let lastDragged = 0;
   let lastTempo = 1;
   let acc = 0;
+  /** Seconds since the last heartbeat of an enemy about to fall. */
+  let beat = 0;
   const timers: number[] = [];
   /** A timeout that leave() cancels. */
   const later = (fn: () => void, ms: number): void => void timers.push(window.setTimeout(fn, ms));
@@ -581,6 +583,15 @@ export function combatScreen(run: RunState, combat: Combat, cb: CombatCallbacks)
         }
         if (steps === MAX_STEPS) acc = 0;
         checkTip();
+        // The enemy hangs on by a thread: a heartbeat until it falls.
+        const e = combat.enemy;
+        if (e.hp > 0 && e.hp < CONFIG.enemyLowHp && !combat.isOver && combat.intro <= 0) {
+          beat += dt * settings.speed;
+          if (beat >= CONFIG.heartbeatGap) {
+            beat = 0;
+            sfx('heartbeat');
+          }
+        } else beat = CONFIG.heartbeatGap;
       }
       render(dt);
     },

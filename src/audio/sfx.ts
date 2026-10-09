@@ -410,6 +410,10 @@ const SOUNDS = {
     tone(300, 0.05, { type: 'triangle', vol: 0.08, delay: 0.14 });
     noise(0.08, { freq: 2500, vol: 0.1, delay: 0.12 });
   },
+  /** The enemy is nearly done for: a double thud, over and over. */
+  heartbeat: () => {
+    for (const d of [0, 0.15]) tone(60, 0.1, { type: 'sine', vol: 0.4, to: 40, delay: d });
+  },
   /** A desk bell. */
   ding: () => {
     tone(1568, 0.5, { type: 'sine', vol: 0.14 });
