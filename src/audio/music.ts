@@ -696,7 +696,7 @@ const TRACKS: Record<TrackId, Track> = {
 /** 0 (off) to 1. */
 let volume = 1;
 let wanted: TrackId | null = null;
-let current: { id: TrackId; out: GainNode; timer: number } | null = null;
+let current: { id: TrackId; out: GainNode; timer: number; step: () => number; jump: (to: number) => void } | null = null;
 let pulseWave: PeriodicWave | null = null;
 let thinWave: PeriodicWave | null = null;
 const VOLUME = 0.2;
@@ -868,7 +868,16 @@ function start(id: TrackId): void {
       step++;
     }
   }, 25);
-  current = { id, out, timer };
+  current = {
+    id,
+    out,
+    timer,
+    step: () => step,
+    jump: (to) => {
+      step = to;
+      next = ctx.currentTime + 0.05;
+    },
+  };
 }
 
 function stop(fade = 0.6): void {
@@ -891,6 +900,25 @@ function stop(fade = 0.6): void {
 
 /** Every track, in the order they are written (the dev music player lists them). */
 export const TRACK_IDS = Object.keys(TRACKS) as TrackId[];
+
+/** Phrases the player counts as one loop of a track (the lead patterns repeat every 2 or 3 phrases). */
+const LOOP_PHRASES = 6;
+const loopBars = (id: TrackId): number => TRACKS[id].chords.length * LOOP_PHRASES;
+
+/** Where the playing track is, in bars, and how many bars its loop has (null when nothing plays). */
+export function musicPosition(): { bar: number; bars: number } | null {
+  if (!current) return null;
+  const bars = loopBars(current.id);
+  return { bar: Math.floor(current.step() / 16) % bars, bars };
+}
+
+/** Moves the playing track by `bars` bars (back or forward); past the end of the loop it starts again from the beginning, before the beginning it stays there. */
+export function seekMusic(bars: number): void {
+  const pos = musicPosition();
+  if (!current || !pos) return;
+  const to = pos.bar + bars;
+  current.jump((to < 0 ? 0 : to % pos.bars) * 16);
+}
 
 /** Playback speed of every track (1 = as written); the fight nudges it when the belt speeds up or slows down. */
 let tempo = 1;
