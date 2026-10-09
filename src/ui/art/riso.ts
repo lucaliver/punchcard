@@ -107,8 +107,7 @@ const wideIcons = new Set<string>();
 function loadImage(src: string): Promise<HTMLImageElement> {
   return new Promise((resolve, reject) => {
     const img = new Image();
-    // `decode()` makes sure the pixels are ready: a mobile browser under load can fire `load` on an SVG that still draws blank.
-    img.onload = () => void (img.decode ? img.decode().catch(() => undefined) : Promise.resolve()).then(() => resolve(img));
+    img.onload = () => resolve(img);
     img.onerror = reject;
     img.src = src;
   });
@@ -150,7 +149,7 @@ async function buildSprite(svgBody: string, size: number, attempt = 0): Promise<
     pix[i] = nearest(r, gg, b);
     on[i] = 1;
   }
-  // A drawing that came out blank is a browser hiccup (see `loadImage`), not a blank creature: draw it again.
+  // A drawing that came out blank is a browser hiccup (a mobile browser under load can fire `load` on an SVG that still draws blank), not a blank creature: draw it again.
   if (!on.includes(1) && attempt < REDRAWS) return buildSprite(svgBody, size, attempt + 1);
   let [x0, y0, x1, y1] = [size, size, 0, 0];
   for (let i = 0; i < size * size; i++) {
