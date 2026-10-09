@@ -41,7 +41,7 @@ import {
   type RewardOffer,
   type RunState,
 } from './game/run';
-import { chosenMemos, contractSigned, memosOpen, reachAct, startingFirstRun, unmetActs } from './game/meta';
+import { chosenMemos, contractSigned, lastEnemies, memosOpen, reachAct, setLastEnemies, startingFirstRun, unmetActs } from './game/meta';
 import { settings } from './game/settings';
 import type { HeroId } from './game/types';
 import { confirmModal, initApp, openModal, type Screen, show } from './ui/app';
@@ -126,7 +126,8 @@ function startRun(hero: HeroId): void {
   // The first time an act is met its rooms and enemies are always the same (and the very first run too: seed, no memos).
   const first = startingFirstRun();
   const scripted = unmetActs(SCRIPTED_ACTS);
-  run = newRun(hero, first ? FIRST_RUN_SEED : randomSeed(), scripted, !first && memosOpen(hero) ? chosenMemos() : []);
+  run = newRun(hero, first ? FIRST_RUN_SEED : randomSeed(), scripted, !first && memosOpen(hero) ? chosenMemos() : [], lastEnemies());
+  setLastEnemies(run.nodes.flatMap((n) => (n.enemy ? [n.enemy] : [])));
   resetFightLog();
   goJourney();
 }

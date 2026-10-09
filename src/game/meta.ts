@@ -31,6 +31,8 @@ interface Meta {
   records: Records;
   /** Acts whose map has been shown at least once: the first time an act is met its rooms are scripted. */
   actsReached: number[];
+  /** Enemies on the map of the last run started: the next run's map keeps away from them. */
+  lastEnemies: string[];
   /** The runs played, newest first (`CONFIG.historyMax` of them). */
   history: RunLog[];
   /** A review has been sent: the home stops asking for one. */
@@ -66,6 +68,7 @@ const meta: Meta = load('meta', {
   memos: [],
   records: { ...NO_RECORDS },
   actsReached: [],
+  lastEnemies: [],
   history: [],
   rated: false,
   handbookSeen: false,
@@ -87,6 +90,7 @@ meta.handbookSeen = meta.handbookSeen === true;
   };
   meta.stamps = Array.isArray(meta.stamps) ? [...new Set(meta.stamps.filter(valid))] : [];
 }
+meta.lastEnemies = Array.isArray(meta.lastEnemies) ? meta.lastEnemies.filter((id) => typeof id === 'string' && id in ENEMIES) : [];
 meta.memos = Array.isArray(meta.memos) ? [...new Set(meta.memos.filter((id) => typeof id === 'string' && id in MODIFIERS))] : [];
 {
   // Only finite numbers survive; anything missing starts at zero.
@@ -285,6 +289,13 @@ export function logRun(entry: RunLog): void {
   meta.history = [entry, ...meta.history].slice(0, CONFIG.historyMax);
   store('meta', meta);
 }
+/** The enemies on the map of the last run started, and the call that records a new run's. */
+export const lastEnemies = (): readonly string[] => meta.lastEnemies;
+export function setLastEnemies(ids: readonly string[]): void {
+  meta.lastEnemies = [...new Set(ids)];
+  store('meta', meta);
+}
+
 export const runHistory = (): readonly RunLog[] => meta.history;
 
 export const records = (): Readonly<Records & { runs: number }> => ({ ...meta.records, runs: meta.runs });

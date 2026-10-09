@@ -1878,6 +1878,26 @@ describe('run maps', () => {
     }
   });
 
+  it("keep away from the last run's enemies while others are left", () => {
+    for (let seed = 2; seed < 32; seed++) {
+      const before = newRun('warrior', seed).nodes;
+      const avoid = [...new Set(before.flatMap((n) => (n.enemy ? [n.enemy] : [])))];
+      const nodes = newRun('warrior', seed + 100, [], [], avoid).nodes;
+      for (let act = 1; act <= ACTS; act++)
+        for (const tier of ['elite', 'boss'] as const) {
+          const pool = enemiesFor(act, tier);
+          const dealt = nodes.filter((n) => n.act === act && n.type === tier).map((n) => n.enemy!);
+          if (pool.some((e) => !avoid.includes(e.id))) for (const id of dealt) expect(avoid).not.toContain(id);
+        }
+      // Normal fights: the enemies new to this run all show up before one of the last run's comes back.
+      for (let act = 1; act <= ACTS; act++) {
+        const fresh = enemiesFor(act, 'normal').filter((e) => !avoid.includes(e.id)).length;
+        const fights = nodes.filter((n) => n.act === act && n.type === 'fight').map((n) => n.enemy!);
+        for (const id of fights.slice(0, fresh)) expect(avoid).not.toContain(id);
+      }
+    }
+  });
+
   it('never offer two choices of the same kind of room', () => {
     for (const nodes of [...maps, newRun('warrior', 1, [1, 2, 3]).nodes])
       for (const n of nodes.filter((m) => m.next.length > 1)) {

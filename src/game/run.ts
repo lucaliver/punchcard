@@ -177,12 +177,13 @@ export const ACT_SCRIPTS: Record<number, ScriptNode[]> = {
 /**
  * A new run; the acts in `scripted` have the rooms and enemies of `ACT_SCRIPTS` instead of shuffled ones (the first run's act 1, and every other act the
  * first time it is met), the rest are dealt as usual. `mods` are the memos it plays under.
+ * `avoid` are the enemies of the last run: the dealt acts keep them out of the map when they can.
  */
-export function newRun(hero: HeroId, seed: number, scripted: readonly number[] = [], mods: string[] = []): RunState {
+export function newRun(hero: HeroId, seed: number, scripted: readonly number[] = [], mods: string[] = [], avoid: readonly string[] = []): RunState {
   resetUid(0);
   const rng = new Rng(seed);
   const def = HEROES[hero];
-  const nodes = buildNodes(rng, scripted);
+  const nodes = buildNodes(rng, scripted, avoid);
   discover(def.startDeck);
   const maxHp = Math.round(def.hp * resolveMods(mods).heroHp);
   return {
@@ -300,8 +301,8 @@ function dealLayout(rng: Rng, opening: number): { lanes: Slot[][]; roads: Road[]
  * One act appended to `nodes`: a shared road (one fight; in act 1 two fights and a special room), two lanes linked a couple of times, and the
  * boss where they meet. `last` are the nodes of the act before (they lead to its first fight). Returns the boss.
  */
-function addAct(nodes: RunNode[], rng: Rng, act: number, last: RunNode[], taken: readonly NodeType[] = []): RunNode[] {
-  // `taken`: once-per-run rooms a scripted act of this run already holds.
+function addAct(nodes: RunNode[], rng: Rng, act: number, last: RunNode[], taken: readonly NodeType[], avoid: readonly string[]): RunNode[] {
+  // `taken`: once-per-run rooms a scripted act of this run already holds. `avoid`: the enemies of the last run, dealt last or not at all while others are left.
   const dealt = new Set([...nodes.map((n) => n.type), ...taken]);
   // Deal normal enemies from a shuffled bag so the same one doesn't repeat back to back.
   let bag: EnemyDef[] = [];
@@ -312,12 +313,14 @@ function addAct(nodes: RunNode[], rng: Rng, act: number, last: RunNode[], taken:
     dealt.add(type);
     let enemy: string | undefined;
     if (type === 'fight') {
-      if (!bag.length) bag = rng.shuffle(enemiesFor(act, 'normal'));
+      // Cards are drawn from the end of the bag: the last run's enemies sit at the front (the sort is stable, the shuffle stays).
+      if (!bag.length) bag = rng.shuffle(enemiesFor(act, 'normal')).sort((a, b) => Number(avoid.includes(b.id)) - Number(avoid.includes(a.id)));
       // Act 2 opens on a rule-breaker (the bag is fresh here, so one is always in it).
-      const opener = act === 2 && floor === 1 ? bag.findIndex((e) => e.ruleBreaker) : -1;
+      const opener = act === 2 && floor === 1 ? bag.map((e) => e.ruleBreaker).lastIndexOf(true) : -1;
       enemy = (opener >= 0 ? bag.splice(opener, 1)[0] : bag.pop()!).id;
     } else if (type === 'elite' || type === 'boss') {
-      enemy = rng.pick(enemiesFor(act, type)).id;
+      const pool = enemiesFor(act, type);
+      enemy = rng.pick(pool.filter((e) => !avoid.includes(e.id)).length ? pool.filter((e) => !avoid.includes(e.id)) : pool).id;
     }
     const node: RunNode = { id: nodes.length, act, floor, lane, type, next: [], enemy };
     nodes.push(node);
@@ -352,11 +355,11 @@ function addScripted(nodes: RunNode[], act: number, last: RunNode[]): RunNode[] 
   return [made[made.length - 1]];
 }
 
-function buildNodes(rng: Rng, scripted: readonly number[]): RunNode[] {
+function buildNodes(rng: Rng, scripted: readonly number[], avoid: readonly string[]): RunNode[] {
   const nodes: RunNode[] = [];
   let last: RunNode[] = [];
   const taken = ONCE_PER_RUN.filter((type) => scripted.some((act) => ACT_SCRIPTS[act].some((n) => n.type === type)));
-  for (let act = 1; act <= ACTS; act++) last = scripted.includes(act) ? addScripted(nodes, act, last) : addAct(nodes, rng, act, last, taken);
+  for (let act = 1; act <= ACTS; act++) last = scripted.includes(act) ? addScripted(nodes, act, last) : addAct(nodes, rng, act, last, taken, avoid);
   return nodes;
 }
 
