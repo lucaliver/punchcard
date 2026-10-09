@@ -1,6 +1,7 @@
 import { t } from '../../core/i18n';
 import { sfx } from '../../audio/sfx';
 import { haptic } from '../fx/fx';
+import { halfPct } from '../../data/config';
 import { RELICS } from '../../data/relics';
 import { STATUS_ORDER, STATUSES, statusIcon } from '../../data/statuses';
 import type { Fighter } from '../../game/combat';
@@ -111,7 +112,7 @@ export function createHud(v: CombatView, onPassive: () => void): { render(): voi
             ? null
             : h('button', { class: 'status passive', html: icon(PASSIVE_ICON[v.heroId]), 'aria-label': t(`hero.${v.heroId}.passiveName`) })
           : e.onHalf && !secret
-            ? h('button', { class: 'status passive half', html: icon(HALF_ICON), 'aria-label': t('status.half') })
+            ? h('button', { class: 'status passive half', html: icon(HALF_ICON), 'aria-label': t('status.half', { n: halfPct(e) }) })
             : null;
       if (passive && side === 'hero') onPress(passive, onPassive);
       else if (passive) {
@@ -121,7 +122,7 @@ export function createHud(v: CombatView, onPassive: () => void): { render(): voi
           openInfo(
             {
               icon: HALF_ICON,
-              title: t('status.half'),
+              title: t('status.half', { n: halfPct(e) }),
               tag: t('status.onEnemy'),
               tagCls: 'bad',
               desc: keywordHtml(t(`enemy.${e.id}.half`)),

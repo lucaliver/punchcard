@@ -1,6 +1,6 @@
 import { Emitter } from '../core/emitter';
 import { Rng } from '../core/rng';
-import { ANCHOR_POS, BEG_FLAG, CONFIG, EXPIRE_POS } from '../data/config';
+import { ANCHOR_POS, BEG_FLAG, CONFIG, EXPIRE_POS, halfAtOf } from '../data/config';
 import { STATUSES } from '../data/statuses';
 import { CARDS, CARD_LIST, CLASS_HIT, cardCostOf, cardKeywordsOf, cardValsOf, fullCostOf, isLarge } from '../data/cards';
 import { HEXES } from '../data/hexes';
@@ -1513,7 +1513,7 @@ export class Combat {
       this.end('win');
       return;
     }
-    if (!e.halfTriggered && e.hp <= e.maxHp / 2) {
+    if (!e.halfTriggered && e.hp <= e.maxHp * halfAtOf(e.def)) {
       e.halfTriggered = true;
       if (e.def.onHalf) {
         e.def.onHalf(this);

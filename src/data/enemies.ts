@@ -40,6 +40,7 @@ const defs: EnemyDef[] = [
     halfSpeech: true,
     halfArt: 'hrOrientationVideoAngry',
     halfSecret: true,
+    halfAt: 0.6,
     onHalf: (c) => c.openBeltRows(),
   },
   // ------------------------------------------------------------- Act 1

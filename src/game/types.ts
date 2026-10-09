@@ -356,8 +356,10 @@ export interface EnemyDef {
   fillSleeve?: string;
   /** Hex cast on a `share` (0–1) of your cards at the start of the fight. */
   startHex?: { id: string; share: number };
-  /** Called once when HP drops under 50%. */
+  /** Called once when HP drops to `halfAt` of its maximum. */
   onHalf?: (c: Combat) => void;
+  /** Share of its maximum HP (0–1) at which `onHalf` fires; half by default (`halfAtOf`). */
+  halfAt?: number;
   /** At half HP it also says something (`enemy.<id>.speech`, shown in a speech bubble). */
   halfSpeech?: boolean;
   /** Sprite once its half-HP trait has triggered (it shows its true face). */

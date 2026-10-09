@@ -252,3 +252,7 @@ export const ANCHOR_POS = 1;
 export const EXPIRE_POS = 1 + CONFIG.cardWidth * CONFIG.expireOverhang;
 
 export const GAME_SPEEDS = [1, 1.5, 2] as const;
+
+/** The share of its HP at which an enemy's `onHalf` trait fires. */
+export const halfAtOf = (e: { halfAt?: number }): number => e.halfAt ?? 0.5;
+export const halfPct = (e: { halfAt?: number }): number => Math.round(halfAtOf(e) * 100);

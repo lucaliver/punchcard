@@ -622,7 +622,7 @@ const es: Record<EnKey, string> = {
 
   // ------------------------------------------------------------ statuses
   'status.onYou': 'En ti',
-  'status.half': 'A media vida',
+  'status.half': 'Al {n}% de vida',
   'status.onEnemy': 'En el enemigo',
   'status.timeLeft': 'Quedan {s}s',
   'status.stacks': 'Acumulaciones: {v}',

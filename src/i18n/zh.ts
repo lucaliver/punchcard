@@ -617,7 +617,7 @@ const zh: Record<EnKey, string> = {
 
   // ------------------------------------------------------------ statuses
   'status.onYou': '在你身上',
-  'status.half': '一半生命时',
+  'status.half': '生命降至 {n}% 时',
   'status.onEnemy': '在敌人身上',
   'status.timeLeft': '剩余 {s} 秒',
   'status.stacks': '层数：{v}',

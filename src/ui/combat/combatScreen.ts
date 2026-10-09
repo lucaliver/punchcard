@@ -3,7 +3,7 @@ import { endTemporaryMusic, playTemporaryMusic, setMusicTempo } from '../../audi
 import { sfx } from '../../audio/sfx';
 import { CARDS } from '../../data/cards';
 import { actDef } from '../../data/acts';
-import { CONFIG } from '../../data/config';
+import { CONFIG, halfAtOf } from '../../data/config';
 import type { Combat } from '../../game/combat';
 import type { MoveDef } from '../../game/types';
 import { clockAt, currentNode, type RunState, totalFloors } from '../../game/run';
@@ -398,7 +398,7 @@ export function combatScreen(run: RunState, combat: Combat, cb: CombatCallbacks)
             for (let i = 0; i < 3 && !combat.result; i++) kill(combat.enemy.hp + combat.enemy.block);
           },
         },
-        { label: t('debug.half'), icon: 'crack', run: () => kill(combat.enemy.hp - Math.floor(combat.enemy.maxHp / 2)) },
+        { label: t('debug.half'), icon: 'crack', run: () => kill(combat.enemy.hp - Math.floor(combat.enemy.maxHp * halfAtOf(combat.enemy.def))) },
         { label: t('debug.stun'), icon: 'stars', run: () => combat.applyStatus('enemy', 'stun', 1, 10) },
         { label: t('debug.skipMove'), icon: 'swap', run: () => combat.skipEnemyMove() },
         { label: t('debug.shield'), icon: 'shield', run: () => combat.gainBlock('hero', 50) },

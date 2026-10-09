@@ -1,5 +1,5 @@
 import { type TKey, t } from '../../core/i18n';
-import { CONFIG } from '../../data/config';
+import { CONFIG, halfPct } from '../../data/config';
 import { HEXES } from '../../data/hexes';
 import { STATUSES, statusIcon } from '../../data/statuses';
 import { sfx } from '../../audio/sfx';
@@ -144,7 +144,8 @@ export function enemyTraits(e: EnemyDef, inFight = false): { icon: string; name:
     if (e.beltOff !== undefined) traits.push({ icon: 'crank', name: '', desc: t(`enemy.${e.id}.off`) });
     if (e.manaTap !== undefined) traits.push({ icon: 'crystal', name: '', desc: t(`enemy.${e.id}.tap`) });
   }
-  if (e.onHalf && !(inFight && e.halfSecret)) traits.push({ icon: HALF_ICON, name: t('status.half'), desc: keywordHtml(t(`enemy.${e.id}.half`)) });
+  if (e.onHalf && !(inFight && e.halfSecret))
+    traits.push({ icon: HALF_ICON, name: t('status.half', { n: halfPct(e) }), desc: keywordHtml(t(`enemy.${e.id}.half`)) });
   return traits;
 }
 
