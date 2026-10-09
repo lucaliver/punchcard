@@ -114,7 +114,7 @@ interface ScriptNode {
 
 /** An act laid out by hand, floor by floor (the first room opens it, the last one is its boss); built by `addScripted`. Rooms and roads are exactly these; `dev/map-editor.html` reads and exports it. */
 export const ACT_SCRIPTS: Record<number, ScriptNode[]> = {
-  // Act 1, the very first run: the orientation video, a snitch, a gift (so the map isn't only jobs), then two lanes with a rest on each side.
+  // Act 1, the very first run: the orientation video, a snitch, a gift (so the map isn't only jobs), then two lanes with a rest on each side and an elite on each (the Sushi Chef's lane is the one with the Copy room).
   1: [
     /* 0 */ { floor: 1, lane: 0.5, type: 'fight', enemy: 'hrOrientationVideo', next: [1] },
     /* 1 */ { floor: 2, lane: 0.5, type: 'fight', enemy: 'snitch', next: [2] },
@@ -126,7 +126,7 @@ export const ACT_SCRIPTS: Record<number, ScriptNode[]> = {
     /* 7 */ { floor: 6, lane: 0, type: 'elite', enemy: 'securityMonitor', next: [9, 10] },
     /* 8 */ { floor: 6, lane: 1, type: 'copy', next: [10, 9] },
     /* 9 */ { floor: 7, lane: 0, type: 'promotion', next: [11] },
-    /* 10 */ { floor: 7, lane: 1, type: 'fight', enemy: 'goblinConsultant', next: [12] },
+    /* 10 */ { floor: 7, lane: 1, type: 'elite', enemy: 'sushiChef', next: [12] },
     /* 11 */ { floor: 8, lane: 0, type: 'rest', next: [13] },
     /* 12 */ { floor: 8, lane: 1, type: 'rest', next: [13] },
     /* 13 */ { floor: 9, lane: 0.5, type: 'lostFound', next: [14] },
@@ -138,7 +138,7 @@ export const ACT_SCRIPTS: Record<number, ScriptNode[]> = {
     /* 1 */ { floor: 2, lane: 0, type: 'fight', enemy: 'nightJanitor', next: [3] },
     /* 2 */ { floor: 2, lane: 1, type: 'promotion', next: [4] },
     /* 3 */ { floor: 3, lane: 0, type: 'vending', next: [5, 4] },
-    /* 4 */ { floor: 3, lane: 1, type: 'fight', enemy: 'powerSocket', next: [6] },
+    /* 4 */ { floor: 3, lane: 1, type: 'fight', enemy: 'officeChair', next: [6] },
     /* 5 */ { floor: 4, lane: 0, type: 'rest', next: [7] },
     /* 6 */ { floor: 4, lane: 1, type: 'copy', next: [8] },
     /* 7 */ { floor: 5, lane: 0, type: 'fight', enemy: 'changeManager', next: [9] },

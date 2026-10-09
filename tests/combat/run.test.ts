@@ -136,7 +136,9 @@ describe('run maps', () => {
       for (let act = 1; act <= ACTS; act++) {
         const fresh = enemiesFor(act, 'normal').filter((e) => !avoid.includes(e.id)).length;
         const fights = nodes.filter((n) => n.act === act && n.type === 'fight').map((n) => n.enemy!);
-        for (const id of fights.slice(0, fresh)) expect(avoid).not.toContain(id);
+        // (act 2 opens on a rule-breaker even if the last run met every one of them)
+        const opener = act === 2 && !enemiesFor(2, 'normal').some((e) => e.ruleBreaker && !avoid.includes(e.id)) ? 1 : 0;
+        for (const id of fights.slice(opener, fresh)) expect(avoid).not.toContain(id);
       }
     }
   });
