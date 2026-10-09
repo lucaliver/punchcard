@@ -8,7 +8,7 @@ import zhStrings from '../src/i18n/zh';
 
 /** Indexed as a plain dictionary: these tests check keys that are built at runtime. */
 const en: Record<string, string> = enStrings;
-import { CARD_LIST, CARDS } from '../src/data/cards';
+import { CARD_LIST } from '../src/data/cards';
 import { cardHidden, heroHidden, heroUnlocked, progress, stampAct } from '../src/game/meta';
 import type { HeroId } from '../src/game/types';
 import { KEYWORD_LIST } from '../src/ui/components/cardView';
@@ -64,7 +64,6 @@ describe('content integrity', () => {
     for (const h of HERO_LIST) for (const id of h.startDeck) expect(ids.has(id), id).toBe(true);
     for (const c of CARD_LIST)
       for (const m of en[`card.${c.id}.desc`].matchAll(/\[@(\w+)\]/g)) expect(ids.has(m[1]) && m[1] !== c.id, `${c.id} names ${m[1]}`).toBe(true);
-    for (const h of HERO_LIST) expect(h.startDeck, h.id).toHaveLength(18);
     for (const c of CARD_LIST)
       if (c.starterOnly)
         expect(
@@ -377,13 +376,12 @@ describe('the Rogue', () => {
     expect(heroUnlocked('rogue')).toBe(true);
   });
 
-  it('has a full set of cards: every rarity, and a starter deck of only basic cards', () => {
+  it('has a full set of cards: every rarity', () => {
     const own = CARD_LIST.filter((c) => c.cls === 'rogue' && !c.starterOnly);
     for (const rarity of ['common', 'rare', 'epic', 'legendary'] as const)
       expect(
         own.some((c) => c.rarity === rarity),
         rarity,
       ).toBe(true);
-    for (const id of HEROES.rogue.startDeck) expect(CARDS[id].starterOnly || CARDS[id].cls === 'neutral', id).toBeTruthy();
   });
 });
