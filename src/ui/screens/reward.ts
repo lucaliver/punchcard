@@ -35,6 +35,8 @@ function selectable(el: HTMLElement, card: CardInst, onSelect: () => void): void
 export function rewardScreen(run: RunState, picks: RewardOffer[], adds: boolean, onDone: () => void): Screen {
   let fromDeck: CardInst | null = null;
   let offer: RewardOffer | null = null;
+  /** Set the moment the reward is taken (swap, add or skip): the screen is only waiting for its animation to end, nothing can be picked any more. */
+  let settled = false;
   const offered = picks.map((p) => p.def.id);
 
   const swapBtn = h('button', { class: 'btn', disabled: true }, t(adds ? 'reward.add' : 'reward.swap'));
@@ -43,6 +45,8 @@ export function rewardScreen(run: RunState, picks: RewardOffer[], adds: boolean,
     {
       class: 'btn small secondary skip-btn',
       onclick: (e: Event) => {
+        if (settled) return;
+        settled = true;
         sfx('tap');
         const pay = skipPay(run);
         trackReward(run, offered, null, null);
@@ -75,6 +79,7 @@ export function rewardScreen(run: RunState, picks: RewardOffer[], adds: boolean,
         );
       else
         selectable(el, card, () => {
+          if (settled) return;
           fromDeck = fromDeck?.uid === card.uid ? null : card;
           refresh();
         });
@@ -83,6 +88,7 @@ export function rewardScreen(run: RunState, picks: RewardOffer[], adds: boolean,
     deckGrid.replaceChildren(...deckEls.map((d) => d.el));
   };
   const sorter = sortControl(() => {
+    if (settled) return;
     renderDeck();
     refresh();
   });
@@ -92,6 +98,7 @@ export function rewardScreen(run: RunState, picks: RewardOffer[], adds: boolean,
     const card: CardInst = { uid: -100 - i, id: pick.def.id, up: pick.up };
     const el = cardView(card);
     selectable(el, card, () => {
+      if (settled) return;
       offer = offer === pick ? null : pick;
       refresh();
     });
@@ -118,7 +125,8 @@ export function rewardScreen(run: RunState, picks: RewardOffer[], adds: boolean,
   }
 
   swapBtn.addEventListener('click', () => {
-    if (!offer || !(adds || fromDeck)) return;
+    if (settled || !offer || !(adds || fromDeck)) return;
+    settled = true;
     sfx('cardPlay');
     haptic('tap');
     const flyer = offerEls.find((o) => o.pick === offer)?.el;

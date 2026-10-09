@@ -83,7 +83,7 @@ test('a fight can be played and won, then a reward is offered', async ({ page })
   await combat(page, "c.damage('hero', 'enemy', 999, { raw: true }, 'hero');");
   await expect(page.locator('.reward')).toBeVisible({ timeout: 5000 });
   // Reward = swap: the whole deck on top, 4 offers below; Swap needs one of each.
-  await expect(page.locator('.swap-deck .card')).toHaveCount(18);
+  await expect(page.locator('.swap-deck .card')).toHaveCount(20);
   await expect(page.locator('.swap-offer .card')).toHaveCount(4);
   const swap = page.getByRole('button', { name: 'Swap' });
   await expect(swap).toBeDisabled();
@@ -94,7 +94,7 @@ test('a fight can be played and won, then a reward is offered', async ({ page })
   // Back on the map: act 1 starts on a single road, so the one floor ahead is open.
   await expect(page.locator('.node.open')).toHaveCount(1);
   const deck = (await page.evaluate('window.__game.run.deck.length')) as number;
-  expect(deck).toBe(18);
+  expect(deck).toBe(20);
   expect(problems).toEqual([]);
 });
 
@@ -959,9 +959,9 @@ test('tapping the hero portrait in a fight shows the deck in play and pauses', a
   await freshGame(page);
   await startFight(page);
   await page.locator('.hero-portrait').click();
-  // The warrior's 18-card deck, identical copies grouped (the upgraded Punch and Hard Hat and the Innate Coffee stand apart).
-  await expect(page.locator('.modal h2')).toContainText('18');
-  await expect(page.locator('.modal .deck-grid .card')).toHaveCount(7);
+  // The warrior's 20-card deck, identical copies grouped (the upgraded Punch and Hard Hat and the Innate Coffee stand apart).
+  await expect(page.locator('.modal h2')).toContainText('20');
+  await expect(page.locator('.modal .deck-grid .card')).toHaveCount(9);
   const clock = () => page.evaluate('window.__combat.time');
   const before = await clock();
   await page.waitForTimeout(300);
