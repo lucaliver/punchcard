@@ -208,7 +208,7 @@ export const rogueCards: CardDef[] = [
     rarity: 'rare',
     cost: 2,
     upCost: 1,
-    vals: [3],
+    vals: [2],
     art: 'catchMeIfYouCan',
     play: (c, v) => void c.loot('rare', v[0], { up: true, hex: 'crumple' }),
   },
