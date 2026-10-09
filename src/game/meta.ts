@@ -35,6 +35,8 @@ interface Meta {
   history: RunLog[];
   /** A review has been sent: the home stops asking for one. */
   rated: boolean;
+  /** The handbook has been opened (or the home's hint about it dismissed). */
+  handbookSeen: boolean;
 }
 
 const NO_RECORDS: Records = {
@@ -66,6 +68,7 @@ const meta: Meta = load('meta', {
   actsReached: [],
   history: [],
   rated: false,
+  handbookSeen: false,
 });
 // Saved data is untrusted: keep only known hero ids.
 for (const k of ['heroes', 'fresh'] as const) meta[k] = Array.isArray(meta[k]) ? meta[k].filter((id) => id in HEROES) : [];
@@ -75,6 +78,7 @@ meta.relics = Array.isArray(meta.relics) ? meta.relics.filter((id) => typeof id 
 if (typeof meta.runs !== 'number') meta.runs = 0;
 meta.signed = meta.signed === true;
 meta.rated = meta.rated === true;
+meta.handbookSeen = meta.handbookSeen === true;
 {
   const valid = (s: unknown): s is string => {
     if (typeof s !== 'string') return false;
@@ -143,6 +147,13 @@ export function signContract(): void {
 export const ratingDue = (): boolean => !meta.rated && meta.history.length >= CONFIG.ratingAfterRuns;
 export function markRated(): void {
   meta.rated = true;
+  store('meta', meta);
+}
+
+/** After the first run is over, the home points at the handbook once (until it is opened or the hint tapped away). */
+export const handbookHintDue = (): boolean => !meta.handbookSeen && meta.history.length >= 1;
+export function markHandbookSeen(): void {
+  meta.handbookSeen = true;
   store('meta', meta);
 }
 

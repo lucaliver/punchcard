@@ -2,7 +2,7 @@ import { t } from '../../core/i18n';
 import { CONFIG } from '../../data/config';
 import { sfx } from '../../audio/sfx';
 import { ENEMY_LIST } from '../../data/enemies';
-import { enemyMet, neverPlayed, ratingDue, signContract } from '../../game/meta';
+import { enemyMet, handbookHintDue, markHandbookSeen, neverPlayed, ratingDue, signContract } from '../../game/meta';
 import { currentNode, type RunState, totalFloors } from '../../game/run';
 import { burst, haptic } from '../fx/fx';
 import type { Screen } from '../app';
@@ -129,6 +129,17 @@ export function titleScreen(cb: TitleCallbacks): Screen {
   });
   rate.append(h('span', null, t('rate.banner')), stars.el);
 
+  // After the very first run: a note pointing at the handbook; opening it (or a tap on the note) is the last time it shows.
+  const hint = h('button', { class: 'handbook-hint', hidden: !handbookHintDue() }, icon('book'), h('span', null, t('menu.handbookHint')));
+  const dismissHint = (): void => {
+    hint.hidden = true;
+    markHandbookSeen();
+  };
+  hint.addEventListener('click', () => {
+    sfx('tap');
+    dismissHint();
+  });
+
   const el = h(
     'div',
     { class: 'screen title-screen' },
@@ -136,11 +147,15 @@ export function titleScreen(cb: TitleCallbacks): Screen {
     rate,
     poster,
     h('div', { class: 'desk' }, card, h('div', { class: 'desk-clock', html: creature('timeClock') })),
+    hint,
     h(
       'div',
       { class: 'menu' },
       save ? btn('plus', t('menu.newRun'), 'secondary small', cb.onNewRun) : null,
-      btn('book', t('menu.compendium'), 'secondary small', cb.onCompendium),
+      btn('book', t('menu.compendium'), 'secondary small', () => {
+        dismissHint();
+        cb.onCompendium();
+      }),
       btn('question', t('menu.howTo'), 'secondary small', () => openHowTo()),
       btn('gear', t('menu.settings'), 'secondary small', () => openSettings([], true)),
     ),

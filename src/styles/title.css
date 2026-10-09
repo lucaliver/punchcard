@@ -271,6 +271,28 @@
   rotate: -1deg;
 }
 .rate-banner > span { font-family: var(--font-ui); font-size: 22px; line-height: 1; text-align: center; }
+/* the note after the first run: pointing at the handbook button below it */
+.handbook-hint {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  width: min(100%, 360px);
+  padding: 8px 12px;
+  text-align: left;
+  font-family: var(--font-ui);
+  font-size: 20px;
+  line-height: 1.05;
+  color: var(--k);
+  background: var(--paper);
+  border: var(--line) solid var(--k);
+  box-shadow: var(--off) var(--off) 0 var(--shadow);
+  animation: hint-bob 1s steps(2) infinite;
+}
+.handbook-hint[hidden] { display: none; }
+.handbook-hint .pico { flex: none; font-size: 32px; }
+@keyframes hint-bob {
+  50% { translate: 0 3px; }
+}
 .rate-banner[hidden] { display: none; }
 .rate-stars { display: flex; justify-content: center; gap: 2px; }
 .rate-star {
