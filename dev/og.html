@@ -11,7 +11,7 @@ body { margin: 0; background: var(--void); }
 .og-who .riso { width: 100%; height: 100%; }
 .og-shadow { position: absolute; height: 22px; background: var(--k); opacity: 0.55; border-radius: 50%; }
 .og-hand { position: absolute; left: 50%; bottom: 26px; display: flex; translate: -50% 0; }
-.og-hand .card { --cw: 104px; margin: 0 -12px; transform-origin: 50% 120%; }
+.og-hand .card { --cw: 94px; margin: 0 -14px; transform-origin: 50% 120%; }
 .vs { position: absolute; left: 50%; top: 330px; translate: -50% 0; font: 44px/1 var(--font-ui); color: var(--p); }
 </style></head><body><div id="og">
 <div class="og-band"></div>
@@ -33,16 +33,16 @@ const who = (id, x, size, flip = false) => `<div class="og-who" style="left:${x}
 document.getElementById('stage').innerHTML = [
   who('necromancer', -40, 260),
   who('warrior', 75, 295),
-  who('mage', 215, 255),
-  who('micromanager', 735, 255, true),
+  who('mage', 205, 290),
+  who('micromanager', 710, 295, true),
   who('hrBitch', 850, 295, true),
   who('slavesCeo', 960, 320, true),
 ].join('');
 const hand = document.createElement('div');
 hand.className = 'og-hand';
-const cards = ['hostileTakeover', 'karoshi', 'youShallNotPass', 'picketDrums', 'flambe'];
+const cards = ['hostileTakeover', 'karoshi', 'lupin', 'youShallNotPass', 'picketDrums', 'flambe'];
 cards.forEach((id, i) => {
-  const c = cardView({ uid: i, id, up: i === 1 || i === 3 });
+  const c = cardView({ uid: i, id, up: i === 1 || i === 4 });
   const k = i - (cards.length - 1) / 2;
   c.style.rotate = `${k * 8}deg`;
   c.style.translate = `0 ${Math.abs(k) * 10}px`;
