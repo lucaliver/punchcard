@@ -20,6 +20,7 @@ const BAR_STEPS = 10;
 const BAR_LOW = 0.3;
 /** The statuses that change how a fighter's sprite looks, and the looks themselves (the half-HP rage is one of them). */
 const LOOKS = Object.values(STATUSES).filter((s): s is typeof s & { look: string } => !!s.look);
+const SPARKY = Object.values(STATUSES).filter((s) => s.beltSparks);
 const ALL_LOOKS = [...new Set([...LOOKS.map((s) => s.look), 'enraged'])];
 /** Steps of the stun veil's fading. */
 const STUN_STEPS = 20;
@@ -270,6 +271,11 @@ export function createHud(v: CombatView, onPassive: () => void): { render(): voi
     const hostile = !v.state.ended && (m.intent === 'attack' || m.intent === 'charge' || !!m.release);
     toggle(r.intent, 'urgent', hostile && left < 1.1);
     toggle(r.intent, 'down', combat.result === 'win');
+    // The enemy tenses up before the move lands: it crouches for a blow, swells for anything else, and shakes harder at the end.
+    const winding = !v.state.ended && rate > 0 && m.intent !== 'idle' && left < Math.min(CONFIG.anticipate.soft, m.windup * 0.5);
+    toggle(r.enemyArt, 'winding', winding);
+    toggle(r.enemyArt, 'wind-hit', winding && hostile);
+    toggle(r.enemyArt, 'wind-hard', winding && left < CONFIG.anticipate.hard);
 
     // Preview how much HP the hit will take (after Block), and flash the screen edges just before it lands.
     const hs = combat.hero;
@@ -376,6 +382,7 @@ export function createHud(v: CombatView, onPassive: () => void): { render(): voi
     toggle(v.el, 'blackout', combat.cardsHidden);
     // Autopilot: a blue fade at the belt's exit, where the cards play themselves.
     toggle(r.belt, 'autoplay', combat.isAutoplay());
+    renderSparks();
     // Belt rows an enemy keeps shut are barred (the `rowsOpen` / `rowsClose` events slide the bars away or in).
     toggle(r.belt, 'row-shut', combat.rowsOpen < combat.beltRows);
   };
@@ -401,6 +408,20 @@ export function createHud(v: CombatView, onPassive: () => void): { render(): voi
     // Full: nothing more to gain by waiting, so the bar blinks to invite a play (once the fight has started).
     toggle(r.manaRow, 'full', !v.state.waiting && hs.mana >= hs.maxMana);
     r.manaNum.innerHTML = `${hs.mana}<small>/${hs.maxMana}</small>`;
+  };
+
+  /** Sparks above and below the belt: two for every stack of a status with `beltSparks` (made as they are needed, each in its own spot). */
+  const renderSparks = (): void => {
+    const n = SPARKY.reduce((sum, s) => sum + combat.stacks('hero', s.id), 0);
+    while (r.sparks.children.length < n * 2) {
+      const k = r.sparks.children.length;
+      r.sparks.append(
+        h('i', { class: k % 2 ? 'bot' : 'top', style: { '--x': `${(((k >> 1) * 37 + 11) % 88) + 6}%`, '--d': `${-((k * 0.23) % 0.6)}s` } }),
+      );
+    }
+    const lit = Math.min(n * 2, r.sparks.children.length);
+    for (let i = 0; i < r.sparks.children.length; i++) toggle(r.sparks.children[i], 'on', i < lit);
+    if (SPARKY[0]) r.sparks.dataset.tone = SPARKY[0].tone;
   };
 
   const renderHeroExtras = (): void => {

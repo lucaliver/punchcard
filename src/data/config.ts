@@ -16,6 +16,8 @@ export const CONFIG = {
   longPressMs: 350,
   /** The hero's portrait sweats under this share of max HP. */
   heroLowHp: 0.3,
+  /** An enemy tenses up before its move lands: from this many seconds left (or half the wind-up, if shorter) it winds up, and from `hard` it shakes harder and rims pink. */
+  anticipate: { soft: 1.5, hard: 0.6 },
   /** The rust mop: grime a stroke as long as the belt is wide takes off a spot (a spot is 1), and how far (px) past a spot its head still reaches. */
   mop: { scrubPerBelt: 5, reach: 8 },
   /** How far along the belt (in belt widths) a card with a tip has come when the fight stops to explain it. */

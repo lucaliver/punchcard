@@ -187,7 +187,7 @@
 }
 /* status looks (before .hit, so a hit still wins while it lasts). Each look only sets its own piece of the filter and they
    stack, so poison and burn together wear two rims, one outside the other. */
-.enemy-art .riso { filter: var(--f-poison,) var(--f-burn,) var(--f-exposed,) var(--f-weak,); }
+.enemy-art .riso { filter: var(--f-poison,) var(--f-burn,) var(--f-exposed,) var(--f-weak,) var(--f-wind,); }
 .enemy-art.poisoned { --f-poison: drop-shadow(2px 0 0 var(--green)) drop-shadow(-2px 0 0 var(--green)) drop-shadow(0 2px 0 var(--green)) drop-shadow(0 -2px 0 var(--green)); }
 .enemy-art.burning { --f-burn: drop-shadow(2px 0 0 var(--y)) drop-shadow(-2px 0 0 var(--y)) drop-shadow(0 2px 0 var(--y)) drop-shadow(0 -2px 0 var(--y)); }
 .enemy-art.exposed { --f-exposed: drop-shadow(2px 0 0 var(--red)) drop-shadow(-2px 0 0 var(--red)) drop-shadow(0 2px 0 var(--red)) drop-shadow(0 -2px 0 var(--red)); }
@@ -202,6 +202,32 @@
 @keyframes jolt {
   33% { transform: translateX(10px); }
   66% { transform: translateX(-6px); }
+}
+/* before its move lands the enemy tenses up (the class comes from hud.ts): a blow crouches and trembles, anything else swells; the last moments shake harder and rim it pink */
+.enemy-art.winding { animation: wind-up 0.3s steps(2) infinite; transform-origin: 50% 100%; }
+.enemy-art.winding.wind-hit { animation-name: wind-down; }
+.enemy-art.winding.wind-hard { animation-duration: 0.14s; --f-wind: drop-shadow(2px 0 0 var(--p)) drop-shadow(-2px 0 0 var(--p)); }
+@keyframes wind-up {
+  50% { scale: 1.05; translate: 0 -4px; }
+}
+@keyframes wind-down {
+  0% { translate: -2px 0; }
+  50% { translate: 2px 5px; scale: 1.04 0.93; }
+}
+/* a normal enemy walks in: its shadow grows on the floor, then it drops in, squashes on landing and settles */
+.stage.entering .shade { animation: shade-in var(--dur-enter) steps(6) both; }
+@keyframes shade-in {
+  0% { scale: 0.1 1; opacity: 0.2; }
+  35% { scale: 0.5 1; opacity: 0.4; }
+  60%, 100% { scale: 1 1; opacity: 0.8; }
+}
+.stage.entering .enemy-art { animation: enter-drop var(--dur-enter) steps(1) both; }
+@keyframes enter-drop {
+  0%, 30% { opacity: 0; transform: translateY(-140px); }
+  45% { opacity: 1; transform: translateY(-90px); }
+  60% { transform: translateY(0) scale(1.08, 0.88); }
+  72% { transform: translateY(-10px) scale(0.98, 1.04); }
+  84%, 100% { transform: none; }
 }
 /* one-shot reactions on the wrapper (retriggered from combatFx): a rim of ink in the colour of what happened, as `rage` does */
 .enemy-art.shielded { animation: shield-up 0.4s steps(4); }

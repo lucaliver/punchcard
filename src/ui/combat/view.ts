@@ -98,6 +98,7 @@ function markup(run: RunState, combat: Combat): string {
     <section class="belt ltr" style="--rows: ${combat.beltRows}">
       <div class="belt-track"></div>
       <div class="belt-alarm"></div>
+      <div class="belt-sparks" aria-hidden="true"></div>
       <div class="belt-rust"></div>
       <div class="belt-auto" aria-hidden="true"><i></i><i></i><i></i><i></i></div>
       <div class="maw-eyes" aria-hidden="true"><i></i><i></i></div>
@@ -155,6 +156,7 @@ function queryRefs(el: HTMLElement) {
     hStatus: $('.js-hstatus', el),
     portrait: $('.hero-portrait', el),
     relicPeek: $('.relic-peek', el),
+    sparks: $('.belt-sparks', el),
     ability: $<HTMLButtonElement>('.js-ability', el),
     pause: $<HTMLButtonElement>('.js-pause', el),
     manaRow: $('.mana-row', el),

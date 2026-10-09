@@ -363,7 +363,16 @@ const defs: StatusDef[] = [
   { id: 'lostBadge', tone: 'blue', kind: 'stacks', good: true, icon: 'priceTag', freeNext: true },
   // Root access (sudo): no rule can stop the hero's cards.
   { id: 'rootAccess', tone: 'blue', kind: 'timed', good: true, icon: 'terminal', ignoresRules: true },
-  { id: 'multitasking', tone: 'purple', kind: 'timed', good: true, icon: 'bolt2', showStacks: true, span: CONFIG.multitaskingWindow },
+  {
+    id: 'multitasking',
+    tone: 'purple',
+    kind: 'timed',
+    good: true,
+    icon: 'bolt2',
+    showStacks: true,
+    beltSparks: true,
+    span: CONFIG.multitaskingWindow,
+  },
   // Plague (a power): every attack the hero plays also applies `v` Poison.
   {
     id: 'plague',

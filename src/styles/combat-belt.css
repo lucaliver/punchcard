@@ -122,6 +122,27 @@
 @keyframes alarm-blink {
   50% { opacity: 0.15; }
 }
+/* sparks above and below the belt, two per stack of a status with `beltSparks` (the Mage's Multitasking); hud.ts lights them one by one */
+.belt-sparks { position: absolute; inset: 0; z-index: 3; pointer-events: none; }
+.belt-sparks i {
+  display: none;
+  position: absolute;
+  left: var(--x);
+  width: 4px;
+  height: 4px;
+  background: var(--tone-hi);
+  box-shadow: 4px 0 var(--tone-hi), -4px 0 var(--tone-hi), 0 4px var(--tone-hi), 0 -4px var(--tone-hi);
+  animation: spark 0.6s steps(3) infinite;
+  animation-delay: var(--d);
+}
+.belt-sparks i.on { display: block; }
+.belt-sparks i.top { top: -8px; }
+.belt-sparks i.bot { bottom: -8px; }
+@keyframes spark {
+  0% { scale: 0.4; opacity: 1; }
+  50% { scale: 1; opacity: 1; }
+  100% { scale: 0.2; opacity: 0.2; }
+}
 .belt-rust {
   /* rust patches over the stream, under the cards (JS shows them one by one) */
   position: absolute;

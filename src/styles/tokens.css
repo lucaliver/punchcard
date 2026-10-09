@@ -118,6 +118,9 @@
   /* an enemy that gets back up (Golden Parachute): it goes down, then rises at --revive-rise of the way (script waits on both) */
   --dur-revive: 1800ms;
   --revive-rise: 0.6;
+  /* a normal enemy walking into the fight: its shadow grows, then it drops in and lands at --enter-land of the way (script waits on both) */
+  --dur-enter: 1000ms;
+  --enter-land: 0.6;
   --dur-row-grow: 600ms;
   --dur-hold: 1000ms;
   --dur-beg-lock: 500ms;

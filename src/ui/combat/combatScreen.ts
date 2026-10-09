@@ -422,6 +422,26 @@ export function combatScreen(run: RunState, combat: Combat, cb: CombatCallbacks)
   el.append(debugButton(t('debug.menu'), openDebug));
 
   /** A boss walks in with a title card: two bars slam across the screen, its name stamped between them, and the room shakes. */
+  /** A normal enemy walks in: its shadow grows on the floor first, then it drops in and lands (a boss has its own card). */
+  const enterScene = (): void => {
+    r.stage.classList.add('entering');
+    // Class off when done, or it would outrank the idle bob and the death throes later.
+    r.enemyArt.addEventListener(
+      'animationend',
+      (e) => {
+        if (e.target === r.enemyArt) r.stage.classList.remove('entering');
+      },
+      { once: true },
+    );
+    later(
+      () => {
+        shake('small');
+        sfx('blunt');
+      },
+      cssMs('--dur-enter') * Number.parseFloat(getComputedStyle(document.documentElement).getPropertyValue('--enter-land')),
+    );
+  };
+
   const bossIntro = (): void => {
     const card = h(
       'div',
@@ -556,7 +576,10 @@ export function combatScreen(run: RunState, combat: Combat, cb: CombatCallbacks)
         if (e.target !== door) return;
         door.remove();
         if (combat.enemy.def.tier === 'boss') bossIntro();
-        else if (!settings.seenTutorial) firstFightTour();
+        else {
+          enterScene();
+          if (!settings.seenTutorial) firstFightTour();
+        }
       });
       el.append(door);
       // The sound is the knocking: it waits while the name is read.

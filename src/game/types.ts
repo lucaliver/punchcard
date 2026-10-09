@@ -196,6 +196,8 @@ export interface StatusDef {
   chip?: 'icon' | 'short';
   /** Timed statuses that also stack show their stacks instead of the seconds left. */
   showStacks?: boolean;
+  /** Sparks flicker above and below the belt, two per stack the hero holds (the Mage's Multitasking). */
+  beltSparks?: boolean;
   /** Seconds its chip's bar empties over: the chip is drawn as a coloured bar that drains with the timer (for a counter that runs out, like chained spells). */
   span?: number;
   /** How far the status is from going off, 0 to 1: its chip is drawn as a bar that fills up to the trigger (the engine calls `Combat.cue` as it goes off). */
