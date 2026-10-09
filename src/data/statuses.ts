@@ -274,6 +274,21 @@ const defs: StatusDef[] = [
       c.removeStatus(side, 'forkliftCertified');
     },
   },
+  // Life Insurance (a power, one use): the first time the hero would fall it pays out `v` HP; the card that held the policy leaves the deck and the sleeve shrinks for good (the card put both in `Combat.mem`).
+  {
+    id: 'lifeInsurance',
+    tone: 'green',
+    kind: 'stacks',
+    good: true,
+    icon: 'angel',
+    onDeath: (c, side, s) => {
+      c.removeStatus(side, 'lifeInsurance');
+      c.heal(side, s.v);
+      if (c.mem.policyUid !== undefined) c.consumed.push(c.mem.policyUid);
+      c.loseSleeveSlots(c.mem.policySlots ?? 0);
+      return true;
+    },
+  },
   // Forgotten Lunch (a power): `v` Poison on the enemy every few seconds.
   {
     id: 'forgottenLunch',

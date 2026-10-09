@@ -557,6 +557,31 @@ export const ICONS: Record<string, { el: Element; svg: string; wide?: boolean }>
     el: 'steel',
     svg: `<path d="M4 40l30-18c4-2 8 0 8 4v6L12 52H4z"/><path d="M4 52h44l12-8v8c0 4-3 8-8 8H4z"/><path fill="#16121f" d="M40 30l14 6-2 4-14-6z"/>`,
   },
+  // Rise and Grind: the sun comes up over the horizon, and so does the first email.
+  riseAndGrind: {
+    el: 'fire',
+    svg: `<path d="M12 46a20 20 0 0 1 40 0z"/><g stroke="currentColor" stroke-width="4" stroke-linecap="round"><path d="M32 8v9M11 17l6 6M53 17l-6 6M3 36h9M52 36h9"/></g><rect x="3" y="48" width="58" height="7"/><path fill="#16121f" d="M20 42h24v3H20z"/>`,
+  },
+  // Seniority: the stripes of a rank on a shield.
+  seniority: {
+    el: 'steel',
+    svg: `<path d="M32 4l24 9v18c0 14-9 24-24 29C17 55 8 45 8 31V13z"/><path ${HI} d="M32 9l16 6v14c0 9-5 17-16 21z"/><path fill="none" stroke="#16121f" stroke-width="5" stroke-linecap="round" stroke-linejoin="round" d="M19 22l13 8 13-8M19 34l13 8 13-8"/>`,
+  },
+  // Tenure: the certificate that says the job is yours for life, with its seal and ribbons.
+  tenure: {
+    el: 'holy',
+    svg: `<rect x="4" y="6" width="56" height="40" rx="3"/><path fill="none" stroke="#16121f" stroke-width="3" stroke-linecap="round" d="M12 16h40M12 24h24M12 32h18"/><path d="M40 46l-5 14 11-5 11 5-5-14z"/><circle cx="46" cy="38" r="11" stroke="#16121f" stroke-width="3"/><path fill="#16121f" d="M46 31l2.4 5 5.4.7-4 3.7 1 5.3-4.8-2.6-4.8 2.6 1-5.3-4-3.7 5.4-.7z"/>`,
+  },
+  // Life Insurance: an umbrella over a heart.
+  lifeInsurance: {
+    el: 'necro',
+    svg: `<path d="M4 25C6 12 18 4 32 4s26 8 28 21z"/><path fill="#16121f" opacity=".35" d="M18 25a7 8 0 0 1 14 0zM32 25a7 8 0 0 1 14 0z"/><path fill="none" stroke="currentColor" stroke-width="4" stroke-linecap="round" d="M32 25v12"/><g transform="translate(11 31) scale(.6)">${heart}</g>`,
+  },
+  // Nervous Breakdown: a head that has had enough, dizzy eyes and a wobbly mouth, bolts all round.
+  nervousBreakdown: {
+    el: 'arcane',
+    svg: `<circle cx="32" cy="36" r="22"/><path fill="none" stroke="#16121f" stroke-width="4" stroke-linecap="round" stroke-linejoin="round" d="M19 28l8 8M27 28l-8 8M37 28l8 8M45 28l-8 8M20 49l6-5 6 5 6-5 6 5"/><path d="M12 2l-7 11h5l-4 9 11-12h-6zM52 2l-7 11h5l-4 9 11-12h-6z"/>`,
+  },
   // Sleeve cards
   toolBelt: {
     el: 'steel',

@@ -259,7 +259,7 @@ export const mageCards: CardDef[] = [
     cost: 5,
     upCost: 4,
     vals: [30],
-    keywords: ['pending'],
+    keywords: ['pending', 'large'],
     art: 'blastFurnace',
     play: (c, v) => void c.hit(v[0], { kind: 'fire' }),
   },
@@ -539,6 +539,24 @@ export const mageCards: CardDef[] = [
       const charges = c.stacks('hero', 'multitasking');
       c.removeStatus('hero', 'multitasking');
       if (charges > 0) c.applyStatus('enemy', 'burn', v[0] * charges);
+    },
+  },
+  {
+    id: 'nervousBreakdown',
+    face: '{dmg:0}×{multi}|{selfStun:1}',
+    cls: 'mage',
+    type: 'attack',
+    rarity: 'epic',
+    cost: 2,
+    vals: [4, 3],
+    upVals: [6, 3],
+    art: 'nervousBreakdown',
+    // All the charges go in one blow, and then the lights go out.
+    play: (c, v) => {
+      const charges = c.stacks('hero', 'multitasking');
+      c.removeStatus('hero', 'multitasking');
+      if (charges > 0) c.hit(v[0] * charges);
+      c.applyStatus('hero', 'stun', 1, v[1]);
     },
   },
   {

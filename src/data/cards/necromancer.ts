@@ -81,15 +81,18 @@ export const necromancerCards: CardDef[] = [
   // Commons
   {
     id: 'karoshi',
-    face: '{poison:0}',
+    face: '{poison:0}|{hp:1}',
     cls: 'necromancer',
     type: 'attack',
-    rarity: 'common',
+    rarity: 'epic',
     cost: 2,
-    vals: [7],
-    upVals: [10],
+    vals: [7, 8],
+    upVals: [10, 4],
     art: 'karoshi',
-    play: (c, v) => c.applyStatus('enemy', 'poison', v[0]),
+    play: (c, v) => {
+      c.loseHp(v[1]);
+      c.applyStatus('enemy', 'poison', v[0]);
+    },
   },
   {
     id: 'zombieShift',
@@ -187,6 +190,25 @@ export const necromancerCards: CardDef[] = [
     upVals: [3],
     art: 'fish',
     play: (c, v) => c.applyStatus('hero', 'plague', v[0]),
+  },
+  {
+    // A policy pays once: the claim heals, the sleeve shrinks for good and the card is torn out of the deck (a card stolen for the fight has no deck copy to lose).
+    id: 'lifeInsurance',
+    face: '{heal:0}|{lessSleeve:1}',
+    cls: 'necromancer',
+    type: 'power',
+    rarity: 'legendary',
+    cost: 3,
+    upCost: 2,
+    vals: [10, 1],
+    upVals: [15, 1],
+    art: 'lifeInsurance',
+    play: (c, v, card) => {
+      if (c.has('hero', 'lifeInsurance')) return;
+      c.applyStatus('hero', 'lifeInsurance', v[0]);
+      if (!card.temp) c.mem.policyUid = card.uid;
+      c.mem.policySlots = v[1];
+    },
   },
   {
     id: 'waterCooler',

@@ -1,27 +1,82 @@
 # TASKS
 
-- [x] karoshi è troppo debole rispetto a circolare tossica ad esempio
+- during step 3 of the overlay first battle tutorial, you should just highlight the hero hp adn status, not the belt 
 
-- [x] il mazzo base del negromante dovrebbe avere una carta che gli dia mana attuale; anche quello del rogue
+- enemy hr orientation video: passive should trigger at 60% health
 
-- [x] cambiamo il funzionamento base del veleno: fa danno pari a metà delle cariche ogni secondo e perde 1 carica
+- when debug more is on, after finishing a battle before exiting combact scene you should show a window with recap of battle duration, damage done, damage taken, etc all useful info for me for comparing and balancing enemies
 
-- [x] semplifichiamo la passiva del ladro in "ogni carta che cade dal nastro sconta di 1 una carta casuale nella sleeve" ; dagli solo 3 sleeves
+- the random card reward button should always give you cards as rare as the most rare card in the rewards offered ; also the amount of + max hp should just increase by 1 every 3 floors
 
-- [x] nell'handbook nella sezione keyword le descrizioni non dovrebbero andare a capo quando in mezzo c'è una parola chiave (es. Mana) ; inoltre la parola chiave X dovrebbe avere il simbolo della X
+- stationery highlighter status should be seen as status indicator before he triggers ; same for all stationery that have a trigger. Write it in md file
 
-- [x] l'abilità attiva del warrior dovrebbe dare anche scudo e permanenza dello scudo per tot sec
+- card with a condition (es. If you have block then deal x) should have it highlighted when the condition is met in combact
 
-- le carte che fanno perdere vita a te stesso dovrebbero avere un glifo diverso dalla goccia, perché quella è identica al veleno; oppure potremmo cambiare il glifo del veleno; dmami delle idee e valutiamo
+- exaggerated girl enemy: merge high heels and overreaction in one move
+
+
+- forklift certified card: the effect should show just and angel glyph ; it should also cost 3 and be epic
+
+- power socket passive: the gear should be placed more near the center and have a clear arrow showing the clockwise direction
+
+- in upgraded card detail window there should be like a "show non upgraded" button
+
+- when you try to play a card but you are sleep/stunned there should be vibration (like when you try to play it but don't have mana)
+
+- if a mirror attack card for Fire Exit card doesn't exist, make one
+
+- fire drill stationery should be "after you lose 30 hp stun the enemy"
+
+- outgoing vp enemy: there should be an animation when he dies the first time and resurrect
+
+
+- there should be a sound playing while the enemy is at his last <15hp
+
+
+
+- as soon as the enemy is killed, it's attack bar should grey out
+
+- the second option in tailor room should be gain +1 permanent mana crystal
+
+- long press on enemy sprite or hp bar should also work to open their detail window (like long press on it's move progress bar)
+
+- new mage legendary power: your max charge of multitasking is now 10
+
+
+- when you are asleep, zzz should appear in your hero portrait
+
+
+- the damage text when enemy get burn damage should have a fire-shaped background
+
+- i boss dovrebbero avere una musica più aggressiva da boss finale ; dovrebbero anche avere una animazione d'ingresso migliore
+
+
+- the bulky keyword is missing a symbol
+
+- make a better glyph icon for asleep
+
+
+- first time you visit the home after your first run, a hit should tell you to check out the handbook for more info about cards, enemies, keywords, etc
+
 
 # Miei appunti (ignore for now)
 
 
+> ricapitoliami tutte le animazioni che possono avere i nemici (es. subisce danni, è stunnato, è congelato, etc)
+> ricapitoliami tutte le animazioni che l'hero portrait può avere (es. Pochi hp, carte aggiunte al mazzo, etc)
 
+> i would like more animations and changes and unique ambient during combact, what do you suggest?
+
+> suggest new cards for rogue that have effect when they fall off the belt
+
+> let's rework the final boss "the board": remind me what the 3 phases are:
+it should have 300 hp with 3 clear parts, and 3 different attack phases and sprites; fase 1 should slow down the belt at the beginning and add a 3rd row in the belt ; phase 2 should go back to 2 rows and speed it up ; phase 3 should have some popup minigame (like others enemies have, i.e. The nerd, the coffee machine), give me ideas
+
+> map building:
+The 3rd node should always be lost and found
+when building a map there should be a check on the last run making sure you don't get too much of the same enemies
 
 > almeno un nemico potrei farlo nero
-
-
 
 # IDEE
 

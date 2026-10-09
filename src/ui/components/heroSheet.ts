@@ -44,7 +44,7 @@ export function openHeroSheet(run: RunState): void {
   const hero = HEROES[run.hero];
   sfx('tap');
   const features = heroFeatures(hero);
-  const sleeve = hero.sleeve + relicSum(run.relics, 'sleeve');
+  const sleeve = Math.max(1, hero.sleeve + relicSum(run.relics, 'sleeve') - run.sleeveLost);
   const mana = hero.maxMana + relicSum(run.relics, 'maxMana') + run.crystals;
   const relics = run.relics.map((id) =>
     h('div', {

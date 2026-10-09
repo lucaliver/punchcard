@@ -99,6 +99,7 @@ export const warriorCards: CardDef[] = [
     cost: 3,
     vals: [22],
     upVals: [32],
+    keywords: ['large'],
     art: 'printerSmash',
     play: (c, v) => void c.hit(v[0], { kind: 'blunt' }),
   },

@@ -66,6 +66,7 @@ export const GLYPHS: Record<string, { icon: string; unit?: string; sign?: string
   sudo: { icon: 'terminal', unit: 's' },
   tickUp: { icon: 'timer', sign: '+' },
   sleeve: { icon: 'hand' },
+  lessSleeve: { icon: 'hand', sign: '-' },
   tickDown: { icon: 'timer', sign: '-' },
   undo: { icon: 'undo' },
   auto: { icon: 'autopilot', unit: 's', tone: 'blue' },

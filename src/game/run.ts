@@ -42,7 +42,7 @@ export interface RunStats {
 }
 
 /** Shape of the saved run; a save of another version is dropped. */
-const SAVE_VERSION = 8;
+const SAVE_VERSION = 9;
 
 export interface RunState {
   version: number;
@@ -61,6 +61,8 @@ export interface RunState {
   path: number[];
   /** Mana crystals added for good by the Tailor, on top of the hero's own and the stationery's. */
   crystals: number;
+  /** Sleeve slots lost for good (Life Insurance), off the hero's own and the stationery's. */
+  sleeveLost: number;
   /** True once the current node has been completed. */
   cleared: boolean;
   stats: RunStats;
@@ -204,6 +206,7 @@ export function newRun(hero: HeroId, seed: number, scripted: readonly number[] =
     uid: peekUid(),
     mods,
     crystals: 0,
+    sleeveLost: 0,
   };
 }
 
@@ -396,6 +399,7 @@ export function combatSetup(run: RunState): CombatSetup {
     beltMul: resolveMods(run.mods).beltMul,
     canBeg: true,
     bonusMaxMana: run.crystals,
+    sleeveLost: run.sleeveLost,
     seed,
   };
 }
@@ -422,6 +426,9 @@ export function applyCombat(run: RunState, combat: Combat): void {
     cards: combat.cardsPlayed,
   });
   if (combat.consumed.length) run.deck = run.deck.filter((c) => !combat.consumed.includes(c.uid));
+  for (const card of run.deck) if (combat.tenured[card.uid]) card.tenure = combat.tenured[card.uid];
+  // The hero keeps at least one slot, wherever the slots come from.
+  run.sleeveLost = Math.min(run.sleeveLost + combat.sleeveLost, HEROES[run.hero].sleeve - 1);
   if (combat.result === 'win') {
     run.stats.kills++;
     if (combat.enemy.def.tier === 'elite') run.stats.elites++;
@@ -764,6 +771,7 @@ const isCard = (c: unknown): c is CardInst =>
   typeof c.id === 'string' &&
   !!CARDS[c.id] &&
   typeof c.up === 'boolean' &&
+  (c.tenure === undefined || isNum(c.tenure)) &&
   (c.perks === undefined || (isStrings(c.perks) && c.perks.every((p) => !!PERKS[p])));
 
 const isNode = (n: unknown, i: number, len: number): n is RunNode => {
@@ -780,7 +788,27 @@ const isNode = (n: unknown, i: number, len: number): n is RunNode => {
 /** Saved data is untrusted: a run that doesn't have the exact shape (or names content that no longer exists) is dropped. */
 function parseRun(raw: unknown): RunState | null {
   if (!isObj(raw) || raw.version !== SAVE_VERSION) return null;
-  const { hero, hp, maxHp, seed, rng, uid, current, cleared, deck, relics, relicFlags, nodes, path, stats, money, mods, crystals, reward } = raw;
+  const {
+    hero,
+    hp,
+    maxHp,
+    seed,
+    rng,
+    uid,
+    current,
+    cleared,
+    deck,
+    relics,
+    relicFlags,
+    nodes,
+    path,
+    stats,
+    money,
+    mods,
+    crystals,
+    sleeveLost,
+    reward,
+  } = raw;
   const heroId = HERO_LIST.find((hd) => hd.id === hero)?.id;
   if (!heroId || !isNum(hp) || !isNum(maxHp) || !isNum(seed) || !isNum(rng) || !isNum(uid) || typeof cleared !== 'boolean') return null;
   if (!Array.isArray(deck) || !deck.every(isCard) || !isStrings(relics)) return null;
@@ -812,6 +840,7 @@ function parseRun(raw: unknown): RunState | null {
     uid,
     mods: isStrings(mods) ? mods.filter((id) => id in MODIFIERS) : [],
     crystals: isNum(crystals) ? Math.max(0, crystals) : 0,
+    sleeveLost: isNum(sleeveLost) ? Math.max(0, sleeveLost) : 0,
     reward: cleared && offers.length ? offers.map(({ id, up }) => ({ id, up })) : undefined,
   };
 }

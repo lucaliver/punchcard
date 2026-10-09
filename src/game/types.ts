@@ -28,6 +28,8 @@ export interface CardInst {
   up: boolean;
   /** Permanent perks earned on this copy (Promotion), ids of `PERKS`. */
   perks?: string[];
+  /** Times this copy has been played in all the run's fights, for a card with `CardDef.tenure`. */
+  tenure?: number;
 }
 
 /** A permanent perk a deck card can earn: extra keywords and/or a cost change. */
@@ -141,6 +143,11 @@ export interface CardDef {
    * (it grows when `to` is above the base, decays when below). Frozen while the card waits in the sleeve.
    */
   ride?: { i: number; by: number; to: number };
+  /**
+   * Grows for good: for every time this copy of the deck has been played (in any fight of the run, `CardInst.tenure`),
+   * `vals[i]` is `vals[by]` higher, up to `vals[to]`.
+   */
+  tenure?: { i: number; by: number; to: number };
   /**
    * Dragging the card over the belt sweeps the other cards off it (they count as lost, as if they had fallen off the end):
    * each one adds `vals[by]` to its bonus (the damage it deals), up to `vals[max]`. The bonus is gone once the card is played or lost. While held it stays on the belt, and it is played the moment it is let go.
@@ -263,7 +270,7 @@ export interface StatusDef {
   keeps?: string;
   /** The hero just put a status on the enemy (`id`, `v` = amount): reacts while this one is active (Cold Sweat). */
   onEnemyStatus?: (c: Combat, id: string, s: StatusVal) => void;
-  /** The enemy carrying it just took a lethal hit: return true to survive it (the status removes itself if it was a one-off). */
+  /** The side carrying it just took a lethal hit: return true to survive it (the status removes itself if it was a one-off: Golden Parachute, Life Insurance). */
   onDeath?: (c: Combat, side: Side, s: StatusVal) => boolean;
   /** A timed status just ran out on its carrier (`s` is what it held). */
   onEnd?: (c: Combat, side: Side, s: StatusVal) => void;

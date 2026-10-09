@@ -53,12 +53,16 @@ export function cardCostOf(card: CardLike): number {
 /** The cost a card copy has without the sleeve's temporary discount: what it is "worth" (Fire Sale, Fence It). */
 export const fullCostOf = (card: CardLike): number => cardCostOf({ ...card, disc: 0 });
 
-/** Values of a card copy (upgrade, per-fight bonus and time on the belt included). */
+/** Values of a card copy (upgrade, per-fight bonus, tenure and time on the belt included). */
 export function cardValsOf(card: CardLike): number[] {
   const def = CARDS[card.id];
   const vals = [...(card.up ? (def.upVals ?? def.vals) : def.vals)];
   const grows = def.bonusIdx ?? def.dmg?.[0];
   if (card.bonus && grows !== undefined) vals[grows] = Math.max(0, vals[grows] + card.bonus);
+  if (def.tenure && card.tenure) {
+    const { i, by, to } = def.tenure;
+    vals[i] = Math.min(vals[to], vals[i] + card.tenure * vals[by]);
+  }
   if (def.ride && card.age) {
     const { i, by, to } = def.ride;
     const step = Math.floor(card.age) * vals[by];
