@@ -186,10 +186,13 @@ export function combatScreen(run: RunState, combat: Combat, cb: CombatCallbacks)
     const gap = Number.parseFloat(getComputedStyle(r.sleeve).columnGap) || 0;
     r.sleeve.style.setProperty('--fit', `${Math.floor((r.sleeve.clientWidth - gap * (n - 1)) / n)}px`);
   };
+  const startRows = combat.beltRows;
   const layout = (): void => {
     state.beltW = r.belt.clientWidth || el.clientWidth;
     // Cards follow the belt width, but shrink on short screens so the layout always fits (more with two rows).
-    const cw = Math.round(Math.min(state.beltW * CONFIG.cardWidth, cardMaxH(combat.beltRows, el.clientHeight)));
+    // A row that opens mid-fight in the room the sleeve left (`deepBelt`) doesn't resize the cards: the first two rows stay where they are.
+    const rows = combat.enemy.def.deepBelt === undefined ? combat.beltRows : startRows;
+    const cw = Math.round(Math.min(state.beltW * CONFIG.cardWidth, cardMaxH(rows, el.clientHeight)));
     state.cardW = cw;
     state.rowH = Math.round(cw * 1.4) + BELT_ROW_GAP;
     el.style.setProperty('--cw-belt', `${cw}px`);
