@@ -564,6 +564,8 @@ export type CombatEvent =
   | { type: 'sleeveCheaper' }
   | { type: 'cardStolen'; card: CombatCard }
   | { type: 'cantAfford'; card: CombatCard }
+  /** A rule (a stun, a status that bans cards…) stopped a tap on a card. */
+  | { type: 'ruled'; card: CombatCard }
   | { type: 'cardAdded'; card: CombatCard; to: 'belt' | 'draw' | 'discard' }
   | { type: 'cardDiscarded'; card: CombatCard }
   | { type: 'hexed'; card: CombatCard }

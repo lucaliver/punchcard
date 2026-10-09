@@ -1064,6 +1064,7 @@ export class Combat {
     const rule = this.ruleBlock(card, free);
     if (rule) {
       this.events.emit({ type: 'text', target: 'hero', key: rule.key, tone: 'bad' });
+      this.events.emit({ type: 'ruled', card });
       return false;
     }
     if (!free && !this.canAfford(card)) {

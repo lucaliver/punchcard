@@ -179,6 +179,13 @@ export function bindCombatFx(v: CombatView, cards: CardLayer, onEnd: (result: 'w
         haptic('error');
         break;
       }
+      case 'ruled': {
+        const cardEl = cards.elementOf(e.card.uid);
+        if (cardEl) v.retrigger(cardEl, 'nope');
+        sfx('error');
+        haptic('error');
+        break;
+      }
       case 'cardPlayed':
         cards.markRemoval(e.card.uid, 'played');
         sfx('cardPlay');
