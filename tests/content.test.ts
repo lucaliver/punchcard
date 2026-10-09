@@ -80,7 +80,7 @@ describe('content integrity', () => {
     }
   });
 
-  it("the Coffee Machine's drinks and steps are named in every language, and its move is a chore", () => {
+  it("the Coffee Machine's drinks and steps are named in every language, and the Slaves CEO's coffee move is a chore", () => {
     const keys = [
       ...COFFEE_ITEMS.map((i) => `task.coffee.${i}`),
       ...COFFEE_DRINKS.map((d) => `drink.${d}`),
@@ -88,7 +88,7 @@ describe('content integrity', () => {
     ];
     for (const strings of [enStrings, itStrings, esStrings, zhStrings] as Record<string, string>[])
       for (const k of keys) expect(strings[k], k).toBeTruthy();
-    expect(ENEMIES.coffeeMachine.specials.some((m) => m.task === 'coffee')).toBe(true);
+    expect(ENEMIES.slavesCeo.specials.some((m) => m.task === 'coffee')).toBe(true);
   });
 
   it('every enemy that sets a chore has a chore to make, its lines and its texts in every language', () => {

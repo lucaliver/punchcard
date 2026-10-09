@@ -30,7 +30,7 @@ const coinFace = (cents: number): string => (cents < 100 ? `<b>${cents}</b><smal
 const PAD = Array.from({ length: CONFIG.coffee.keys }, (_, i) => i + 1);
 
 /**
- * The Coffee Machine's chore (`MoveDef.task`): a window over the belt and the sleeve (the enemy, its move bar and your ability stay in view).
+ * The Slaves CEO's coffee chore (`MoveDef.task`): a window over the belt and the sleeve (the enemy, its move bar and your ability stay in view).
  * It only draws `Combat.chore` and sends the hand's moves to `Combat.coffee`; coins and the things on the tray can be dragged to their place or just tapped.
  */
 export function createTaskWindow(v: CombatView): { render(): void } {

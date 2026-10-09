@@ -1455,8 +1455,6 @@ const it: Record<EnKey, string> = {
   'enemy.microwave.name': 'Microonde in Sala Pausa',
   'enemy.witheredFicus.name': 'Ficus Appassito',
   'enemy.coffeeMachine.name': 'Macchinetta del caffè',
-  'enemy.coffeeMachine.order': 'Un caffè per il Capo. Subito. Solo moneta esatta.',
-  'enemy.coffeeMachine.calm': 'Ding! Un Capo felice.',
   'enemy.sushiChef.name': 'Lo Chef di Sushi',
   'enemy.graveyardIntern.name': 'Stagista Sfruttato',
   'enemy.rateLimiter.name': 'Limitatore di Frequenza',
@@ -1472,6 +1470,8 @@ const it: Record<EnKey, string> = {
   'enemy.snitch.speech': 'Basta, lo dico al boss!',
   'enemy.slavesCeo.half': 'Ferma il tuo nastro per {$slavesStall}s.',
   'enemy.slavesCeo.speech': "Tutti fermi. È un'emergenza.",
+  'enemy.slavesCeo.order': 'Un caffè. Subito. Solo moneta esatta.',
+  'enemy.slavesCeo.calm': 'Ding! Un Capo felice.',
 
   'move.snitchesGetStitches': 'Chi Fa la Spia Paga',
   'move.ratOut': 'Soffiata',

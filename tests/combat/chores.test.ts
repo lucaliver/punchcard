@@ -6,12 +6,14 @@ import { CONFIG } from '../../src/data/config';
 import { ENEMIES } from '../../src/data/enemies';
 import { setup, run, coffeeOf, shellsOf } from './helpers';
 
+const COFFEE_MOVE = ENEMIES.slavesCeo.specials.find((m) => m.task === 'coffee')!;
+
 describe("the Boss's coffee", () => {
   /** The machine's coffee move is up first, then it idles for good. */
   const coffeeFight = (): Combat => {
     const idle = { id: 'wait', intent: 'idle', windup: 9999 } as const;
     const c = setup({
-      enemy: { ...ENEMIES.coffeeMachine, main: idle, specials: [ENEMIES.coffeeMachine.specials[0]], every: 1 },
+      enemy: { ...ENEMIES.slavesCeo, main: idle, specials: [COFFEE_MOVE], every: 1 },
       hp: 80,
       maxHp: 80,
     });
@@ -61,7 +63,7 @@ describe("the Boss's coffee", () => {
     expect(c.hero.hp).toBe(80);
     expect(c.has('enemy', 'stun')).toBe(true);
     expect(phases).toEqual(['open', 'wrong', 'done']);
-    expect(said).toEqual(['enemy.coffeeMachine.order', 'enemy.coffeeMachine.calm']);
+    expect(said).toEqual(['enemy.slavesCeo.order', 'enemy.slavesCeo.calm']);
     expect(c.isCovered(uid)).toBe(false);
   });
 
@@ -81,7 +83,7 @@ describe("the Boss's coffee", () => {
     for (let i = 0; i < 10; i++) c.coffee({ kind: 'key', key: wrong });
     expect(task.fined).toBe(CONFIG.coffee.penaltyMax);
     expect(task.keysDone).toBe(0);
-    run(c, ENEMIES.coffeeMachine.specials[0].windup);
+    run(c, COFFEE_MOVE.windup);
     expect(c.hero.hp).toBeLessThan(80);
     expect(phases).toContain('close');
     expect(phases.filter((x) => x === 'wrong')).toHaveLength(11);

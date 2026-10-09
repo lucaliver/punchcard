@@ -1433,8 +1433,6 @@ const zh: Record<EnKey, string> = {
   'enemy.microwave.name': '休息室微波炉',
   'enemy.witheredFicus.name': '枯萎的榕树',
   'enemy.coffeeMachine.name': '咖啡机',
-  'enemy.coffeeMachine.order': '给老板来杯咖啡。现在。只收零钱，不找零。',
-  'enemy.coffeeMachine.calm': '叮！老板开心了。',
   'enemy.sushiChef.name': '寿司主厨',
   'enemy.graveyardIntern.name': '墓地实习生',
   'enemy.rateLimiter.name': '限流器',
@@ -1450,6 +1448,8 @@ const zh: Record<EnKey, string> = {
   'enemy.snitch.speech': '够了，我要去告诉老板！',
   'enemy.slavesCeo.half': '让你的传送带停住 {$slavesStall} 秒。',
   'enemy.slavesCeo.speech': '所有人停下。这是紧急情况。',
+  'enemy.slavesCeo.order': '来杯咖啡。现在。只收零钱，不找零。',
+  'enemy.slavesCeo.calm': '叮！老板开心了。',
 
   'move.snitchesGetStitches': '告密者没好下场',
   'move.ratOut': '出卖',

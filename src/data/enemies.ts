@@ -255,6 +255,8 @@ const defs: EnemyDef[] = [
           { id: 'deadline', n: 1, to: 'belt' },
         ],
       },
+      // The Boss wants his coffee now: a window covers your belt and sleeve with the machine's coin slot, keypad and cup bay. Do the chore before the move lands, and the move is off.
+      { id: 'getBossCoffee', intent: 'charge', windup: GET_COFFEE, dmg: 16, task: 'coffee' },
       { id: 'crunchTime', intent: 'debuff', windup: 5, status: [{ id: 'crunch', t: 10, target: 'hero' }] },
       atk('youreFired', 24, 12, { intent: 'charge' }),
     ],
@@ -702,7 +704,6 @@ const defs: EnemyDef[] = [
     ruleBreaker: true,
   },
   {
-    // The Boss wants his coffee now: a window covers your belt and sleeve with the machine's coin slot, keypad and cup bay. Do the chore before the move lands, and the move is off.
     id: 'coffeeMachine',
     act: 2,
     tier: 'normal',
@@ -710,11 +711,7 @@ const defs: EnemyDef[] = [
     art: 'coffeeMachine',
     main: atk('steamBlast', 7, 6, ramp),
     every: 2,
-    specials: [
-      { id: 'getBossCoffee', intent: 'charge', windup: GET_COFFEE, dmg: 16, task: 'coffee' },
-      atk('scaldingHot', 14, 9, { intent: 'charge' }),
-    ],
-    ruleBreaker: true,
+    specials: [atk('scaldingHot', 14, 9, { intent: 'charge' })],
   },
   {
     // Her song ties your hands and the belt keeps running: for a few seconds your cards play themselves, for free, wanted or not.

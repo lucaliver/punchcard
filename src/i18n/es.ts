@@ -1450,8 +1450,6 @@ const es: Record<EnKey, string> = {
   'enemy.microwave.name': 'Microondas de la sala de descanso',
   'enemy.witheredFicus.name': 'Ficus marchito',
   'enemy.coffeeMachine.name': 'Máquina de café',
-  'enemy.coffeeMachine.order': 'Un café para el Jefe. Ya. Solo cambio exacto.',
-  'enemy.coffeeMachine.calm': '¡Ding! Un Jefe feliz.',
   'enemy.sushiChef.name': 'Chef de Sushi',
   'enemy.graveyardIntern.name': 'Becario del cementerio',
   'enemy.rateLimiter.name': 'Limitador de tasa',
@@ -1467,6 +1465,8 @@ const es: Record<EnKey, string> = {
   'enemy.snitch.speech': '¡Se acabó, se lo digo al jefe!',
   'enemy.slavesCeo.half': 'Detiene tu cinta durante {$slavesStall}s.',
   'enemy.slavesCeo.speech': 'Todos quietos. Esto es una emergencia.',
+  'enemy.slavesCeo.order': 'Un café. Ya. Solo cambio exacto.',
+  'enemy.slavesCeo.calm': '¡Ding! Un Jefe feliz.',
 
   'move.snitchesGetStitches': 'Los chivatos acaban mal',
   'move.ratOut': 'Delatar',

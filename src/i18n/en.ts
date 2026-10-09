@@ -1442,8 +1442,6 @@ const en = {
   'enemy.microwave.name': 'Break Room Microwave',
   'enemy.witheredFicus.name': 'Withered Ficus',
   'enemy.coffeeMachine.name': 'Coffee Machine',
-  'enemy.coffeeMachine.order': 'One coffee for the Boss. Now. Exact change only.',
-  'enemy.coffeeMachine.calm': 'Ding! One happy Boss.',
   'enemy.sushiChef.name': 'Sushi Chef',
   'enemy.graveyardIntern.name': 'Graveyard Intern',
   'enemy.rateLimiter.name': 'Rate Limiter',
@@ -1459,6 +1457,8 @@ const en = {
   'enemy.snitch.speech': "That's it, I'm telling the boss!",
   'enemy.slavesCeo.half': 'Stops your belt for {$slavesStall}s.',
   'enemy.slavesCeo.speech': 'Everybody stop. This is an emergency.',
+  'enemy.slavesCeo.order': 'One coffee. Now. Exact change only.',
+  'enemy.slavesCeo.calm': 'Ding! One happy Boss.',
 
   'move.snitchesGetStitches': 'Snitches Get Stitches',
   'move.ratOut': 'Rat Out',

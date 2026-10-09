@@ -694,12 +694,12 @@ test("the Boss's coffee: a chore window covers the belt and the sleeve; pay, key
   const problems = await freshGame(page);
   await page.getByRole('button', { name: /debug/i }).click();
   await page.locator('.debug-tabs button').last().click();
-  await page.locator('.debug-foe[data-enemy="coffeeMachine"]').click();
+  await page.locator('.debug-foe[data-enemy="slavesCeo"]').click();
   await expect(page.locator('.combat')).toBeVisible();
   const start = page.locator('.js-start');
   if (await start.count()) await start.click();
   await expect.poll(() => combat(page, 'return c.intro <= 0;')).toBe(true);
-  // Hurry the machine to its coffee move.
+  // Hurry the boss to its coffee move.
   await combat(page, 'while (!c.enemy.move.task) c.skipEnemyMove();');
   const win = page.locator('.task-window.on');
   await expect(win).toBeVisible();
