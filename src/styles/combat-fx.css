@@ -110,14 +110,6 @@
 .floater.hurt { --splat: var(--splat-hurt); }
 .floater.k-poison { --splat: var(--tone-toxic); }
 .floater.k-burn { --splat: var(--splat-burn); }
-/* burn: a flame-shaped blot with no drips, so fire reads differently from blood */
-.floater.k-burn::before {
-  clip-path: polygon(
-    0 70%, 10% 40%, 18% 55%, 28% 18%, 38% 42%, 50% 0, 62% 40%, 72% 14%, 82% 50%, 90% 30%, 100% 68%,
-    90% 100%, 10% 100%
-  );
-}
-.floater.k-burn::after { display: none; }
 .floater.dmg::before,
 .floater.hurt::before {
   content: '';
@@ -144,6 +136,26 @@
   background: var(--splat);
   opacity: 0.82;
   box-shadow: 16px -2px 0 var(--splat), 16px 4px 0 var(--splat), 30px -4px 0 0 var(--splat);
+}
+/* burn: the number sits in a flame (an orange outer tongue-shape and a yellow core) with no drips, so fire reads differently from blood */
+.floater.k-burn::before,
+.floater.k-burn::after {
+  clip-path: polygon(
+    50% 0, 59% 20%, 70% 8%, 77% 34%, 91% 44%, 100% 70%, 92% 90%, 70% 100%, 30% 100%, 8% 90%, 0 70%, 9% 44%, 23% 34%, 30% 8%, 41% 20%
+  );
+}
+.floater.k-burn::before { inset: -30px -10px -6px; }
+.floater.k-burn::after {
+  /* the yellow core: a smaller flame inside the outer one */
+  left: 14%;
+  right: 14%;
+  top: -12px;
+  bottom: -2px;
+  width: auto;
+  height: auto;
+  background: var(--y);
+  opacity: 0.9;
+  box-shadow: none;
 }
 /* damage on the enemy lingers on the sprite long enough to be read, then drifts up and fades */
 .floater.dmg { z-index: 3; animation: floatslow 1.5s steps(15) forwards; }
