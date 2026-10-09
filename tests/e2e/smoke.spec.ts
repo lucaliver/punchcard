@@ -917,9 +917,9 @@ test('tapping the hero portrait in a fight shows the deck in play and pauses', a
   await freshGame(page);
   await startFight(page);
   await page.locator('.hero-portrait').click();
-  // The warrior's 18-card deck, identical copies grouped (the upgraded Punch and Hard Hat stand apart).
+  // The warrior's 18-card deck, identical copies grouped (the upgraded Punch and Hard Hat and the Innate Coffee stand apart).
   await expect(page.locator('.modal h2')).toContainText('18');
-  await expect(page.locator('.modal .deck-grid .card')).toHaveCount(6);
+  await expect(page.locator('.modal .deck-grid .card')).toHaveCount(7);
   const clock = () => page.evaluate('window.__combat.time');
   const before = await clock();
   await page.waitForTimeout(300);

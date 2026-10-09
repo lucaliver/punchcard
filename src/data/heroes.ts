@@ -4,10 +4,17 @@ import type { HeroDef, HeroId } from '../game/types';
 
 const rep = (id: string, n: number): string[] => new Array(n).fill(id);
 
-/** The starter deck as cards: one copy of each `startUpgraded` id starts upgraded. */
-export function starterCards(hero: HeroDef): { id: string; up: boolean }[] {
+/** A perk one copy of a card starts with in every starter deck: the first Coffee is Innate, so the mana grows from the first seconds. */
+const STARTER_PERKS: Record<string, string> = { coffee: 'fastTrack' };
+
+/** The starter deck as cards: one copy of each `startUpgraded` id starts upgraded, one of each `STARTER_PERKS` id starts with its perk. */
+export function starterCards(hero: HeroDef): { id: string; up: boolean; perks?: string[] }[] {
   const pending = new Set(hero.startUpgraded);
-  return hero.startDeck.map((id) => ({ id, up: pending.delete(id) }));
+  const perked = new Set(Object.keys(STARTER_PERKS));
+  return hero.startDeck.map((id) => {
+    const card = { id, up: pending.delete(id) };
+    return perked.delete(id) ? { ...card, perks: [STARTER_PERKS[id]] } : card;
+  });
 }
 /** Thick Skin (Warrior passive): Block under this much fades this many times slower. */
 export const THICK_SKIN = { below: 15, mul: 1.3 };

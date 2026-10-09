@@ -388,16 +388,23 @@ ${shadow}
 
 // Title screen props (office and factory): the time clock, a filing cabinet, a sack of money, a toxic barrel.
 const timeClock = `
-<defs>${lg('tk-m', '#9ab8f0', '#1c4fb0')}${lg('tk-g', '#ffe45a', '#d09a20')}</defs>
 ${shadow}
-<rect x="40" y="16" width="120" height="164" rx="6" fill="url(#tk-m)" ${OUT}/>
-<circle cx="100" cy="66" r="36" fill="#f6f0e4" stroke="url(#tk-g)" stroke-width="8"/>
-<path d="M100 66V44M100 66l18 10" stroke="#1b1830" stroke-width="7" stroke-linecap="round"/>
-<g fill="#1b1830"><rect x="97" y="34" width="6" height="6"/><rect x="97" y="92" width="6" height="6"/><rect x="68" y="63" width="6" height="6"/><rect x="126" y="63" width="6" height="6"/></g>
-<rect x="80" y="112" width="40" height="36" fill="#f6f0e4" ${OUT}/>
-<g fill="#ff3d9a"><rect x="86" y="118" width="6" height="6"/><rect x="100" y="128" width="6" height="6"/><rect x="108" y="118" width="6" height="6"/></g>
-<rect x="58" y="146" width="84" height="12" fill="#1b1830"/>
-<rect x="160" y="76" width="16" height="44" fill="url(#tk-g)" ${OUT}/>`;
+<!-- body: a blue clock-in box with a yellow header and a hard pink shadow -->
+<rect x="52" y="28" width="112" height="156" fill="#ff3d9a" ${OUT}/>
+<rect x="44" y="20" width="112" height="156" fill="#1c5fd0" ${OUT}/>
+<rect x="44" y="20" width="112" height="22" fill="#ffd900" ${OUT}/>
+<g fill="#120e18"><rect x="54" y="28" width="34" height="6"/><rect x="132" y="28" width="12" height="6"/></g>
+<!-- dial -->
+<circle cx="100" cy="82" r="32" fill="#f6f0e4" ${OUT}/>
+<g fill="#120e18"><rect x="97" y="54" width="6" height="8"/><rect x="97" y="102" width="6" height="8"/><rect x="72" y="79" width="8" height="6"/><rect x="120" y="79" width="8" height="6"/></g>
+<path d="M100 82V64M100 82l14 8" stroke="#120e18" stroke-width="6" stroke-linecap="square"/><rect x="96" y="78" width="8" height="8" fill="#ff3d9a" ${OUT}/>
+<!-- card slot with a time card sticking out -->
+<rect x="68" y="124" width="64" height="12" fill="#120e18" ${OUT}/>
+<rect x="76" y="130" width="48" height="38" fill="#f6f0e4" ${OUT}/><rect x="76" y="130" width="48" height="8" fill="#ffd900"/><path d="M84 148h32M84 156h20" stroke="#1c5fd0" stroke-width="4"/>
+<!-- lamps -->
+<rect x="52" y="150" width="14" height="14" fill="#ff3d9a" ${OUT}/><rect x="134" y="150" width="14" height="14" fill="#ffd900" ${OUT}/>
+<!-- feet -->
+<rect x="56" y="176" width="20" height="10" fill="#120e18"/><rect x="124" y="176" width="20" height="10" fill="#120e18"/>`;
 
 /** Office Chair: a gaming office chair come alive, an angry face on the backrest, RGB stripes, armrests like fists and five yellow casters. */
 const officeChair = `

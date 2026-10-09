@@ -80,7 +80,7 @@ export function combatScreen(run: RunState, combat: Combat, cb: CombatCallbacks)
   const taskWindow = createTaskWindow(v);
 
   /** The time card on the belt: stamped IN as the fight starts (then it leaves), OUT when it's won (it stays). */
-  const timeCard = (kind: 'in' | 'out', time: string): void => {
+  const timeCard = (kind: 'in' | 'out', time: string, done?: () => void): void => {
     const card = h(
       'div',
       { class: `timecard ${kind}` },
@@ -89,7 +89,9 @@ export function combatScreen(run: RunState, combat: Combat, cb: CombatCallbacks)
       h('div', { class: 'tc-stamp' }, t(kind === 'in' ? 'combat.clockIn' : 'combat.clockOut', { time })),
     );
     card.addEventListener('animationend', (e) => {
-      if (e.target === card && kind === 'in') card.remove();
+      if (e.target !== card || kind !== 'in') return;
+      card.remove();
+      done?.();
     });
     r.belt.append(card);
     sfx('punchClock');
@@ -424,7 +426,7 @@ export function combatScreen(run: RunState, combat: Combat, cb: CombatCallbacks)
   /** A boss walks in with a title card: two bars slam across the screen, its name stamped between them, and the room shakes. */
   /** A normal enemy walks in: its shadow grows on the floor first, then it drops in and lands (a boss has its own card). */
   const enterScene = (): void => {
-    r.stage.classList.add('entering');
+    r.stage.classList.replace('unseen', 'entering');
     // Class off when done, or it would outrank the idle bob and the death throes later.
     r.enemyArt.addEventListener(
       'animationend',
@@ -576,11 +578,10 @@ export function combatScreen(run: RunState, combat: Combat, cb: CombatCallbacks)
         if (e.target !== door) return;
         door.remove();
         if (combat.enemy.def.tier === 'boss') bossIntro();
-        else {
-          enterScene();
-          if (!settings.seenTutorial) firstFightTour();
-        }
+        else if (!settings.seenTutorial) firstFightTour();
       });
+      // A normal enemy stays out of sight until the clock-in is stamped, then walks in.
+      if (combat.enemy.def.tier !== 'boss') r.stage.classList.add('unseen');
       el.append(door);
       // The sound is the knocking: it waits while the name is read.
       later(() => sfx(actDef(combat.enemy.def.act).door), cssMs('--dur-door-read'));
@@ -608,12 +609,15 @@ export function combatScreen(run: RunState, combat: Combat, cb: CombatCallbacks)
       startWrap.querySelector('button')!.addEventListener('click', () => {
         startWrap.remove();
         traitsEl?.remove();
-        state.waiting = false;
-        syncPause();
         sfx('button');
         haptic('tap');
-        v.banner(t('combat.fight'));
-        timeCard('in', clockText(clockAt(run, currentNode(run))));
+        // The clock-in is stamped first; once it is away the fight runs and a normal enemy walks in.
+        timeCard('in', clockText(clockAt(run, currentNode(run))), () => {
+          state.waiting = false;
+          syncPause();
+          v.banner(t('combat.fight'));
+          if (combat.enemy.def.tier !== 'boss') enterScene();
+        });
       });
       // Centred on the belt: the enemy, the threat bar and the hero stay readable.
       r.belt.append(startWrap);

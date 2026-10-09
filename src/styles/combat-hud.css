@@ -363,9 +363,9 @@
   50% { background: var(--hit-tint); }
 }
 /* one-shot reactions on the frame: a rim of ink in the colour of what happened */
-.hero-portrait.shielded { animation: p-rim 0.4s steps(4); --rim: var(--b); }
-.hero-portrait.healed { animation: p-rim 0.5s steps(5); --rim: var(--mint); }
-.hero-portrait.buffed { animation: p-rim 0.45s steps(3); --rim: var(--y); }
+.hero-portrait.shielded { animation: p-rim 0.4s steps(4); --rim: var(--shield); }
+.hero-portrait.healed { animation: p-rim 0.5s steps(5); --rim: var(--p); }
+.hero-portrait.buffed { animation: p-rim 0.45s steps(3); --rim: var(--tone, var(--y)); }
 .hero-portrait.casting { animation: p-rim 0.5s steps(4); --rim: var(--hero-ink, var(--y)); }
 .hero-portrait.parried { animation: p-parry 0.3s steps(3); }
 @keyframes p-rim {

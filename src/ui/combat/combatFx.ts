@@ -159,7 +159,11 @@ export function bindCombatFx(v: CombatView, cards: CardLayer, onEnd: (result: 'w
         floatText(p.x, p.y - 36, statusName(e.id, e.target), 'status').dataset.tone = def.tone;
         sfx(def.good ? 'status' : 'debuff');
         if (def.burst) burst(def.burst.kind, p.x, p.y, def.burst.n);
-        if (def.good && !def.passive) v.retrigger(e.target === 'enemy' ? r.enemyArt : r.portrait, 'buffed');
+        if (def.good && !def.passive) {
+          const who = e.target === 'enemy' ? r.enemyArt : r.portrait;
+          who.dataset.tone = def.tone;
+          v.retrigger(who, 'buffed');
+        }
         break;
       }
       case 'text': {

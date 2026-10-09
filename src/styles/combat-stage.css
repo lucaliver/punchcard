@@ -214,6 +214,8 @@
   0% { translate: -2px 0; }
   50% { translate: 2px 5px; scale: 1.04 0.93; }
 }
+/* before its entrance (after the clock-in) a normal enemy is not on stage yet */
+.stage.unseen .enemy-art, .stage.unseen .shade { visibility: hidden; }
 /* a normal enemy walks in: its shadow grows on the floor, then it drops in, squashes on landing and settles */
 .stage.entering .shade { animation: shade-in var(--dur-enter) steps(6) both; }
 @keyframes shade-in {
@@ -232,18 +234,18 @@
 /* one-shot reactions on the wrapper (retriggered from combatFx): a rim of ink in the colour of what happened, as `rage` does */
 .enemy-art.shielded { animation: shield-up 0.4s steps(4); }
 @keyframes shield-up {
-  0%, 50% { filter: drop-shadow(3px 0 0 var(--b)) drop-shadow(-3px 0 0 var(--b)) drop-shadow(0 3px 0 var(--b)) drop-shadow(0 -3px 0 var(--b)); scale: 1.04; }
+  0%, 50% { filter: drop-shadow(3px 0 0 var(--shield)) drop-shadow(-3px 0 0 var(--shield)) drop-shadow(0 3px 0 var(--shield)) drop-shadow(0 -3px 0 var(--shield)); scale: 1.04; }
   25%, 75% { filter: none; scale: 1; }
 }
 .enemy-art.healed { animation: healed 0.5s steps(5); }
 @keyframes healed {
-  0%, 40% { filter: drop-shadow(3px 0 0 var(--mint)) drop-shadow(-3px 0 0 var(--mint)); translate: 0 -8px; }
+  0%, 40% { filter: drop-shadow(3px 0 0 var(--p)) drop-shadow(-3px 0 0 var(--p)); translate: 0 -8px; }
   20%, 60% { filter: none; translate: 0 -4px; }
   100% { filter: none; translate: 0 0; }
 }
 .enemy-art.buffed { animation: buffed 0.45s steps(3); }
 @keyframes buffed {
-  0%, 66% { filter: drop-shadow(3px 0 0 var(--y)) drop-shadow(-3px 0 0 var(--y)) drop-shadow(0 -3px 0 var(--y)); scale: 1.12; }
+  0%, 66% { filter: drop-shadow(3px 0 0 var(--tone, var(--y))) drop-shadow(-3px 0 0 var(--tone, var(--y))) drop-shadow(0 -3px 0 var(--tone, var(--y))); scale: 1.12; }
   33% { filter: none; scale: 1.06; }
   100% { filter: none; scale: 1; }
 }
