@@ -2,10 +2,11 @@ import { getLocale, t } from '../../core/i18n';
 import { sfx } from '../../audio/sfx';
 import { COFFEE_ITEMS, type CoffeeItem } from '../../data/coffee';
 import { CONFIG } from '../../data/config';
-import type { CoffeeAction, CoffeePhase, CoffeeResult, CoffeeTask } from '../../game/coffee';
+import { CoffeeTask, type CoffeeAction, type CoffeePhase, type CoffeeResult } from '../../game/coffee';
 import { icon } from '../art/icons';
 import { h, retrigger, setText, toggle } from '../dom';
 import { haptic } from '../fx/fx';
+import { createTaskFrame } from './taskFrame';
 import type { CombatView } from './view';
 
 /** Pixels a touch has to travel before it counts as a drag and not a tap. */
@@ -16,8 +17,6 @@ const DROP_SLACK = 14;
 const FILL_STEPS = 20;
 /** Sparks that fly off the served cup. */
 const SPARKS = 8;
-/** Frames after which a window that is leaving is closed even if its animation never ended. */
-const LEAVE_FRAMES = 90;
 /** The window's four steps, in order (the pour and the served cup are still the fourth). */
 const STEPS: Record<CoffeePhase, number> = { coins: 1, code: 2, place: 3, sugar: 4, brew: 4, done: 4 };
 const STEP_COUNT = 4;
@@ -32,14 +31,13 @@ const PAD = Array.from({ length: CONFIG.coffee.keys }, (_, i) => i + 1);
 
 /**
  * The Coffee Machine's chore (`MoveDef.task`): a window over the belt and the sleeve (the enemy, its move bar and your ability stay in view).
- * It only draws `Combat.task` and sends the hand's moves to `Combat.coffee`; coins and the things on the tray can be dragged to their place or just tapped.
+ * It only draws `Combat.chore` and sends the hand's moves to `Combat.coffee`; coins and the things on the tray can be dragged to their place or just tapped.
  */
 export function createTaskWindow(v: CombatView): { render(): void } {
-  const { combat, state, r } = v;
-  const el = h('div', { class: 'task-window', role: 'dialog', 'aria-label': t('task.coffee.title') });
-  el.innerHTML = `
-    <div class="tk-bar"><span>${t('task.coffee.title')}</span><b class="tk-step"></b></div>
-    <div class="tk-body">
+  const { combat, state } = v;
+  const frame = createTaskFrame(v, {
+    title: t('task.coffee.title'),
+    body: `
       <div class="tk-note">
         <small>${t('task.coffee.order')}</small>
         <b class="tk-drink"></b>
@@ -50,10 +48,9 @@ export function createTaskWindow(v: CombatView): { render(): void } {
       <div class="tk-machine">
         <div class="tk-lcd"><span class="tk-msg"></span><b class="tk-val"></b></div>
         <div class="tk-stage"></div>
-      </div>
-    </div>`;
-  v.el.append(el);
-  const q = <T extends HTMLElement>(sel: string): T => el.querySelector<T>(sel)!;
+      </div>`,
+  });
+  const { el, q } = frame;
   const refs = {
     step: q('.tk-step'),
     drink: q('.tk-drink'),
@@ -74,23 +71,6 @@ export function createTaskWindow(v: CombatView): { render(): void } {
   let spot: HTMLElement | null = null;
   let dialNum: HTMLElement | null = null;
   let glass: HTMLElement | null = null;
-
-  /** Whether the window is up, whether the last cup was served, and whether it is on its way out. */
-  let on = false;
-  let served = false;
-  let leaving = false;
-  let leaveFrames = 0;
-  const hide = (): void => {
-    on = false;
-    served = false;
-    leaving = false;
-    el.classList.remove('leaving', 'served');
-    toggle(el, 'on', false);
-    toggle(v.el, 'tasking', false);
-  };
-  el.addEventListener('animationend', (ev) => {
-    if (ev.target === el && leaving) hide();
-  });
 
   const blocked = (): boolean => state.paused || state.waiting || state.ended;
   const send = (a: CoffeeAction, from: HTMLElement): CoffeeResult | null => {
@@ -257,7 +237,7 @@ export function createTaskWindow(v: CombatView): { render(): void } {
       refs.sugar.textContent = t('task.coffee.sugar', { n: task.sugar });
       refs.pay.textContent = t('task.coffee.pay', { n: money(task.price) });
       refs.code.textContent = t('task.coffee.code', { code: task.code.join('-') });
-      place();
+      frame.place();
     }
     if (built === task.phase) return;
     const was = built;
@@ -271,49 +251,14 @@ export function createTaskWindow(v: CombatView): { render(): void } {
     if (task.phase === 'done') sfx('served');
   };
 
-  /**
-   * The window covers the belt, the mana bar and the sleeve; the ability button stays on top of its corner and the stage keeps clear of it
-   * (the layout doesn't move mid-fight, so this is measured when the window opens).
-   */
-  const place = (): void => {
-    const base = v.el.getBoundingClientRect();
-    const ability = r.ability.getBoundingClientRect();
-    const bottom = Math.max(ability.bottom, r.sleeve.getBoundingClientRect().bottom);
-    el.style.top = `${Math.round(r.belt.getBoundingClientRect().top - base.top)}px`;
-    el.style.bottom = `${Math.round(base.bottom - bottom)}px`;
-    el.style.setProperty('--tk-gap', `${Math.round(base.right - ability.left)}px`);
-  };
-
   return {
     render() {
-      const task = combat.isOver ? null : combat.task;
-      if (!task) {
+      const task = !combat.isOver && combat.chore instanceof CoffeeTask ? combat.chore : null;
+      if (!frame.sync(!!task, task?.phase === 'done') || !task) {
         shown = null;
         built = null;
-        // A served cup sends the window off with an animation (the engine has let go of the belt already); anything else closes it at once.
-        if (on && !leaving) {
-          if (served && !combat.isOver) {
-            leaving = true;
-            leaveFrames = 0;
-            el.classList.add('leaving');
-          } else hide();
-        }
-        // The animation's end closes it; this is only for a tab whose animations don't run.
-        else if (leaving && ++leaveFrames > LEAVE_FRAMES) hide();
         return;
       }
-      if (leaving) {
-        leaving = false;
-        el.classList.remove('leaving');
-      }
-      if (!on) {
-        on = true;
-        toggle(el, 'on', true);
-        toggle(v.el, 'tasking', true);
-        retrigger(el, 'entering');
-      }
-      served = task.phase === 'done';
-      toggle(el, 'served', served);
       sync(task);
       const phase = task.phase;
       setText(refs.step, `${STEPS[phase]}/${STEP_COUNT}`);

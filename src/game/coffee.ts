@@ -37,6 +37,7 @@ const fewest = (values: number[], sum: number): number =>
  * Pure state, driven by `Combat.coffee` (which turns a `wrong` into lost seconds) and ticked by simulated time.
  */
 export class CoffeeTask {
+  readonly id = 'coffee' as const;
   phase: CoffeePhase = 'coins';
   readonly drink: CoffeeDrink;
   readonly sugar: number;

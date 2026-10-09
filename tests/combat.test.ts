@@ -1,6 +1,7 @@
 import { describe, expect, it } from 'vitest';
 import { Combat, type CombatSetup } from '../src/game/combat';
 import { CoffeeTask } from '../src/game/coffee';
+import { ShellGame } from '../src/game/shells';
 import { Rng } from '../src/core/rng';
 import { ANCHOR_POS, CONFIG, EXPIRE_POS, relicGuarantee, rewardUpgradeChance } from '../src/data/config';
 import { ENEMIES, enemiesFor } from '../src/data/enemies';
@@ -43,6 +44,16 @@ import {
   vendingCost,
 } from '../src/game/run';
 import type { CardInst } from '../src/game/types';
+
+/** The coffee chore or the shell game the fight has set now (a test that finds another, or none, fails here). */
+const coffeeOf = (c: Combat): CoffeeTask => {
+  expect(c.chore).toBeInstanceOf(CoffeeTask);
+  return c.chore as CoffeeTask;
+};
+const shellsOf = (c: Combat): ShellGame => {
+  expect(c.chore).toBeInstanceOf(ShellGame);
+  return c.chore as ShellGame;
+};
 
 const deckOf = (ids: string[]): CardInst[] => ids.map((id, i) => ({ uid: i + 1, id, up: false }));
 
@@ -705,12 +716,12 @@ describe('combat engine', () => {
     };
     /** Puts in coins the slot takes until the price is paid. */
     const pay = (c: Combat): void => {
-      const task = c.task!;
+      const task = coffeeOf(c);
       while (task.phase === 'coins') c.coffee({ kind: 'coin', id: task.coins.find((x) => !x.used && task.fits(x))!.id });
     };
     /** Does the whole chore with the right moves, up to pressing start (the fork on the tray is a mistake: it costs seconds). */
     const doChore = (c: Combat): void => {
-      const task = c.task!;
+      const task = coffeeOf(c);
       pay(c);
       for (const key of task.code) expect(c.coffee({ kind: 'key', key })).toBe('ok');
       expect(c.coffee({ kind: 'item', item: 'fork' })).toBe('wrong');
@@ -728,9 +739,9 @@ describe('combat engine', () => {
         if (e.type === 'task') phases.push(e.phase);
         if (e.type === 'speech') said.push(e.key);
       });
-      expect(c.task).toBeNull();
+      expect(c.chore).toBeNull();
       run(c, CONFIG.introTime + 0.1);
-      expect(c.task?.phase).toBe('coins');
+      expect(c.chore?.phase).toBe('coins');
       const uid = c.belt[0].card.uid;
       expect(c.isCovered(uid)).toBe(true);
       expect(c.playCard(uid)).toBe(false);
@@ -740,9 +751,9 @@ describe('combat engine', () => {
       expect(c.coffee({ kind: 'start' })).toBe('ignored');
       expect(c.enemy.timer).toBe(before);
       doChore(c);
-      expect(c.task?.phase).toBe('brew');
+      expect(c.chore?.phase).toBe('brew');
       run(c, CONFIG.coffee.brewTime + CONFIG.coffee.doneHold + 0.1);
-      expect(c.task).toBeNull();
+      expect(c.chore).toBeNull();
       expect(c.hero.hp).toBe(80);
       expect(c.has('enemy', 'stun')).toBe(true);
       expect(phases).toEqual(['open', 'wrong', 'done']);
@@ -757,7 +768,7 @@ describe('combat engine', () => {
         if (e.type === 'task') phases.push(e.phase);
       });
       run(c, CONFIG.introTime + 0.1);
-      const task = c.task!;
+      const task = coffeeOf(c);
       pay(c);
       const wrong = (task.code[0] % CONFIG.coffee.keys) + 1;
       const t0 = c.enemy.timer;
@@ -3240,7 +3251,7 @@ describe('act 3 elites and boss', () => {
     };
     /** Runs until the cards have been shuffled and wait for a pick. */
     const untilPick = (c: Combat): void => {
-      for (let i = 0; i < 60 * 30 && c.shells?.phase !== 'pick'; i++) c.tick(1 / 60);
+      for (let i = 0; i < 60 * 30 && c.chore?.phase !== 'pick'; i++) c.tick(1 / 60);
     };
 
     it('a window covers the belt and the sleeve; the right card in time cancels the move and stuns the Board', () => {
@@ -3250,7 +3261,7 @@ describe('act 3 elites and boss', () => {
         if (e.type === 'speech') said.push(e.key);
       });
       run(c, CONFIG.introTime + 0.1);
-      const game = c.shells!;
+      const game = shellsOf(c);
       expect(game.phase).toBe('show');
       expect(c.isCovered(c.belt[0].card.uid)).toBe(true);
       expect(c.pickShell(0)).toBe('ignored');
@@ -3258,7 +3269,7 @@ describe('act 3 elites and boss', () => {
       expect([...game.slots].sort()).toEqual([0, 1, 2]);
       expect(c.pickShell(game.prizePlace)).toBe('ok');
       run(c, CONFIG.shells.doneHold + 0.1);
-      expect(c.shells).toBeNull();
+      expect(c.chore).toBeNull();
       expect(c.hero.hp).toBe(80);
       expect(c.has('enemy', 'stun')).toBe(true);
       expect(said).toEqual(['enemy.theBoard.order', 'enemy.theBoard.calm']);
@@ -3268,7 +3279,7 @@ describe('act 3 elites and boss', () => {
       const c = auditFight();
       run(c, CONFIG.introTime + 0.1);
       untilPick(c);
-      const game = c.shells!;
+      const game = shellsOf(c);
       const t0 = c.enemy.timer;
       expect(c.pickShell((game.prizePlace + 1) % 3)).toBe('wrong');
       expect(c.enemy.timer).toBeCloseTo(t0 + CONFIG.shells.penalty, 5);
@@ -3278,13 +3289,13 @@ describe('act 3 elites and boss', () => {
       expect(game.round).toBe(1);
       run(c, audit.windup);
       expect(c.hero.hp).toBeLessThan(80);
-      expect(c.shells).toBeNull();
+      expect(c.chore).toBeNull();
     });
 
     it('the penalty stops at its cap', () => {
       const c = auditFight({ ...audit, windup: 999 });
       run(c, CONFIG.introTime + 0.1);
-      const game = c.shells!;
+      const game = shellsOf(c);
       for (let i = 0; i < 10; i++) {
         untilPick(c);
         c.pickShell((game.prizePlace + 1) % 3);

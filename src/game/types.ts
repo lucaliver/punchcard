@@ -342,7 +342,7 @@ export interface MoveDef {
   absorb?: boolean;
   /** …and a `release` move adds everything stored to its hit. */
   release?: boolean;
-  /** A chore the hero does while the move charges: a window covers the belt and the sleeve, and doing it in time cancels the move (`Combat.task`). */
+  /** A chore the hero does while the move charges: a window covers the belt and the sleeve, and doing it in time cancels the move (`Combat.chore`). */
   task?: TaskId;
   fx?: (c: Combat) => void;
 }

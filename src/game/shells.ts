@@ -15,6 +15,7 @@ export type ShellResult = 'ok' | 'wrong' | 'ignored';
  * Pure state, driven by `Combat.pick` (which turns a `wrong` into lost seconds) and ticked by simulated time.
  */
 export class ShellGame {
+  readonly id = 'shells' as const;
   phase: ShellPhase = 'show';
   /** The card (an id from 0) that is the Pay Raise. */
   readonly prize: number;

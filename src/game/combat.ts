@@ -5,6 +5,7 @@ import { STATUSES } from '../data/statuses';
 import { CARDS, CARD_LIST, CLASS_HIT, cardCostOf, cardKeywordsOf, cardValsOf, fullCostOf, isLarge } from '../data/cards';
 import { HEXES } from '../data/hexes';
 import { HEROES } from '../data/heroes';
+import { CHORES, type Chore } from './chore';
 import { CoffeeTask, type CoffeeAction, type CoffeeResult } from './coffee';
 import { ShellGame, type ShellResult } from './shells';
 import { RELICS } from '../data/relics';
@@ -200,9 +201,7 @@ export class Combat {
   /** The enemy's window over the belt: `ask` waits for a tap, `install` is the fake progress bar (`t` seconds in). Seconds until the next one while none is up (null: not yet counted). */
   popup: { phase: 'ask' | 'install'; t: number } | null = null;
   /** The chore the enemy's move has set (`MoveDef.task`): a window covers the belt and the sleeve until it is done or the move lands. */
-  task: CoffeeTask | null = null;
-  /** Same, when the chore is the Board's shell game (`MoveDef.task` = 'shells'). */
-  shells: ShellGame | null = null;
+  chore: Chore | null = null;
   /** The chore of the move being charged has been set up already (so a finished one doesn't open again). */
   private taskSeen = false;
   private popupWait: number | null = null;
@@ -445,7 +444,7 @@ export class Combat {
 
   /** The sleeve is out of reach: sunk (`EnemyDef.deepBelt`) or under the chore window. */
   private get lowerBarred(): boolean {
-    return this.lowerHidden || !!this.task || !!this.shells;
+    return this.lowerHidden || !!this.chore;
   }
 
   /**
@@ -456,7 +455,7 @@ export class Combat {
     const b = this.belt[this.beltIndex(uid)];
     if (!b) return false;
     // The enemy's window is over the whole belt.
-    if (this.popup || this.task || this.shells) return true;
+    if (this.popup || this.chore) return true;
     return this.belt.some((w) => {
       if (w === b) return false;
       const def = CARDS[w.card.id];
@@ -709,7 +708,7 @@ export class Combat {
   private tickEnemy(dt: number): void {
     const e = this.enemy;
     // The chore is done: the move is as good as gone while the cup is held up.
-    if (this.task?.phase === 'done' || this.shells?.phase === 'done') return;
+    if (this.chore?.phase === 'done') return;
     e.timer += dt * this.enemyTimeRate();
     if (e.timer < e.move.windup) return;
     const move = e.move;
@@ -1891,7 +1890,7 @@ export class Combat {
   /** The enemy drops the move it is charging and starts on the next one of its pattern. */
   skipEnemyMove(): void {
     const e = this.enemy;
-    this.endTask(this.task || this.shells ? 'close' : undefined);
+    this.endTask(this.chore ? 'close' : undefined);
     e.timer = 0;
     e.move = this.nextEnemyMove();
     this.events.emit({ type: 'enemyIntent', move: e.move });
@@ -2028,13 +2027,12 @@ export class Combat {
       this.taskSeen = false;
       return;
     }
-    const chore = this.task ?? this.shells;
+    const chore = this.chore;
     const id = this.enemy.def.id;
     if (!chore) {
       if (this.taskSeen) return;
       this.taskSeen = true;
-      if (kind === 'coffee') this.task = new CoffeeTask(this.rng);
-      else this.shells = new ShellGame(this.rng);
+      this.chore = CHORES[kind](this.rng);
       this.events.emit({ type: 'task', phase: 'open' });
       this.say(`enemy.${id}.order`);
       return;
@@ -2050,14 +2048,14 @@ export class Combat {
 
   /** Closes the chore window (`phase` tells the UI why: the move landed, or was dropped). */
   private endTask(phase?: 'close'): void {
-    this.task = null;
-    this.shells = null;
+    this.chore = null;
     this.taskSeen = false;
     if (phase) this.events.emit({ type: 'task', phase });
   }
 
-  /** A mistake in a chore takes `c.penalty` s off the move's countdown, up to `c.penaltyMax` in all. */
-  private fine(chore: { errors: number; fined: number }, c: { penalty: number; penaltyMax: number }): void {
+  /** A mistake in a chore takes its config's `penalty` s off the move's countdown, up to `penaltyMax` in all. */
+  private fine(chore: Chore): void {
+    const c = CONFIG[chore.id];
     const cut = Math.min(c.penalty, c.penaltyMax - chore.fined);
     chore.errors++;
     chore.fined += cut;
@@ -2070,19 +2068,19 @@ export class Combat {
    * Returns null when there is no chore to do.
    */
   coffee(action: CoffeeAction): CoffeeResult | null {
-    const task = this.task;
-    if (!task || this.result || this.begging) return null;
+    const task = this.chore;
+    if (!(task instanceof CoffeeTask) || this.result || this.begging) return null;
     const r = task.act(action);
-    if (r === 'wrong') this.fine(task, CONFIG.coffee);
+    if (r === 'wrong') this.fine(task);
     return r;
   }
 
   /** The hero turns over the card in this place of the shell game; a wrong one is fined. Returns null when there is no game on. */
   pickShell(place: number): ShellResult | null {
-    const game = this.shells;
-    if (!game || this.result || this.begging) return null;
+    const game = this.chore;
+    if (!(game instanceof ShellGame) || this.result || this.begging) return null;
     const r = game.pick(place);
-    if (r === 'wrong') this.fine(game, CONFIG.shells);
+    if (r === 'wrong') this.fine(game);
     return r;
   }
 

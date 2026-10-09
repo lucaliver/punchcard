@@ -158,7 +158,7 @@ export function enemyTraits(e: EnemyDef, inFight = false): { icon: string; name:
 }
 
 /** Rules a move can bring that aren't statuses or cards, explained on a press. */
-const RULES: Record<string, { icon: string; title: TKey; desc: TKey }> = {
+export const RULES: Record<string, { icon: string; title: TKey; desc: TKey }> = {
   inflation: { icon: 'inflation', title: 'rule.inflation', desc: 'rule.inflation.d' },
   virus: { icon: 'virus', title: 'rule.virus', desc: 'rule.virus.d' },
   drain: { icon: 'drain', title: 'rule.drain', desc: 'rule.drain.d' },

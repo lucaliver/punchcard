@@ -69,10 +69,10 @@ src/
   core/        rng (seeded), emitter, i18n (typed keys), save (safe localStorage), util
   i18n/        en.ts (every player-facing string, the source), it.ts / es.ts / zh.ts (`Record<EnKey, string>`, same placeholders)
   data/        config (all tuning), acts, statuses, heroes, enemies, perks, hexes, relics, modifiers, coffee (the Coffee Machine's drinks and coins), values, cards/<class>.ts
-  game/        combat (engine), coffee and shells (the chores), run (map graph, rewards, save), meta (discoveries, unlocks, records, act stamps), settings, types
+  game/        combat (engine), chore (the shared shape of a chore) with coffee and shells, run (map graph, rewards, save), meta (discoveries, unlocks, records, act stamps), settings, types
   ui/          app (screens, modals), dom
     art/       icons (64×64), creatures (200×200), relics (200×200 stationery sprites), rooms (200×200 picture of each room, and the props of the contract screen and the studio mark: `PROP_SPRITES`), actArt (the skyline behind each act's map title, and the animated scene of its intro), riso (pixel renderer)
-    combat/    view, hud, cardLayer, mop, crank, coffeeWindow, shellWindow, combatFx, combatScreen
+    combat/    view, hud, cardLayer, mop, crank, taskFrame (the window every chore shares), coffeeWindow, shellWindow, combatFx, combatScreen
     components/ cardView, cardShow, coach, modals, memos, debugMenu, room, moveText, heroSheet, shareSlip, decor, reviewModal, runDetail
     fx/        particles, floating text, shake, haptics
     screens/   title, studio, heroSelect, journey, reward, rest, promotion, copyRoom, tailor, lostFound, vending, crossTraining, end, compendium

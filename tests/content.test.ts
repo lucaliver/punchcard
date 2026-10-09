@@ -20,7 +20,7 @@ import { VALUES } from '../src/data/values';
 import { PERK_LIST } from '../src/data/perks';
 import { STATUS_ORDER, STATUSES } from '../src/data/statuses';
 import { GLYPHS, TAG_ICON } from '../src/ui/components/cardView';
-import { moveTone } from '../src/ui/components/moveText';
+import { RULES, moveTone } from '../src/ui/components/moveText';
 import { ICONS, INTENT_ICON } from '../src/ui/art/icons';
 import { RELIC_SPRITES } from '../src/ui/art/relics';
 import { ROOM_SPRITES } from '../src/ui/art/rooms';
@@ -30,6 +30,8 @@ import { HEXES } from '../src/data/hexes';
 import { COFFEE_DRINKS, COFFEE_ITEMS } from '../src/data/coffee';
 import { MODIFIER_LIST } from '../src/data/modifiers';
 import { DEBUG_ENEMY, ENEMIES } from '../src/data/enemies';
+import { CHORES } from '../src/game/chore';
+import { Rng } from '../src/core/rng';
 import { RELIC_LIST } from '../src/data/relics';
 import { ABILITY_ICON, PASSIVE_ICON } from '../src/ui/combat/view';
 import { NODE_ICON } from '../src/ui/screens/journey';
@@ -88,6 +90,17 @@ describe('content integrity', () => {
     for (const strings of [enStrings, itStrings, esStrings, zhStrings] as Record<string, string>[])
       for (const k of keys) expect(strings[k], k).toBeTruthy();
     expect(ENEMIES.coffeeMachine.specials.some((m) => m.task === 'coffee')).toBe(true);
+  });
+
+  it('every enemy that sets a chore has a chore to make, its lines and its texts in every language', () => {
+    const chores = ENEMY_LIST.flatMap((e) => enemyMoves(e).flatMap((m) => (m.task ? [{ enemy: e.id, task: m.task }] : [])));
+    expect(new Set(chores.map((c) => c.task))).toEqual(new Set(Object.keys(CHORES)));
+    for (const { enemy, task } of chores) {
+      expect(CHORES[task](new Rng(1)).id, task).toBe(task);
+      expect(RULES[task], task).toBeTruthy();
+      for (const k of [`enemy.${enemy}.order`, `enemy.${enemy}.calm`, `task.${task}.title`, RULES[task].title, RULES[task].desc])
+        for (const strings of [enStrings, itStrings, esStrings, zhStrings] as Record<string, string>[]) expect(strings[k], k).toBeTruthy();
+    }
   });
 
   it('the handbook lists every keyword the game explains', () => {

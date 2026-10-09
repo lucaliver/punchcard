@@ -1,6 +1,8 @@
 import { Combat } from '../src/game/combat';
 import { CARDS } from '../src/data/cards';
 import { COFFEE_SERVICE } from '../src/data/coffee';
+import { CoffeeTask } from '../src/game/coffee';
+import { ShellGame } from '../src/game/shells';
 import {
   addPerk,
   advance,
@@ -56,9 +58,7 @@ const DEBUFFS = ['karoshi', 'chainSmoking', 'waterCooler', 'blackFriday', 'walko
 const TAPS_PER_SECOND = 4;
 
 /** The next right move of the Boss's coffee. */
-function botCoffee(c: Combat): void {
-  const task = c.task;
-  if (!task) return;
+function botCoffee(c: Combat, task: CoffeeTask): void {
   if (task.phase === 'coins') {
     const coin = task.coins.find((x) => !x.used && task.fits(x));
     if (coin) c.coffee({ kind: 'coin', id: coin.id });
@@ -72,13 +72,13 @@ export function botDecide(c: Combat, rnd: () => number, opts: BotOpts): void {
   if (rnd() < opts.sloppiness) return;
   if (c.abilityReady()) c.useAbility();
   // The shell game: the bot keeps its eye on the right card and picks it as soon as the cards stop.
-  if (c.shells) {
-    if (c.shells.phase === 'pick') c.pickShell(c.shells.prizePlace);
+  if (c.chore instanceof ShellGame) {
+    if (c.chore.phase === 'pick') c.pickShell(c.chore.prizePlace);
     return;
   }
   // The coffee chore: one right move per decision (a person takes a moment for each), cards are out of reach meanwhile.
-  if (c.task) {
-    botCoffee(c);
+  if (c.chore instanceof CoffeeTask) {
+    botCoffee(c, c.chore);
     return;
   }
   // The IT guy's window: it postpones it, and plays in the seconds that leaves.

@@ -716,7 +716,7 @@ test("the Boss's coffee: a chore window covers the belt and the sleeve; pay, key
   await expect(page.locator('.tk-drink')).not.toBeEmpty();
   // Step 1: coins. One goes in by a drag, the rest by taps.
   const nextCoin = (): Promise<number | null> =>
-    combat(page, "const t = c.task; return t.phase === 'coins' ? (t.coins.find((x) => !x.used && t.fits(x))?.id ?? null) : null;") as Promise<
+    combat(page, "const t = c.chore; return t.phase === 'coins' ? (t.coins.find((x) => !x.used && t.fits(x))?.id ?? null) : null;") as Promise<
       number | null
     >;
   const first = (await nextCoin())!;
@@ -726,18 +726,18 @@ test("the Boss's coffee: a chore window covers the belt and the sleeve; pay, key
   await page.mouse.down();
   await page.mouse.move(slot.x + slot.width / 2, slot.y + slot.height / 2, { steps: 6 });
   await page.mouse.up();
-  expect(await combat(page, 'return c.task.paid > 0;')).toBe(true);
+  expect(await combat(page, 'return c.chore.paid > 0;')).toBe(true);
   for (let id = await nextCoin(); id !== null; id = await nextCoin()) await page.locator('.tk-coin').nth(id).tap();
   // Step 2: the code. A wrong key costs seconds off the countdown.
   await expect(page.locator('.tk-pad')).toBeVisible();
-  const code = (await combat(page, 'return c.task.code;')) as number[];
+  const code = (await combat(page, 'return c.chore.code;')) as number[];
   const wrong = (code[0] % 9) + 1;
   const timer = (await combat(page, 'return c.enemy.timer;')) as number;
   await page
     .locator('.tk-key')
     .nth(wrong - 1)
     .tap();
-  expect(await combat(page, 'return c.task.errors;')).toBe(1);
+  expect(await combat(page, 'return c.chore.errors;')).toBe(1);
   // The window shakes and flashes but never goes away (no opacity dip).
   await page.waitForTimeout(80);
   expect(await page.evaluate(() => getComputedStyle(document.querySelector('.task-window')!).opacity)).toBe('1');
@@ -749,9 +749,9 @@ test("the Boss's coffee: a chore window covers the belt and the sleeve; pay, key
       .tap();
   // Step 3: the cup goes under the spout by a drag, the fork bounces, the spoon by a tap.
   await expect(page.locator('.tk-item[data-item="cup"]')).toBeVisible();
-  const errors = (await combat(page, 'return c.task.errors;')) as number;
+  const errors = (await combat(page, 'return c.chore.errors;')) as number;
   await page.locator('.tk-item[data-item="fork"]').tap();
-  expect(await combat(page, 'return c.task.errors;')).toBe(errors + 1);
+  expect(await combat(page, 'return c.chore.errors;')).toBe(errors + 1);
   const cupBox = (await page.locator('.tk-item[data-item="cup"]').boundingBox())!;
   const spotBox = (await page.locator('.tk-spot').boundingBox())!;
   await page.mouse.move(cupBox.x + cupBox.width / 2, cupBox.y + cupBox.height / 2);
@@ -761,7 +761,7 @@ test("the Boss's coffee: a chore window covers the belt and the sleeve; pay, key
   await page.locator('.tk-item[data-item="spoon"]').tap();
   // Step 4: the sugar, start.
   await expect(page.locator('.tk-dial')).toBeVisible();
-  const sugar = (await combat(page, 'return c.task.sugar;')) as number;
+  const sugar = (await combat(page, 'return c.chore.sugar;')) as number;
   for (let i = 0; i < sugar; i++) await page.locator('.tk-step-btn').last().tap();
   await page.locator('.tk-start').tap();
   await expect(page.locator('.tk-brew')).toBeVisible();
@@ -796,16 +796,16 @@ test('the Board: a head lost at each third of its HP changes the belt, and the a
   const win = page.locator('.shell-window.on');
   await expect(win).toBeVisible();
   await expect(page.locator('.sh-card')).toHaveCount(3);
-  await expect.poll(() => combat(page, "return c.shells.phase === 'pick';"), { timeout: 15000 }).toBe(true);
-  const prize = (await combat(page, 'return c.shells.prize;')) as number;
+  await expect.poll(() => combat(page, "return c.chore.phase === 'pick';"), { timeout: 15000 }).toBe(true);
+  const prize = (await combat(page, 'return c.chore.prize;')) as number;
   await page
     .locator('.sh-card')
     .nth((prize + 1) % 3)
     .tap();
   await expect(page.locator('.shell-window.jolt, .shell-window.on')).toBeVisible();
-  expect(await combat(page, 'return c.shells.errors;')).toBe(1);
-  await expect.poll(() => combat(page, "return c.shells.phase === 'pick';"), { timeout: 15000 }).toBe(true);
-  const right = (await combat(page, 'return c.shells.prize;')) as number;
+  expect(await combat(page, 'return c.chore.errors;')).toBe(1);
+  await expect.poll(() => combat(page, "return c.chore.phase === 'pick';"), { timeout: 15000 }).toBe(true);
+  const right = (await combat(page, 'return c.chore.prize;')) as number;
   await page.locator('.sh-card').nth(right).tap();
   await expect(page.locator('.shell-window.served')).toBeVisible();
   await expect(win).toBeHidden({ timeout: 12000 });
