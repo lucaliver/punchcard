@@ -1320,3 +1320,68 @@ test('after two runs the home asks for stars, then a review window sends it', as
   await expect(page.locator('.rate-banner')).toBeHidden();
   expect(problems).toEqual([]);
 });
+
+test("the Sushi Chef's omakase: a slip lists the pieces, the belt serves sushi and covers nothing; eating them in order ends the move", async ({
+  page,
+}) => {
+  const problems = await freshGame(page);
+  await page.getByRole('button', { name: /debug/i }).click();
+  await page.locator('.debug-tabs button').last().click();
+  await page.locator('.debug-foe[data-enemy="sushiChef"]').click();
+  await expect(page.locator('.combat')).toBeVisible();
+  const start = page.locator('.js-start');
+  if (await start.count()) await start.click();
+  await expect.poll(() => combat(page, 'return c.intro <= 0;')).toBe(true);
+  await combat(page, 'while (!c.enemy.move.task) c.skipEnemyMove();');
+  const slip = page.locator('.sushi-slip.on');
+  await expect(slip).toBeVisible();
+  const length = (await combat(page, 'return c.chore.order.length;')) as number;
+  await expect(slip.locator('.ss-piece')).toHaveCount(length);
+  await expect(slip.locator('.ss-piece.next')).toHaveCount(1);
+  // No window: the belt and the sleeve stay in reach, and the pieces ride the belt.
+  await expect(page.locator('.task-window.on')).toHaveCount(0);
+  await expect(page.locator('.belt-cards .card.sushi').first()).toBeVisible({ timeout: 10000 });
+  /** Taps the piece the slip wants next (it moves: the tap lands where it is now). */
+  const eatNext = async (): Promise<void> => {
+    let uid: number | null = null;
+    await expect
+      .poll(
+        async () =>
+          (uid = (await combat(
+            page,
+            'const b = c.belt.find((x) => x.card.id === c.chore.next && x.pos > 0.2 && x.pos < 0.8); return b ? b.card.uid : null;',
+          )) as number | null),
+        {
+          timeout: 15000,
+        },
+      )
+      .not.toBeNull();
+    const box = (await page.locator(`.belt-cards .card[data-uid="${uid}"]`).boundingBox())!;
+    await page.touchscreen.tap(box.x + box.width / 2, box.y + box.height / 2);
+  };
+  // A wrong piece costs seconds and flashes the slip.
+  const timer = (await combat(page, 'return c.enemy.timer;')) as number;
+  await expect
+    .poll(
+      () => combat(page, 'return c.belt.some((b) => b.card.id !== c.chore.next && b.card.id.startsWith("sushi") && b.pos > 0.2 && b.pos < 0.8);'),
+      { timeout: 15000 },
+    )
+    .toBe(true);
+  const uidWrong = (await combat(
+    page,
+    'return c.belt.find((b) => b.card.id !== c.chore.next && b.card.id.startsWith("sushi") && b.pos > 0.2 && b.pos < 0.8).card.uid;',
+  )) as number;
+  const wrongBox = (await page.locator(`.belt-cards .card[data-uid="${uidWrong}"]`).boundingBox())!;
+  await page.touchscreen.tap(wrongBox.x + wrongBox.width / 2, wrongBox.y + wrongBox.height / 2);
+  expect(await combat(page, 'return c.chore.errors;')).toBe(1);
+  expect(((await combat(page, 'return c.enemy.timer;')) as number) - timer).toBeGreaterThan(1.5);
+  for (let i = 0; i < length; i++) {
+    await eatNext();
+    await expect(slip.locator('.ss-piece.eaten')).toHaveCount(i + 1);
+  }
+  await expect(page.locator('.sushi-slip.served')).toBeVisible();
+  await expect(slip).toBeHidden({ timeout: 6000 });
+  expect(await combat(page, "return c.has('enemy', 'stun');")).toBe(true);
+  expect(await combat(page, 'return c.belt.some((b) => b.card.id.startsWith("sushi"));')).toBe(false);
+  expect(problems).toEqual([]);
+});

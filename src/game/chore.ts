@@ -1,6 +1,7 @@
 import type { Rng } from '../core/rng';
 import { CoffeeTask } from './coffee';
 import { ShellGame } from './shells';
+import { SushiOrder } from './sushi';
 import type { TaskId } from './types';
 
 /**
@@ -11,6 +12,10 @@ export interface Chore {
   readonly id: TaskId;
   /** Where it stands; `'done'` once the hero has finished it (the move is off while the result is shown). */
   readonly phase: string;
+  /** Whether its window covers the belt and the sleeve (belt cards and stashing are out of reach meanwhile). */
+  readonly covers: boolean;
+  /** The card id the belt deals instead of the deck while the chore is on, given the ids riding it now; null lets the deck deal. */
+  serve?(onBelt: string[]): string | null;
   /** Mistakes so far, and the seconds they have cost the hero (`Combat` adds them to the move's countdown). */
   errors: number;
   fined: number;
@@ -22,4 +27,5 @@ export interface Chore {
 export const CHORES: Record<TaskId, (rng: Rng) => Chore> = {
   coffee: (rng) => new CoffeeTask(rng),
   shells: (rng) => new ShellGame(rng),
+  sushi: (rng) => new SushiOrder(rng),
 };

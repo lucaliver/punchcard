@@ -3,6 +3,7 @@ import { CARDS } from '../src/data/cards';
 import { COFFEE_SERVICE } from '../src/data/coffee';
 import { CoffeeTask } from '../src/game/coffee';
 import { ShellGame } from '../src/game/shells';
+import { SushiOrder } from '../src/game/sushi';
 import {
   addPerk,
   advance,
@@ -101,19 +102,18 @@ export function botDecide(c: Combat, rnd: () => number, opts: BotOpts): void {
     for (let i = 0; i < 5; i++) c.playCard(hexed.card.uid);
     return;
   }
-  // The sushi buffet: eat a matching pair (two taps), whatever else is going on.
-  const pieces = c.belt.filter((b) => CARDS[b.card.id].pair).sort((a, b) => b.pos - a.pos);
-  const first = pieces.find((a) => pieces.some((b) => b !== a && b.card.id === a.card.id));
-  if (first) {
-    const mate = pieces.find((b) => b !== first && b.card.id === first.card.id)!;
-    c.playCard(first.card.uid);
-    c.playCard(mate.card.uid);
-    return;
+  // The Sushi Chef's order: eat the piece the slip wants next, the one nearest the exit first (one tap per decision, then the cards go on).
+  if (c.chore instanceof SushiOrder) {
+    const piece = c.belt.filter((b) => b.card.id === (c.chore as SushiOrder).next).sort((x, y) => y.pos - x.pos)[0];
+    if (piece) {
+      c.playCard(piece.card.uid);
+      return;
+    }
   }
   const affordable = cards.filter(
     ({ card, pos }) =>
       !card.hex &&
-      !CARDS[card.id].pair &&
+      !CARDS[card.id].sushi &&
       c.isPlayable(card) &&
       !c.isPending(card) &&
       c.canAfford(card) &&

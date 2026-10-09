@@ -38,6 +38,7 @@ const fewest = (values: number[], sum: number): number =>
  */
 export class CoffeeTask {
   readonly id = 'coffee' as const;
+  readonly covers = true;
   phase: CoffeePhase = 'coins';
   readonly drink: CoffeeDrink;
   readonly sugar: number;

@@ -8,6 +8,7 @@ import { HEROES } from '../data/heroes';
 import { CHORES, type Chore } from './chore';
 import { CoffeeTask, type CoffeeAction, type CoffeeResult } from './coffee';
 import { ShellGame, type ShellResult } from './shells';
+import { SushiOrder } from './sushi';
 import { RELICS } from '../data/relics';
 import type { TKey } from '../core/i18n';
 import type {
@@ -156,16 +157,12 @@ export class Combat {
   beltDead = false;
   /** Mana only comes back by tapping the button (`EnemyDef.manaTap`, `tapMana`). */
   manaTapOn = false;
-  /** The `pair` card the hero has picked, waiting for its match (`pairUp`). */
-  picked: number | null = null;
   /** Total belt travel the player has cranked by hand, in belt widths (the UI scrolls the track stripes by it). */
   beltCranked = 0;
   sleeve: (CombatCard | null)[];
 
   /** Time accumulated towards the next regular draw onto the belt. */
   private spawnClock = 0;
-  /** The pieces a `feed` status still has to deal. */
-  private feedQueue: string[] = [];
   /** Seconds the belt still stands before it turns around, and how many turns it was asked for meanwhile (two cancel out). */
   private beltHalt = 0;
   private beltTurns = 0;
@@ -205,7 +202,7 @@ export class Combat {
   private rustId = 0;
   /** The enemy's window over the belt: `ask` waits for a tap, `install` is the fake progress bar (`t` seconds in). Seconds until the next one while none is up (null: not yet counted). */
   popup: { phase: 'ask' | 'install'; t: number } | null = null;
-  /** The chore the enemy's move has set (`MoveDef.task`): a window covers the belt and the sleeve until it is done or the move lands. */
+  /** The chore the enemy's move has set (`MoveDef.task`): until it is done or the move lands, a window usually covers the belt and the sleeve. */
   chore: Chore | null = null;
   /** The chore of the move being charged has been set up already (so a finished one doesn't open again). */
   private taskSeen = false;
@@ -449,7 +446,7 @@ export class Combat {
 
   /** The sleeve is out of reach: sunk (`EnemyDef.deepBelt`) or under the chore window. */
   private get lowerBarred(): boolean {
-    return this.lowerHidden || !!this.chore;
+    return this.lowerHidden || !!this.chore?.covers;
   }
 
   /**
@@ -460,7 +457,7 @@ export class Combat {
     const b = this.belt[this.beltIndex(uid)];
     if (!b) return false;
     // The enemy's window is over the whole belt.
-    if (this.popup || this.chore) return true;
+    if (this.popup || this.chore?.covers) return true;
     return this.belt.some((w) => {
       if (w === b) return false;
       const def = CARDS[w.card.id];
@@ -563,22 +560,6 @@ export class Combat {
     this.tickBelt(dt);
     for (const id of this.relics) RELICS[id]?.hooks?.tick?.(this, dt);
     this.heroDef.hooks.tick?.(this, dt);
-  }
-
-  /** The cards a `feed` status makes the belt serve right now, if any. */
-  private feedList(): string[] | undefined {
-    for (const id of Object.keys(this.hero.statuses)) if (this.has('hero', id) && STATUSES[id].feed) return STATUSES[id].feed;
-    return undefined;
-  }
-
-  /** The next piece a `feed` status deals: two of each of two kinds at a time, shuffled, so every piece has a match. */
-  private nextFeed(list: string[]): CombatCard {
-    if (!this.feedQueue.length) {
-      const a = this.rng.pick(list);
-      const b = this.rng.pick(list.length > 1 ? list.filter((id) => id !== a) : list);
-      this.feedQueue = this.rng.shuffle([a, a, b, b]);
-    }
-    return { uid: -++this.tempUid, id: this.feedQueue.pop()!, up: false, bonus: 0, temp: true };
   }
 
   /** The mana timer's whole turns become mana (a full bar keeps none). */
@@ -990,9 +971,9 @@ export class Combat {
     // A tall card rides the top row and hangs over the one below.
     if (card && CARDS[card.id].tall) row = 0;
     let c = card;
-    const feed = c ? undefined : this.feedList();
-    if (feed) c = this.nextFeed(feed);
-    else if (!c) this.feedQueue = [];
+    // A chore can make the belt serve something else than the deck (the Sushi Chef's order).
+    const served = c ? undefined : this.chore?.serve?.(this.belt.map((b) => b.card.id));
+    if (served) c = { uid: -++this.tempUid, id: served, up: false, bonus: 0, temp: true };
     if (!c) {
       if (!this.draw.length) {
         if (!this.discard.length) return false;
@@ -1012,6 +993,11 @@ export class Combat {
 
   private expire(card: CombatCard): void {
     const def = CARDS[card.id];
+    // A piece of sushi that slipped off is gone, not lost: nothing reacts to it, and the order deals it again.
+    if (def.sushi) {
+      this.events.emit({ type: 'cardExpired', card });
+      return;
+    }
     // A hex stays on the card through the piles until it's broken; one already cracked is gone.
     this.shedHex(card);
     card.passed = true;
@@ -1024,11 +1010,6 @@ export class Combat {
     for (const id of this.relics) RELICS[id]?.hooks?.onCardExpired?.(this, card);
     for (const side of ['hero', 'enemy'] as const) {
       for (const [id, s] of Object.entries(this.fighter(side).statuses)) if (this.has(side, id)) STATUSES[id].onExpire?.(this, side, s);
-    }
-    // A piece of sushi that slipped off is gone, not shuffled back into the deck.
-    if (def.pair) {
-      if (this.picked === card.uid) this.picked = null;
-      return;
     }
     delete card.disc;
     if (this.keywords(card).includes('fleeting')) this.exhaust.push(card);
@@ -1071,7 +1052,7 @@ export class Combat {
       this.tapHex(card);
       return false;
     }
-    if (CARDS[card.id].pair) return how !== 'auto' && beltIdx >= 0 && this.pairUp(card);
+    if (CARDS[card.id].sushi) return how !== 'auto' && beltIdx >= 0 && this.eat(card);
     if (!this.isPlayable(card)) {
       this.events.emit({ type: 'text', target: 'hero', key: 'combat.unplayable', tone: 'neutral' });
       return false;
@@ -1095,19 +1076,24 @@ export class Combat {
     return true;
   }
 
-  /** A tap on a `pair` card: it is picked; a tap on a second one with the same id eats both (true), any other tap moves the pick. */
-  private pairUp(card: CombatCard): boolean {
-    const mate = this.picked === null ? undefined : this.belt.find((b) => b.card.uid === this.picked && b.card.uid !== card.uid)?.card;
-    if (!mate || mate.id !== card.id) {
-      this.picked = this.picked === card.uid ? null : card.uid;
-      this.events.emit({ type: 'cardPicked', card });
-      return false;
-    }
-    this.picked = null;
-    this.belt = this.belt.filter((b) => b.card.uid !== card.uid && b.card.uid !== mate.uid);
-    this.events.emit({ type: 'cardsPaired', a: mate, b: card });
-    this.heal('hero', this.cardVals(card)[0] * 2);
+  /** A tap on a piece of sushi: eaten if the order wants it now, otherwise a mistake (`fine`). True when it was eaten. */
+  private eat(card: CombatCard): boolean {
+    const order = this.chore;
+    if (!(order instanceof SushiOrder) || this.result || this.begging) return false;
+    const r = order.eat(card.id);
+    if (r === 'wrong') this.fine(order);
+    if (r !== 'ok') return false;
+    this.belt = this.belt.filter((b) => b.card.uid !== card.uid);
+    this.events.emit({ type: 'cardEaten', card });
+    // The order is complete: the plates still riding are cleared away.
+    if (order.phase === 'done') this.clearSushi();
     return true;
+  }
+
+  /** Takes every piece of sushi off the belt (the order is done, or the move landed). */
+  private clearSushi(): void {
+    for (const b of this.belt.filter((x) => CARDS[x.card.id].sushi)) this.events.emit({ type: 'cardDiscarded', card: b.card });
+    this.belt = this.belt.filter((b) => !CARDS[b.card.id].sushi);
   }
 
   /** Whether something on the enemy turns a dragged attack critical. */
@@ -1201,6 +1187,7 @@ export class Combat {
       if (
         this.beltIndex(card.uid) < 0 ||
         card.hex ||
+        CARDS[card.id].sushi ||
         this.isCovered(card.uid) ||
         this.isPending(card) ||
         !this.isPlayable(card) ||
@@ -1220,7 +1207,7 @@ export class Combat {
     if (target < 0 || target >= this.sleeve.length) return false;
     const b = this.belt[beltIdx];
     // A hexed card is stuck to the belt until freed; a covered one can't be reached; a pending one waits its turn.
-    if (b.card.hex || this.isCovered(uid) || this.isPending(b.card) || CARDS[b.card.id].pair) return false;
+    if (b.card.hex || this.isCovered(uid) || this.isPending(b.card) || CARDS[b.card.id].sushi) return false;
     const old = this.sleeve[target];
     // A bulky card can't be swapped out of the sleeve: it has to be played.
     if (old && this.keywords(old).includes('bulky')) return false;
@@ -1333,7 +1320,7 @@ export class Combat {
     const theirs = (cls: CardDef['cls']): boolean =>
       cls !== 'neutral' && cls !== 'curse' && cls !== this.heroDef.id && !('debug' in (HEROES[cls].unlock ?? {}));
     const pool = CARD_LIST.filter(
-      (d) => d.rarity === rarity && theirs(d.cls) && !d.starterOnly && !d.pack && !d.pair && d.play && !d.keywords?.includes('unplayable'),
+      (d) => d.rarity === rarity && theirs(d.cls) && !d.starterOnly && !d.pack && !d.sushi && d.play && !d.keywords?.includes('unplayable'),
     );
     const picks = this.rng.shuffle(pool).slice(0, n);
     for (const def of picks) {
@@ -2019,7 +2006,7 @@ export class Combat {
     return true;
   }
 
-  /** Sets up the chore of the move being charged, and ends it when it is done (the pour of the coffee, the right card of the shell game). */
+  /** Sets up the chore of the move being charged, and ends it when it is done (the pour of the coffee, the right card of the shell game, the last piece of sushi). */
   private tickTask(dt: number): void {
     const kind = this.enemy.move.task;
     if (!kind) {
@@ -2045,8 +2032,9 @@ export class Combat {
     this.applyStatus('enemy', 'stun', 1, CONFIG[kind].calm);
   }
 
-  /** Closes the chore window (`phase` tells the UI why: the move landed, or was dropped). */
+  /** Closes the chore (`phase` tells the UI why: the move landed, or was dropped). */
   private endTask(phase?: 'close'): void {
+    this.clearSushi();
     this.chore = null;
     this.taskSeen = false;
     if (phase) this.events.emit({ type: 'task', phase });

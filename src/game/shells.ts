@@ -16,6 +16,7 @@ export type ShellResult = 'ok' | 'wrong' | 'ignored';
  */
 export class ShellGame {
   readonly id = 'shells' as const;
+  readonly covers = true;
   phase: ShellPhase = 'show';
   /** The card (an id from 0) that is the Pay Raise. */
   readonly prize: number;

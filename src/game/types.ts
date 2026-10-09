@@ -161,8 +161,8 @@ export interface CardDef {
   /** Whether the condition its face names (`{?poison}`…) holds right now: the belt and the sleeve light the condition up. Share the check with `play` (`WHEN`). */
   when?: (c: Combat) => boolean;
   play?: (c: Combat, v: number[], card: CombatCard) => void;
-  /** A piece of the sushi game (`StatusDef.feed`): a tap picks it, a tap on a second one with the same id eats both (`Combat.pairUp`: each heals `vals[0]`); it can't be stashed or caught, and is gone for good once it leaves the belt. */
-  pair?: true;
+  /** A piece of the Sushi Chef's order (`SushiOrder`): a tap tries to eat it (`Combat.eat`); it can't be played, stashed or caught, and is never kept: off the belt it is gone (the order deals it again). */
+  sushi?: true;
   /** Triggered when the card leaves the belt without being played. */
   onExpire?: (c: Combat, v: number[], card: CombatCard) => void;
 }
@@ -286,8 +286,6 @@ export interface StatusDef {
   burst?: { kind: string; n: number };
   /** A class its sprite wears while the enemy carries the status, or the belt while the hero does (the look is in `combat-stage.css` / `combat-belt.css`). */
   look?: string;
-  /** On the hero: while it lasts the belt serves these cards (ids, dealt in matching pairs: `CardDef.pair`) instead of the deck. The pieces still riding when it ends stay on the belt. */
-  feed?: string[];
   /** On the enemy: how close the status is to going off, 0 to 1 (the belt reddens as it nears 1). */
   warning?: (c: Combat, s: StatusVal) => number;
   /** On the enemy: whether the belt's red wash blinks now (the last moments before it goes off). */
@@ -332,13 +330,13 @@ export interface MoveDef {
   absorb?: boolean;
   /** …and a `release` move adds everything stored to its hit. */
   release?: boolean;
-  /** A chore the hero does while the move charges: a window covers the belt and the sleeve, and doing it in time cancels the move (`Combat.chore`). */
+  /** A chore the hero does while the move charges (most cover the belt and the sleeve with a window), and doing it in time cancels the move (`Combat.chore`). */
   task?: TaskId;
   fx?: (c: Combat) => void;
 }
 
-/** The chores a move can set: the Boss's coffee, or the Board's shell game with three covered cards. */
-export type TaskId = 'coffee' | 'shells';
+/** The chores a move can set: the Boss's coffee, the Board's shell game with three covered cards, or the Sushi Chef's order eaten off the belt. */
+export type TaskId = 'coffee' | 'shells' | 'sushi';
 
 /** How the belt runs while a boss is in a phase: how many rows it has and how fast it goes (a multiplier on top of everything else). */
 export interface BeltSetting {
@@ -578,10 +576,8 @@ export type CombatEvent =
   | { type: 'cardEchoed'; card: CombatCard }
   | { type: 'cardExpired'; card: CombatCard }
   | { type: 'cardStashed'; card: CombatCard; slot: number }
-  /** A `pair` card was picked, or put down again. */
-  | { type: 'cardPicked'; card: CombatCard }
-  /** Two matching `pair` cards were eaten. */
-  | { type: 'cardsPaired'; a: CombatCard; b: CombatCard }
+  /** A piece of sushi was eaten. */
+  | { type: 'cardEaten'; card: CombatCard }
   /** The sleeve grew a slot for the rest of the fight. */
   | { type: 'sleeveGrew' }
   /** Cards in the sleeve got cheaper (a full sleeve caught a falling card, a card cut their cost). */

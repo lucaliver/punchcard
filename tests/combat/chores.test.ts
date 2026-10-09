@@ -4,7 +4,8 @@ import { CoffeeTask } from '../../src/game/coffee';
 import { Rng } from '../../src/core/rng';
 import { CONFIG } from '../../src/data/config';
 import { ENEMIES } from '../../src/data/enemies';
-import { setup, run, coffeeOf, shellsOf } from './helpers';
+import { CARDS } from '../../src/data/cards';
+import { setup, run, coffeeOf, shellsOf, sushiOf } from './helpers';
 
 const COFFEE_MOVE = ENEMIES.slavesCeo.specials.find((m) => m.task === 'coffee')!;
 
@@ -238,5 +239,123 @@ describe('the shell game', () => {
       run(c, CONFIG.shells.revealTime + 0.1);
     }
     expect(game.fined).toBe(CONFIG.shells.penaltyMax);
+  });
+});
+
+describe("the Sushi Chef's order", () => {
+  const omakase = ENEMIES.sushiChef.specials.find((m) => m.task === 'sushi')!;
+  /** The Omakase is up first, then the Chef idles for good. */
+  const omakaseFight = (move = omakase): Combat => {
+    const c = setup({
+      enemy: { ...ENEMIES.sushiChef, main: { id: 'wait', intent: 'idle', windup: 9999 }, specials: [move], every: 1 },
+      hp: 80,
+      maxHp: 80,
+    });
+    c.skipEnemyMove();
+    return c;
+  };
+  const pieces = (c: Combat) => c.belt.filter((b) => CARDS[b.card.id].sushi);
+  /** Runs until a piece of this kind rides the belt. */
+  const untilOn = (c: Combat, id: string): CombatCardRef => {
+    for (let i = 0; i < 60 * 30 && !pieces(c).some((b) => b.card.id === id); i++) c.tick(1 / 60);
+    return pieces(c).find((b) => b.card.id === id)!.card;
+  };
+  type CombatCardRef = Combat['belt'][number]['card'];
+  /** Eats the whole order, one right piece at a time. */
+  const eatAll = (c: Combat): void => {
+    const order = sushiOf(c);
+    while (order.phase === 'eat') expect(c.playCard(untilOn(c, order.next).uid)).toBe(true);
+  };
+
+  it('the belt serves nothing but sushi and covers nothing: the cards already there and the sleeve stay in reach', () => {
+    const c = omakaseFight();
+    run(c, CONFIG.introTime + 0.1);
+    const order = sushiOf(c);
+    expect(order.order).toHaveLength(CONFIG.sushi.length);
+    expect(order.covers).toBe(false);
+    const before = c.belt.map((b) => b.card.uid);
+    expect(before.length).toBeGreaterThan(0);
+    expect(c.isCovered(before[0])).toBe(false);
+    run(c, 6);
+    // Every card that came in after the order was set is a piece, and the order's pieces are always on offer.
+    const fresh = c.belt.filter((b) => !before.includes(b.card.uid));
+    expect(fresh.length).toBeGreaterThan(0);
+    expect(fresh.every((b) => CARDS[b.card.id].sushi)).toBe(true);
+    expect(c.stash(before.find((uid) => c.belt.some((b) => b.card.uid === uid))!)).toBe(true);
+  });
+
+  it('eating the pieces in order cancels the move and stuns the Chef, and the plates are cleared away', () => {
+    const c = omakaseFight();
+    const said: string[] = [];
+    c.events.on((e) => {
+      if (e.type === 'speech') said.push(e.key);
+    });
+    run(c, CONFIG.introTime + 0.1);
+    const order = sushiOf(c);
+    const wrong = ['sushiSalmon', 'sushiMaki', 'sushiEgg', 'sushiShrimp'].find((id) => id !== order.next)!;
+    expect(c.playCard(untilOn(c, wrong).uid)).toBe(order.next === wrong);
+    eatAll(c);
+    expect(order.phase).toBe('done');
+    expect(pieces(c)).toHaveLength(0);
+    run(c, CONFIG.sushi.doneHold + 0.1);
+    expect(c.chore).toBeNull();
+    expect(c.hero.hp).toBe(80);
+    expect(c.has('enemy', 'stun')).toBe(true);
+    expect(said).toEqual(['enemy.sushiChef.order', 'enemy.sushiChef.calm']);
+    // The deck is back on the belt.
+    run(c, 8);
+    expect(pieces(c)).toHaveLength(0);
+  });
+
+  it('a wrong piece costs seconds, up to a cap, and stays on the belt', () => {
+    const c = omakaseFight({ ...omakase, windup: 999 });
+    run(c, CONFIG.introTime + 0.1);
+    const order = sushiOf(c);
+    const other = ['sushiSalmon', 'sushiMaki', 'sushiEgg', 'sushiShrimp'].find((id) => id !== order.next)!;
+    const piece = untilOn(c, other);
+    const t0 = c.enemy.timer;
+    expect(c.playCard(piece.uid)).toBe(false);
+    expect(c.enemy.timer).toBeCloseTo(t0 + CONFIG.sushi.penalty, 5);
+    expect(order.errors).toBe(1);
+    expect(c.belt.some((b) => b.card.uid === piece.uid)).toBe(true);
+    for (let i = 0; i < 10; i++) c.playCard(piece.uid);
+    expect(order.fined).toBe(CONFIG.sushi.penaltyMax);
+    expect(order.eaten).toBe(0);
+  });
+
+  it('a piece that rides off the belt costs nothing and is dealt again; the order is never starved', () => {
+    const c = omakaseFight({ ...omakase, windup: 999 });
+    run(c, CONFIG.introTime + 0.1);
+    const order = sushiOf(c);
+    const hp = c.hero.hp;
+    // Let the belt run for several turns without touching it: the next piece keeps coming round.
+    for (let i = 0; i < 4; i++) {
+      run(c, 12);
+      untilOn(c, order.next);
+    }
+    expect(c.hero.hp).toBe(hp);
+    expect(c.stats.cardsLost).toBe(c.stats.cardsLost);
+    expect([...c.draw, ...c.discard, ...c.exhaust].some((x) => CARDS[x.id].sushi)).toBe(false);
+  });
+
+  it('when the countdown runs out the hit lands, the window closes and the pieces go', () => {
+    const c = omakaseFight();
+    run(c, CONFIG.introTime + 0.1);
+    run(c, 3);
+    expect(pieces(c).length).toBeGreaterThan(0);
+    run(c, omakase.windup);
+    expect(c.hero.hp).toBeLessThan(80);
+    expect(c.chore).toBeNull();
+    expect(pieces(c)).toHaveLength(0);
+  });
+
+  it('sushi cannot be stashed or played by the cards that play a type', () => {
+    const c = omakaseFight({ ...omakase, windup: 999 });
+    run(c, CONFIG.introTime + 0.1);
+    const piece = untilOn(c, sushiOf(c).next);
+    expect(c.stash(piece.uid)).toBe(false);
+    c.playBelt('skill');
+    expect(c.belt.some((b) => b.card.uid === piece.uid)).toBe(true);
+    expect(sushiOf(c).eaten).toBe(0);
   });
 });

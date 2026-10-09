@@ -372,3 +372,59 @@
 @media (hover: hover) and (pointer: fine) {
   .sh-card:not(:disabled):hover .sh-in { translate: 0 -4px; }
 }
+
+/* The Sushi Chef's order: a kitchen slip pinned over the stage's top-left corner (left of the chef), the pieces to eat in turn (the belt and the sleeve stay in reach) */
+.sushi-slip {
+  display: none;
+  position: absolute;
+  top: 8px;
+  left: 8px;
+  z-index: 2;
+  flex-wrap: wrap;
+  justify-content: center;
+  width: 108px;
+  padding: 4px 4px 6px;
+  color: var(--k);
+  background: var(--paper);
+  border: var(--line) solid var(--k);
+  box-shadow: var(--off) var(--off) 0 var(--shadow);
+}
+.sushi-slip.on { display: flex; }
+.sushi-slip.entering { animation: stamp-in 0.15s steps(2); }
+.sushi-slip.served { animation: task-served 0.4s steps(2) 3; }
+.sushi-slip.jolt { animation: task-jolt 0.3s steps(3); }
+.ss-bar {
+  width: 100%;
+  margin-bottom: 2px;
+  text-align: center;
+  font-family: var(--font-display);
+  font-size: 10px;
+}
+.ss-piece {
+  position: relative;
+  display: grid;
+  place-items: center;
+  width: 32px;
+  height: 32px;
+  font-size: 26px;
+}
+/* eaten: struck through and faded */
+.ss-piece.eaten { opacity: 0.4; }
+.ss-piece.eaten::after {
+  content: '';
+  position: absolute;
+  left: 2px;
+  right: 2px;
+  top: calc(50% - 2px);
+  height: 4px;
+  background: var(--p);
+  rotate: -30deg;
+}
+.ss-piece.next {
+  outline: 3px solid var(--y);
+  outline-offset: -1px;
+  animation: ss-next 0.6s steps(2) infinite;
+}
+@keyframes ss-next {
+  50% { outline-color: var(--k); }
+}

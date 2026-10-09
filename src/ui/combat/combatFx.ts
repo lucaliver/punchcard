@@ -209,13 +209,8 @@ export function bindCombatFx(v: CombatView, cards: CardLayer, onEnd: (result: 'w
         sfx('cardPlay');
         haptic('play');
         break;
-      case 'cardPicked':
-        sfx('tap');
-        haptic('stash');
-        break;
-      case 'cardsPaired':
-        cards.markRemoval(e.a.uid, 'played');
-        cards.markRemoval(e.b.uid, 'played');
+      case 'cardEaten':
+        cards.markRemoval(e.card.uid, 'played');
         sfx('cardPlay');
         haptic('play');
         break;

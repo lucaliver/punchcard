@@ -468,7 +468,7 @@ export const ICONS: Record<string, { el: Element; svg: string; wide?: boolean }>
     el: 'necro',
     svg: `<rect x="2" y="40" width="16" height="14"/><rect x="21" y="40" width="30" height="14"/><rect x="52" y="40" width="10" height="14"/><rect x="56" y="44" width="4" height="4" fill="#16121f"/><g ${S} stroke-width="5"><path d="M42 36l-6-7 6-7-6-7M56 36l-6-7 6-7-6-7"/></g>`,
   },
-  // ---- the Sushi Chef's belt (`allYouCanEat`)
+  // ---- the Sushi Chef's belt (his Omakase order)
   sushiSalmon: {
     el: 'fire',
     svg: `<rect x="6" y="36" width="52" height="20" rx="10" stroke="#16121f" stroke-width="3" stroke-linejoin="round"/><path d="M6 38C8 18 24 12 34 14c14 2 24 10 24 24z" stroke="#16121f" stroke-width="3" stroke-linejoin="round"/><path fill="none" stroke="#16121f" stroke-width="3" stroke-linecap="round" d="M18 34c4-8 8-11 13-12M32 36c4-8 8-11 14-12"/>`,

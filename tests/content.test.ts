@@ -168,7 +168,7 @@ describe('content integrity', () => {
 
   it('cards whose main effect is healing cost at least 2 and exhaust (potions are consumed instead; a power is spent once played anyway)', () => {
     const healers = CARD_LIST.filter(
-      (c) => c.type !== 'curse' && c.type !== 'power' && !c.pair && !c.keywords?.includes('consume') && /^\{(heal|regen)|^\{undo\}/.test(c.face),
+      (c) => c.type !== 'curse' && c.type !== 'power' && !c.sushi && !c.keywords?.includes('consume') && /^\{(heal|regen)|^\{undo\}/.test(c.face),
     );
     expect(healers.length).toBeGreaterThan(5);
     for (const c of healers) {

@@ -2,6 +2,7 @@ import { expect } from 'vitest';
 import { Combat, type CombatSetup } from '../../src/game/combat';
 import { CoffeeTask } from '../../src/game/coffee';
 import { ShellGame } from '../../src/game/shells';
+import { SushiOrder } from '../../src/game/sushi';
 import { ENEMIES } from '../../src/data/enemies';
 import { HEROES } from '../../src/data/heroes';
 import type { CardInst } from '../../src/game/types';
@@ -14,6 +15,11 @@ export const coffeeOf = (c: Combat): CoffeeTask => {
 export const shellsOf = (c: Combat): ShellGame => {
   expect(c.chore).toBeInstanceOf(ShellGame);
   return c.chore as ShellGame;
+};
+
+export const sushiOf = (c: Combat): SushiOrder => {
+  expect(c.chore).toBeInstanceOf(SushiOrder);
+  return c.chore as SushiOrder;
 };
 
 export const deckOf = (ids: string[]): CardInst[] => ids.map((id, i) => ({ uid: i + 1, id, up: false }));

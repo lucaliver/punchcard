@@ -17,8 +17,8 @@ const BOARD_FAST = 1.5;
 /** Seconds the Board's audit takes to land: a couple of rounds of the shell game fit in it. */
 const AUDIT = 18;
 
-/** Seconds the belt serves sushi (the Sushi Chef's special). */
-const ALL_YOU_CAN_EAT = 10;
+/** Seconds the Sushi Chef's Omakase takes to land: the order (a few pieces, in turn) fits in it with a little to spare. */
+const OMAKASE = 22;
 
 /** What the half-HP moves bring (their texts quote these, see `data/values.ts`). */
 export const HALF = { securityBlock: 30, slavesStall: 8, complianceSlow: 20 } as const;
@@ -686,18 +686,15 @@ const defs: EnemyDef[] = [
     start: [{ id: 'thorns', v: 1 }],
   },
   {
-    // The all-you-can-eat buffet: for a few seconds the belt serves sushi instead of your deck. Eat matching pairs to heal; every piece that slips off hurts.
+    // The omakase: the Chef calls out an order and the belt serves nothing but sushi. Eat the pieces in the order of the slip before it lands, and the move is off.
     id: 'sushiChef',
     act: 2,
     tier: 'normal',
     hp: 90,
     art: 'sushiChef',
-    main: atk('knifeWork', 7, 6),
-    every: 2,
-    specials: [
-      { id: 'allYouCanEat', intent: 'debuff', windup: 7, status: [{ id: 'allYouCanEat', t: ALL_YOU_CAN_EAT, target: 'hero' }, gainStrength] },
-      atk('omakase', 15, 10, { intent: 'charge' }),
-    ],
+    main: atk('knifeWork', 7, 6, ramp),
+    every: 4,
+    specials: [{ id: 'omakase', intent: 'charge', windup: OMAKASE, dmg: 15, task: 'sushi' }],
     ruleBreaker: true,
   },
   {

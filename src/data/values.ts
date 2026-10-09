@@ -80,6 +80,8 @@ export const VALUES = {
   coffeePenalty: CONFIG.coffee.penalty,
   shellsCalm: CONFIG.shells.calm,
   shellsPenalty: CONFIG.shells.penalty,
+  sushiCalm: CONFIG.sushi.calm,
+  sushiPenalty: CONFIG.sushi.penalty,
   // Rules on cards
   virusDelay: CONFIG.virusDelay,
   virusCost: CONFIG.virusCost,
