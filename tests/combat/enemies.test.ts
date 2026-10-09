@@ -50,6 +50,8 @@ describe('act 2 enemies', () => {
   const vs = (enemy: string, deck = new Array(12).fill('punch')): Combat => {
     const c = setup({ enemy: ENEMIES[enemy], deck: deckOf(deck), hp: 999, maxHp: 999 });
     run(c, CONFIG.introTime + 0.01);
+    // The tests count from the start of the first move, not from the head start the hero gets (`CONFIG.enemyDelay`).
+    c.enemy.timer = 0;
     c.hero.maxMana = Math.min(c.hero.maxMana, c.manaCap());
     return c;
   };
@@ -345,6 +347,7 @@ describe('act 3 elites and boss', () => {
     run(c, CONFIG.introTime + 0.1);
     const luggage = ENEMIES.tourist.specials[0];
     c.enemy.move = luggage;
+    c.enemy.timer = 0;
     run(c, luggage.windup + 0.1);
     const cards = [...c.draw, ...c.belt.map((b) => b.card)].filter((x) => x.hex?.id === 'suitcase');
     expect(cards.map((x) => x.id).sort()).toEqual(['carryOn', 'dutyFree']);

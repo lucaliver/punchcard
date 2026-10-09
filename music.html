@@ -1,0 +1,95 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Punchcard OST</title>
+<style>
+/* the game's soundtrack in a list: tap a track to play it (published too: /music.html) */
+body { margin: 0; padding: 16px; background: var(--bg); color: var(--paper); font-family: var(--font); }
+main { max-width: 520px; margin: 0 auto; }
+h1 { margin: 0 0 4px; font: 28px/1 var(--font-display); letter-spacing: 2px; color: var(--y); }
+.sub { margin: 0 0 16px; opacity: 0.7; }
+#now { position: sticky; top: 0; z-index: 1; padding: 12px; margin-bottom: 12px; background: var(--paper); color: var(--k); border: var(--line) solid var(--k); box-shadow: var(--off) var(--off) 0 var(--p); }
+#now b { display: block; font: 22px/1.1 var(--font-ui); }
+#now span { font-size: 14px; opacity: 0.7; }
+.ctl { display: flex; align-items: center; gap: 8px; margin-top: 10px; }
+.ctl .btn { min-height: 44px; padding: 6px 14px; font-size: 16px; }
+.ctl label { display: flex; flex: 1; align-items: center; gap: 6px; font: 16px/1 var(--font-ui); }
+.ctl input { flex: 1; min-width: 0; accent-color: var(--p); }
+ul { margin: 0; padding: 0; list-style: none; display: grid; gap: 8px; }
+li button { width: 100%; min-height: 56px; padding: 8px 14px; display: flex; flex-direction: column; align-items: flex-start; gap: 2px; text-align: left; color: var(--k); background: var(--paper); border: var(--line) solid var(--k); box-shadow: var(--off) var(--off) 0 var(--shadow); font-family: var(--font-ui); font-size: 20px; cursor: pointer; }
+li button small { font: 13px/1.2 var(--font); opacity: 0.65; }
+li button.on { background: var(--y); }
+</style></head><body><main>
+<h1>PUNCHCARD OST</h1>
+<p class="sub">Every track of the game, looping. Tap one to play it.</p>
+<div id="now"><b id="title">Nothing playing</b><span id="where">Pick a track below</span>
+  <div class="ctl">
+    <button class="btn small" id="prev">Prev</button><button class="btn small" id="toggle">Play</button><button class="btn small" id="next">Next</button>
+  </div>
+  <div class="ctl"><label>Vol <input id="vol" type="range" min="0" max="1" step="0.05" value="1"></label><label>Speed <input id="speed" type="range" min="0.6" max="1.6" step="0.05" value="1"></label></div>
+</div>
+<ul id="list"></ul>
+</main>
+<script type="module">
+import '/src/styles/index.css';
+import { TRACK_IDS, playMusic, setMusicTempo, setMusicVolume } from '/src/audio/music.ts';
+import { unlockAudio } from '/src/audio/sfx.ts';
+const INFO = {
+  menu: ['Title screen', 'A music box in an empty crypt'],
+  map: ['Act 1 map', 'The morning corridors'],
+  combat: ['Act 1 fight', 'Driving D minor'],
+  map2: ['Act 2 map', 'The afternoon coffee break'],
+  combat2: ['Act 2 fight', 'Office elevator music gone wrong'],
+  map3: ['Act 3 map', 'Empty corridors under emergency lights'],
+  combat3: ['Act 3 fight', 'The factory runs by itself'],
+  elite: ['Elite fight', 'A dark war march'],
+  boss: ['Final boss', 'Phrygian dread at a gallop'],
+  rest: ['Rest room', 'A moment of warmth by the fire'],
+  pause: ['Pause', 'A hushed music box'],
+  victory: ['Victory', 'The one major-key track'],
+};
+const $ = (id) => document.getElementById(id);
+const buttons = new Map();
+let cur = -1;
+let playing = false;
+const show = () => {
+  const id = TRACK_IDS[cur];
+  $('title').textContent = id ? INFO[id][0] : 'Nothing playing';
+  $('where').textContent = id ? INFO[id][1] : 'Pick a track below';
+  $('toggle').textContent = playing ? 'Stop' : 'Play';
+  for (const [k, b] of buttons) b.classList.toggle('on', playing && k === id);
+};
+const play = (i) => {
+  cur = (i + TRACK_IDS.length) % TRACK_IDS.length;
+  unlockAudio();
+  playMusic(TRACK_IDS[cur]);
+  setMusicVolume(Number($('vol').value));
+  playing = true;
+  show();
+};
+const stop = () => {
+  setMusicVolume(0);
+  playing = false;
+  show();
+};
+for (const [i, id] of TRACK_IDS.entries()) {
+  const li = document.createElement('li');
+  const b = document.createElement('button');
+  b.innerHTML = `${INFO[id][0]}<small>${INFO[id][1]}</small>`;
+  b.addEventListener('click', () => play(i));
+  buttons.set(id, b);
+  li.append(b);
+  $('list').append(li);
+}
+$('toggle').addEventListener('click', () => (playing ? stop() : play(Math.max(cur, 0))));
+$('prev').addEventListener('click', () => play(cur < 0 ? 0 : cur - 1));
+$('next').addEventListener('click', () => play(cur + 1));
+$('vol').addEventListener('input', () => {
+  if (playing) setMusicVolume(Number($('vol').value));
+});
+$('speed').addEventListener('input', () => setMusicTempo(Number($('speed').value)));
+document.addEventListener('keydown', (e) => {
+  if (e.code === 'Space' && e.target === document.body) {
+    e.preventDefault();
+    $('toggle').click();
+  }
+});
+show();
+</script></body></html>

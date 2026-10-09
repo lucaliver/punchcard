@@ -1204,7 +1204,7 @@ const zh: Record<EnKey, string> = {
   'card.quickSync.name': '快速同步会',
   'card.quickSync.desc': '一场会议：它占据你传送带上的一个位置，无法清除。忍着开完吧。',
   'card.phishing.name': '钓鱼邮件',
-  'card.phishing.desc': '如果它离开传送带，{0} 张随机卡牌会被感染：在打出前费用 +{$virusCost} 点法力。',
+  'card.phishing.desc': '如果它离开传送带，获得 {0} 层[burn]。',
   'card.tpsReport.name': 'TPS 报告',
   'card.tpsReport.desc': '付费签署它。如果它离开传送带，你[weak] {0} 秒。',
   'card.papersPlease.name': '请出示文件',
@@ -1654,6 +1654,10 @@ const zh: Record<EnKey, string> = {
   'card.restructuring.desc': '洗混你的抽牌堆，然后按费用从高到低排序。',
   'card.inventoryShrinkage.name': '库存损耗',
   'card.inventoryShrinkage.desc': '造成 {0} 点伤害。',
+  'card.caseFile.name': '案卷',
+  'card.caseFile.desc': '本场战斗中每打出过一张不同的牌，造成 {0} 点伤害。',
+  'card.rapSheet.name': '案底',
+  'card.rapSheet.desc': '本局中每打出过 {1} 张不同的牌，造成 {0} 点伤害。',
 };
 
 export default zh;

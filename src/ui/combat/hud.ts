@@ -261,7 +261,7 @@ export function createHud(v: CombatView, onPassive: () => void): { render(): voi
         r.intentNext.title = `${t('combat.afterAttacks', { n: e.mainsLeft + 1 })} ${t(`move.${special.id}`)}`;
       }
     }
-    const p = Math.min(1, e.timer / m.windup);
+    const p = Math.max(0, Math.min(1, e.timer / m.windup));
     r.timer.style.transform = `scaleX(${p.toFixed(3)})`;
     const rate = combat.enemyTimeRate();
     const left = rate > 0 ? Math.max(0, (m.windup - e.timer) / rate) : Infinity;

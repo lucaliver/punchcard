@@ -48,6 +48,17 @@ const ENEMY_ZOOM = 1.6;
 const BELT_ROW_GAP = 10;
 /** Tallest a belt card may be, as a share of the screen height, with one, two and three rows. */
 const CARD_MAX_H = [0.118, 0.118, 0.092, 0.066];
+/** Screen heights between which three rows grow from the short-screen share above to the two-row one: on a roomy phone a third row keeps the cards as big, on a short one the enemy would be crushed. */
+const THREE_ROWS_FROM = 620;
+const THREE_ROWS_TO = 844;
+
+/** The tallest a belt card may be (px of the screen height `h`) with `rows` belt rows. */
+const cardMaxH = (rows: number, h: number): number => {
+  const share = CARD_MAX_H[Math.min(rows, CARD_MAX_H.length - 1)];
+  if (rows < 3) return h * share;
+  const k = Math.max(0, Math.min(1, (h - THREE_ROWS_FROM) / (THREE_ROWS_TO - THREE_ROWS_FROM)));
+  return h * (share + (CARD_MAX_H[2] - share) * k);
+};
 /** Pixels after which the belt's track pattern repeats (the scroll wraps there). */
 const TRACK_PERIOD = 26;
 /** Most simulation steps run in one frame; past that the fight drops the lag instead of spiralling. */
@@ -178,7 +189,7 @@ export function combatScreen(run: RunState, combat: Combat, cb: CombatCallbacks)
   const layout = (): void => {
     state.beltW = r.belt.clientWidth || el.clientWidth;
     // Cards follow the belt width, but shrink on short screens so the layout always fits (more with two rows).
-    const cw = Math.round(Math.min(state.beltW * CONFIG.cardWidth, el.clientHeight * CARD_MAX_H[Math.min(combat.beltRows, CARD_MAX_H.length - 1)]));
+    const cw = Math.round(Math.min(state.beltW * CONFIG.cardWidth, cardMaxH(combat.beltRows, el.clientHeight)));
     state.cardW = cw;
     state.rowH = Math.round(cw * 1.4) + BELT_ROW_GAP;
     el.style.setProperty('--cw-belt', `${cw}px`);

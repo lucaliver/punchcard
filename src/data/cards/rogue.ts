@@ -195,7 +195,7 @@ export const rogueCards: CardDef[] = [
     type: 'skill',
     rarity: 'common',
     cost: 1,
-    vals: [3, 1],
+    vals: [2, 1],
     upVals: [4, 1],
     art: 'lupin',
     play: (c, v) => void c.loot('common', v[0], { up: true, cheaper: v[1], hex: 'crumple' }),
@@ -355,6 +355,20 @@ export const rogueCards: CardDef[] = [
     art: 'restructuring',
     play: (c) => c.sortDrawByCost(),
   },
+  {
+    id: 'caseFile',
+    face: '{dmg:0}|{cards}',
+    cls: 'rogue',
+    type: 'attack',
+    rarity: 'epic',
+    cost: 4,
+    vals: [1],
+    upVals: [2],
+    art: 'caseFile',
+    // Damage per different card (by id) played this fight, this one included: the face shows the total as it stands.
+    shown: (c, v) => [v[0] * c.uniquePlayed('fight')],
+    play: (c, v) => void c.hit(v[0] * c.uniquePlayed('fight')),
+  },
 
   // Legendary
   {
@@ -368,5 +382,19 @@ export const rogueCards: CardDef[] = [
     upVals: [40],
     art: 'inventoryShrinkage',
     play: (c, v) => void c.hit(v[0]),
+  },
+  {
+    id: 'rapSheet',
+    face: '{dmg:0}|{cards}',
+    cls: 'rogue',
+    type: 'attack',
+    rarity: 'legendary',
+    cost: 5,
+    vals: [1, 2],
+    upVals: [2, 2],
+    art: 'rapSheet',
+    // Damage for every `v[1]` different cards (by id) played in the whole run so far, this fight included.
+    shown: (c, v) => [v[0] * Math.floor(c.uniquePlayed('run') / v[1])],
+    play: (c, v) => void c.hit(v[0] * Math.floor(c.uniquePlayed('run') / v[1])),
   },
 ];

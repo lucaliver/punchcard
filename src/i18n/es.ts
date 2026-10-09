@@ -1220,7 +1220,7 @@ const es: Record<EnKey, string> = {
   'card.quickSync.name': 'Reunión rápida',
   'card.quickSync.desc': 'Una reunión: ocupa un hueco de tu cinta y no se puede quitar. Aguántala.',
   'card.phishing.name': 'Correo de phishing',
-  'card.phishing.desc': 'Si sale de la cinta, {0} cartas al azar se infectan: cuestan {$virusCost} más de maná hasta que se jueguen.',
+  'card.phishing.desc': 'Si sale de la cinta, ganas {0} de [burn].',
   'card.tpsReport.name': 'Informe TPS',
   'card.tpsReport.desc': 'Págalo para firmarlo. Si sale de la cinta, estás [weak] durante {0}s.',
   'card.papersPlease.name': 'Papers, Please',
@@ -1672,6 +1672,10 @@ const es: Record<EnKey, string> = {
   'card.restructuring.desc': 'Baraja tu mazo de robo y ordénalo con las cartas más caras primero.',
   'card.inventoryShrinkage.name': 'Merma de Inventario',
   'card.inventoryShrinkage.desc': 'Haz {0} de daño.',
+  'card.caseFile.name': 'Expediente',
+  'card.caseFile.desc': 'Haz {0} de daño por cada carta distinta que hayas jugado en este combate.',
+  'card.rapSheet.name': 'Historial Delictivo',
+  'card.rapSheet.desc': 'Haz {0} de daño por cada {1} cartas distintas que hayas jugado en esta partida.',
 };
 
 export default es;

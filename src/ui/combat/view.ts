@@ -115,8 +115,8 @@ function markup(run: RunState, combat: Combat): string {
           <div class="up-main">
             <p class="up-text"></p>
             <div class="up-btns">
-              <button class="btn small js-update">${t('combat.update.update')}</button>
-              <button class="btn small secondary js-postpone">${t('combat.update.postpone')}</button>
+              <button class="btn small js-update">${icon('check')}<span>${t('combat.update.update')}</span></button>
+              <button class="btn small secondary js-postpone">${icon('timer')}<span>${t('combat.update.postpone')}</span></button>
             </div>
             <div class="up-progress"><div class="up-track"><div class="up-fill"></div></div><b class="up-pct"></b></div>
           </div>

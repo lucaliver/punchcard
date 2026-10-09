@@ -84,6 +84,8 @@ export const CONFIG = {
   prewarm: 0.25,
   /** Seconds of "Fight!" intro before the clock starts. */
   introTime: 1.2,
+  /** Seconds the enemy's first move starts late: the belt and the mana run first, so the hero gets a head start. */
+  enemyDelay: 0.9,
   /** Cap on cards per belt row. */
   maxHandBelt: 7,
   /** Belt rows: two is the standard layout (cards alternate between them). */

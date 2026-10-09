@@ -214,6 +214,44 @@ describe('the Rogue', () => {
     expect(c.enemy.move.id).not.toBe('smash');
   });
 
+  it('Case File deals damage for each different card played this fight (by id), itself included', () => {
+    const c = rogueFight();
+    c.hero.maxMana = 10;
+    c.hero.mana = 10;
+    c.enemy.block = 0;
+    for (const id of ['punch', 'punch', 'borrowedStapler']) expect(c.playCard(onBelt(c, id))).toBe(true);
+    expect(c.uniquePlayed('fight')).toBe(2);
+    c.hero.mana = 10;
+    const hp = c.enemy.hp;
+    const uid = onBelt(c, 'caseFile');
+    expect(CARDS.caseFile.shown?.(c, [1], c.belt[c.belt.length - 1].card)).toEqual([2]);
+    expect(c.playCard(uid)).toBe(true);
+    expect(hp - c.enemy.hp).toBe(3);
+  });
+
+  it('Rap Sheet deals damage for every 2 different cards played in the run, earlier fights included', () => {
+    const c = setup({
+      hero: HEROES.rogue,
+      hp: 50,
+      maxHp: 50,
+      deck: deckOf(['borrowedStapler']),
+      beltRows: 1,
+      playedIds: ['punch', 'hideTheEvidence', 'borrowedStapler', 'gatekeeping'],
+    });
+    c.enemy.move = { id: 'wait', intent: 'defend', windup: 999 };
+    run(c, CONFIG.introTime + 0.01);
+    c.belt.length = 0;
+    c.hero.maxMana = 10;
+    c.hero.mana = 10;
+    c.enemy.block = 0;
+    const hp = c.enemy.hp;
+    c.addTempCard('rapSheet', 'belt');
+    expect(c.playCard(c.belt[c.belt.length - 1].card.uid)).toBe(true);
+    expect(c.uniquePlayed('run')).toBe(5);
+    expect(hp - c.enemy.hp).toBe(2);
+    expect(c.uniquePlayed('fight')).toBe(1);
+  });
+
   it("Grand Larceny takes the enemy's Block and buffs", () => {
     const c = rogueFight();
     c.enemy.block = 12;

@@ -56,7 +56,7 @@ export interface HeroState extends Fighter {
 export interface EnemyState extends Fighter {
   def: EnemyDef;
   move: MoveDef;
-  /** Seconds accumulated towards the current move's wind-up. */
+  /** Seconds accumulated towards the current move's wind-up (the first move starts below zero: `CONFIG.enemyDelay`). */
   timer: number;
   moveCount: number;
   /** Main attacks left before the next special move. */
@@ -94,6 +94,8 @@ export interface CombatSetup {
   canBeg?: boolean;
   /** Sleeve slots the run has lost for good (Life Insurance). */
   sleeveLost?: number;
+  /** Ids of the cards played so far in the run's earlier fights (see `Combat.uniquePlayed`). */
+  playedIds?: string[];
 }
 
 interface DamageOpts {
@@ -176,6 +178,9 @@ export class Combat {
   /** Sleeve slots lost for good this fight: they leave the sleeve from the next fight on (Life Insurance). */
   sleeveLost = 0;
   cardsPlayed = 0;
+  /** Ids of the cards played this fight, and in the whole run so far (this fight included): each id once. */
+  readonly fightPlayed = new Set<string>();
+  readonly runPlayed: Set<string>;
   /** The last card the hero played this fight (rules such as "not the same type twice"). */
   lastPlayed: CardDef | null = null;
   /** Fight time not yet counted as a whole second (see `costDrop`). */
@@ -219,6 +224,7 @@ export class Combat {
     this.heroDef = setup.hero;
     this.relics = setup.relics;
     this.relicFlags = setup.relicFlags;
+    this.runPlayed = new Set(setup.playedIds);
     this.beltRows = setup.beltRows ?? setup.enemy.belt?.rows ?? CONFIG.beltRows;
     this.phaseBeltMul = setup.enemy.belt?.mul ?? 1;
     this.rowsOpen = Math.min(setup.enemy.startRows ?? this.beltRows, this.beltRows);
@@ -272,7 +278,7 @@ export class Combat {
       dotTimer: 0,
       blockDecay: CONFIG.enemyBlockDecay,
       move: e.main,
-      timer: 0,
+      timer: -CONFIG.enemyDelay,
       moveCount: 0,
       mainsLeft: e.every,
       specialIdx: 0,
@@ -1132,6 +1138,8 @@ export class Combat {
     }
 
     this.cardsPlayed++;
+    this.fightPlayed.add(card.id);
+    this.runPlayed.add(card.id);
     if (!echoes) this.events.emit({ type: 'cardPlayed', card, from: beltIdx >= 0 ? 'belt' : 'sleeve' });
     const vals = this.cardVals(card);
     if (cost < 0) vals.push(spent);
@@ -1178,6 +1186,11 @@ export class Combat {
     } else {
       this.discard.push(card);
     }
+  }
+
+  /** How many different cards (by id) the hero has played, this fight or in the whole run so far. */
+  uniquePlayed(scope: 'fight' | 'run'): number {
+    return (scope === 'fight' ? this.fightPlayed : this.runPlayed).size;
   }
 
   /** Plays, for free, every card of a type that is on the belt now, the one nearest the exit first (skipping any that can't be played right now). */

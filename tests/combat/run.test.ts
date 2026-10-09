@@ -276,6 +276,8 @@ describe('saved runs', () => {
     };
     expect(loadWith({})).toEqual(JSON.parse(JSON.stringify(good)));
     expect(loadWith({ money: undefined })?.money).toBe(0);
+    expect(loadWith({ playedIds: ['punch', 'bogus'] })?.playedIds).toEqual(['punch']);
+    expect(loadWith({ playedIds: undefined })?.playedIds).toEqual([]);
     expect(
       loadWith({
         cleared: true,

@@ -229,6 +229,8 @@ describe('combat engine', () => {
   it('enemy resolves its telegraphed move after the wind-up', () => {
     const c = setup({ enemy: ENEMIES.snitch });
     run(c, CONFIG.introTime + ENEMIES.snitch.main.windup + 0.05);
+    expect(c.hero.hp).toBe(80);
+    run(c, CONFIG.enemyDelay);
     expect(c.hero.hp).toBe(80 - ENEMIES.snitch.main.dmg!);
   });
 

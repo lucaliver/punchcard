@@ -230,7 +230,7 @@
 }
 .up-text {
   margin: 0;
-  font-size: 13px;
+  font-size: 16px;
   line-height: 1.15;
 }
 .up-btns {
@@ -240,9 +240,15 @@
 }
 .up-btns .btn {
   flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
   min-height: 44px;
   padding-block: 4px;
+  font-size: 17px;
 }
+.up-btns .pico { font-size: 1.3em; }
 .up-progress {
   display: none;
   align-items: center;

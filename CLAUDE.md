@@ -82,6 +82,7 @@ src/
   styles/      index.css imports partials in order; responsive.css stays last
 tests/         combat/ (engine tests by area), content, balance.sim (+ bot), balance.stats, e2e/
 docs/          MECHANICS.md
+music.html    soundtrack player (second page of the build: /music.html)
 dev/           art.html, og.html, map-editor.html (dev server only)
 ```
 

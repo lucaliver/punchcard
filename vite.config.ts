@@ -4,7 +4,7 @@ import pkg from './package.json' with { type: 'json' };
 
 export default defineConfig({
   base: './',
-  build: { target: 'es2022', assetsInlineLimit: 0 },
+  build: { target: 'es2022', assetsInlineLimit: 0, rollupOptions: { input: { main: 'index.html', music: 'music.html' } } },
   define: { __APP_VERSION__: JSON.stringify(pkg.version), __BUILD_TIME__: JSON.stringify(new Date().toISOString()) },
   test: { environment: 'node', include: ['tests/**/*.test.ts'] },
 } as never);

@@ -889,6 +889,9 @@ function stop(fade = 0.6): void {
   current = null;
 }
 
+/** Every track, in the order they are written (the dev music player lists them). */
+export const TRACK_IDS = Object.keys(TRACKS) as TrackId[];
+
 /** Playback speed of every track (1 = as written); the fight nudges it when the belt speeds up or slows down. */
 let tempo = 1;
 

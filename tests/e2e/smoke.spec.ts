@@ -657,11 +657,11 @@ test("the Nerd's update window covers the belt: Postpone sends it away for a few
   expect(await page.locator('.js-estatus .status').count()).toBe(
     await combat(page, "return Object.keys(c.enemy.statuses).filter((id) => id !== 'updateNeeded').length;"),
   );
-  // It covers the whole belt.
+  // It covers the belt, but for a margin that leaves its edges (and the running stream) in view.
   const belt = (await page.locator('.belt').boundingBox())!;
   const win = (await popup.boundingBox())!;
-  expect(win.width).toBeGreaterThanOrEqual(belt.width - 1);
-  expect(win.height).toBeGreaterThanOrEqual(belt.height - 1);
+  expect(win.width).toBeGreaterThanOrEqual(belt.width - 17);
+  expect(win.height).toBeGreaterThanOrEqual(belt.height - 11);
   // The buttons wake up a moment after the window shows.
   await expect(page.locator('.js-postpone')).toBeEnabled();
   await page.locator('.js-postpone').tap();

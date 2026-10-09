@@ -1722,6 +1722,14 @@ export const ICONS: Record<string, { el: Element; svg: string; wide?: boolean }>
     el: 'holy',
     svg: `<path d="M4 30L30 4h28v28L32 58z"/><circle cx="46" cy="16" r="4.5" fill="#16121f"/><path fill="#16121f" d="M22 38l18-18 5 5-18 18z"/><circle cx="26" cy="22" r="3.5" fill="#16121f"/><circle cx="38" cy="38" r="3.5" fill="#16121f"/>`,
   },
+  caseFile: {
+    el: 'holy',
+    svg: `<path fill="#16121f" d="M2 34h30v30H2zM18 18h30v30H18zM34 2h30v30H34z"/><path d="M4 36h26v26H4zM20 20h26v26H20zM36 4h26v26H36z"/><path fill="#16121f" d="M8 42h14v3H8zM8 49h18v3H8zM24 26h14v3H24zM24 33h18v3H24zM40 10h14v3H40zM40 17h18v3H40z"/><path ${HI} d="M6 38h4v22H6zM22 22h4v22h-4zM38 6h4v22h-4z"/>`,
+  },
+  rapSheet: {
+    el: 'steel',
+    svg: `<path d="M10 4h44v56H10z"/><path fill="#16121f" d="M16 10h32v26H16z"/><path d="M19 13h26v20H19z"/><circle cx="32" cy="21" r="5.5" fill="#16121f"/><path fill="#16121f" d="M21 33c0-8 22-8 22 0z"/><path fill="#16121f" d="M16 42h32v3H16zM16 49h32v3H16zM16 56h20v2H16z"/><path ${HI} d="M12 6h4v52h-4z"/>`,
+  },
   grandLarceny: {
     el: 'shadow',
     svg: `<path d="M4 22c8-6 16-6 28-2 12-4 20-4 28 2-2 14-8 22-18 20-6-2-8-6-10-6s-4 4-10 6C12 44 6 36 4 22z"/><ellipse cx="20" cy="30" rx="6" ry="4" fill="#16121f"/><ellipse cx="44" cy="30" rx="6" ry="4" fill="#16121f"/><path ${HI} d="M10 24c6-3 12-3 18-1-6 0-12 2-17 6z"/>`,

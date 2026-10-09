@@ -1,11 +1,18 @@
 # TASKS
 
+- quando le corsie della belt diventano 3, le singole corsie e le carte dovrebbero rimanere grandi uguale
+
+- in tutti i combattimenti la mossa del nemico dovrebbe partire 0.9 secondi dopo rispetto al resto (belt, mana regen, etc)
+
+- nel popup di update del nerd enemy: metti icone ai tasti aggiorna/postponi. E il testo nella finestra falli più grandi
+
+- phishing email course: dovrebbe dare burn all'hero non virus
+
+- nuova carta rogue: epica costo 4, fai 1 danno per ogni carta unica giocata in questo combattimento (vale l'id); altra nuova carta identica ma legenaria costo 5 fa danno per ogni 2 carte uniche giocate questa run
+
+- fammi un sito player veloce dove poter ascoltare le canzoni nel gioco
 
 # Miei appunti (ignore for now)
-
-
-> let's rework the final boss "the board": remind me what the 3 phases are:
-it should have 300 hp with 3 clear parts, and 3 different attack phases and sprites; fase 1 should slow down the belt at the beginning and add a 3rd row in the belt ; phase 2 should go back to 2 rows and speed it up ; phase 3 should have some popup minigame (like others enemies have, i.e. The nerd, the coffee machine), give me ideas
 
 > almeno un nemico potrei farlo nero
 

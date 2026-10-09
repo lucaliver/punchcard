@@ -1219,7 +1219,7 @@ const it: Record<EnKey, string> = {
   'card.quickSync.name': 'Allineamento Veloce',
   'card.quickSync.desc': 'Una riunione: occupa un posto sul nastro e non si può togliere. Sopportala.',
   'card.phishing.name': 'Email di Phishing',
-  'card.phishing.desc': 'Se lascia il nastro, {0} carte a caso vengono infettate: costano {$virusCost} di mana in più finché non le giochi.',
+  'card.phishing.desc': 'Se lascia il nastro, ottieni {0} di [burn].',
   'card.tpsReport.name': 'Rapporto TPS',
   'card.tpsReport.desc': 'Paga per firmarlo. Se lascia il nastro, sei [weak] per {0}s.',
   'card.papersPlease.name': 'Documenti, Prego',
@@ -1677,6 +1677,10 @@ const it: Record<EnKey, string> = {
   'card.restructuring.desc': 'Mescola il mazzo di pesca, poi ordinalo con le carte più costose in cima.',
   'card.inventoryShrinkage.name': 'Ammanco di Magazzino',
   'card.inventoryShrinkage.desc': 'Fai {0} danni.',
+  'card.caseFile.name': 'Fascicolo',
+  'card.caseFile.desc': 'Fai {0} danni per ogni carta diversa giocata in questo scontro.',
+  'card.rapSheet.name': 'Fedina Penale',
+  'card.rapSheet.desc': 'Fai {0} danni ogni {1} carte diverse giocate in questa partita.',
 };
 
 export default it;
