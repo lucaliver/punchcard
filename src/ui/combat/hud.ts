@@ -132,16 +132,16 @@ export function createHud(v: CombatView, onPassive: () => void): { render(): voi
           );
         });
       }
-      // The hero's relics that trigger every so often: a chip whose bar fills up to the next trigger.
+      // The hero's relics that trigger every so often (a chip whose bar fills up to the next trigger) or once (a chip lit while it waits).
       const relics =
         side === 'hero'
           ? combat.relics
-              .filter((id) => RELICS[id]?.progress)
+              .filter((id) => RELICS[id]?.progress || RELICS[id]?.armed)
               .map((id) => {
                 const b = h('button', {
-                  class: 'status relic draining',
+                  class: `status relic${RELICS[id].progress ? ' draining' : ''}`,
                   'data-relic': id,
-                  html: `<i class="drain"></i>${icon(`relic.${id}`)}`,
+                  html: `${RELICS[id].progress ? '<i class="drain"></i>' : ''}${icon(`relic.${id}`)}`,
                   'aria-label': t(`relic.${id}.name`),
                 });
                 onPress(b, () => {
@@ -186,8 +186,12 @@ export function createHud(v: CombatView, onPassive: () => void): { render(): voi
     for (const b of box.children) {
       const relic = (b as HTMLElement).dataset.relic;
       if (relic) {
-        const fill = Math.floor(Math.min(1, Math.max(0, RELICS[relic].progress?.(combat) ?? 0)) * BAR_STEPS) / BAR_STEPS;
-        b.querySelector<HTMLElement>('.drain')!.style.setProperty('--fill', String(fill));
+        const { progress, armed } = RELICS[relic];
+        if (progress) {
+          const fill = Math.floor(Math.min(1, Math.max(0, progress(combat))) * BAR_STEPS) / BAR_STEPS;
+          b.querySelector<HTMLElement>('.drain')!.style.setProperty('--fill', String(fill));
+        }
+        if (armed) toggle(b, 'spent', !armed(combat));
         continue;
       }
       const id = (b as HTMLElement).dataset.status;

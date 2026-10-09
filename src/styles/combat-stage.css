@@ -582,6 +582,8 @@
   transform-origin: left;
 }
 .status.relic { min-width: 44px; padding: 0 3px; }
+/* a once-only relic that has gone off: dimmed like a half-HP trait still waiting */
+.status.relic.spent .pico { color: var(--muted); --ink2: transparent; }
 .status.draining.low .drain { animation: drain-low 0.5s steps(1) infinite; }
 @keyframes drain-low {
   50% { opacity: 0.35; }

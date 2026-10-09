@@ -132,6 +132,7 @@ const defs: RelicDef[] = [
     id: 'emergencyExit',
     rarity: 'epic',
     n: Math.round(EXIT_HP * 100),
+    armed: (c) => !c.relicFlags.emergencyExit,
     hooks: {
       // Once per run: the flag lives in the run, so it survives the fight.
       onDeath: (c) => {
@@ -147,6 +148,7 @@ const defs: RelicDef[] = [
     id: 'rubberDuck',
     rarity: 'common',
     n: DUCK_BLOCK,
+    armed: (c) => !c.mem.duck,
     hooks: {
       // Once per fight, the first time the hero is under half HP.
       tick: (c) => {
@@ -227,6 +229,7 @@ const defs: RelicDef[] = [
     id: 'highlighter',
     rarity: 'common',
     n: HIGHLIGHTER_MULT,
+    armed: (c) => !c.mem.highlighter,
     hooks: {
       // The first attack of the fight: its previews are doubled too, until it is played.
       damageMult: (c, def) => (def?.type === 'attack' && !c.mem.highlighter ? HIGHLIGHTER_MULT : 1),
@@ -275,6 +278,7 @@ const defs: RelicDef[] = [
     id: 'fireDrillBell',
     rarity: 'epic',
     n: Math.round(BELL_HP * 100),
+    armed: (c) => !c.mem.bell,
     hooks: {
       // Once per fight, the first time the hero is under the threshold.
       tick: (c) => {
@@ -289,6 +293,7 @@ const defs: RelicDef[] = [
     id: 'outOfOffice',
     rarity: 'legendary',
     n: OOO_MIN_HIT,
+    armed: (c) => !c.mem.ooo,
     hooks: {
       // Once per fight: the first big hit never lands.
       cancelHit: (c, dmg) => {

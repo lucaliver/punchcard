@@ -534,6 +534,8 @@ export interface RelicDef {
   hooks?: RelicHooks;
   /** For a relic that triggers every so often: how full its bar is (0..1) in the fight. It gets a chip with a filling bar. */
   progress?: (c: Combat) => number;
+  /** For a relic that waits for one trigger (once a fight or a run): whether it is still waiting. It gets a chip, lit while it waits and dimmed once spent. */
+  armed?: (c: Combat) => boolean;
   /** Runs once when the relic is obtained. */
   onGain?: (run: import('./run').RunState) => void;
 }
