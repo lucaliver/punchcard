@@ -378,6 +378,22 @@ export const mageCards: CardDef[] = [
     play: (c, v) => c.applyStatus('hero', 'flowState', 1, v[0]),
   },
   {
+    id: 'jackOfAllTrades',
+    face: '{multi}{0}',
+    cls: 'mage',
+    type: 'power',
+    rarity: 'legendary',
+    cost: 4,
+    upCost: 3,
+    vals: [10],
+    art: 'jackOfAllTrades',
+    // Playing it again must not stack the cap.
+    play: (c, v) => {
+      c.removeStatus('hero', 'jackOfAllTrades');
+      c.applyStatus('hero', 'jackOfAllTrades', v[0]);
+    },
+  },
+  {
     id: 'hustleCulture',
     face: '{hp:0}|{multi:1}',
     cls: 'mage',

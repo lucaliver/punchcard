@@ -2167,6 +2167,15 @@ describe('cards that fill the classes out', () => {
     expect(c.hero.block).toBe(base + per);
   });
 
+  it('Jack of All Trades raises the cap of Multitasking charges, and playing it twice does not stack', () => {
+    const c = quiet();
+    for (let i = 0; i < 20; i++) c.chargeMultitasking();
+    expect(c.stacks('hero', 'multitasking')).toBe(CONFIG.multitaskingMax);
+    cast(c, 'jackOfAllTrades');
+    cast(c, 'jackOfAllTrades');
+    for (let i = 0; i < 20; i++) c.chargeMultitasking();
+    expect(c.stacks('hero', 'multitasking')).toBe(CARDS.jackOfAllTrades.vals[0]);
+  });
   it('Fire Exit gives Block when it leaves the belt unplayed, Lost Badge makes the next paid card free once', () => {
     const c = quiet();
     c.addTempCard('fireExit', 'belt');

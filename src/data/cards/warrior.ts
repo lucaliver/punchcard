@@ -693,7 +693,7 @@ export const warriorCards: CardDef[] = [
     face: '{dmg:0}|{buff}×{dmg:1}',
     cls: 'warrior',
     type: 'attack',
-    rarity: 'rare',
+    rarity: 'epic',
     cost: 2,
     vals: [5, 8],
     upVals: [7, 11],

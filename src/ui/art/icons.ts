@@ -1485,6 +1485,11 @@ export const ICONS: Record<string, { el: Element; svg: string; wide?: boolean }>
     el: 'arcane',
     svg: `<path d="M4 18q7-10 14 0t14 0 14 0 14 0v8q-7-10-14 0t-14 0-14 0-14 0z"/><path d="M4 32q7-10 14 0t14 0 14 0 14 0v8q-7-10-14 0t-14 0-14 0-14 0z"/><path d="M4 46q7-10 14 0t14 0 14 0 14 0v8q-7-10-14 0t-14 0-14 0-14 0z"/>`,
   },
+  // Jack of All Trades: one worker, six arms, a tool in every hand.
+  jackOfAllTrades: {
+    el: 'arcane',
+    svg: `<circle cx="32" cy="12" r="8"/><path d="M24 22h16l3 28H21z"/><g ${S} stroke-width="4"><path d="M24 26L8 16M24 32L4 32M24 38L8 50M40 26l16-10M40 32l20 0M40 38l16 12"/></g><circle cx="7" cy="15" r="4"/><circle cx="3" cy="32" r="4"/><circle cx="7" cy="51" r="4"/><circle cx="57" cy="15" r="4"/><circle cx="61" cy="32" r="4"/><circle cx="57" cy="51" r="4"/><path d="M22 50h8v12h-8zM34 50h8v12h-8z"/>`,
+  },
   allNighter: {
     el: 'arcane',
     svg: `<path d="M8 24h34v16a14 14 0 0 1-14 14H22A14 14 0 0 1 8 40z"/><path d="M42 28h6a8 8 0 0 1 0 16h-6v-5h5a3 3 0 0 0 0-6h-5z"/><path d="M16 4h4v14h-4zM28 8h4v10h-4z"/><path fill="#16121f" d="M14 32h22v4H14z"/>`,

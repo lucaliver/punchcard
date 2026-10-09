@@ -1698,9 +1698,16 @@ export class Combat {
     }
   }
 
+  /** The most Multitasking charges the hero can hold: the base cap, or more under a status with `multiCap`. */
+  multitaskingMax(): number {
+    let cap: number = CONFIG.multitaskingMax;
+    for (const [id, s] of Object.entries(this.hero.statuses)) if (STATUSES[id].multiCap && this.has('hero', id)) cap = Math.max(cap, s.v);
+    return cap;
+  }
+
   /** One more Multitasking charge (up to the cap), with a fresh window. */
   chargeMultitasking(): void {
-    const v = Math.min(CONFIG.multitaskingMax, this.stacks('hero', 'multitasking') + 1);
+    const v = Math.min(this.multitaskingMax(), this.stacks('hero', 'multitasking') + 1);
     this.hero.statuses.multitasking = { v, t: CONFIG.multitaskingWindow };
   }
 

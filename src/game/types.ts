@@ -251,6 +251,8 @@ export interface StatusDef {
   canPlay?: (c: Combat, side: Side, def: CardDef, uid: number) => TKey | null;
   /** While active (on either side), the hero's max mana can't grow past this. */
   manaCap?: number;
+  /** While active on the hero, Multitasking can pile up to the status's amount instead of `CONFIG.multitaskingMax` (when that is more). */
+  multiCap?: true;
   /** Reacts to every card the hero plays after the status was applied (`card` = the copy that was played). */
   onCardPlayed?: (c: Combat, side: Side, def: CardDef, card: CombatCard) => void;
   /** The side carrying it just lost HP to a hit (`lost` > 0). */

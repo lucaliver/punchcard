@@ -124,6 +124,8 @@ const defs: StatusDef[] = [
   { id: 'autopilot', tone: 'blue', kind: 'timed', good: true, icon: 'autopilot', autoplay: true },
   // Flow State: Multitasking doesn't run out. Hustle Culture: a Multitasking charge every second.
   { id: 'flowState', tone: 'purple', kind: 'timed', good: true, icon: 'lotus', keeps: 'multitasking' },
+  // Jack of All Trades (a power): the amount is the most Multitasking charges the hero can hold.
+  { id: 'jackOfAllTrades', tone: 'purple', kind: 'stacks', good: true, passive: true, icon: 'bolt2', multiCap: true },
   { id: 'hustle', tone: 'purple', kind: 'timed', good: true, icon: 'bolt2', tick: everySecond((c) => c.chargeMultitasking()) },
   // Cold Sweat (a power): every Poison the hero applies also chills the enemy for `v` seconds.
   {
