@@ -1091,10 +1091,10 @@ export const ICONS: Record<string, { el: Element; svg: string; wide?: boolean }>
     el: 'steel',
     svg: `<g fill="none" stroke="currentColor" stroke-width="6" stroke-linecap="round"><path d="M32 32c0-4 6-4 6 0s-6 8-12 4-6-14 4-16 18 4 18 14-10 20-22 18-20-12-18-22"/></g><path d="M50 6l3 6 6 1-5 4 1 6-5-3-5 3 1-6-5-4 6-1z"/>`,
   },
-  // Asleep (a stunned hero): a face with closed eyes and a snore.
+  // Asleep (a stunned hero): a bed with the snore rising from the pillow.
   asleep: {
     el: 'arcane',
-    svg: `<circle cx="27" cy="38" r="23"/><g fill="none" stroke="#16121f" stroke-width="3.5" stroke-linecap="round"><path d="M12 36q5 5 10 0M32 36q5 5 10 0"/></g><ellipse cx="27" cy="49" rx="4" ry="3" fill="#16121f"/><path d="M42 4h16v5l-9 10h9v5H42v-5l9-10h-9z"/>`,
+    svg: `<rect x="3" y="28" width="7" height="32"/><rect x="54" y="40" width="7" height="20"/><rect x="10" y="44" width="44" height="9"/><rect x="13" y="36" width="15" height="9" rx="4" stroke="#16121f" stroke-width="2.5"/><path fill="none" stroke="#16121f" stroke-width="2.5" d="M32 44v9"/><g fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><path stroke-width="3" d="M14 25h7l-7 7h7"/><path stroke-width="3.5" d="M27 14h9l-9 9h9"/><path stroke-width="4" d="M43 4h12l-12 12h12"/></g>`,
   },
   thoughtBubble: {
     el: 'arcane',
