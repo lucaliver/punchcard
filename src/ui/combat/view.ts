@@ -107,6 +107,8 @@ function markup(run: RunState, combat: Combat): string {
       <div class="belt-cards"></div>
       <!-- while the hero's hands are tied (a stun): a flat veil over the belt that fades out as it ends -->
       <div class="belt-stun" aria-hidden="true"></div>
+      <!-- the stretch of the belt where an enemy's rule (Assembly Line) keeps the cards from being played yet -->
+      <div class="belt-zone" aria-hidden="true"></div>
       <!-- the IT guy's window: it covers the whole belt (shown by the HUD while the engine has one up) -->
       <div class="update-popup">
         <div class="up-bar"><span>${t('combat.update.title')}</span></div>
@@ -171,6 +173,7 @@ function queryRefs(el: HTMLElement) {
     track: $('.belt-track', el),
     beltCards: $('.belt-cards', el),
     stun: $('.belt-stun', el),
+    zone: $('.belt-zone', el),
     popup: $('.update-popup', el),
     popupText: $('.up-text', el),
     popupUpdate: $<HTMLButtonElement>('.js-update', el),

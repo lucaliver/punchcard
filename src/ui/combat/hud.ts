@@ -335,6 +335,18 @@ export function createHud(v: CombatView, onPassive: () => void): { render(): voi
     r.stun.style.setProperty('--left', (Math.ceil((combat.hero.statuses[id].t / tiedSpan) * STUN_STEPS) / STUN_STEPS).toFixed(2));
   };
 
+  /** The hatched veil over the stretch of the belt an enemy's status keeps shut (`lockedZone`), at the side the cards come in from. */
+  const renderZone = (): void => {
+    const id = combat.isOver
+      ? undefined
+      : Object.keys(combat.enemy.statuses).find((s) => combat.has('enemy', s) && STATUSES[s].lockedZone !== undefined);
+    toggle(r.zone, 'on', !!id);
+    if (!id) return;
+    r.zone.dataset.tone = STATUSES[id].tone;
+    r.zone.style.setProperty('--zone', String(STATUSES[id].lockedZone));
+    toggle(r.zone, 'ltr', v.state.ltr);
+  };
+
   const renderEnemyState = (): void => {
     const alarm = combat.isOver ? 0 : Math.floor(combat.enemyWarning() * BELT_ALARM_STEPS) / BELT_ALARM_STEPS;
     if (alarm !== beltAlarm) {
@@ -345,6 +357,7 @@ export function createHud(v: CombatView, onPassive: () => void): { render(): voi
     toggle(r.weakSpot, 'on', !!combat.weakSpot && !combat.isOver);
     renderPopup();
     renderTied();
+    renderZone();
     toggle(r.mop, 'on', combat.rustsBelt && !combat.isOver);
     toggle(r.mop, 'alarm', combat.rustAlarm && !combat.isOver);
     for (const spot of combat.rustSpots) {

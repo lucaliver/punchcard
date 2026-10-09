@@ -228,6 +228,8 @@ export interface StatusDef {
   hidesCards?: true;
   /** While active on the hero, the hero can't act: no card played by hand, no ability (stashing is still allowed). Cards still play themselves under `autoplay` (Stun). */
   handsTied?: true;
+  /** On the enemy: the share (0–1) of the belt, from where the cards come in, in which the hero's cards can't be played yet (Assembly Line). A veil marks it. */
+  lockedZone?: number;
   /** A debuff that hurts whoever carries it the same way, so the hero can hand it to the enemy (CC the Boss). */
   passable?: true;
   /** While active on the hero, its amount (`v`) adds to every tick of this damage-over-time status on the enemy (Virulent Form). */

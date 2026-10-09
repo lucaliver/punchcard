@@ -661,6 +661,7 @@ const defs: StatusDef[] = [
     good: true,
     passive: true,
     icon: 'conveyorLine',
+    lockedZone: ASSEMBLY_FROM,
     canPlay: (c, side, def, uid) => {
       const me = c.belt.find((b) => b.card.uid === uid);
       if (side !== 'enemy' || def.type === 'curse' || !me || me.pinned) return null;
