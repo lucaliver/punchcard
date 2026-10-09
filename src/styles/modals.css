@@ -442,6 +442,10 @@
 .debug-modal .actions { flex-direction: row; gap: 8px; }
 .debug-modal .actions .btn { flex: 1; min-width: 0; min-height: 44px; padding: 6px 4px; font-size: 14px; gap: 4px; }
 .debug-modal .actions .btn .riso { width: 20px; height: 20px; }
+/* the debug fight recap: label and number per line */
+.recap { display: grid; grid-template-columns: 1fr auto; gap: 4px 12px; margin: 0; }
+.recap dt { margin: 0; }
+.recap dd { margin: 0; font-family: var(--font-ui); font-size: 20px; text-align: right; }
 .debug-toast { position: fixed; width: max-content; z-index: var(--z-modal); top: 12%; }
 .debug-fight { display: flex; flex-direction: column; gap: 10px; }
 .debug-heroes button {

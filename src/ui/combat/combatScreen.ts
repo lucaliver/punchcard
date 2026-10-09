@@ -10,7 +10,7 @@ import { clockAt, currentNode, type RunState, totalFloors } from '../../game/run
 import { meetEnemy } from '../../game/meta';
 import { saveSettings, settings } from '../../game/settings';
 import { type ModalHandle, openModal, type Screen } from '../app';
-import { debugButton, openDebugMenu } from '../components/debugMenu';
+import { debugButton, openDebugMenu, openFightRecap } from '../components/debugMenu';
 import { type InfoOpts, openDeck, openInfo, openSettings } from '../components/modals';
 import { creature } from '../art/creatures';
 import { spriteBox } from '../art/riso';
@@ -147,7 +147,10 @@ export function combatScreen(run: RunState, combat: Combat, cb: CombatCallbacks)
       haptic('defeat');
     }
     // A win waits for the enemy to finish dying (longer for a boss).
-    later(() => cb.onEnd(combat), result === 'lose' ? END_MS.lose : boss ? END_MS.boss : END_MS.win);
+    later(
+      () => (settings.debugMenus ? openFightRecap(combat, () => cb.onEnd(combat)) : cb.onEnd(combat)),
+      result === 'lose' ? END_MS.lose : boss ? END_MS.boss : END_MS.win,
+    );
   };
   const unsubFx = bindCombatFx(v, cards, finish);
   // The belt has grown into the room the lower part left: the enemy's room changed, so it is measured again once the row is in.

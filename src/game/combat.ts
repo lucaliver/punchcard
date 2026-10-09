@@ -106,8 +106,21 @@ export class Combat {
   readonly relicFlags: Record<string, number>;
 
   time = 0;
-  /** Total HP the hero lost to damage in this fight (the debug log's line). */
-  damageTaken = 0;
+  /** Running totals of the fight, for the debug recap and the debug log. */
+  readonly stats = {
+    /** HP the enemy lost to hits and to damage over time (the part of it that was DoT). */
+    damageDealt: 0,
+    damageDot: 0,
+    /** Damage the enemy's Block soaked up / the hero's Block soaked up. */
+    enemyBlocked: 0,
+    heroBlocked: 0,
+    /** HP the hero lost to damage. */
+    damageTaken: 0,
+    blockGained: 0,
+    healed: 0,
+    cardsLost: 0,
+    abilities: 0,
+  };
   intro: number = CONFIG.introTime;
   result: CombatResult | null = null;
 
@@ -983,6 +996,7 @@ export class Combat {
     // A hex stays on the card through the piles until it's broken; one already cracked is gone.
     this.shedHex(card);
     card.passed = true;
+    this.stats.cardsLost++;
     if (def.sweep) card.bonus = 0;
     this.events.emit({ type: 'cardExpired', card });
     this.cheapenRandom(this.fallDiscount());
@@ -1374,6 +1388,7 @@ export class Combat {
   useAbility(): boolean {
     if (!this.abilityReady()) return false;
     this.hero.mana -= this.abilityCost();
+    this.stats.abilities++;
     this.events.emit({ type: 'ability', id: this.heroDef.ability.id });
     this.heroDef.ability.use(this);
     return true;
@@ -1478,10 +1493,15 @@ export class Combat {
     }
     const lost = Math.min(target.hp, dmg - blocked);
     target.hp -= lost;
+    if (to === 'enemy') {
+      this.stats.damageDealt += lost;
+      if (source === 'dot') this.stats.damageDot += lost;
+      this.stats.enemyBlocked += blocked;
+    } else this.stats.heroBlocked += blocked;
     this.events.emit({ type: 'damage', target: to, amount: dmg - blocked, blocked, source, hitIndex, kind: opts.kind ?? 'hit' });
     if (lost > 0) for (const [id, s] of Object.entries(target.statuses)) if (this.has(to, id)) STATUSES[id].onHurt?.(this, to, s, lost);
     if (lost > 0 && to === 'hero') {
-      this.damageTaken += lost;
+      this.stats.damageTaken += lost;
       this.hurtLog.push({ t: this.time, n: lost });
     }
 
@@ -1582,6 +1602,7 @@ export class Combat {
     if (n <= 0 || this.result) return;
     const f = this.fighter(side);
     f.block += n;
+    if (side === 'hero') this.stats.blockGained += n;
     f.blockTimer = 0;
     this.events.emit({ type: 'block', target: side, amount: n });
     if (side === 'hero') {
@@ -1602,6 +1623,7 @@ export class Combat {
     const amount = Math.min(n, f.maxHp - f.hp);
     if (amount <= 0) return 0;
     f.hp += amount;
+    if (side === 'hero') this.stats.healed += amount;
     this.events.emit({ type: 'heal', target: side, amount });
     return amount;
   }

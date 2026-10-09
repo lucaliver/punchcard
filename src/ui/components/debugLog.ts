@@ -13,13 +13,13 @@ export const resetFightLog = (): void => {
 /** One line per fight: who against whom, how long it took, the damage the hero took and what was left of its HP. */
 export function logFight(run: RunState, combat: Combat): void {
   if (!settings.debugMenus) return;
-  const { hero, enemy, time, damageTaken, result } = combat;
+  const { hero, enemy, time, stats, result } = combat;
   lines.push(
     [
       `${run.hero} vs ${enemy.def.id} (${enemy.def.tier}, act ${enemy.def.act})`,
       result ?? 'unfinished',
       `${time.toFixed(1)}s`,
-      `damage taken ${Math.round(damageTaken)}`,
+      `damage taken ${Math.round(stats.damageTaken)}`,
       `final HP ${Math.max(0, Math.round(hero.hp))}/${Math.round(hero.maxHp)}`,
     ].join(' | '),
   );
