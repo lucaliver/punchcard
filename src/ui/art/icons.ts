@@ -471,7 +471,7 @@ export const ICONS: Record<string, { el: Element; svg: string; wide?: boolean }>
   // ---- the Sushi Chef's belt (his Omakase order)
   sushiSalmon: {
     el: 'fire',
-    svg: `<rect x="6" y="36" width="52" height="20" rx="10" stroke="#16121f" stroke-width="3" stroke-linejoin="round"/><path d="M6 38C8 18 24 12 34 14c14 2 24 10 24 24z" stroke="#16121f" stroke-width="3" stroke-linejoin="round"/><path fill="none" stroke="#16121f" stroke-width="3" stroke-linecap="round" d="M18 34c4-8 8-11 13-12M32 36c4-8 8-11 14-12"/>`,
+    svg: `<rect x="6" y="40" width="52" height="16" rx="8" stroke="#16121f" stroke-width="3" stroke-linejoin="round"/><path d="M4 44V32c0-5 4-8 9-8h38c5 0 9 3 9 8v12z" stroke="#16121f" stroke-width="3" stroke-linejoin="round"/><path fill="none" stroke="#16121f" stroke-width="3.5" stroke-linecap="round" d="M16 42l8-12M28 42l8-12M40 42l8-12"/>`,
   },
   sushiPlate: {
     el: 'fire',
@@ -487,7 +487,7 @@ export const ICONS: Record<string, { el: Element; svg: string; wide?: boolean }>
   },
   sushiShrimp: {
     el: 'blood',
-    svg: `<rect x="6" y="40" width="52" height="16" rx="8" stroke="#16121f" stroke-width="3" stroke-linejoin="round"/><path d="M6 42c0-20 14-28 28-26 14 2 24 10 24 26z" stroke="#16121f" stroke-width="3" stroke-linejoin="round"/><path fill="none" stroke="#16121f" stroke-width="3" d="M18 40c0-8 4-14 10-17M30 40c0-8 4-14 12-16M42 40c0-6 2-10 7-12"/>`,
+    svg: `<rect x="4" y="42" width="44" height="14" rx="7" stroke="#16121f" stroke-width="3" stroke-linejoin="round"/><path d="M6 46C6 22 18 10 30 10c12 0 18 12 16 36z" stroke="#16121f" stroke-width="3" stroke-linejoin="round"/><path d="M44 42l16-14 2 20-14 4z" stroke="#16121f" stroke-width="3" stroke-linejoin="round"/><path fill="none" stroke="#16121f" stroke-width="3" stroke-linecap="round" d="M14 44c0-10 4-18 10-22M26 44c0-10 4-18 12-22M38 44c0-8 2-14 6-18"/><circle cx="13" cy="28" r="2.5" fill="#16121f"/>`,
   },
   sushiOnigiri: {
     el: 'steel',

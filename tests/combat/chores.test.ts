@@ -320,7 +320,8 @@ describe("the Sushi Chef's slips", () => {
     expect(plates(c)).toHaveLength(0);
     run(c, CONFIG.sushi.doneHold + 0.1);
     expect(c.chore).toBeNull();
-    expect(c.hero.hp).toBe(80);
+    // (the one wrong plate bit; the move itself never landed)
+    expect(c.hero.hp).toBe(80 - CONFIG.sushi.wrongHp);
     expect(c.has('enemy', 'stun')).toBe(true);
     expect(said).toEqual(['enemy.sushiChef.order', 'enemy.sushiChef.calm']);
     run(c, 8);
@@ -346,15 +347,17 @@ describe("the Sushi Chef's slips", () => {
     expect(c.beltRate()).toBeCloseTo(base, 5);
   });
 
-  it('a wrong plate costs seconds, up to a cap, and stays on the belt', () => {
+  it('a wrong plate costs HP and seconds (the seconds up to a cap) and stays on the belt', () => {
     const c = omakaseFight({ ...omakase, windup: 999 });
     run(c, CONFIG.introTime + 0.1);
     const order = sushiOf(c);
     const { id, plate } = stray(order);
     const piece = c.addTempCard(id, 'belt', false, 0, { plate: plate as 'pink' });
     const t0 = c.enemy.timer;
+    const hp = c.hero.hp;
     expect(c.playCard(piece.uid)).toBe(false);
     expect(c.enemy.timer).toBeCloseTo(t0 + CONFIG.sushi.penalty, 5);
+    expect(c.hero.hp).toBe(hp - CONFIG.sushi.wrongHp);
     expect(order.errors).toBe(1);
     expect(c.belt.some((b) => b.card.uid === piece.uid)).toBe(true);
     for (let i = 0; i < 10; i++) c.playCard(piece.uid);

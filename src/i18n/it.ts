@@ -829,7 +829,7 @@ const it: Record<EnKey, string> = {
     "Una finestra copre nastro e maniche mentre la mossa si carica: tre carte coperte mostrano la faccia, poi si scambiano di posto. Trova l'Aumento prima che colpisca e la mossa salta, e il nemico resta stordito per {$shellsCalm}s. Ogni carta sbagliata toglie {$shellsPenalty}s al conto alla rovescia.",
   'rule.sushi': 'Omakase',
   'rule.sushi.d':
-    "Mentre la mossa si carica il nastro serve solo sushi e lo Chef ti dà due foglietti: ognuno elenca i pezzi da mangiare, uno alla volta, un piatto su un piattino colorato. Tocca il piatto giusto sul piattino giusto, seguendo l'uno o l'altro foglietto, prima che colpisca e la mossa salta, e il nemico resta stordito per {$sushiCalm}s. Ogni piattino sbagliato toglie {$sushiPenalty}s al conto alla rovescia, e così il pezzo che ti serve se esce dal nastro. Il nastro corre più veloce a ogni pezzo mangiato. Le tue carte sul nastro e nelle maniche restano a portata di mano.",
+    "Mentre la mossa si carica il nastro serve solo sushi e lo Chef ti dà due foglietti: ognuno elenca i pezzi da mangiare, uno alla volta, un piatto su un piattino colorato. Tocca il piatto giusto sul piattino giusto, seguendo l'uno o l'altro foglietto, prima che colpisca e la mossa salta, e il nemico resta stordito per {$sushiCalm}s. Ogni piattino sbagliato ti costa {$sushiHp} PV e toglie {$sushiPenalty}s al conto alla rovescia; anche il pezzo che ti serve, se esce dal nastro, toglie i secondi. Il nastro corre più veloce a ogni pezzo mangiato. Le tue carte sul nastro e nelle maniche restano a portata di mano.",
   'rule.inflation': 'Inflazione',
   'rule.inflation.d': 'La carta costa {$inflationCost} di mana in più finché non la giochi una volta.',
   'rule.virus': 'Virus',

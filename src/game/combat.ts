@@ -1097,8 +1097,11 @@ export class Combat {
     if (r === 'wrong') {
       this.events.emit({ type: 'text', target: 'hero', key: def.sushi === 'trap' ? 'combat.sushiTrap' : 'combat.sushiWrong', tone: 'bad' });
       this.fine(order);
-      // A trap is swallowed: it bites, and it is gone. Any other wrong plate stays where it is.
-      if (def.sushi !== 'trap') return false;
+      // A trap is swallowed: it bites, and it is gone. Any other wrong plate stays where it is, and costs a little blood.
+      if (def.sushi !== 'trap') {
+        this.loseHp(CONFIG.sushi.wrongHp);
+        return false;
+      }
       this.withCard(card, def, () => def.play?.(this, this.cardVals(card), card));
     }
     this.belt = this.belt.filter((b) => b.card.uid !== card.uid);

@@ -82,6 +82,7 @@ export const VALUES = {
   shellsPenalty: CONFIG.shells.penalty,
   sushiCalm: CONFIG.sushi.calm,
   sushiPenalty: CONFIG.sushi.penalty,
+  sushiHp: CONFIG.sushi.wrongHp,
   // Rules on cards
   virusDelay: CONFIG.virusDelay,
   virusCost: CONFIG.virusCost,

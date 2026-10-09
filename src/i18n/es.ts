@@ -831,7 +831,7 @@ const es: Record<EnKey, string> = {
     'Una ventana tapa tu cinta y tus mangas mientras el movimiento se carga: tres cartas boca abajo enseñan su cara y luego se cambian de sitio. Encuentra el Aumento antes de que llegue y el movimiento se cancela, y el enemigo queda aturdido {$shellsCalm}s. Cada carta equivocada quita {$shellsPenalty}s a la cuenta atrás.',
   'rule.sushi': 'Omakase',
   'rule.sushi.d':
-    'Mientras el movimiento se carga la cinta solo sirve sushi y el Chef te da dos notas: cada una lista las piezas que comer, una tras otra, un plato en un platillo de color. Toca el plato correcto en el platillo correcto, siguiendo una nota u otra, antes de que llegue y el movimiento se cancela, y el enemigo queda aturdido {$sushiCalm}s. Cada platillo equivocado quita {$sushiPenalty}s a la cuenta atrás, y también la pieza que necesitas si se cae de la cinta. La cinta va más rápida con cada pieza comida. Tus cartas en la cinta y en las mangas siguen a mano.',
+    'Mientras el movimiento se carga la cinta solo sirve sushi y el Chef te da dos notas: cada una lista las piezas que comer, una tras otra, un plato en un platillo de color. Toca el plato correcto en el platillo correcto, siguiendo una nota u otra, antes de que llegue y el movimiento se cancela, y el enemigo queda aturdido {$sushiCalm}s. Cada platillo equivocado te cuesta {$sushiHp} PV y quita {$sushiPenalty}s a la cuenta atrás; la pieza que necesitas, si se cae de la cinta, también quita los segundos. La cinta va más rápida con cada pieza comida. Tus cartas en la cinta y en las mangas siguen a mano.',
   'rule.inflation': 'Inflación',
   'rule.inflation.d': 'La carta cuesta {$inflationCost} más de maná hasta que la juegues una vez.',
   'rule.virus': 'Virus',
