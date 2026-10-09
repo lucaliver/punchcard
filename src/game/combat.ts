@@ -519,6 +519,7 @@ export class Combat {
   beltBoost(): number {
     let r = this.mul('hero', 'beltMul');
     r *= this.rustSpeed();
+    r *= this.chore?.beltMul ?? 1;
     if (this.beltHalt > 0 || this.beltDead) r = 0;
     return r;
   }
@@ -972,8 +973,8 @@ export class Combat {
     if (card && CARDS[card.id].tall) row = 0;
     let c = card;
     // A chore can make the belt serve something else than the deck (the Sushi Chef's order).
-    const served = c ? undefined : this.chore?.serve?.(this.belt.map((b) => b.card.id));
-    if (served) c = { uid: -++this.tempUid, id: served, up: false, bonus: 0, temp: true };
+    const served = c ? undefined : this.chore?.serve?.(this.belt.map((b) => b.card));
+    if (served) c = { uid: -++this.tempUid, up: false, bonus: 0, temp: true, ...served };
     if (!c) {
       if (!this.draw.length) {
         if (!this.discard.length) return false;
@@ -997,7 +998,12 @@ export class Combat {
     if (def.sushi) {
       this.events.emit({ type: 'cardExpired', card });
       const order = this.chore;
-      if (order instanceof SushiOrder && order.phase === 'eat' && card.id === order.next && !this.belt.some((b) => b.card.id === card.id)) {
+      if (
+        order instanceof SushiOrder &&
+        order.phase === 'eat' &&
+        order.wants(card) &&
+        !this.belt.some((b) => b.card.id === card.id && b.card.plate === card.plate)
+      ) {
         this.events.emit({ type: 'text', target: 'hero', key: 'combat.sushiMissed', tone: 'bad' });
         this.fine(order);
       }
@@ -1086,7 +1092,7 @@ export class Combat {
     const order = this.chore;
     if (!(order instanceof SushiOrder) || this.result || this.begging) return false;
     const def = CARDS[card.id];
-    const r = order.eat(card.id);
+    const r = order.eat(card.id, card.plate);
     if (r === 'ignored') return false;
     if (r === 'wrong') {
       this.events.emit({ type: 'text', target: 'hero', key: def.sushi === 'trap' ? 'combat.sushiTrap' : 'combat.sushiWrong', tone: 'bad' });

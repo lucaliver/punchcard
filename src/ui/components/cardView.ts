@@ -294,6 +294,7 @@ export function cardView(card: CardLike, opts: CardViewOpts = {}): HTMLDivElemen
     'data-type': def.type,
     'data-rarity': def.rarity,
     'data-uid': card.uid,
+    'data-plate': card.plate,
     'aria-label': cardName(card),
   });
   const echo = cardKeywordsOf(card).includes('echo');

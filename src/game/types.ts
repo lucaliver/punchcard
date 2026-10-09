@@ -46,6 +46,9 @@ export interface CardHex {
 }
 
 /** A card during combat (a copy of a deck card, or a temporary one such as an enemy curse). */
+/** The colour of a plate of sushi on the Chef's belt (a pink, blue or yellow ink: `data-plate` on the card). */
+export type Plate = 'pink' | 'blue' | 'yellow';
+
 export interface CombatCard extends CardInst {
   /** Per-combat scaling (e.g. Rampage). */
   bonus: number;
@@ -66,6 +69,8 @@ export interface CombatCard extends CardInst {
   fleeting?: true;
   /** Mana the cards falling into a full sleeve have taken off its cost, until the card is next played (the Rogue's passive). */
   disc?: number;
+  /** The plate a piece of sushi comes on (the Chef's order asks for a dish on a plate). */
+  plate?: Plate;
 }
 
 /** A card as the rules and the UI read it: a deck copy, with the combat state (bonus, tax…) when it is in a fight. */

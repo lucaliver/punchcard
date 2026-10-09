@@ -826,7 +826,7 @@ const en = {
     'A window covers your belt and your sleeve while the move charges: three covered cards show their faces, then swap places. Find the Pay Raise before it lands and the move is off, and the enemy is stunned for {$shellsCalm}s. Every wrong card takes {$shellsPenalty}s off the countdown.',
   'rule.sushi': 'Omakase',
   'rule.sushi.d':
-    'The belt serves nothing but sushi while the move charges, and the Chef calls an order: the slip shows the pieces to eat, in turn. Tap them in that order before it lands and the move is off, and the enemy is stunned for {$sushiCalm}s. Every wrong piece takes {$sushiPenalty}s off the countdown. A piece that rides off the belt comes back. Your cards on the belt and in the sleeve stay in reach.',
+    'The belt serves nothing but sushi while the move charges, and the Chef hands you two slips: each lists pieces to eat in turn, a dish on a coloured plate. Tap the right dish on the right plate, following either slip, before it lands and the move is off, and the enemy is stunned for {$sushiCalm}s. Every wrong plate takes {$sushiPenalty}s off the countdown, and so does the piece you need riding off the belt. The belt runs faster with every piece eaten. Your cards on the belt and in the sleeve stay in reach.',
   'rule.inflation': 'Inflation',
   'rule.inflation.d': 'The card costs {$inflationCost} more mana until you play it once.',
   'rule.virus': 'Virus',

@@ -2,7 +2,7 @@ import type { Rng } from '../core/rng';
 import { CoffeeTask } from './coffee';
 import { ShellGame } from './shells';
 import { SushiOrder } from './sushi';
-import type { TaskId } from './types';
+import type { CombatCard, Plate, TaskId } from './types';
 
 /**
  * What every chore (`MoveDef.task`) has in common: pure state of something the hero does by hand while an enemy move charges, seeded by `combat.rng`.
@@ -14,8 +14,10 @@ export interface Chore {
   readonly phase: string;
   /** Whether its window covers the belt and the sleeve (belt cards and stashing are out of reach meanwhile). */
   readonly covers: boolean;
-  /** The card id the belt deals instead of the deck while the chore is on, given the ids riding it now; null lets the deck deal. */
-  serve?(onBelt: string[]): string | null;
+  /** The card the belt deals instead of the deck while the chore is on (its id and plate), given the cards riding it now; null lets the deck deal. */
+  serve?(onBelt: readonly CombatCard[]): { id: string; plate?: Plate } | null;
+  /** A multiplier on the belt's speed while the chore is on (the music follows it). */
+  readonly beltMul?: number;
   /** Mistakes so far, and the seconds they have cost the hero (`Combat` adds them to the move's countdown). */
   errors: number;
   fined: number;

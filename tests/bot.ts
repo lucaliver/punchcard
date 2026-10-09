@@ -102,9 +102,10 @@ export function botDecide(c: Combat, rnd: () => number, opts: BotOpts): void {
     for (let i = 0; i < 5; i++) c.playCard(hexed.card.uid);
     return;
   }
-  // The Sushi Chef's order: eat the piece the slip wants next, the one nearest the exit first (one tap per decision, then the cards go on).
+  // The Sushi Chef's slips: eat a piece a slip asks for now, the one nearest the exit first (one tap per decision, then the cards go on).
   if (c.chore instanceof SushiOrder) {
-    const piece = c.belt.filter((b) => b.card.id === (c.chore as SushiOrder).next).sort((x, y) => y.pos - x.pos)[0];
+    const order = c.chore;
+    const piece = c.belt.filter((b) => order.wants(b.card)).sort((x, y) => y.pos - x.pos)[0];
     if (piece) {
       c.playCard(piece.card.uid);
       return;

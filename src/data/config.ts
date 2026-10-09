@@ -153,17 +153,20 @@ export const CONFIG = {
     calm: 3,
   },
   /**
-   * The Sushi Chef's chore (`MoveDef.task` = 'sushi', `game/sushi.ts`): an order of `length` pieces, eaten in that order off the belt, which serves nothing but sushi meanwhile.
-   * The chance a plate dealt is a random one instead of one the order still wants starts at `decoy` and grows by `decoyRamp` for every piece eaten (up to `decoyMax`); `fugu` of those random ones
-   * are the trap, which hurts when eaten. A wrong plate, or the next piece riding off the belt, takes `penalty` s off the move's countdown (`penaltyMax` s in all); `doneHold` s the finished order is shown;
-   * done in time, the Chef is stunned `calm` s.
+   * The Sushi Chef's chore (`MoveDef.task` = 'sushi', `game/sushi.ts`): `slips` orders of `length` pieces (a dish on a coloured plate) each, eaten off the belt in the order of their slip,
+   * while the belt serves nothing but sushi and runs from `beltFrom` to `beltTo` times its speed as the pieces go. The chance a plate dealt is a random one instead of one the slips still want
+   * starts at `decoy` and grows by `decoyRamp` for every piece eaten (up to `decoyMax`); `fugu` of those random ones are the trap, which hurts when eaten. A wrong plate, or a piece asked for
+   * now riding off the belt, takes `penalty` s off the move's countdown (`penaltyMax` s in all); `doneHold` s the finished order is shown; done in time, the Chef is stunned `calm` s.
    */
   sushi: {
-    length: 6,
+    slips: 2,
+    length: 4,
     decoy: 0.3,
-    decoyRamp: 0.08,
+    decoyRamp: 0.05,
     decoyMax: 0.7,
     fugu: 0.25,
+    beltFrom: 1,
+    beltTo: 2,
     doneHold: 1.2,
     penalty: 2,
     penaltyMax: 8,

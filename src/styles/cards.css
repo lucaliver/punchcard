@@ -80,6 +80,11 @@
 .card[data-type='skill'] { --art-ray: var(--y); --art-bg: var(--cat-skill); --art-dot: var(--cat-skill-dot); --art-ink2: var(--b); --rule-ink: var(--cat-skill-ink); }
 .card[data-type='power'] { --art-bg: var(--cat-power); --art-dot: var(--cat-power-dot); --art-ink2: var(--y); --rule-ink: var(--k); }
 .card[data-type='curse'] { --art-bg: var(--cat-curse); --art-dot: var(--cat-curse-dot); --art-ink2: var(--p); --rule-ink: var(--green); }
+/* a plate of sushi: the colour of its plate fills the art (the Chef's slips name a dish and a plate), flat, with the dish on it */
+.card[data-plate='pink'] { --art-bg: var(--p); --art-dot: var(--p); --art-ink2: var(--paper); }
+.card[data-plate='blue'] { --art-bg: var(--b); --art-dot: var(--b); --art-ink2: var(--y); }
+.card[data-plate='yellow'] { --art-bg: var(--y); --art-dot: var(--y); --art-ink2: var(--paper); }
+.card[data-plate='blue'] .c-art .pico { color: var(--paper); }
 .c-art .pico {
   font-size: 34cqw;
   color: var(--k);

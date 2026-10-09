@@ -373,23 +373,26 @@
   .sh-card:not(:disabled):hover .sh-in { translate: 0 -4px; }
 }
 
-/* The Sushi Chef's order: a kitchen slip pinned over the stage's top-left corner (left of the chef), the pieces to eat in turn (the belt and the sleeve stay in reach) */
+/* The Sushi Chef's slips: pinned over the stage's top corners (the chef stands between them), the pieces to eat in turn, a dish on a coloured plate (the belt and the sleeve stay in reach) */
 .sushi-slip {
   display: none;
   position: absolute;
   top: 8px;
-  left: 8px;
   z-index: 2;
   flex-wrap: wrap;
   justify-content: center;
-  width: 108px;
-  padding: 4px 4px 6px;
+  /* two pieces a row, whatever the border is */
+  box-sizing: content-box;
+  width: calc(2 * 33px);
+  padding: 3px 3px 5px;
   color: var(--k);
   background: var(--paper);
   border: var(--line) solid var(--k);
   box-shadow: var(--off) var(--off) 0 var(--shadow);
 }
 .sushi-slip.on { display: flex; }
+.sushi-slip.s0 { left: 8px; }
+.sushi-slip.s1 { right: 8px; }
 .sushi-slip.entering { animation: stamp-in 0.15s steps(2); }
 .sushi-slip.served { animation: task-served 0.4s steps(2) 3; }
 .sushi-slip.jolt { animation: task-jolt 0.3s steps(3); }
@@ -398,16 +401,21 @@
   margin-bottom: 2px;
   text-align: center;
   font-family: var(--font-display);
-  font-size: 10px;
+  font-size: 11px;
 }
 .ss-piece {
   position: relative;
   display: grid;
   place-items: center;
-  width: 32px;
-  height: 32px;
+  width: 33px;
+  height: 33px;
   font-size: 26px;
+  color: var(--k);
+  --ink2: var(--paper);
 }
+.ss-piece[data-plate='pink'] { background: var(--p); }
+.ss-piece[data-plate='blue'] { background: var(--b); color: var(--paper); --ink2: var(--y); }
+.ss-piece[data-plate='yellow'] { background: var(--y); }
 /* eaten: struck through and faded */
 .ss-piece.eaten { opacity: 0.4; }
 .ss-piece.eaten::after {
@@ -417,14 +425,14 @@
   right: 2px;
   top: calc(50% - 2px);
   height: 4px;
-  background: var(--p);
+  background: var(--k);
   rotate: -30deg;
 }
-.ss-piece.next {
-  outline: 3px solid var(--y);
-  outline-offset: -1px;
+.ss-piece.next:not(.eaten) {
+  outline: 3px solid var(--k);
+  outline-offset: -3px;
   animation: ss-next 0.6s steps(2) infinite;
 }
 @keyframes ss-next {
-  50% { outline-color: var(--k); }
+  50% { outline-color: var(--paper); }
 }
