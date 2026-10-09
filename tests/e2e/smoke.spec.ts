@@ -490,10 +490,16 @@ test('closing the game on the reward screen keeps the same offers for Continue, 
   expect(await offers()).toBeUndefined();
 });
 
-test('debug menus are off by default, and the Settings switch shows them at once', async ({ page }) => {
+test('debug menus are off by default, the switch appears after 5 taps on the version, and shows them at once', async ({ page }) => {
   await freshGame(page, { debug: false });
   await expect(page.locator('.debug-fab')).toBeHidden();
   await page.getByRole('button', { name: /settings/i }).click();
+  const sw = page.getByRole('switch', { name: 'Debug menus' });
+  await expect(sw).toBeHidden();
+  for (let i = 0; i < 4; i++) await page.locator('.version').click();
+  await expect(sw).toBeHidden();
+  await page.locator('.version').click();
+  await expect(sw).toBeVisible();
   await page.getByRole('switch', { name: 'Debug menus' }).click();
   await page.getByRole('button', { name: 'Close' }).click();
   await expect(page.locator('.debug-fab')).toBeVisible();

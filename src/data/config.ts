@@ -14,6 +14,8 @@ export const CONFIG = {
   hapticGap: 30,
   /** Milliseconds a press must last to count as "hold to inspect" (every screen). */
   longPressMs: 350,
+  /** Taps on the version line in Settings that reveal the Debug menus switch. */
+  debugTaps: 5,
   /** The hero's portrait sweats under this share of max HP. */
   heroLowHp: 0.3,
   /** An enemy tenses up before its move lands: from this many seconds left (or half the wind-up, if shorter) it winds up, and from `hard` it shakes harder and rims pink. */

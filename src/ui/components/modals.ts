@@ -2,6 +2,7 @@ import { availableLocales, getLocale, setLocale, type TKey, t } from '../../core
 import { setSfxVolume, sfx } from '../../audio/sfx';
 import { setMusicVolume } from '../../audio/music';
 import { CARDS, RARITY_ORDER, cardCostOf } from '../../data/cards';
+import { CONFIG } from '../../data/config';
 import { saveSettings, settings } from '../../game/settings';
 import type { CardInst, CardType } from '../../game/types';
 import { clearAll } from '../../core/save';
@@ -66,13 +67,38 @@ export function openSettings(extra: ModalAction[] = [], home = false): ModalHand
         }),
       )
     : null;
-  if (version) onTapOrHold(version, () => {}, openResetConfirm, cssMs('--dur-hold'));
   const analyticsRow = toggleRow(
     t('settings.analytics'),
     () => settings.analytics,
     (v) => (settings.analytics = v),
     t('settings.analyticsHint'),
   );
+  const debugRow = toggleRow(
+    t('settings.debugMenus'),
+    () => settings.debugMenus,
+    (v) => {
+      settings.debugMenus = v;
+      // Testing must not pollute the stats: debug turns them off (the switch can still be turned back on).
+      if (v) {
+        settings.analytics = false;
+        analyticsRow.querySelector('.switch')?.setAttribute('aria-checked', 'false');
+      }
+      // The screens behind this window are already built: show or hide their debug buttons now.
+      for (const b of document.querySelectorAll<HTMLElement>('.debug-fab')) b.hidden = !v;
+    },
+  );
+  debugRow.hidden = !settings.debugMenus;
+  // Debug menus stay hidden until the version line is tapped `CONFIG.debugTaps` times.
+  let taps = 0;
+  if (version)
+    onTapOrHold(
+      version,
+      () => {
+        if (++taps >= CONFIG.debugTaps) debugRow.hidden = false;
+      },
+      openResetConfirm,
+      cssMs('--dur-hold'),
+    );
   const body = h(
     'div',
     null,
@@ -134,20 +160,7 @@ export function openSettings(extra: ModalAction[] = [], home = false): ModalHand
         )
       : null,
     analyticsRow,
-    toggleRow(
-      t('settings.debugMenus'),
-      () => settings.debugMenus,
-      (v) => {
-        settings.debugMenus = v;
-        // Testing must not pollute the stats: debug turns them off (the switch can still be turned back on).
-        if (v) {
-          settings.analytics = false;
-          analyticsRow.querySelector('.switch')?.setAttribute('aria-checked', 'false');
-        }
-        // The screens behind this window are already built: show or hide their debug buttons now.
-        for (const b of document.querySelectorAll<HTMLElement>('.debug-fab')) b.hidden = !v;
-      },
-    ),
+    debugRow,
     version,
   );
   return openModal({

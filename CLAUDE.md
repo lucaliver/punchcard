@@ -116,7 +116,7 @@ dev/           art.html, og.html, map-editor.html (dev server only)
 - Tap = act, **hold = inspect** (`onPress`, `onTapOrHold`, `CONFIG.longPressMs`); inspecting pauses the fight (`view.inspect`). Tap targets ≥ 44 px. Modals close on a full tap on the backdrop, never on pointerdown.
 - Desktop: above 560 px wide the column gets a poster frame (`shell.css`); hover feedback only under `(hover: hover) and (pointer: fine)`. Mouse: right click on a card inspects it. Keys in a fight (`onKey`, `combatScreen.ts`): Space/P/Esc pause (Space/P also resume), Space/Enter start, A ability, D deck, 1-9 sleeve slot; open windows keep their own keys (Esc closes them).
 - An uncaught error opens the *Machine jam* window (`catchCrashes` in `main.ts`); catch expected rejections yourself.
-- Debug menus show only with the Settings switch `debugMenus`; they are temporary.
+- Debug menus show only with the Settings switch `debugMenus` (hidden until the home screen's version line is tapped `CONFIG.debugTaps` times); they are temporary.
 
 ## CSS
 
