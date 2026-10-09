@@ -174,7 +174,7 @@ export function openDebugFight(onPick: (hero: HeroId, enemy: string, cards: stri
   let handle: ModalHandle | null = null;
   const list = h('div', { class: 'debug-foes' });
   // A tap starts the fight, a hold shows the enemy's sheet.
-  const foeButtons = [...ENEMY_LIST, DEBUG_ENEMY].map((e) => {
+  const foeButtons = [DEBUG_ENEMY, ...ENEMY_LIST].map((e) => {
     const btn = h('button', {
       class: 'debug-foe',
       'data-enemy': e.id,
