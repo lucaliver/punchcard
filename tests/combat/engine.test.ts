@@ -223,7 +223,7 @@ describe('combat engine', () => {
     c.addTempCard('kamikaze', 'belt');
     run(c, (CONFIG.beltTime * EXPIRE_POS) / c.beltRate() + 0.5);
     expect(c.sleeve[0]?.uid).toBe(kept.uid);
-    expect(c.hero.hp).toBe(200 - 99);
+    expect(c.hero.hp).toBe(200 - CARDS.kamikaze.vals[1]);
   });
 
   it('enemy resolves its telegraphed move after the wind-up', () => {

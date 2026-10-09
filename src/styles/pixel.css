@@ -26,6 +26,8 @@
 }
 /* a wide icon is drawn on a 2:1 grid */
 .pico.wide { width: 2em; }
+/* Its art is not built yet (boot draws it in the background): the slot is kept, the icon fills in. */
+.pico[data-art-icon] { visibility: hidden; }
 .pico::before,
 .pico::after {
   content: '';

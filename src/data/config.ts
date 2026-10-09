@@ -25,7 +25,7 @@ export const CONFIG = {
   /** Milliseconds between the end of the fight and leaving it (the enemy finishes dying). */
   endMs: { lose: 1500, win: 2200, boss: 3400 },
   /** Beg to stay (the first time a run's hero would be let go): the Dodge seconds, the Strength and the mana crystals it brings back. */
-  beg: { dodge: 5, strength: 5, crystals: 1 },
+  beg: { dodge: 10, strength: 10, crystals: 1 },
   /** Runs the handbook's history keeps (the newest). */
   historyMax: 30,
   /** Debug fight option: the hero's HP. */

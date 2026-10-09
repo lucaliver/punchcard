@@ -233,21 +233,56 @@ async function buildMask(svgBody: string, size: number, wide: boolean): Promise<
 export const SPRITE_RES = 64;
 export const ICON_RES = 20;
 
+/** Art not built yet, by `c:<id>` / `i:<id>`: each entry builds one sprite or icon. */
+const queue = new Map<string, () => Promise<void>>();
+/** Art a screen asked for before it was built: the next batch builds these first. */
+const wanted = new Set<string>();
+/** Art built per batch: small enough that the first screens appear (and the page stays responsive) while the rest is still being drawn. */
+const BATCH = 16;
+
 /**
- * Builds every sprite and icon once at boot; the UI then uses them synchronously.
+ * Builds every sprite and icon once, in the background: the first screen opens at once and what it asked for is built first.
+ * Until then `sprite`/`pixelIcon` give a placeholder that is filled in as soon as its art exists (`fill*`).
  * The vector sources are passed in (not imported) so this renderer doesn't depend on the art modules,
- * which themselves use it: no import cycle.
+ * which themselves use it: no import cycle. The promise resolves when everything is built.
  */
 export async function preloadArt(src: { creatures: Record<string, string>; icons: Record<string, { svg: string; wide?: boolean }> }): Promise<void> {
-  const jobs: Promise<void>[] = [];
   for (const [id, body] of Object.entries(src.creatures)) {
-    jobs.push(buildSprite(body, SPRITE_RES).then((s) => void sprites.set(id, s)));
+    queue.set(`c:${id}`, () => buildSprite(body, SPRITE_RES).then((s) => void (sprites.set(id, s), fillSprites(id, s))));
   }
   for (const [id, ic] of Object.entries(src.icons)) {
     if (ic.wide) wideIcons.add(id);
-    jobs.push(buildMask(ic.svg, ICON_RES, !!ic.wide).then((m) => void masks.set(id, m)));
+    queue.set(`i:${id}`, () => buildMask(ic.svg, ICON_RES, !!ic.wide).then((m) => void (masks.set(id, m), fillIcons(id, m))));
   }
-  await Promise.all(jobs);
+  while (queue.size) {
+    const keys = [...wanted].filter((k) => queue.has(k));
+    for (const k of queue.keys()) if (keys.length < BATCH && !keys.includes(k)) keys.push(k);
+    const jobs = keys.slice(0, BATCH).map((k) => {
+      const job = queue.get(k)!;
+      queue.delete(k);
+      wanted.delete(k);
+      return job();
+    });
+    await Promise.all(jobs);
+    await new Promise((resolve) => setTimeout(resolve));
+  }
+}
+
+const attr = (name: string, id: string): string => `[${name}="${CSS.escape(id)}"]`;
+
+function fillIcons(id: string, mask: string): void {
+  for (const el of document.querySelectorAll<HTMLElement>(attr('data-art-icon', id))) {
+    el.style.setProperty('--m', `url('${mask}')`);
+    el.classList.toggle('wide', wideIcons.has(id));
+    el.removeAttribute('data-art-icon');
+  }
+}
+
+function fillSprites(id: string, s: Sprite): void {
+  for (const el of document.querySelectorAll<HTMLElement>(attr('data-art-sprite', id))) {
+    el.innerHTML = spriteLayers(s);
+    el.removeAttribute('data-art-sprite');
+  }
 }
 
 /** Where a creature's drawing sits inside its square (see `Sprite.box`). */
@@ -256,12 +291,20 @@ export const spriteBox = (id: string): Sprite['box'] => sprites.get(id)?.box ?? 
 /** HTML for a creature sprite (stack of ink layers). */
 export function sprite(id: string, cls = ''): string {
   const s = sprites.get(id);
-  if (!s) return `<div class="riso ${cls}"></div>`;
-  // Ink layers stay in perfect register on sprites (misregistration is kept for icons and type only).
+  if (!s) {
+    if (!queue.has(`c:${id}`)) return `<div class="riso ${cls}"></div>`;
+    wanted.add(`c:${id}`);
+    return `<div class="riso ${cls}" aria-hidden="true" data-art-sprite="${id}"></div>`;
+  }
+  return `<div class="riso ${cls}" aria-hidden="true">${spriteLayers(s)}</div>`;
+}
+
+/** The sprite's stack of ink layers. Ink layers stay in perfect register on sprites (misregistration is kept for icons and type only). */
+function spriteLayers(s: Sprite): string {
   const layers = INK_ORDER.filter((k) => s.layers[k])
     .map((k) => `<img class="ink ink-${k}" src="${s.layers[k]}" alt="" draggable="false">`)
     .join('');
-  return `<div class="riso ${cls}" aria-hidden="true"><img class="ink ink-W" src="${s.base}" alt="" draggable="false">${layers}</div>`;
+  return `<img class="ink ink-W" src="${s.base}" alt="" draggable="false">${layers}`;
 }
 
 /** Draws a creature sprite on a canvas (share images): the paper base, then the inks multiplied over it. */
@@ -298,6 +341,10 @@ export async function drawIcon(g: CanvasRenderingContext2D, id: string, x: numbe
 
 /** HTML for a pixel icon, tinted by CSS `color` (with a misregistered shadow in `--ink2`). */
 export function pixelIcon(id: string, cls = ''): string {
+  if (!masks.has(id) && queue.has(`i:${id}`)) {
+    wanted.add(`i:${id}`);
+    return `<i class="pico ${wideIcons.has(id) ? 'wide ' : ''}${cls}" aria-hidden="true" data-art-icon="${id}"></i>`;
+  }
   const m = masks.get(id) ?? masks.get('star');
   return `<i class="pico ${wideIcons.has(id) ? 'wide ' : ''}${cls}" aria-hidden="true" style="--m:url('${m}')"></i>`;
 }

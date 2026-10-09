@@ -342,8 +342,8 @@ async function boot(): Promise<void> {
   // Browsers only allow audio after a user gesture.
   addEventListener('pointerdown', unlockAudio, { passive: true });
   addEventListener('keydown', unlockAudio);
-  // Pixel art is generated from the vector sources once, before the first screen.
-  await preloadArt({ creatures: { ...CREATURES, ...RELIC_SPRITES, ...ROOM_SPRITES, ...PROP_SPRITES }, icons: ICONS });
+  // Pixel art is generated from the vector sources once, in the background: the first screen opens at once and gets its art as it is built.
+  void preloadArt({ creatures: { ...CREATURES, ...RELIC_SPRITES, ...ROOM_SPRITES, ...PROP_SPRITES }, icons: ICONS });
   // The employment contract only until it's signed (then the studio's card); afterwards the game opens on the title.
   if (contractSigned()) goTitle();
   else if (!settings.localeChosen) show(languageScreen());
