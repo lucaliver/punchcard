@@ -455,18 +455,19 @@ const TRACKS: Record<TrackId, Track> = {
     crackle: true,
     gain: 0.8,
   },
-  // Phrygian dread: hammering E bass, tritone turnaround, dissonant riff.
+  // Final-boss assault: Phrygian dread at a gallop. A double-kick drum bed, a relentless 16th-note bass and arp,
+  // the lead on every phrase and a wall of pads, tritone turnaround and all.
   boss: {
-    bpm: 156,
+    bpm: 172,
     chords: [
       { root: 40, tones: MIN }, // Em
       { root: 41, tones: MAJ }, // F
       { root: 40, tones: MIN }, // Em
       { root: 34, tones: MAJ }, // Bb (tritone)
     ],
-    bass: [0, 0, 12, 0, 0, 12, 0, 0, 0, 0, 12, 0, 1, 0, 12, 0],
+    bass: [0, 0, 12, 0, 0, 12, 0, 0, 0, 0, 12, 0, 1, 12, 0, 12],
     bassWave: 'pulse',
-    arp: [2, _, 1, _, 0, _, 1, _, 2, _, 1, _, 0, _, 1, _],
+    arp: [2, 1, 0, 1, 2, 1, 0, 1, 2, 1, 0, 1, 2, 1, 0, 1],
     arpOctave: 5,
     lead: [
       [
@@ -499,11 +500,11 @@ const TRACKS: Record<TrackId, Track> = {
         [12, E5, 4],
       ],
     ],
-    leadOn: (p) => p % 2 === 1,
+    leadOn: () => true,
     leadVoice: 'pulse',
-    drums: ['k..k..k.k..k..k.', '....s.......s..s', 'hhhhhhhhhhhhhhhh'],
-    pad: false,
-    gain: 0.75,
+    drums: ['k.kkk.k.k.kkk.kk', '....s.......s.ss', 'hhhhhhhhhhhhhhhh', '..............tt'],
+    pad: true,
+    gain: 0.8,
   },
   // Elite: a dark war march in C minor. Heavy half-time drums, a droning pulse bass with a tritone
   // sting, choir-like pads and a slow, heroic lead over a Neapolitan (Db) turn.

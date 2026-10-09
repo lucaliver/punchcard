@@ -277,6 +277,64 @@
 /* the way into a fight: one office door seen from the corridor, in the act's colours. The enemy hangs framed on it, under a brass plate.
    The door waits `--dur-door-read` for the name to be read, then three knocks shake the door (sfx 'door'), the latch turns, the leaf swings open on its left hinge onto the lit room (it narrows towards the
    hinge, stepped), then we walk through: the whole scene grows and fades. */
+/* a boss's title card: bars slam in from both sides, the name drops between them, then the whole card fades */
+.boss-intro {
+  position: absolute;
+  inset: 0;
+  z-index: var(--z-overlay);
+  overflow: hidden;
+  pointer-events: none;
+  animation: bi-life var(--dur-boss-intro) steps(1) forwards;
+}
+@keyframes bi-life {
+  85% { opacity: 1; }
+  92% { opacity: 0.5; }
+  100% { opacity: 0; }
+}
+.bi-bar {
+  position: absolute;
+  left: -10%;
+  right: -10%;
+  height: 20%;
+  background: var(--k);
+  border-block: 6px solid var(--p);
+  rotate: -5deg;
+}
+.bi-bar.top { top: 22%; animation: bi-from-left 0.4s steps(5) both; }
+.bi-bar.bot { top: 52%; animation: bi-from-right 0.4s steps(5) both; }
+@keyframes bi-from-left { from { translate: -120% 0; } }
+@keyframes bi-from-right { from { translate: 120% 0; } }
+.bi-name {
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 41%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  text-align: center;
+  rotate: -5deg;
+  animation: bi-slam 0.35s steps(4) 0.4s both;
+}
+.bi-name small { font-family: var(--font-display); font-size: 14px; letter-spacing: 3px; color: var(--y); }
+.bi-name b {
+  font-family: var(--font-display);
+  font-size: 34px;
+  line-height: 1;
+  color: var(--paper);
+  text-shadow: 3px 3px 0 var(--p), -2px 0 0 var(--k), 0 2px 0 var(--k);
+}
+@keyframes bi-slam { from { scale: 2.4; opacity: 0; } 60% { scale: 0.92; opacity: 1; } }
+/* the boss itself looms up out of the dark while its card is up */
+.enemy-art.boss-enter { animation: boss-loom var(--dur-boss-intro) steps(1) forwards; }
+@keyframes boss-loom {
+  0% { filter: brightness(0); transform: scale(1.25); }
+  20% { filter: brightness(0); transform: scale(1.15); }
+  45% { filter: brightness(0.4); transform: scale(1.08); }
+  70% { filter: none; transform: scale(1.04); }
+  100% { filter: none; transform: none; }
+}
 .office-door {
   position: absolute;
   inset: 0;

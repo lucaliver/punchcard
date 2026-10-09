@@ -126,6 +126,8 @@
   --dur-fall: 400ms;
   --dur-slip: 350ms;
   --dur-door-read: 1000ms;
+  /* the boss's title card after the door (script removes it when its animation ends) */
+  --dur-boss-intro: 2200ms;
   --dur-swap-fly: 350ms;
   --dur-swap-gone: 200ms;
   /** extra time the bonus card of a skipped reward stays up to be read */

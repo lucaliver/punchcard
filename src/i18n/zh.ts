@@ -300,6 +300,7 @@ const zh: Record<EnKey, string> = {
 
   // -------------------------------------------------------------- combat
   'combat.fight': '开工！',
+  'combat.bossIntro': '突击审计',
   'combat.timeCard': '考勤卡',
   'combat.clockIn': '上班 {time}',
   'combat.clockOut': '下班 {time}',

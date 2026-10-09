@@ -423,6 +423,33 @@ export function combatScreen(run: RunState, combat: Combat, cb: CombatCallbacks)
   };
   el.append(debugButton(t('debug.menu'), openDebug));
 
+  /** A boss walks in with a title card: two bars slam across the screen, its name stamped between them, and the room shakes. */
+  const bossIntro = (): void => {
+    const card = h(
+      'div',
+      { class: 'boss-intro', 'aria-hidden': 'true' },
+      h('div', { class: 'bi-bar top' }),
+      h('div', { class: 'bi-bar bot' }),
+      h('div', { class: 'bi-name' }, h('small', null, t('combat.bossIntro')), h('b', null, t(`enemy.${combat.enemy.def.id}.name`))),
+    );
+    card.addEventListener('animationend', (e) => {
+      if (e.target === card) card.remove();
+    });
+    el.append(card);
+    r.enemyArt.classList.add('boss-enter');
+    // Class off when done, or it would outrank the death throes later.
+    r.enemyArt.addEventListener(
+      'animationend',
+      (e) => {
+        if (e.target === r.enemyArt) r.enemyArt.classList.remove('boss-enter');
+      },
+      { once: true },
+    );
+    sfx('bossBlast');
+    shake('big');
+    haptic('alarm');
+  };
+
   /** The very first fight: before Start, a tour of the board, one part at a time. */
   const firstFightTour = (): void => {
     // Clock in only comes up as the tour's last step.
@@ -530,7 +557,8 @@ export function combatScreen(run: RunState, combat: Combat, cb: CombatCallbacks)
       door.addEventListener('animationend', (e) => {
         if (e.target !== door) return;
         door.remove();
-        if (!settings.seenTutorial) firstFightTour();
+        if (combat.enemy.def.tier === 'boss') bossIntro();
+        else if (!settings.seenTutorial) firstFightTour();
       });
       el.append(door);
       // The sound is the knocking: it waits while the name is read.
