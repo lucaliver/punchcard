@@ -174,7 +174,7 @@
   animation: stun-jitter 0.3s steps(1) infinite;
 }
 .belt-stun.on { display: block; }
-/* The stretch of the belt an enemy's rule keeps shut (Assembly Line): hazard stripes crawling toward the open half, a solid edge where the cards become playable.
+/* The stretch of the belt an enemy's rule keeps shut (Assembly Line): still hazard stripes, a solid edge where the cards become playable.
    The cards stay readable under it. It sits on the side the cards come in from (right when the belt runs right to left). */
 .belt-zone {
   display: none;
@@ -187,15 +187,10 @@
   pointer-events: none;
   border-left: 3px solid var(--tone);
   background: repeating-linear-gradient(135deg, var(--tone) 0 6px, transparent 6px 18px);
-  background-size: 25.46px 25.46px;
   opacity: 0.28;
-  animation: zone-crawl 0.8s steps(4) infinite;
 }
 .belt-zone.on { display: block; }
-.belt-zone.ltr { right: auto; left: 0; border-left: 0; border-right: 3px solid var(--tone); animation-direction: reverse; }
-@keyframes zone-crawl {
-  to { background-position: 25.46px 0; }
-}
+.belt-zone.ltr { right: auto; left: 0; border-left: 0; border-right: 3px solid var(--tone); }
 @keyframes stun-jitter {
   0% { background-position: 0 0; }
   33% { background-position: 2px -1px; }

@@ -73,7 +73,7 @@ function relicView(r: RelicDef): HTMLElement {
   const seen = relicSeen(r.id);
   return h('article', {
     class: `relic-line${seen ? '' : ' undiscovered'}`,
-    'data-rarity': seen ? r.rarity : 'unknown',
+    'data-rarity': r.rarity,
     html: `<i class="relic-gem"></i>${relicArt(r.id)}<div><b>${seen ? t(`relic.${r.id}.name`) : UNKNOWN}</b>${seen ? t(`relic.${r.id}.d`, { n: r.n }) : UNKNOWN}</div>`,
   });
 }
