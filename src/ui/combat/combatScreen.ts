@@ -274,10 +274,16 @@ export function combatScreen(run: RunState, combat: Combat, cb: CombatCallbacks)
   onPress(r.portrait, deckInfo);
   onPress(r.intent, moveInfo);
   onPress(r.intentNext, moveInfo);
+  // Holding the enemy itself or its HP bar opens the same window as its move bar (a tap does nothing: they sit by the belt).
+  onTapOrHold(r.enemyArt, () => {}, moveInfo);
+  onTapOrHold(r.eHp, () => {}, moveInfo);
   // The weak spot answers on touch-down, not on release: it only stays up for a couple of seconds.
+  r.weakSpot.addEventListener('click', (ev) => ev.stopPropagation());
   bindMop(v);
   bindCrank(v);
-  r.weakSpot.addEventListener('pointerdown', () => {
+  r.weakSpot.addEventListener('pointerdown', (ev) => {
+    // The spot sits on the enemy's art: a touch on it must not start the art's hold-to-inspect.
+    ev.stopPropagation();
     if (state.paused || state.waiting || state.ended || !combat.hitWeakSpot()) return;
     haptic('hit');
   });
