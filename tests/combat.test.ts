@@ -1869,6 +1869,15 @@ describe('run maps', () => {
       }
   });
 
+  it('open act 1 with two fights and then always a special room, on the shared road', () => {
+    for (const nodes of maps) {
+      const road = nodes.filter((n) => n.act === 1 && n.lane === 0.5 && n.type !== 'boss');
+      expect(road.map((n) => n.floor)).toEqual([1, 2, 3]);
+      expect(road.map((n) => n.type === 'fight')).toEqual([true, true, false]);
+      expect(SPECIALS).toContain(road[2].type);
+    }
+  });
+
   it('never offer two choices of the same kind of room', () => {
     for (const nodes of [...maps, newRun('warrior', 1, [1, 2, 3]).nodes])
       for (const n of nodes.filter((m) => m.next.length > 1)) {

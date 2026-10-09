@@ -89,12 +89,10 @@ const LANES: Slot[][] = [
 export const SPECIALS: NodeType[] = ['copy', 'tailor', 'lostFound', 'vending', 'crossTraining'];
 /** Rooms that show up once in a whole run, however many acts it has. */
 const ONCE_PER_RUN: NodeType[] = ['tailor'];
-/** Floors on a single road at the start of act 1, before the map splits in two (then the lanes skip as many floors). */
+/** Floors on a single road at the start of act 1, before the map splits in two (then the lanes skip as many floors). The last of them is always a special room. */
 const ACT1_OPENING = 3;
 /** Links between the lanes per act: diagonal (to the other lane one floor up) or flat (across the same floor, both ways). */
 const LINKS = 2;
-/** Times an act's layout is dealt again looking for one with no two equal choices. */
-const MAX_DEALS = 200;
 export const ACTS = ACT_DEFS.length;
 
 /** Seed of the very first run: its map is always the same, with the enemies in order of difficulty. */
@@ -215,80 +213,91 @@ type Cell = [row: number, side: number];
 /** A one-way road between two rooms of the lanes. */
 type Road = [from: Cell, to: Cell];
 
-/**
- * The lanes of an act and the roads between their rooms: both lanes' floors, a few one-way links between the lanes, and now and then a cut road.
- * Dealt again until no room offers two choices of the same kind (a special slot is always a different room from any other).
- */
-function dealLayout(rng: Rng, opening: number): { lanes: Slot[][]; roads: Road[] } {
-  const deal = (): { lanes: Slot[][]; roads: Road[] } => {
-    const lanes = rng.shuffle(LANES.map((l) => l.slice(opening - 1)));
-    for (let i = 0; i < lanes[0].length - 1; i++) if (rng.next() < CONFIG.laneSwap) [lanes[0][i], lanes[1][i]] = [lanes[1][i], lanes[0][i]];
-    const n = lanes[0].length;
-    const roads: Road[] = [];
-    for (let i = 1; i < n; i++)
-      for (const side of [0, 1])
-        roads.push([
-          [i - 1, side],
-          [i, side],
-        ]);
-    // A few one-way links between the lanes, never on neighbouring floors, so no two lines ever cross or touch.
-    const floors: number[] = [];
-    for (const i of rng.shuffle([...Array(n - 1).keys()])) if (floors.length < LINKS && floors.every((f) => Math.abs(f - i) > 1)) floors.push(i);
-    for (const i of floors) {
-      const side = rng.next() < 0.5 ? 0 : 1;
-      if (rng.next() < 0.5)
-        roads.push([
-          [i, side],
-          [i + 1, 1 - side],
-        ]);
-      else {
-        // Flat: across the floor either way (a node already visited can't be entered again).
-        roads.push(
-          [
-            [i, side],
-            [i, 1 - side],
-          ],
-          [
-            [i, 1 - side],
-            [i, side],
-          ],
-        );
-      }
-    }
-    // Now and then one road between two floors is cut: its lane is crossed over, down the other lane and back (the long way round).
-    // Both crossings are one-way, so no room is ever a dead end.
-    if (rng.next() < CONFIG.roadCut) {
-      const i = rng.shuffle([...Array(n - 1).keys()]).find((f) => floors.every((l) => Math.abs(l - f) > 1));
-      if (i !== undefined) {
-        const side = rng.next() < 0.5 ? 0 : 1;
-        const cut = roads.findIndex(([f, t]) => f[0] === i && f[1] === side && t[0] === i + 1 && t[1] === side);
-        roads.splice(cut, 1);
-        roads.push(
-          [
-            [i, side],
-            [i, 1 - side],
-          ],
-          [
-            [i + 1, 1 - side],
-            [i + 1, side],
-          ],
-        );
-      }
-    }
-    return { lanes, roads };
-  };
-  const clashes = ({ lanes, roads }: { lanes: Slot[][]; roads: Road[] }): boolean => {
-    const same = (a: Cell, b: Cell): boolean => lanes[a[1]][a[0]] === lanes[b[1]][b[0]] && lanes[a[1]][a[0]] !== 'special';
-    if (same([0, 0], [0, 1])) return true;
-    return roads.some(([from, to], i) => roads.some(([f2, t2], j) => j > i && f2[0] === from[0] && f2[1] === from[1] && same(to, t2)));
-  };
-  let layout = deal();
-  for (let tries = 0; tries < MAX_DEALS && clashes(layout); tries++) layout = deal();
-  return layout;
+/** True when a room offers two choices of the same kind (a special slot is always a different room from any other), or the lanes open on two equal rooms. */
+function clashes(lanes: Slot[][], roads: Road[]): boolean {
+  const same = (a: Cell, b: Cell): boolean => lanes[a[1]][a[0]] === lanes[b[1]][b[0]] && lanes[a[1]][a[0]] !== 'special';
+  if (same([0, 0], [0, 1])) return true;
+  return roads.some(([from, to], i) => roads.some(([f2, t2], j) => j > i && f2[0] === from[0] && f2[1] === from[1] && same(to, t2)));
 }
 
 /**
- * One act appended to `nodes`: a shared road (one fight; three floors in act 1), two lanes linked a couple of times, and the
+ * The lanes of an act and the roads between their rooms: both lanes' floors, a few one-way links between the lanes, and now and then a cut road.
+ * Built clean: a link or a cut that would give a room two choices of the same kind is simply not a candidate, so there is nothing to deal again.
+ */
+function dealLayout(rng: Rng, opening: number): { lanes: Slot[][]; roads: Road[] } {
+  const lanes = rng.shuffle(LANES.map((l) => l.slice(opening - 1)));
+  for (let i = 0; i < lanes[0].length - 1; i++) if (rng.next() < CONFIG.laneSwap) [lanes[0][i], lanes[1][i]] = [lanes[1][i], lanes[0][i]];
+  const n = lanes[0].length;
+  let roads: Road[] = [];
+  for (let i = 1; i < n; i++)
+    for (const side of [0, 1])
+      roads.push([
+        [i - 1, side],
+        [i, side],
+      ]);
+  // A few one-way links between the lanes, never on neighbouring floors, so no two lines ever cross or touch. Diagonal: to the other lane
+  // one floor up. Flat: across the same floor, both ways (a node already visited can't be entered again).
+  const links: { floor: number; add: Road[] }[] = [];
+  for (let i = 0; i < n - 1; i++)
+    for (const side of [0, 1])
+      links.push(
+        {
+          floor: i,
+          add: [
+            [
+              [i, side],
+              [i + 1, 1 - side],
+            ],
+          ],
+        },
+        {
+          floor: i,
+          add: [
+            [
+              [i, side],
+              [i, 1 - side],
+            ],
+            [
+              [i, 1 - side],
+              [i, side],
+            ],
+          ],
+        },
+      );
+  const floors: number[] = [];
+  for (const link of rng.shuffle(links)) {
+    if (floors.length >= LINKS || !floors.every((f) => Math.abs(f - link.floor) > 1)) continue;
+    if (clashes(lanes, [...roads, ...link.add])) continue;
+    roads.push(...link.add);
+    floors.push(link.floor);
+  }
+  // Now and then one road between two floors is cut: its lane is crossed over, down the other lane and back (the long way round).
+  // Both crossings are one-way, so no room is ever a dead end.
+  if (rng.next() < CONFIG.roadCut) {
+    const cuts = [...Array(n - 1).keys()].flatMap((i) => [0, 1].map((side) => ({ i, side })));
+    for (const { i, side } of rng.shuffle(cuts)) {
+      if (!floors.every((l) => Math.abs(l - i) > 1)) continue;
+      const cut: Road[] = [
+        [
+          [i, side],
+          [i, 1 - side],
+        ],
+        [
+          [i + 1, 1 - side],
+          [i + 1, side],
+        ],
+      ];
+      const rest = roads.filter(([f, t]) => !(f[0] === i && f[1] === side && t[0] === i + 1 && t[1] === side));
+      if (clashes(lanes, [...rest, ...cut])) continue;
+      roads = [...rest, ...cut];
+      break;
+    }
+  }
+  return { lanes, roads };
+}
+
+/**
+ * One act appended to `nodes`: a shared road (one fight; in act 1 two fights and a special room), two lanes linked a couple of times, and the
  * boss where they meet. `last` are the nodes of the act before (they lead to its first fight). Returns the boss.
  */
 function addAct(nodes: RunNode[], rng: Rng, act: number, last: RunNode[], taken: readonly NodeType[] = []): RunNode[] {
@@ -321,7 +330,7 @@ function addAct(nodes: RunNode[], rng: Rng, act: number, last: RunNode[], taken:
   let road = add(1, 0.5, 'fight');
   for (const n of last) n.next.push(road.id);
   for (let f = 2; f <= opening; f++) {
-    const n = add(f, 0.5, 'fight');
+    const n = add(f, 0.5, act === 1 && f === opening ? 'special' : 'fight');
     road.next.push(n.id);
     road = n;
   }
