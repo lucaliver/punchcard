@@ -85,11 +85,33 @@
 .card[data-plate='blue'] { --art-bg: var(--b); --art-dot: var(--b); --art-ink2: var(--y); }
 .card[data-plate='yellow'] { --art-bg: var(--y); --art-dot: var(--y); --art-ink2: var(--paper); }
 .card[data-plate='blue'] .c-art .pico { color: var(--paper); }
+
 .c-art .pico {
   font-size: 34cqw;
   color: var(--k);
   --ink2: var(--art-ink2, var(--p));
 }
+
+/* a card's own painting (art/cardArt.ts): kept out of sight until the Card art debug switch puts `card-art` on the page; it then takes the icon's place. Its black outline is drawn in, the offset ink is the type colour like the icon's */
+.c-art[data-pic] { position: relative; }
+.cart { display: none; }
+.card-art .c-art[data-pic] > .pico { display: none; }
+.card-art .c-art[data-pic] > .cart {
+  display: block;
+  position: absolute;
+  inset: 0;
+  background: var(--pic) center / 100% 100% no-repeat;
+  image-rendering: pixelated;
+  filter: drop-shadow(1.7cqw 1.7cqw 0 var(--art-ink2, var(--p)));
+}
+/* a large card's picture is twice as wide as high, placed like its wide icon: centred, and over both belt places when joined */
+.card-art .c-art[data-pic] > .cart.wide { inset: auto; top: calc(50% - 0.5em); left: calc(50% - 1em); width: 2em; height: 1em; font-size: 40cqw; }
+.card-art .card.joined > .c-art > .cart.wide {
+  top: 0;
+  left: calc((var(--cw) + var(--join-dir) * (var(--cw) * var(--join) + var(--bw))) / 2 - var(--bw) - 1em);
+  font-size: 42cqw;
+}
+.card-art .sleeve-slot .card.joined > .c-art > .cart.wide { top: calc(50% - 0.5em); left: calc(50% - 1em); font-size: 40cqw; }
 
 .c-face {
   position: relative;

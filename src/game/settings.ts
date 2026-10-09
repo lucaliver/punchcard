@@ -16,6 +16,8 @@ export interface Settings {
   seenTips: string[];
   /** Shows the floating debug buttons (title, fight, map). */
   debugMenus: boolean;
+  /** Debug: shows the cards' own paintings (`art/cardArt.ts`) in place of their icons, where a card has one. */
+  cardArt: boolean;
   /** Sends anonymous play counters (`src/analytics/`). */
   analytics: boolean;
 }
@@ -31,6 +33,7 @@ const defaults: Settings = {
   seenTutorial: false,
   seenTips: [],
   debugMenus: false,
+  cardArt: false,
   analytics: true,
 };
 
@@ -41,7 +44,7 @@ for (const k of ['sfxVolume', 'musicVolume'] as const) {
   settings[k] = typeof v === 'number' && Number.isFinite(v) ? Math.min(1, Math.max(0, v)) : defaults[k];
 }
 
-for (const k of ['reduceMotion', 'haptics', 'localeChosen', 'seenTutorial', 'debugMenus', 'analytics'] as const)
+for (const k of ['reduceMotion', 'haptics', 'localeChosen', 'seenTutorial', 'debugMenus', 'cardArt', 'analytics'] as const)
   if (typeof settings[k] !== 'boolean') settings[k] = defaults[k];
 if (!GAME_SPEEDS.some((s) => s === settings.speed)) settings.speed = defaults.speed;
 if (typeof settings.locale !== 'string') settings.locale = defaults.locale;

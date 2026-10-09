@@ -46,8 +46,9 @@ import { settings } from './game/settings';
 import type { HeroId } from './game/types';
 import { confirmModal, initApp, openModal, type Screen, show } from './ui/app';
 import { h } from './ui/dom';
-import { openDebugFight, openDebugMenu } from './ui/components/debugMenu';
+import { applyCardArt, openDebugFight, openDebugMenu } from './ui/components/debugMenu';
 import { initFx } from './ui/fx/fx';
+import { CARD_ART } from './ui/art/cardArt';
 import { preloadArt } from './ui/art/riso';
 import { CREATURES } from './ui/art/creatures';
 import { RELIC_SPRITES } from './ui/art/relics';
@@ -335,6 +336,7 @@ async function boot(): Promise<void> {
   setMusicVolume(settings.musicVolume);
   document.addEventListener('visibilitychange', () => suspendMusic(document.hidden));
   document.documentElement.classList.toggle('reduce-motion', settings.reduceMotion);
+  applyCardArt();
   const root = document.getElementById('app')!;
   initApp(root);
   catchCrashes();
@@ -343,7 +345,7 @@ async function boot(): Promise<void> {
   addEventListener('pointerdown', unlockAudio, { passive: true });
   addEventListener('keydown', unlockAudio);
   // Pixel art is generated from the vector sources once, in the background: the first screen opens at once and gets its art as it is built.
-  void preloadArt({ creatures: { ...CREATURES, ...RELIC_SPRITES, ...ROOM_SPRITES, ...PROP_SPRITES }, icons: ICONS });
+  void preloadArt({ creatures: { ...CREATURES, ...RELIC_SPRITES, ...ROOM_SPRITES, ...PROP_SPRITES }, icons: ICONS, scenes: CARD_ART });
   // The employment contract only until it's signed (then the studio's card); afterwards the game opens on the title.
   if (contractSigned()) goTitle();
   else if (!settings.localeChosen) show(languageScreen());

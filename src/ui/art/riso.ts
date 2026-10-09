@@ -42,34 +42,41 @@ const sw = (full: Ink[], half: Ink[] = []): Swatch => {
   return { full, half, rgb: half.length ? (a.map((v, i) => (v + b[i]) / 2) as [number, number, number]) : a };
 };
 
-const SWATCHES: Swatch[] = [
+/** Every ink and overprint the renderer can print, by name (W paper; O orange, G green, V violet, X near-black, R maroon, N navy: overprints; t = a light tint; two letters = a solid ink with another screened over it). */
+const NAMED = {
   // Solid inks and overprints.
-  sw([]),
-  sw(['Y']),
-  sw(['P']),
-  sw(['B']),
-  sw(['K']),
-  sw(['Y', 'P']),
-  sw(['Y', 'B']),
-  sw(['P', 'B']),
-  sw(['Y', 'P', 'B']),
-  sw(['P', 'K']),
-  sw(['B', 'K']),
+  W: sw([]),
+  Y: sw(['Y']),
+  P: sw(['P']),
+  B: sw(['B']),
+  K: sw(['K']),
+  O: sw(['Y', 'P']),
+  G: sw(['Y', 'B']),
+  V: sw(['P', 'B']),
+  X: sw(['Y', 'P', 'B']),
+  R: sw(['P', 'K']),
+  N: sw(['B', 'K']),
   // Halftones: a light tint of one ink, or a solid ink with a second ink screened over it.
-  sw([], ['Y']),
-  sw([], ['P']),
-  sw([], ['B']),
-  sw([], ['K']),
-  sw([], ['Y', 'P']),
-  sw([], ['P', 'B']),
-  sw(['Y'], ['B']),
-  sw(['Y'], ['P']),
-  sw(['P'], ['B']),
-  sw(['B'], ['P']),
-  sw(['P'], ['Y']),
-  sw(['B'], ['K']),
-  sw(['P'], ['K']),
-];
+  tY: sw([], ['Y']),
+  tP: sw([], ['P']),
+  tB: sw([], ['B']),
+  tK: sw([], ['K']),
+  tO: sw([], ['Y', 'P']),
+  tV: sw([], ['P', 'B']),
+  YB: sw(['Y'], ['B']),
+  YP: sw(['Y'], ['P']),
+  PB: sw(['P'], ['B']),
+  BP: sw(['B'], ['P']),
+  PY: sw(['P'], ['Y']),
+  BK: sw(['B'], ['K']),
+  PK: sw(['P'], ['K']),
+} satisfies Record<string, Swatch>;
+const SWATCHES: Swatch[] = Object.values(NAMED);
+/** The same swatches as CSS colours: hand-drawn card art uses these so every fill lands exactly on an ink (a colour in between would be snapped to the nearest). */
+export const PAL = Object.fromEntries(Object.entries(NAMED).map(([k, v]) => [k, `rgb(${v.rgb.map(Math.round).join(',')})`])) as Record<
+  keyof typeof NAMED,
+  string
+>;
 
 function nearest(r: number, g: number, b: number): Swatch {
   let best = SWATCHES[0];
@@ -103,6 +110,9 @@ const sprites = new Map<string, Sprite>();
 const masks = new Map<string, string>();
 /** Icons drawn on a 128×64 grid: twice as wide as high (the large cards' art spans their two belt places). */
 const wideIcons = new Set<string>();
+/** Card pictures (a card's own painting, built at boot like the icons), and the wide ones. */
+const scenes = new Map<string, string>();
+const wideScenes = new Set<string>();
 
 function loadImage(src: string): Promise<HTMLImageElement> {
   return new Promise((resolve, reject) => {
@@ -233,6 +243,39 @@ async function buildMask(svgBody: string, size: number, wide: boolean, attempt =
   return upscale(c, 4);
 }
 
+/** Card pictures are 56 pixels wide on a 160-unit drawing grid; a wide one (a large card's) is twice as wide as it is high. */
+const SCENE_W = 56;
+const SCENE_H = 24;
+const SCENE_WIDE_H = 28;
+
+/** Rasterises a card picture (a 160×68 drawing, 160×80 when `wide`) to chunky riso pixels: the nearest ink for each, a checkerboard where it is a halftone, transparent where nothing is drawn (its black outlines are part of the drawing). */
+async function buildScene(svgBody: string, wide: boolean, attempt = 0): Promise<string> {
+  const h = wide ? SCENE_WIDE_H : SCENE_H;
+  const img = await loadSvg(
+    `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 160 ${wide ? 80 : 68}" width="${SCENE_W}" height="${h}" shape-rendering="crispEdges">${svgBody}</svg>`,
+  );
+  const [c, g] = canvas(SCENE_W, h);
+  g.drawImage(img, 0, 0, SCENE_W, h);
+  const im = g.getImageData(0, 0, SCENE_W, h);
+  const d = im.data;
+  let drawn = false;
+  for (let i = 0; i < SCENE_W * h; i++) {
+    if (d[i * 4 + 3] < 128) {
+      d[i * 4 + 3] = 0;
+      continue;
+    }
+    drawn = true;
+    const s = nearest(d[i * 4], d[i * 4 + 1], d[i * 4 + 2]);
+    const x = i % SCENE_W;
+    const y = (i - x) / SCENE_W;
+    const [r, gg, b] = mix((x + y) % 2 === 0 ? [...s.full, ...s.half] : s.full);
+    [d[i * 4], d[i * 4 + 1], d[i * 4 + 2], d[i * 4 + 3]] = [r, gg, b, 255];
+  }
+  if (!drawn && attempt < REDRAWS) return buildScene(svgBody, wide, attempt + 1);
+  g.putImageData(im, 0, 0);
+  return upscale(c, 4);
+}
+
 /** Times a blank drawing is tried again before it is believed. */
 const REDRAWS = 3;
 export const SPRITE_RES = 64;
@@ -251,7 +294,11 @@ const BATCH = 16;
  * The vector sources are passed in (not imported) so this renderer doesn't depend on the art modules,
  * which themselves use it: no import cycle. The promise resolves when everything is built.
  */
-export async function preloadArt(src: { creatures: Record<string, string>; icons: Record<string, { svg: string; wide?: boolean }> }): Promise<void> {
+export async function preloadArt(src: {
+  creatures: Record<string, string>;
+  icons: Record<string, { svg: string; wide?: boolean }>;
+  scenes?: Record<string, { svg: string; wide?: boolean }>;
+}): Promise<void> {
   for (const [id, body] of Object.entries(src.creatures)) {
     queue.set(`c:${id}`, () =>
       buildSprite(body, SPRITE_RES).then((s) => {
@@ -266,6 +313,15 @@ export async function preloadArt(src: { creatures: Record<string, string>; icons
       buildMask(ic.svg, ICON_RES, !!ic.wide).then((m) => {
         masks.set(id, m);
         fillIcons(id, m);
+      }),
+    );
+  }
+  for (const [id, sc] of Object.entries(src.scenes ?? {})) {
+    if (sc.wide) wideScenes.add(id);
+    queue.set(`p:${id}`, () =>
+      buildScene(sc.svg, !!sc.wide).then((url) => {
+        scenes.set(id, url);
+        fillScenes(id, url);
       }),
     );
   }
@@ -290,6 +346,13 @@ function fillIcons(id: string, mask: string): void {
     el.style.setProperty('--m', `url('${mask}')`);
     el.classList.toggle('wide', wideIcons.has(id));
     el.removeAttribute('data-art-icon');
+  }
+}
+
+function fillScenes(id: string, url: string): void {
+  for (const el of document.querySelectorAll<HTMLElement>(attr('data-art-scene', id))) {
+    el.style.setProperty('--pic', `url('${url}')`);
+    el.removeAttribute('data-art-scene');
   }
 }
 
@@ -362,4 +425,14 @@ export function pixelIcon(id: string, cls = ''): string {
   }
   const m = masks.get(id) ?? masks.get('star');
   return `<i class="pico ${wideIcons.has(id) ? 'wide ' : ''}${cls}" aria-hidden="true" style="--m:url('${m}')"></i>`;
+}
+
+/** HTML for a card's own picture (`.cart`, laid over the card's icon and shown instead of it while the card-art switch is on); empty for a card that has none. */
+export function cardScene(id: string): string {
+  const wide = wideScenes.has(id) ? ' wide' : '';
+  const url = scenes.get(id);
+  if (url) return `<i class="cart${wide}" aria-hidden="true" style="--pic:url('${url}')"></i>`;
+  if (!queue.has(`p:${id}`)) return '';
+  wanted.add(`p:${id}`);
+  return `<i class="cart${wide}" aria-hidden="true" data-art-scene="${id}"></i>`;
 }

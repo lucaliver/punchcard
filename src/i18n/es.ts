@@ -133,6 +133,7 @@ const es: Record<EnKey, string> = {
   'debug.unlocked': 'Todo desbloqueado',
   'debug.bigHp': 'Empezar con {n} PV',
   'debug.allCards': 'Añadir 1 de cada carta',
+  'debug.cardArt': 'Arte de las cartas',
   'debug.unlockAll': 'Desbloquear todo',
   'debug.menu': 'Menú de depuración',
   'debug.fightMenu': 'Depuración: combate',

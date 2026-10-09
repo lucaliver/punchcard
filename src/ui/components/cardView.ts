@@ -6,6 +6,7 @@ import type { Combat } from '../../game/combat';
 import type { CardInst, CardLike, Side, Tone } from '../../game/types';
 import { h } from '../dom';
 import { icon } from '../art/icons';
+import { cardScene } from '../art/riso';
 
 const KEYWORD_LINE = ['innate', 'pending', 'exhaust', 'consume', 'fleeting', 'volatile', 'unplayable', 'large', 'echo', 'anchor'];
 export const TAG_ICON: Record<string, string> = {
@@ -302,9 +303,10 @@ export function cardView(card: CardLike, opts: CardViewOpts = {}): HTMLDivElemen
     .map((id) => icon(id))
     .join('');
   const lines = def.face.split('|').length;
+  const pic = cardScene(def.id);
   el.innerHTML = `
     <div class="c-top"><div class="c-cost ${card.perks?.some((p) => PERKS[p]?.costDelta) ? 'cheap' : ''}">${cardCostLabel(card)}</div><div class="c-name ${nameFit(cardName(card))}">${cardName(card)}</div></div>
-    <div class="c-art">${icon(def.art)}</div>
+    <div class="c-art"${pic ? ' data-pic' : ''}>${icon(def.art)}${pic}</div>
     <div class="c-face ${lines > 1 ? 'two' : ''}">${echo ? `<i class="c-wave l">${icon('echoWave')}</i><i class="c-wave r">${icon('echoWave')}</i>` : ''}<div class="c-body">${cardFace(card, opts.combat)}</div></div>
     ${tags ? `<div class="c-tags">${tags}</div>` : ''}
     <div class="c-gem"></div>`;

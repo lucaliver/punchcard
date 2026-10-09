@@ -71,7 +71,7 @@ src/
   data/        config (all tuning), acts, statuses, heroes, enemies, perks, hexes, relics, modifiers, coffee (the Coffee Machine's drinks and coins), values, cards/<class>.ts
   game/        combat (engine), chore (the shared shape of a chore) with coffee and shells, run (map graph, rewards, save), meta (discoveries, unlocks, records, act stamps), settings, types
   ui/          app (screens, modals), dom
-    art/       icons (64×64), creatures (200×200), relics (200×200 stationery sprites), rooms (200×200 picture of each room, and the props of the contract screen and the studio mark: `PROP_SPRITES`), actArt (the skyline behind each act's map title, and the animated scene of its intro), riso (pixel renderer)
+    art/       icons (64×64), creatures (200×200), relics (200×200 stationery sprites), rooms (200×200 picture of each room, and the props of the contract screen and the studio mark: `PROP_SPRITES`), actArt (the skyline behind each act's map title, and the animated scene of its intro), riso (pixel renderer), cardArt (the cards' own paintings: one 160×68 vector per card, printed 56 pixels wide; the Warrior's so far)
     combat/    view, hud, cardLayer, mop, crank, taskFrame (the window every chore shares), coffeeWindow, shellWindow, combatFx, combatScreen
     components/ cardView, cardShow, coach, modals, memos, debugMenu, room, moveText, heroSheet, shareSlip, decor, reviewModal, runDetail
     fx/        particles, floating text, shake, haptics
@@ -93,7 +93,7 @@ dev/           art.html, og.html, map-editor.html (dev server only)
 
 ## Adding content: checklists
 
-- **Card** (`data/cards/<class>.ts`): record + `card.<id>.name`/`.desc` in every language + its own art (rule icons are shared only within one concept). `face` grammar: `{kind:i}` icon + value · `{kind}` icon · `{?kind}` condition ("if", in brackets) · `{*kind}` trigger ("every time", a loop icon) · `{i}` bare value · `|` new line; kinds in `GLYPHS` (`cardView.ts`). `desc`: `{i}` values, `[kw]` keywords (need `kw.<kw>` and `kw.<kw>.d`). Keywords that change the engine are in `Keyword` (`types.ts`); glossary-only ones just need `kw.*` strings. Special mechanics (`ride`, `onOverflow`, `tip`, `sweep`, `costDrop`, `inSleeve`, `span`/`tall`/`lockRow`, `large`, `pack`…) are documented on `CardDef`.
+- **Card** (`data/cards/<class>.ts`): record + `card.<id>.name`/`.desc` in every language + its own art (rule icons are shared only within one concept; a Warrior card also gets a painting in `art/cardArt.ts`, which replaces the icon while the Card art debug switch is on). `face` grammar: `{kind:i}` icon + value · `{kind}` icon · `{?kind}` condition ("if", in brackets) · `{*kind}` trigger ("every time", a loop icon) · `{i}` bare value · `|` new line; kinds in `GLYPHS` (`cardView.ts`). `desc`: `{i}` values, `[kw]` keywords (need `kw.<kw>` and `kw.<kw>.d`). Keywords that change the engine are in `Keyword` (`types.ts`); glossary-only ones just need `kw.*` strings. Special mechanics (`ride`, `onOverflow`, `tip`, `sweep`, `costDrop`, `inSleeve`, `span`/`tall`/`lockRow`, `large`, `pack`…) are documented on `CardDef`.
   - A card's `type` is the colour of its background: attack pink, defense blue, skill yellow, power grey, curse green (`--cat-*`, `data-type`). There are no other types: rules name a type ("every attack") and the player sees it on the card.
   - Cost, keywords and values of a copy always come from `cardCostOf`/`cardKeywordsOf`/`cardValsOf`; set `dmg: []` only for raw damage that ignores modifiers.
   - Rarities: common, rare, epic, legendary (`special` only for cards a fight generates). Basic cards of the starter decks are common with `starterOnly` (never a reward, a vending drop or a cross-training offer).
@@ -116,7 +116,7 @@ dev/           art.html, og.html, map-editor.html (dev server only)
 - Tap = act, **hold = inspect** (`onPress`, `onTapOrHold`, `CONFIG.longPressMs`); inspecting pauses the fight (`view.inspect`). Tap targets ≥ 44 px. Modals close on a full tap on the backdrop, never on pointerdown.
 - Desktop: above 560 px wide the column gets a poster frame (`shell.css`); hover feedback only under `(hover: hover) and (pointer: fine)`. Mouse: right click on a card inspects it. Keys in a fight (`onKey`, `combatScreen.ts`): Space/P/Esc pause (Space/P also resume), Space/Enter start, A ability, D deck, 1-9 sleeve slot; open windows keep their own keys (Esc closes them).
 - An uncaught error opens the *Machine jam* window (`catchCrashes` in `main.ts`); catch expected rejections yourself.
-- Debug menus show only with the Settings switch `debugMenus` (hidden until the home screen's version line is tapped `CONFIG.debugTaps` times); they are temporary.
+- Debug menus show only with the Settings switch `debugMenus` (hidden until the home screen's version line is tapped `CONFIG.debugTaps` times); they are temporary. Their Card art switch (`settings.cardArt`, `card-art` on the root) swaps the cards' icons for their paintings at runtime.
 
 ## CSS
 

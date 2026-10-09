@@ -132,6 +132,7 @@ const en = {
   'debug.unlocked': 'Everything unlocked',
   'debug.bigHp': 'Start with {n} HP',
   'debug.allCards': 'Add 1 of every card',
+  'debug.cardArt': 'Card art',
   'debug.unlockAll': 'Unlock all',
   'debug.menu': 'Debug menu',
   'debug.fightMenu': 'Debug: fight',

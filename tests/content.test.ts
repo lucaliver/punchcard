@@ -22,6 +22,7 @@ import { STATUS_ORDER, STATUSES } from '../src/data/statuses';
 import { GLYPHS, TAG_ICON } from '../src/ui/components/cardView';
 import { RULES, moveTone } from '../src/ui/components/moveText';
 import { ICONS, INTENT_ICON } from '../src/ui/art/icons';
+import { CARD_ART } from '../src/ui/art/cardArt';
 import { RELIC_SPRITES } from '../src/ui/art/relics';
 import { ROOM_SPRITES } from '../src/ui/art/rooms';
 import { ROOM_SCENE } from '../src/ui/components/room';
@@ -200,6 +201,18 @@ describe('content integrity', () => {
       expect(rules.has(c.art), `${c.id} uses the rule icon ${c.art}`).toBe(false);
       seen.set(c.art, c.id);
     }
+  });
+
+  it('a card painting belongs to a real card, a large card has a wide one, and every Warrior card has one', () => {
+    for (const [id, p] of Object.entries(CARD_ART)) {
+      const def = CARD_LIST.find((c) => c.id === id);
+      expect(def, `${id}: a painting for no card`).toBeTruthy();
+      expect(!!p.wide, `${id}: a large card's painting is wide, no other is`).toBe(!!def?.keywords?.includes('large'));
+      expect(p.svg.includes('<defs>'), `${id}: missing gradient defs`).toBe(true);
+      const used = [...p.svg.matchAll(/url\(#(\w+)\)/g)].map((m) => m[1]);
+      for (const u of used) expect(p.svg.includes(`id="${u}"`), `${id}: gradient ${u} is not defined`).toBe(true);
+    }
+    for (const c of CARD_LIST.filter((c) => c.cls === 'warrior')) expect(CARD_ART[c.id], `${c.id}: no painting yet`).toBeTruthy();
   });
 
   it('a hero whose passive is a status points at a real, timed one that drains', () => {

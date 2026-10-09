@@ -7,7 +7,7 @@ import { DEBUG_ENEMY, ENEMY_LIST } from '../../data/enemies';
 import { HERO_LIST } from '../../data/heroes';
 import { RELIC_LIST } from '../../data/relics';
 import { heroHidden, unlockAll } from '../../game/meta';
-import { settings } from '../../game/settings';
+import { saveSettings, settings } from '../../game/settings';
 import type { HeroId } from '../../game/types';
 import { openModal, type ModalHandle } from '../app';
 import { keywordText } from './cardView';
@@ -18,6 +18,31 @@ import { foeView } from './moveText';
 import { creature } from '../art/creatures';
 import { haptic } from '../fx/fx';
 import { icon } from '../art/icons';
+
+/** Puts the card-art switch on the page (`card-art` on the root: the cards' own paintings take the icons' place). */
+export function applyCardArt(): void {
+  document.documentElement.classList.toggle('card-art', settings.cardArt);
+}
+
+/** Temporary debug tool: the card-art switch, at runtime (every card on screen changes at once). */
+function cardArtSwitch(cls: string): HTMLButtonElement {
+  const btn = h(
+    'button',
+    {
+      class: cls,
+      'aria-pressed': String(settings.cardArt),
+      onclick: () => {
+        settings.cardArt = !settings.cardArt;
+        saveSettings();
+        applyCardArt();
+        btn.setAttribute('aria-pressed', String(settings.cardArt));
+        sfx('tap');
+      },
+    },
+    t('debug.cardArt'),
+  );
+  return btn;
+}
 
 /** Temporary debug tool: the small floating bug button that opens a debug menu (placed per screen by `.debug-fab`). */
 export function debugButton(label: string, onClick: () => void): HTMLButtonElement {
@@ -55,6 +80,7 @@ export function openDebugMenu(title: string, items: { label: string; icon: strin
           h('span', null, it.label),
         ),
       ),
+      cardArtSwitch('btn small secondary debug-switch'),
     ),
     actions: [{ label: t('common.close'), cls: 'secondary' }],
     onClose,
@@ -100,7 +126,7 @@ export function openDebugFight(onPick: (hero: HeroId, enemy: string, cards: stri
     },
     t('debug.allCards'),
   );
-  const options = h('div', { class: 'debug-options' }, hpBtn, allBtn);
+  const options = h('div', { class: 'debug-options' }, hpBtn, allBtn, cardArtSwitch('btn small secondary'));
   const renderHeroes = (): void => {
     heroSeg.replaceChildren(
       ...HERO_LIST.filter((hd) => !heroHidden(hd.id)).map((hd) =>
