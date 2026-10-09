@@ -130,7 +130,7 @@ export function titleScreen(cb: TitleCallbacks): Screen {
   rate.append(h('span', null, t('rate.banner')), stars.el);
 
   // After the very first run: a note pointing at the handbook; opening it (or a tap on the note) is the last time it shows.
-  const hint = h('button', { class: 'handbook-hint', hidden: !handbookHintDue() }, icon('book'), h('span', null, t('menu.handbookHint')));
+  const hint = h('button', { class: 'handbook-hint', hidden: !handbookHintDue(), html: `${icon('book')}<span>${t('menu.handbookHint')}</span>` });
   const dismissHint = (): void => {
     hint.hidden = true;
     markHandbookSeen();

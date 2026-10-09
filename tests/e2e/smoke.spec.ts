@@ -770,6 +770,47 @@ test("the Boss's coffee: a chore window covers the belt and the sleeve; pay, key
   expect(problems).toEqual([]);
 });
 
+test('after the first run the home points at the handbook, once', async ({ page }) => {
+  const problems = await freshGame(page);
+  const hint = page.locator('.handbook-hint');
+  await expect(hint).toBeHidden();
+  await page.evaluate(() => {
+    const meta = JSON.parse(localStorage.getItem('cardstone+:meta') ?? '{}');
+    meta.history = [
+      {
+        hero: 'warrior',
+        result: 'lose',
+        act: 1,
+        floor: 2,
+        kills: 1,
+        cards: 5,
+        pay: 10,
+        elites: 0,
+        damageTaken: 9,
+        memos: 0,
+        deck: [{ id: 'punch', up: false }],
+        relics: [],
+        time: 30,
+        begged: false,
+        at: Date.now(),
+      },
+    ];
+    localStorage.setItem('cardstone+:meta', JSON.stringify(meta));
+  });
+  await page.reload();
+  await expect(hint).toBeVisible();
+  // The icon is drawn, not printed as markup.
+  await expect(hint.locator('.pico')).toHaveCount(1);
+  await expect(hint).not.toContainText('<i');
+  await page
+    .locator('.menu')
+    .getByRole('button', { name: /handbook/i })
+    .click();
+  await page.reload();
+  await expect(hint).toBeHidden();
+  expect(problems).toEqual([]);
+});
+
 test('handbook history: tapping a run opens its payslip, stationery and deck', async ({ page }) => {
   const problems = await freshGame(page);
   await page.evaluate(() => {
