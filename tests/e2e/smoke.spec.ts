@@ -16,6 +16,15 @@ test('title, hero select and journey render without errors', async ({ page }) =>
   expect(problems).toEqual([]);
 });
 
+test('the poster boss and the icons are there when the home opens straight after a reload', async ({ page }) => {
+  const problems = await freshGame(page);
+  await page.reload();
+  await expect(page.locator('.title-screen')).toBeVisible();
+  await expect(page.locator('.poster-boss img.ink-W')).toBeVisible();
+  await expect(page.locator('[data-art-sprite], [data-art-icon]')).toHaveCount(0);
+  expect(problems).toEqual([]);
+});
+
 test('a tab left open for a day asks for a reload on the home', async ({ page }) => {
   const problems = await freshGame(page);
   const banner = page.locator('.stale-banner');

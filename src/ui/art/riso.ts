@@ -272,13 +272,13 @@ export async function preloadArt(src: { creatures: Record<string, string>; icons
   while (queue.size) {
     const keys = [...wanted].filter((k) => queue.has(k));
     for (const k of queue.keys()) if (keys.length < BATCH && !keys.includes(k)) keys.push(k);
-    const jobs = keys.slice(0, BATCH).map((k) => {
-      const job = queue.get(k)!;
+    const batch = keys.slice(0, BATCH);
+    // An entry leaves the queue only once it is built: until then a screen drawn in the meantime still gets a placeholder to fill in.
+    await Promise.all(batch.map((k) => queue.get(k)!().catch((e) => console.warn(`art ${k} failed`, e))));
+    for (const k of batch) {
       queue.delete(k);
       wanted.delete(k);
-      return job().catch((e) => console.warn(`art ${k} failed`, e));
-    });
-    await Promise.all(jobs);
+    }
     await new Promise((resolve) => setTimeout(resolve));
   }
 }
