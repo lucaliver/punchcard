@@ -1,7 +1,7 @@
 # Punchcard — technical guide
 
 Real-time conveyor-belt deckbuilder for mobile browsers (portrait): a fantasy adventure run as a factory job, with a bit
-of social satire. [README.md](README.md) is the owner's short overview of the game (Italian, no numbers, no content lists: balancing never touches it).
+of social satire. [README.md](README.md) is the owner's feature overview (Italian, no numbers: balancing never touches it).
 This file holds the rules and the map of the code: read it before changing anything.
 [docs/MECHANICS.md](docs/MECHANICS.md) says how each mechanic fits together across files: read the section of the mechanic you touch.
 Field-by-field details live in the doc comments of `src/game/types.ts` and of the modules: don't copy them here.
