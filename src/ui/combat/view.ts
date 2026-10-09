@@ -86,7 +86,7 @@ function markup(run: RunState, combat: Combat): string {
     </section>
     <!-- right above the belt: your HP, Block and statuses stay in view while you play -->
     <section class="hero-row">
-      <div class="hero-portrait">${creature(heroId)}<i class="snore" aria-hidden="true">${icon('zzz')}</i></div>
+      <div class="hero-portrait">${creature(heroId)}<i class="snore" aria-hidden="true">${icon('zzz')}</i><div class="rims"></div><div class="relic-peek"></div></div>
       <div class="hero-info">
         <div class="statuses js-hstatus"></div>
         <div class="hpline">
@@ -154,6 +154,7 @@ function queryRefs(el: HTMLElement) {
     hBlock: $('.js-hblock', el),
     hStatus: $('.js-hstatus', el),
     portrait: $('.hero-portrait', el),
+    relicPeek: $('.relic-peek', el),
     ability: $<HTMLButtonElement>('.js-ability', el),
     pause: $<HTMLButtonElement>('.js-pause', el),
     manaRow: $('.mana-row', el),

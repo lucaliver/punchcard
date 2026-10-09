@@ -141,7 +141,8 @@ export function combatScreen(run: RunState, combat: Combat, cb: CombatCallbacks)
       timeCard('out', clockText(clockAt(run, { ...currentNode(run), floor: currentNode(run).floor + 1 })));
       if (!boss) sfx('victory');
     } else {
-      // Fired: the payslip on the end screen says the rest.
+      // Fired: the hero goes down, and the payslip on the end screen says the rest.
+      r.portrait.classList.add('down');
       sfx('defeat');
       haptic('defeat');
     }

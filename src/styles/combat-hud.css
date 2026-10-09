@@ -341,3 +341,64 @@
 .enemy-info .statuses { height: 32px; }
 /* a dead enemy's statuses are gone (hidden, so the row keeps its height) */
 .enemy-info .statuses.gone { visibility: hidden; }
+
+/* status rims on the frame, stacked inside one another (poison 2px, burn 4px, vulnerable 6px: each shows past the thinner ones) */
+.hero-portrait .rims { position: absolute; inset: 0; z-index: 1; pointer-events: none; box-shadow: var(--r-poison, 0 0 transparent), var(--r-burn, 0 0 transparent), var(--r-exposed, 0 0 transparent); }
+.hero-portrait.poisoned { --r-poison: inset 0 0 0 2px var(--green); }
+.hero-portrait.burning { --r-burn: inset 0 0 0 4px var(--y); }
+.hero-portrait.exposed { --r-exposed: inset 0 0 0 6px var(--red); }
+/* weak: the hero slumps and goes sallow */
+.hero-portrait.weakened > .riso { translate: 0 4px; filter: saturate(0.55) brightness(0.9); }
+/* what hit it: a heavy blow throws the frame back further, poison and fire tint the flash */
+.hero-portrait.hurt[data-hit='heavy'] { animation: hurt-heavy 0.4s steps(4); }
+@keyframes hurt-heavy {
+  0%, 50% { background: var(--p); translate: 6px -3px; box-shadow: 0 0 0 4px var(--p), 0 0 0 7px var(--k); }
+  25%, 75% { background: var(--paper); translate: -4px 2px; box-shadow: none; }
+  100% { translate: 0 0; box-shadow: none; }
+}
+.hero-portrait.hurt[data-hit='poison'] { --hit-tint: var(--green); }
+.hero-portrait.hurt[data-hit='burn'] { --hit-tint: var(--red); }
+.hero-portrait.hurt:is([data-hit='poison'], [data-hit='burn']) { animation: hurt-tint 0.3s steps(2); }
+@keyframes hurt-tint {
+  50% { background: var(--hit-tint); }
+}
+/* one-shot reactions on the frame: a rim of ink in the colour of what happened */
+.hero-portrait.shielded { animation: p-rim 0.4s steps(4); --rim: var(--b); }
+.hero-portrait.healed { animation: p-rim 0.5s steps(5); --rim: var(--mint); }
+.hero-portrait.buffed { animation: p-rim 0.45s steps(3); --rim: var(--y); }
+.hero-portrait.casting { animation: p-rim 0.5s steps(4); --rim: var(--hero-ink, var(--y)); }
+.hero-portrait.parried { animation: p-parry 0.3s steps(3); }
+@keyframes p-rim {
+  0%, 50% { box-shadow: 0 0 0 4px var(--rim), 0 0 0 7px var(--k); translate: 0 -3px; }
+  25%, 75% { box-shadow: none; translate: 0 0; }
+  100% { box-shadow: none; translate: 0 0; }
+}
+@keyframes p-parry {
+  0% { translate: 5px 0; box-shadow: 0 0 0 3px var(--paper), 0 0 0 6px var(--k); }
+  33% { translate: -3px 0; box-shadow: none; }
+  100% { translate: 0 0; }
+}
+/* a card the hero can't play: the frame shakes its head */
+.hero-portrait.refused { animation: p-refuse 0.3s steps(4); }
+@keyframes p-refuse {
+  0%, 50% { translate: -4px 0; background: var(--red); }
+  25%, 75% { translate: 4px 0; background: var(--paper); }
+  100% { translate: 0 0; }
+}
+/* a relic going off: its stationery pops up over the portrait, then fades */
+.relic-peek { display: none; position: absolute; inset: 0; z-index: 2; background: var(--paper); pointer-events: none; }
+.relic-peek .riso { width: 100%; height: 100%; }
+.relic-peek.show { display: block; animation: relic-peek 0.9s steps(1) forwards; }
+@keyframes relic-peek {
+  0% { scale: 0.5; opacity: 1; }
+  15% { scale: 1.12; }
+  30%, 70% { scale: 1; }
+  85% { opacity: 0.5; }
+  100% { opacity: 0; }
+}
+/* out of the fight (or begging for another go): the hero lies flat, greyed out, and the sweat and snores stop */
+.hero-portrait.down > .riso { animation: ko 0.5s steps(5) forwards; transform-origin: 50% 60%; }
+.hero-portrait.down::before, .hero-portrait.down::after, .hero-portrait.down .snore { display: none; }
+@keyframes ko {
+  to { rotate: 90deg; translate: 0 22%; filter: grayscale(1) brightness(0.75); }
+}

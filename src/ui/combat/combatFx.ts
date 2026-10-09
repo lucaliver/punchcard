@@ -9,6 +9,7 @@ import { discover } from '../../game/meta';
 import { saveSettings, settings } from '../../game/settings';
 import type { CombatEvent } from '../../game/types';
 import { creature } from '../art/creatures';
+import { relicArt } from '../art/relics';
 import { icon } from '../art/icons';
 import { centerOf, cssMs, h } from '../dom';
 import { burst, floatText, haptic, shake } from '../fx/fx';
@@ -123,10 +124,12 @@ export function bindCombatFx(v: CombatView, cards: CardLayer, onEnd: (result: 'w
           if (e.amount >= 15) shake('small');
         } else if (e.source !== 'dot' || e.amount > 0) {
           if (e.amount > 0) {
+            // What hit it sets the flash: a heavy blow throws the frame back, poison and fire tint it.
+            r.portrait.dataset.hit = e.source === 'dot' ? e.kind : e.amount >= 12 ? 'heavy' : '';
             v.retrigger(r.portrait, 'hurt');
             shake(e.amount >= 12 ? 'big' : 'small');
             haptic(e.amount >= 12 ? 'heavy' : 'hit');
-          }
+          } else if (e.blocked > 0 && e.source !== 'dot') v.retrigger(r.portrait, 'parried');
           sfx('enemyHit');
         }
         break;
@@ -136,7 +139,7 @@ export function bindCombatFx(v: CombatView, cards: CardLayer, onEnd: (result: 'w
         floatText(p.x, p.y, `+${e.amount}`, 'heal');
         burst('heal', p.x, p.y, 16);
         sfx('heal');
-        if (e.target === 'enemy') v.retrigger(r.enemyArt, 'healed');
+        v.retrigger(e.target === 'enemy' ? r.enemyArt : r.portrait, 'healed');
         break;
       }
       case 'block': {
@@ -147,7 +150,7 @@ export function bindCombatFx(v: CombatView, cards: CardLayer, onEnd: (result: 'w
         burst('block', p.x, p.y, 10, 0.5, 24);
         sfx('block');
         v.retrigger(chip, 'pop');
-        if (e.target === 'enemy') v.retrigger(r.enemyArt, 'shielded');
+        v.retrigger(e.target === 'enemy' ? r.enemyArt : r.portrait, 'shielded');
         break;
       }
       case 'status': {
@@ -156,7 +159,7 @@ export function bindCombatFx(v: CombatView, cards: CardLayer, onEnd: (result: 'w
         floatText(p.x, p.y - 36, statusName(e.id, e.target), 'status').dataset.tone = def.tone;
         sfx(def.good ? 'status' : 'debuff');
         if (def.burst) burst(def.burst.kind, p.x, p.y, def.burst.n);
-        if (e.target === 'enemy' && def.good && !def.passive) v.retrigger(r.enemyArt, 'buffed');
+        if (def.good && !def.passive) v.retrigger(e.target === 'enemy' ? r.enemyArt : r.portrait, 'buffed');
         break;
       }
       case 'text': {
@@ -172,6 +175,9 @@ export function bindCombatFx(v: CombatView, cards: CardLayer, onEnd: (result: 'w
       case 'relic': {
         const p = v.pointOf('hero');
         floatText(p.x, p.y - 50, t(`relic.${e.id}.name`), 'status good');
+        // Its stationery pops up over the portrait for a beat.
+        r.relicPeek.innerHTML = relicArt(e.id);
+        v.retrigger(r.relicPeek, 'show');
         sfx('status');
         haptic('proc');
         break;
@@ -179,6 +185,7 @@ export function bindCombatFx(v: CombatView, cards: CardLayer, onEnd: (result: 'w
       case 'cantAfford': {
         const cardEl = cards.elementOf(e.card.uid);
         if (cardEl) v.retrigger(cardEl, 'nope');
+        v.retrigger(r.portrait, 'refused');
         v.retrigger(r.manaRow, 'flash');
         v.toast(t('combat.noMana'));
         sfx('error');
@@ -188,6 +195,7 @@ export function bindCombatFx(v: CombatView, cards: CardLayer, onEnd: (result: 'w
       case 'ruled': {
         const cardEl = cards.elementOf(e.card.uid);
         if (cardEl) v.retrigger(cardEl, 'nope');
+        v.retrigger(r.portrait, 'refused');
         sfx('error');
         haptic('error');
         break;
@@ -340,6 +348,7 @@ export function bindCombatFx(v: CombatView, cards: CardLayer, onEnd: (result: 'w
         const f = h('div', { class: 'ability-flash' });
         f.addEventListener('animationend', () => f.remove());
         v.el.append(f);
+        v.retrigger(r.portrait, 'casting');
         v.banner(t(`hero.${v.heroId}.ability`));
         sfx('ability');
         haptic('ability');
@@ -463,7 +472,8 @@ export function bindCombatFx(v: CombatView, cards: CardLayer, onEnd: (result: 'w
         sfx('machinery');
         break;
       case 'beg': {
-        // The fight waits on the answer.
+        // The fight waits on the answer, the hero on the floor.
+        r.portrait.classList.add('down');
         sfx('defeat');
         v.inspect(true);
         const ask = openModal({
@@ -486,6 +496,8 @@ export function bindCombatFx(v: CombatView, cards: CardLayer, onEnd: (result: 'w
       }
       case 'begged': {
         const p = v.pointOf('hero');
+        r.portrait.classList.remove('down');
+        v.retrigger(r.portrait, 'gain');
         floatText(p.x, p.y - 50, t('beg.done'), 'status good');
         burst('gold', p.x, p.y, 30, 1.3);
         sfx('levelUp');
