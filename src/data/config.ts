@@ -77,7 +77,7 @@ export const CONFIG = {
   /** Seconds a virus card rides the belt before it infects the card behind it. */
   virusDelay: 4,
   startMana: 0,
-  dotInterval: 1,
+  dotInterval: 1.5,
   multitaskingWindow: 2.5,
   multitaskingMax: 5,
   /** At the start of a fight the belt has already run until the first card is this far in (belt widths): a couple of cards. */

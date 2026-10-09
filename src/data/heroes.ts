@@ -19,7 +19,7 @@ export function starterCards(hero: HeroDef): { id: string; up: boolean; perks?: 
 /** Thick Skin (Warrior passive): Block under this much fades this many times slower. */
 export const THICK_SKIN = { below: 15, mul: 1.3 };
 /** Virulence (Necromancer passive): every enemy starts the fight with this much Poison. */
-export const VIRULENCE_START = 3;
+export const VIRULENCE_START = 5;
 /** Picket Line (Warrior ability): the hero gains this much Block, held (it does not fade) for this long (s). */
 export const PICKET_BLOCK = 20;
 export const PICKET_TIME = 10;
