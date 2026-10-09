@@ -198,6 +198,7 @@ const it: Record<EnKey, string> = {
   'settings.analyticsHint': 'Dati anonimi senza id.',
   'settings.debugMenus': 'Debug',
   'settings.language': 'Lingua',
+  'settings.recommended': 'Consigliato',
 
   // ------------------------------------------------------------- how to
   'howto.title': 'Onboarding',

@@ -196,6 +196,7 @@ const zh: Record<EnKey, string> = {
   'settings.analyticsHint': '仅匿名计数：没有姓名，没有 ID。',
   'settings.debugMenus': '调试菜单',
   'settings.language': '语言',
+  'settings.recommended': '推荐',
 
   // ------------------------------------------------------------- how to
   'howto.title': '入职培训',

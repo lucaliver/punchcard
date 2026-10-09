@@ -198,6 +198,7 @@ const es: Record<EnKey, string> = {
   'settings.analyticsHint': 'Solo contadores anónimos: sin nombre, sin ID.',
   'settings.debugMenus': 'Menús de depuración',
   'settings.language': 'Idioma',
+  'settings.recommended': 'Recomendado',
 
   // ------------------------------------------------------------- how to
   'howto.title': 'Incorporación',

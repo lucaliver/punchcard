@@ -34,6 +34,7 @@ export function languageScreen(): Screen {
             },
           },
           l.name,
+          l.code === 'en' ? h('small', { class: 'language-hint' }, t('settings.recommended')) : null,
         ),
       ),
     ),

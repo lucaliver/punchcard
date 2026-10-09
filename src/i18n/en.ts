@@ -197,6 +197,7 @@ const en = {
   'settings.analyticsHint': 'Anonymous counters only: no name, no ID.',
   'settings.debugMenus': 'Debug menus',
   'settings.language': 'Language',
+  'settings.recommended': 'Recommended',
 
   // ------------------------------------------------------------- how to
   'howto.title': 'Onboarding',
