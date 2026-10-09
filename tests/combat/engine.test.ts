@@ -2,7 +2,7 @@ import { describe, expect, it } from 'vitest';
 import { Combat } from '../../src/game/combat';
 import { ANCHOR_POS, CONFIG, EXPIRE_POS } from '../../src/data/config';
 import { ENEMIES } from '../../src/data/enemies';
-import { HEROES, VIRULENCE_START } from '../../src/data/heroes';
+import { HEROES, VIRULENCE_START, PICKET_BLOCK } from '../../src/data/heroes';
 import { STATUSES } from '../../src/data/statuses';
 import { CARD_LIST, CARDS } from '../../src/data/cards';
 import { HEXES } from '../../src/data/hexes';
@@ -234,16 +234,16 @@ describe('combat engine', () => {
     expect(c.hero.hp).toBe(80 - ENEMIES.snitch.main.dmg!);
   });
 
-  it('warrior Overtime doubles attack damage', () => {
+  it('warrior Picket Line gives Block that does not fade', () => {
     const c = setup({ deck: deckOf(['punch', 'punch']) });
     run(c, CONFIG.introTime + 0.01);
     c.hero.maxMana = 10;
     c.hero.mana = 10;
     expect(c.useAbility()).toBe(true);
     expect(c.hero.mana).toBe(10 - HEROES.warrior.ability.cost);
-    const hp = c.enemy.hp;
-    c.playCard(c.belt[0].card.uid);
-    expect(hp - c.enemy.hp).toBe(12);
+    expect(c.hero.block).toBe(PICKET_BLOCK);
+    run(c, 5);
+    expect(c.hero.block).toBe(PICKET_BLOCK);
   });
 
   it('mage Time Theft stuns the enemy, which stops its timer', () => {

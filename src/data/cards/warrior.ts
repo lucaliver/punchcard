@@ -217,8 +217,8 @@ export const warriorCards: CardDef[] = [
     type: 'defense',
     rarity: 'rare',
     cost: 3,
-    vals: [8, 10],
-    upVals: [12, 14],
+    vals: [8, 5],
+    upVals: [12, 10],
     art: 'safetySign',
     play: (c, v) => {
       c.gainBlock('hero', v[0]);
@@ -267,9 +267,9 @@ export const warriorCards: CardDef[] = [
     cls: 'warrior',
     type: 'attack',
     rarity: 'common',
-    cost: 3,
-    vals: [8, 5],
-    upVals: [11, 8],
+    cost: 4,
+    vals: [8, 8],
+    upVals: [12, 12],
     art: 'liftingWorker',
     play: (c, v) => {
       c.hit(v[0], { kind: 'blunt' });

@@ -906,9 +906,9 @@ export const ICONS: Record<string, { el: Element; svg: string; wide?: boolean }>
   },
 
   // ---- Rule icons: one concept each.
-  overtime: {
+  picketLine: {
     el: 'blood',
-    svg: `<circle cx="28" cy="36" r="24"/><path d="M28 36V20M28 36h12" stroke="#16121f" stroke-width="5" fill="none"/><path d="M48 2h6v9h9v6h-9v9h-6v-9h-9v-6h9z"/>`,
+    svg: `<rect x="8" y="4" width="48" height="32" rx="3"/><rect x="29" y="36" width="6" height="24"/><path d="M16 14h32M16 26h32" stroke="#16121f" stroke-width="5"/>`,
   },
   thickSkin: {
     el: 'steel',

@@ -2,7 +2,7 @@ import { ENEMIES, HALF } from './enemies';
 import { CONFIG } from './config';
 import { CARDS } from './cards';
 import { HARDSHIP_HP, JUST_CAUSE_HP } from './cards/conditions';
-import { OVERTIME_BLOCK, OVERTIME_MULT, OVERTIME_TIME, STICKY_FINGERS, THICK_SKIN, TIME_THEFT, VIRULENCE_START } from './heroes';
+import { STICKY_FINGERS, THICK_SKIN, TIME_THEFT, VIRULENCE_START, PICKET_BLOCK, PICKET_TIME } from './heroes';
 import { PERKS } from './perks';
 import { BELL_STUN, CLOCK_BLOCK, MUG_MANA, NAME_TAG_TIME, PLANT_HEAL, PUNCH_DAMAGE, SHREDDER_BLOCK, STAPLER_DAMAGE } from './relics';
 import {
@@ -95,10 +95,8 @@ export const VALUES = {
   complianceSlow: HALF.complianceSlow,
   // Heroes
   thickSkinPct: pct(THICK_SKIN.mul - 1),
-  thickSkinBelow: THICK_SKIN.below,
-  overtimeMult: OVERTIME_MULT,
-  overtimeTime: OVERTIME_TIME,
-  overtimeBlock: OVERTIME_BLOCK,
+  picketTime: PICKET_TIME,
+  picketBlock: PICKET_BLOCK,
   timeTheft: TIME_THEFT,
   multitaskingMax: CONFIG.multitaskingMax,
   virulenceStart: VIRULENCE_START,

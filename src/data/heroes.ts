@@ -20,10 +20,9 @@ export function starterCards(hero: HeroDef): { id: string; up: boolean; perks?: 
 export const THICK_SKIN = { below: 15, mul: 1.3 };
 /** Virulence (Necromancer passive): every enemy starts the fight with this much Poison. */
 export const VIRULENCE_START = 3;
-/** Overtime (Warrior ability): attacks deal this many times as much, for this long (s); the hero also gains this much Block, held for as long. */
-export const OVERTIME_MULT = 2;
-export const OVERTIME_BLOCK = 12;
-export const OVERTIME_TIME = 10;
+/** Picket Line (Warrior ability): the hero gains this much Block, held (it does not fade) for this long (s). */
+export const PICKET_BLOCK = 20;
+export const PICKET_TIME = 10;
 /** Sticky Fingers (Rogue passive): a card falling off the belt takes this much off the cost of a random card in the sleeve, until played. */
 export const STICKY_FINGERS = 1;
 /** Time Theft (Mage ability): the enemy is stunned and the belt rushed for this long (s). */
@@ -37,23 +36,20 @@ const warrior: HeroDef = {
   blockDecay: CONFIG.heroBlockDecay,
   slowBlock: THICK_SKIN,
   // Starter decks: only basic cards (plus mana crystals); everything else comes from rewards.
-  startDeck: [...rep('punch', 8), ...rep('bobTheBuilder', 7), 'bellaCiao', 'coffee', 'coffee'],
+  startDeck: [...rep('punch', 8), ...rep('bobTheBuilder', 7), 'bellaCiao', 'coffee', 'coffee', 'skillIssue', 'heavyLifting'],
   startUpgraded: ['punch', 'bobTheBuilder'],
   // The simplest class: no once-per-run special. One arm left: a single sleeve slot.
   sleeve: 1,
   ink: 'var(--p)',
   ability: {
-    id: 'overtime',
+    id: 'picketLine',
     cost: 6,
     use: (c) => {
-      c.applyStatus('hero', 'overtime', 1, OVERTIME_TIME);
-      c.applyStatus('hero', 'fortified', 1, OVERTIME_TIME);
-      c.gainBlock('hero', OVERTIME_BLOCK);
+      c.applyStatus('hero', 'fortified', 1, PICKET_TIME);
+      c.gainBlock('hero', PICKET_BLOCK);
     },
   },
-  hooks: {
-    damageMult: (c, def) => (def?.type === 'attack' && c.has('hero', 'overtime') ? OVERTIME_MULT : 1),
-  },
+  hooks: {},
 };
 
 const mage: HeroDef = {

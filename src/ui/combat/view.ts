@@ -8,7 +8,7 @@ import { icon } from '../art/icons';
 import { darkEyes, motes } from '../components/decor';
 import { $, centerOf, h, retrigger } from '../dom';
 
-export const ABILITY_ICON: Record<string, string> = { warrior: 'overtime', mage: 'stolenClock', necromancer: 'shutdown', rogue: 'stocktake' };
+export const ABILITY_ICON: Record<string, string> = { warrior: 'picketLine', mage: 'stolenClock', necromancer: 'shutdown', rogue: 'stocktake' };
 export const PASSIVE_ICON: Record<string, string> = { warrior: 'thickSkin', mage: 'bolt2', necromancer: 'biohazard', rogue: 'stickyFingers' };
 
 export type Point = { x: number; y: number };
