@@ -11,7 +11,7 @@ const en = {
   'menu.howTo': 'How to play',
   'menu.settings': 'Settings',
   'menu.compendium': 'Handbook',
-  'menu.handbookHint': 'Curious about a card, an enemy or a keyword? The Handbook lists everything you have met.',
+  'menu.handbookHint': 'Curious about a card, an enemy or a keyword? Tap the Handbook: it lists everything you have met.',
   'menu.slogan': 'Work. Obey. Repeat.',
   'menu.plate': 'Punchcard Inc. · est. 1887',
   'menu.stale':

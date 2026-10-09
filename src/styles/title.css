@@ -271,25 +271,11 @@
   rotate: -1deg;
 }
 .rate-banner > span { font-family: var(--font-ui); font-size: 22px; line-height: 1; text-align: center; }
-/* the note after the first run: pointing at the handbook button below it */
-.handbook-hint {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  width: min(100%, 360px);
-  padding: 8px 12px;
-  text-align: left;
-  font-family: var(--font-ui);
-  font-size: 20px;
-  line-height: 1.05;
-  color: var(--k);
-  background: var(--paper);
-  border: var(--line) solid var(--k);
-  box-shadow: var(--off) var(--off) 0 var(--shadow);
-  animation: hint-bob 1s steps(2) infinite;
-}
+/* the invite after the first run: the Handbook button lit, a note above it (coach-mark look); only the note takes touches */
+.handbook-hint { pointer-events: none; }
 .handbook-hint[hidden] { display: none; }
-.handbook-hint .pico { flex: none; font-size: 32px; }
+.handbook-hint .coach-note { pointer-events: auto; animation: hint-bob 1s steps(2) infinite; }
+.handbook-hint .coach-note p { margin: 0; }
 @keyframes hint-bob {
   50% { translate: 0 3px; }
 }

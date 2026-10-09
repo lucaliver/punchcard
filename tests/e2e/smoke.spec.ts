@@ -800,9 +800,6 @@ test('after the first run the home points at the handbook, once', async ({ page 
   });
   await page.reload();
   await expect(hint).toBeVisible();
-  // The icon is drawn, not printed as markup.
-  await expect(hint.locator('.pico')).toHaveCount(1);
-  await expect(hint).not.toContainText('<i');
   await page
     .locator('.menu')
     .getByRole('button', { name: /handbook/i })

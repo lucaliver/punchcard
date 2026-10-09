@@ -129,16 +129,35 @@ export function titleScreen(cb: TitleCallbacks): Screen {
   });
   rate.append(h('span', null, t('rate.banner')), stars.el);
 
-  // After the very first run: a note pointing at the handbook; opening it (or a tap on the note) is the last time it shows.
-  const hint = h('button', { class: 'handbook-hint', hidden: !handbookHintDue(), html: `${icon('book')}<span>${t('menu.handbookHint')}</span>` });
+  // After the very first run: the Handbook button is lit and a note invites a tap; opening it (or a tap on the note) is the last time it shows.
+  const hintHole = h('div', { class: 'coach-hole' });
+  const hintNote = h('div', { class: 'coach-note' }, h('p', null, t('menu.handbookHint')));
+  const hint = h('div', { class: 'coach handbook-hint', hidden: !handbookHintDue() }, hintHole, hintNote);
   const dismissHint = (): void => {
     hint.hidden = true;
     markHandbookSeen();
   };
-  hint.addEventListener('click', () => {
+  hintNote.addEventListener('click', () => {
     sfx('tap');
     dismissHint();
   });
+  const handbookBtn = btn('book', t('menu.compendium'), 'secondary small', () => {
+    dismissHint();
+    cb.onCompendium();
+  });
+  /** Lights the Handbook button and puts the note above it (measured once the screen is on show). */
+  const placeHint = (): void => {
+    if (hint.hidden) return;
+    const box = el.getBoundingClientRect();
+    const r = handbookBtn.getBoundingClientRect();
+    Object.assign(hintHole.style, {
+      left: `${r.left - box.left}px`,
+      top: `${r.top - box.top}px`,
+      width: `${r.width}px`,
+      height: `${r.height}px`,
+    });
+    hintNote.style.bottom = `${box.bottom - r.top + 16}px`;
+  };
 
   const el = h(
     'div',
@@ -147,18 +166,15 @@ export function titleScreen(cb: TitleCallbacks): Screen {
     rate,
     poster,
     h('div', { class: 'desk' }, card, h('div', { class: 'desk-clock', html: creature('timeClock') })),
-    hint,
     h(
       'div',
       { class: 'menu' },
       save ? btn('plus', t('menu.newRun'), 'secondary small', cb.onNewRun) : null,
-      btn('book', t('menu.compendium'), 'secondary small', () => {
-        dismissHint();
-        cb.onCompendium();
-      }),
+      handbookBtn,
       btn('question', t('menu.howTo'), 'secondary small', () => openHowTo()),
       btn('gear', t('menu.settings'), 'secondary small', () => openSettings([], true)),
     ),
+    hint,
     // Temporary: a small floating button, off the menu's layout.
     debugButton(t('debug.button'), cb.onDebugFight),
   );
@@ -166,6 +182,7 @@ export function titleScreen(cb: TitleCallbacks): Screen {
     el,
     enter() {
       checkStale();
+      placeHint();
       document.addEventListener('visibilitychange', checkStale);
     },
     leave() {

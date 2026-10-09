@@ -12,7 +12,7 @@ const zh: Record<EnKey, string> = {
   'menu.howTo': '玩法说明',
   'menu.settings': '设置',
   'menu.compendium': '员工手册',
-  'menu.handbookHint': '想了解卡牌、敌人或关键词？手册里列出了你遇到过的一切。',
+  'menu.handbookHint': '想了解卡牌、敌人或关键词？点一下手册：里面列出了你遇到过的一切。',
   'menu.slogan': '工作。服从。重复。',
   'menu.plate': 'Punchcard 股份有限公司 · 创立于 1887',
   'menu.stale': '此页面已打开超过一天，可能已过期。重新加载即可获取最新版本，但仅限没有进行中的游戏时。',

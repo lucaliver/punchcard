@@ -12,7 +12,7 @@ const es: Record<EnKey, string> = {
   'menu.howTo': 'Cómo se juega',
   'menu.settings': 'Ajustes',
   'menu.compendium': 'Manual',
-  'menu.handbookHint': '¿Curiosidad por una carta, un enemigo o una palabra clave? El Manual lista todo lo que has encontrado.',
+  'menu.handbookHint': '¿Curiosidad por una carta, un enemigo o una palabra clave? Toca el Manual: lista todo lo que has encontrado.',
   'menu.slogan': 'Trabaja. Obedece. Repite.',
   'menu.plate': 'Punchcard S.A. · fundada en 1887',
   'menu.stale':
