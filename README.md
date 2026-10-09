@@ -1,7 +1,7 @@
 # Punchcard
 
 Deckbuilder roguelike **in tempo reale a nastro trasportatore**, per browser mobile in verticale.
-Ispirato a *Cardstone* (Running Pillow, 2015). **Un'avventura fantasy trattata come un lavoro in fabbrica**, con satira sociale.
+**Un'avventura fantasy trattata come un lavoro in fabbrica**, con satira sociale.
 
 > Panoramica del gioco, senza numeri né elenchi di contenuti (vivono nei dati del codice e cambiano a ogni patch).
 > La parte tecnica è in [CLAUDE.md](CLAUDE.md).
@@ -26,16 +26,14 @@ mosse. Tra uno scontro e l'altro migliori il mazzo.
 - **Nomi da ufficio** per carte, nemici, mosse e maledizioni; stati e parole chiave restano nomi di gioco (Poison, Block…).
   Testi in inglese, pronti per altre lingue.
 
-### Cosa abbiamo cambiato rispetto a Cardstone
+### Le idee chiave
 
-| Cardstone | Punchcard |
-| --- | --- |
-| Carte che scorrono "come i piattini del sushi" | Un **nastro** a cadenza fissa: giocare veloce non fa pescare di più |
-| Mana che cresce | **Cristalli**: si parte con poco mana e si cresce durante lo scontro |
-| Un nemico con la sua velocità d'attacco | Attacco base lento e pesante + **mossa speciale** periodica, sempre telegrafati |
-| Scambio di una carta dopo ogni battaglia | **Ricompensa = sempre uno scambio**: il mazzo ha dimensione fissa |
-| "Manica" per tenere carte da parte | **Sleeve** con pochi slot |
-| Oro e timer "cibo" | Nessun timer di energia; compendio con scoperta dei contenuti |
+- **Un nastro a cadenza fissa:** le carte arrivano a ritmo costante, giocare veloce non fa pescare di più.
+- **Mana a cristalli:** si parte con poco mana e si cresce durante lo scontro.
+- **Nemici sempre telegrafati:** un attacco base lento e pesante più una mossa speciale periodica.
+- **Ricompensa = sempre uno scambio:** il mazzo ha dimensione fissa.
+- **Sleeve:** pochi slot per tenere carte da parte.
+- **Nessun timer di energia**, nessuna valuta da spendere: solo la paga di fine run.
 
 ---
 
@@ -51,6 +49,9 @@ mosse. Tra uno scontro e l'altro migliori il mazzo.
 - **Difesa:** il **Blocco** assorbe i danni ma svanisce col tempo, quindi va giocato poco prima del colpo.
 - **Abilità dell'eroe:** una mossa potente a mana alto.
 - **Regole dei nemici:** passive e maledizioni cambiano il modo di giocare (carte bloccate, nastro rallentato o ruotato…).
+- **Faccende a mano:** certe mosse nemiche chiedono di fare qualcosa subito (preparare un caffè alla macchinetta, seguire
+  il gioco delle tre carte…). Se ci riesci in tempo la mossa salta e il nemico resta stordito; se sbagli, paghi.
+- **Supplica:** la prima volta che una run sta per finire puoi implorare di restare, una sola volta per run.
 - **Stati e parole chiave** si leggono tenendoli premuti. Il manuale (*How to play*, *Handbook*) spiega come leggere una carta.
 
 ### La run
@@ -67,17 +68,20 @@ mosse. Tra uno scontro e l'altro migliori il mazzo.
   danno carte più rare.
 - **Paga:** ogni scontro vinto paga, di più se in fretta. È il punteggio della run, mostrato nella busta paga finale.
 - **Salvataggio** a ogni piano. Dalla pausa: *Main menu* (la run resta) o *Call in sick* (abbandona).
-- **Prima run guidata:** mappa e nemici fissi, con un tour del primo scontro.
+- **Prima run guidata:** mappa e nemici fissi, con un tour del primo scontro. Anche la prima volta che raggiungi un atto la
+  sua mappa è fissa.
+- **Promemoria della direzione:** finito l'ultimo atto con un eroe, puoi imporre alla run degli handicap facoltativi.
+- **Storico:** le ultime run restano nell'Handbook, con busta paga, cancellerie e mazzo finale.
 
 ---
 
 ## 3. Eroi
 
-| | Guerriero | Mago | Negromante |
-| --- | --- | --- | --- |
-| Mestiere | Ha perso un braccio all'ora di punta | Il tecnico I.T. che sa la tua password | Leader di un culto sindacale |
-| Archetipo | Blocco e attacchi pesanti | Catene di attacchi, gelo, fuoco | Veleno |
-| Sblocco | Subito | Finisci una run col Guerriero | Arriva al boss dell'Atto 1 |
+| | Guerriero | Mago | Negromante | Ladro |
+| --- | --- | --- | --- | --- |
+| Mestiere | Ha perso un braccio all'ora di punta | Il tecnico I.T. che sa la tua password | Leader di un culto sindacale | Il precario che ti ha preso la spillatrice |
+| Archetipo | Blocco e attacchi pesanti | Catene di attacchi, gelo, fuoco | Veleno | Carte che cadono dal nastro, sconti nella sleeve |
+| Sblocco | Subito | Finisci una run col Guerriero | Arriva al boss dell'Atto 1 | Batti il boss di ogni atto con gli altri eroi |
 
 Ognuno ha una passiva, un'abilità a mana e un numero diverso di slot sleeve. I mazzi iniziali hanno solo carte base e
 cristalli; il resto arriva come ricompensa.
@@ -101,7 +105,8 @@ cristalli; il resto arriva come ricompensa.
 - **Scontro:** si entra da una doppia porta d'ufficio; tutto ciò che serve (nemico, minaccia, vita, nastro, mana, sleeve)
   sta in una colonna sola, senza distogliere lo sguardo dalle carte.
 - **Fine run:** busta paga stampata, timbrata *Paid* o *Void*, condivisibile; se sblocca un eroe, un biglietto lo presenta.
-- **Impostazioni:** volumi, velocità, riduci animazioni, vibrazione, verso del nastro, lingua.
+- **Impostazioni:** volumi, velocità, riduci animazioni, vibrazione, verso del nastro, lingua (inglese, italiano, spagnolo, cinese).
+- **Desktop:** sopra una certa larghezza la colonna diventa un poster; si gioca anche con la tastiera e il tasto destro ispeziona.
 
 ## 6. Direzione artistica e audio
 
