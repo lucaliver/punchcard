@@ -236,6 +236,27 @@
 .enemy-art.dead { --throes: 0.7s; animation: death-throes var(--throes) steps(1) forwards; }
 .enemy-art.dead.boss { --throes: 1.1s; }
 .enemy-art.dead .riso { animation: death-flash var(--throes) steps(1) forwards; }
+/* got back up (Golden Parachute): the death throes down to the floor, a beat there (greyed out), then it jumps up in a flash */
+.enemy-art.revived { animation: revive var(--dur-revive) steps(1) forwards; }
+.enemy-art.revived .riso { animation: revive-flash var(--dur-revive) steps(1) forwards; }
+@keyframes revive {
+  0% { transform: translate(-9px, 0); }
+  8% { transform: translate(9px, 2px) rotate(3deg); }
+  16% { transform: translate(-8px, 6px) rotate(-3deg); }
+  24% { transform: translate(6px, 12px) rotate(2deg); }
+  32%, 58% { transform: translate(0, 18px) scaleY(0.94); }
+  60% { transform: translate(0, 4px) scale(1.08); }
+  70% { transform: translate(0, -6px) scale(1.04); }
+  80% { transform: translate(0, 0) scale(1); }
+  100% { transform: none; }
+}
+@keyframes revive-flash {
+  0%, 16% { filter: invert(1); }
+  8%, 24% { filter: none; }
+  32%, 58% { filter: grayscale(1) brightness(0.7); }
+  60%, 66%, 72% { filter: invert(1); }
+  63%, 69%, 75%, 100% { filter: none; }
+}
 @keyframes death-throes {
   0% { transform: translate(-9px, 0); }
   12% { transform: translate(9px, 2px) rotate(3deg); }

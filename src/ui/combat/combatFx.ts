@@ -358,6 +358,22 @@ export function bindCombatFx(v: CombatView, cards: CardLayer, onEnd: (result: 'w
         shake('big');
         break;
       }
+      case 'revive': {
+        // Down he goes (the death throes), a beat on the floor, then up again with a flash.
+        const p = v.enemyPoint();
+        v.retrigger(r.enemyArt, 'revived');
+        burst('block', p.x, p.y, 24, 1.2);
+        sfx('enemyDown');
+        shake('big');
+        setTimeout(
+          () => {
+            burst('heal', p.x, p.y, 24, 1.4);
+            sfx('levelUp');
+          },
+          cssMs('--dur-revive') * Number.parseFloat(getComputedStyle(document.documentElement).getPropertyValue('--revive-rise')),
+        );
+        break;
+      }
       case 'speech':
         speak(t(e.key), QUIP_MS);
         break;

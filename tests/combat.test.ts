@@ -2634,8 +2634,11 @@ describe('Fine Print and the Golden Parachute', () => {
     const c = vs('outgoingVp');
     expect(c.has('enemy', 'goldenParachute')).toBe(true);
     c.enemy.block = 0;
+    const revived: string[] = [];
+    c.events.on((e) => void (e.type === 'revive' && revived.push(e.type)));
     c.damage('hero', 'enemy', 999, { raw: true }, 'hero');
     expect(c.result).toBeNull();
+    expect(revived).toHaveLength(1);
     expect(c.has('enemy', 'goldenParachute')).toBe(false);
     expect(c.enemy.hp).toBe(Math.round(c.enemy.maxHp * 0.4));
     expect(c.enemy.block).toBeGreaterThan(0);

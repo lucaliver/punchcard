@@ -1559,7 +1559,11 @@ export class Combat {
 
   /** True when a status on the enemy lets it survive a lethal hit (Golden Parachute). */
   private reprieve(): boolean {
-    for (const [id, s] of Object.entries(this.enemy.statuses)) if (this.has('enemy', id) && STATUSES[id].onDeath?.(this, 'enemy', s)) return true;
+    for (const [id, s] of Object.entries(this.enemy.statuses)) {
+      if (!this.has('enemy', id) || !STATUSES[id].onDeath?.(this, 'enemy', s)) continue;
+      this.events.emit({ type: 'revive' });
+      return true;
+    }
     return false;
   }
 

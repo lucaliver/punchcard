@@ -589,6 +589,8 @@ export type CombatEvent =
   | { type: 'beg' }
   | { type: 'begged' }
   | { type: 'enrage' }
+  /** The enemy was beaten and got back up (`StatusDef.onDeath`: Golden Parachute). */
+  | { type: 'revive' }
   | { type: 'speech'; key: TKey }
   | { type: 'beltReversed' }
   | { type: 'beltPinned' }
