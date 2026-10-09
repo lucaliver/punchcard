@@ -1,11 +1,7 @@
+import { CONFIG } from '../../data/config';
 import { sfx } from '../../audio/sfx';
 import { haptic } from '../fx/fx';
 import type { CombatView } from './view';
-
-/** Grime a stroke of the mop as long as the belt is wide takes off a rust spot under it (a spot is 1). */
-const SCRUB_PER_BELT = 5;
-/** How far (px) beyond a rust spot the mop's head still reaches it. */
-const REACH = 8;
 
 /**
  * The mop beside a rusting enemy: grab it and its head sits under the finger; drag it over the rust spots to scrub them off
@@ -49,11 +45,17 @@ export function bindMop(v: CombatView): void {
     follow(ev.clientX, ev.clientY);
     drag.x = ev.clientX;
     drag.y = ev.clientY;
-    const amount = (step / r.belt.clientWidth) * SCRUB_PER_BELT;
+    const amount = (step / r.belt.clientWidth) * CONFIG.mop.scrubPerBelt;
     let scrubbed = false;
     for (const spot of r.rust.children) {
       const rc = spot.getBoundingClientRect();
-      if (ev.clientX < rc.left - REACH || ev.clientX > rc.right + REACH || ev.clientY < rc.top - REACH || ev.clientY > rc.bottom + REACH) continue;
+      if (
+        ev.clientX < rc.left - CONFIG.mop.reach ||
+        ev.clientX > rc.right + CONFIG.mop.reach ||
+        ev.clientY < rc.top - CONFIG.mop.reach ||
+        ev.clientY > rc.bottom + CONFIG.mop.reach
+      )
+        continue;
       combat.scrubRust(Number((spot as HTMLElement).dataset.id), amount);
       scrubbed = true;
     }

@@ -40,8 +40,6 @@ export interface CombatCallbacks {
 
 /** Fixed simulation step: the engine stays deterministic regardless of frame rate. */
 const STEP = 1 / 60;
-/** How far along the belt (in belt widths) a card with a tip has come when the fight stops to explain it. */
-const TIP_POS = 0.25;
 /** Largest enemy sprite (px), and how far its drawing may be zoomed in to fill the room. */
 const ENEMY_MAX = 256;
 const ENEMY_ZOOM = 1.6;
@@ -53,8 +51,6 @@ const CARD_MAX_H = { one: 0.118, two: 0.092 };
 const TRACK_PERIOD = 26;
 /** Most simulation steps run in one frame; past that the fight drops the lag instead of spiralling. */
 const MAX_STEPS = 12;
-/** Milliseconds between the end of the fight and leaving it (the enemy finishes dying). */
-const END_MS = { lose: 1500, win: 2200, boss: 3400 };
 /** A boss goes down in this many blasts, this far apart (ms). */
 const BOSS_BLASTS = 7;
 const BOSS_BLAST_GAP = 140;
@@ -152,7 +148,7 @@ export function combatScreen(run: RunState, combat: Combat, cb: CombatCallbacks)
     // A win waits for the enemy to finish dying (longer for a boss).
     later(
       () => (settings.debugMenus ? openFightRecap(combat, () => cb.onEnd(combat)) : cb.onEnd(combat)),
-      result === 'lose' ? END_MS.lose : boss ? END_MS.boss : END_MS.win,
+      result === 'lose' ? CONFIG.endMs.lose : boss ? CONFIG.endMs.boss : CONFIG.endMs.win,
     );
   };
   const unsubFx = bindCombatFx(v, cards, finish);
@@ -474,7 +470,7 @@ export function combatScreen(run: RunState, combat: Combat, cb: CombatCallbacks)
 
   /** A card with a tip, ridden far enough onto the belt to be seen: the first time ever, the fight stops to explain it. */
   const checkTip = (): void => {
-    const b = combat.belt.find((x) => CARDS[x.card.id].tip && x.pos >= TIP_POS && !settings.seenTips.includes(x.card.id));
+    const b = combat.belt.find((x) => CARDS[x.card.id].tip && x.pos >= CONFIG.tipPos && !settings.seenTips.includes(x.card.id));
     const target = b && cards.elementOf(b.card.uid);
     if (!b || !target) return;
     settings.seenTips.push(b.card.id);

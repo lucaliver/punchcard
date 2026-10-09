@@ -1,5 +1,6 @@
 import { t } from '../../core/i18n';
 import { sfx } from '../../audio/sfx';
+import { CONFIG } from '../../data/config';
 import { HEXES } from '../../data/hexes';
 import { CARDS, cardCostOf, cardKeywordsOf, cardValsOf, isLarge } from '../../data/cards';
 import { STATUSES, statusIcon } from '../../data/statuses';
@@ -7,7 +8,7 @@ import type { CombatCard } from '../../game/types';
 import { icon } from '../art/icons';
 import { cardCostLabel, cardFace, cardView } from '../components/cardView';
 import { openCardDetail, openInfo } from '../components/modals';
-import { LONG_PRESS_MS, SLACK_MS, cssMs, h, onTapOrHold, setHtml, setText, toggle } from '../dom';
+import { SLACK_MS, cssMs, h, onTapOrHold, setHtml, setText, toggle } from '../dom';
 import { burst, haptic } from '../fx/fx';
 import type { CombatView } from './view';
 
@@ -233,7 +234,7 @@ export function createCardLayer(v: CombatView): CardLayer {
         if (!drag || drag.moved) return;
         cancelDrag();
         inspectCard(uid);
-      }, LONG_PRESS_MS),
+      }, CONFIG.longPressMs),
     };
   };
 

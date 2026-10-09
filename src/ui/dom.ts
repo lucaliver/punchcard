@@ -1,3 +1,4 @@
+import { CONFIG } from '../data/config';
 type Child = Node | string | number | null | undefined | false;
 type Attrs = Record<string, unknown>;
 
@@ -64,10 +65,8 @@ export function centerOf(el: Element): { x: number; y: number } {
  * Calls `fn` on a tap/click and also on a long press (so holding a card does the same as tapping it),
  * without firing twice and without the browser's long-press context menu.
  */
-/** How long a press must last to count as "hold to inspect" (shared by every screen). */
-export const LONG_PRESS_MS = 350;
 
-export function onPress(el: HTMLElement, fn: () => void, longMs = LONG_PRESS_MS): void {
+export function onPress(el: HTMLElement, fn: () => void, longMs: number = CONFIG.longPressMs): void {
   let timer = 0;
   let firedLong = false;
   el.addEventListener('pointerdown', () => {
@@ -90,7 +89,7 @@ export function onPress(el: HTMLElement, fn: () => void, longMs = LONG_PRESS_MS)
 }
 
 /** Different actions for a tap and a long press (the long press never triggers the tap). */
-export function onTapOrHold(el: HTMLElement, onTap: () => void, onHold: () => void, longMs = LONG_PRESS_MS): void {
+export function onTapOrHold(el: HTMLElement, onTap: () => void, onHold: () => void, longMs: number = CONFIG.longPressMs): void {
   let timer = 0;
   let held = false;
   el.addEventListener('pointerdown', () => {

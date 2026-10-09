@@ -1,7 +1,7 @@
 import { t } from '../../core/i18n';
 import { sfx } from '../../audio/sfx';
 import { haptic } from '../fx/fx';
-import { halfPct } from '../../data/config';
+import { CONFIG, halfPct } from '../../data/config';
 import { RELICS } from '../../data/relics';
 import { STATUS_ORDER, STATUSES, statusIcon } from '../../data/statuses';
 import type { Fighter } from '../../game/combat';
@@ -15,8 +15,6 @@ import { h, onPress, setHtml, setText, toggle } from '../dom';
 import { type CombatView, PASSIVE_ICON } from './view';
 
 /** Everything around the cards: HP bars, statuses, the threat bar, mana and hero extras. `onPassive` explains the hero passive. */
-/** Share of max HP under which the hero's portrait sweats. */
-const LOW_HP = 0.3;
 /** A draining status bar moves in this many steps, and blinks once this share is left. */
 const BAR_STEPS = 10;
 const BAR_LOW = 0.3;
@@ -406,7 +404,7 @@ export function createHud(v: CombatView, onPassive: () => void): { render(): voi
   const renderHeroExtras = (): void => {
     const hs = combat.hero;
     // Low on HP: the portrait sweats and shivers.
-    toggle(r.portrait, 'low', hs.hp > 0 && hs.hp <= hs.maxHp * LOW_HP);
+    toggle(r.portrait, 'low', hs.hp > 0 && hs.hp <= hs.maxHp * CONFIG.heroLowHp);
     // The ability charges with mana: it lights up once the hero can afford it.
     r.ability.style.setProperty('--p', String(Math.min(1, hs.mana / combat.abilityCost())));
     toggle(r.ability, 'ready', combat.abilityReady());

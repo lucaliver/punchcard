@@ -12,6 +12,16 @@ export const CONFIG = {
   heartbeatGap: 0.9,
   /** Milliseconds under which a light vibration is dropped if another has just fired (patterns and heavy knocks always go through). */
   hapticGap: 30,
+  /** Milliseconds a press must last to count as "hold to inspect" (every screen). */
+  longPressMs: 350,
+  /** The hero's portrait sweats under this share of max HP. */
+  heroLowHp: 0.3,
+  /** The rust mop: grime a stroke as long as the belt is wide takes off a spot (a spot is 1), and how far (px) past a spot its head still reaches. */
+  mop: { scrubPerBelt: 5, reach: 8 },
+  /** How far along the belt (in belt widths) a card with a tip has come when the fight stops to explain it. */
+  tipPos: 0.25,
+  /** Milliseconds between the end of the fight and leaving it (the enemy finishes dying). */
+  endMs: { lose: 1500, win: 2200, boss: 3400 },
   /** Beg to stay (the first time a run's hero would be let go): the Dodge seconds, the Strength and the mana crystals it brings back. */
   beg: { dodge: 5, strength: 5, crystals: 1 },
   /** Runs the handbook's history keeps (the newest). */
