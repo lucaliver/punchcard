@@ -10,6 +10,8 @@ export const CONFIG = {
   /** An enemy under this many HP (and alive) is heard breathing: a heartbeat every `heartbeatGap` seconds until it falls. */
   enemyLowHp: 15,
   heartbeatGap: 0.9,
+  /** Milliseconds under which a light vibration is dropped if another has just fired (patterns and heavy knocks always go through). */
+  hapticGap: 30,
   /** Beg to stay (the first time a run's hero would be let go): the Dodge seconds, the Strength and the mana crystals it brings back. */
   beg: { dodge: 5, strength: 5, crystals: 1 },
   /** Runs the handbook's history keeps (the newest). */
