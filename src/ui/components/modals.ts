@@ -231,7 +231,7 @@ export function openCardDetail(card: CardInst, onClose?: () => void): ModalHandl
   const wrap = h('div', { class: 'detail' });
   let showUp = card.up;
   const def = CARDS[card.id];
-  const canToggle = !card.up && (!!def.upVals || def.upCost !== undefined || !!def.upKeywords);
+  const canToggle = !!def.upVals || def.upCost !== undefined || !!def.upKeywords;
   const render = (): void => {
     const shown = { ...card, up: showUp };
     const gloss = cardKeywords(shown).map((k) =>
