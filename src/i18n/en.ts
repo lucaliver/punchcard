@@ -195,9 +195,9 @@ const en = {
   'howto.inspect.d': 'Not sure what something does? Press and hold it: cards, statuses, moves, stats.',
   'howto.gotIt': 'Got it!',
   'coach.enemy': '**Beat this enemy**: bring its HP to zero.\nWhen its bar fills, its **next move** lands. **Hold** it to read.',
-  'coach.hero': 'Your **HP** and **mana**.\nMana **refills over time**.',
+  'coach.hero': 'Your **HP** and **statuses**.\nThe shield is **Block**: it soaks hits.',
   'coach.belt': 'Your deck rides this **belt**.\n**Tap** a card to play it.',
-  'coach.sleeve': '**Drag** a card into your **sleeve** to save it.\nHere is your big **ability**.',
+  'coach.sleeve': 'Your **mana** refills **over time**.\n**Drag** a card into your **sleeve** to save it; here is your big **ability**.',
   'coach.start': '**Hold** anything to read it.\nReady? **Clock in**.',
 
   // ------------------------------------------------------------- heroes

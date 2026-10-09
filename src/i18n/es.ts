@@ -197,9 +197,9 @@ const es: Record<EnKey, string> = {
   'howto.gotIt': '¡Entendido!',
   'coach.enemy':
     '**Derrota al enemigo**: baja sus PV a cero.\nCuando su barra se llena, cae su **próximo movimiento**. **Mantén pulsado** para leerlo.',
-  'coach.hero': 'Tus **PV** y tu **maná**.\nEl maná **se rellena con el tiempo**.',
+  'coach.hero': 'Tus **PV** y tus **estados**.\nEl escudo es el **Bloqueo**: absorbe golpes.',
   'coach.belt': 'Tu mazo llega por esta **cinta**.\n**Toca** una carta para jugarla.',
-  'coach.sleeve': '**Arrastra** una carta a la **manga** para guardarla.\nAquí está tu gran **habilidad**.',
+  'coach.sleeve': 'Tu **maná** se rellena **con el tiempo**.\n**Arrastra** una carta a la **manga** para guardarla; aquí está tu gran **habilidad**.',
   'coach.start': '**Mantén pulsado** cualquier cosa para leerla.\n¿Listo? **Ficha**.',
 
   // ------------------------------------------------------------- heroes

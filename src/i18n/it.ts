@@ -197,9 +197,10 @@ const it: Record<EnKey, string> = {
   'howto.gotIt': 'Capito!',
   'coach.enemy':
     '**Sconfiggi il nemico**: porta a zero i suoi HP.\nQuando la barra si riempie, arriva la sua **prossima mossa**. **Tieni premuto** per leggerla.',
-  'coach.hero': 'I tuoi **HP** e il tuo **mana**.\nIl mana **si ricarica col tempo**.',
+  'coach.hero': 'I tuoi **HP** e i tuoi **status**.\nLo scudo è il **Blocco**: assorbe i colpi.',
   'coach.belt': 'Il tuo mazzo arriva su questo **nastro**.\n**Tocca** una carta per giocarla.',
-  'coach.sleeve': "**Trascina** una carta nella **manica** per tenerla da parte.\nQui c'è la tua grande **abilità**.",
+  'coach.sleeve':
+    "Il tuo **mana** si ricarica **col tempo**.\n**Trascina** una carta nella **manica** per tenerla da parte; qui c'è la tua grande **abilità**.",
   'coach.start': '**Tieni premuto** su tutto per leggerlo.\nPronto? **Timbra**.',
 
   // ------------------------------------------------------------- heroes
