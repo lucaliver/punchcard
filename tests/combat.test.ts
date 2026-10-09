@@ -2868,20 +2868,23 @@ describe('relics', () => {
     expect(c.enemy.hp).toBeLessThan(hp);
   });
 
-  it('the Fire Drill Bell stuns the enemy once, the first time HP falls under 30%', () => {
-    const c = setup({ relics: ['fireDrillBell'] });
+  it('the Fire Drill Bell stuns the enemy every 30 HP the hero loses', () => {
+    const c = setup({ relics: ['fireDrillBell'], hp: 200, maxHp: 200 });
     c.enemy.move = { id: 'wait', intent: 'defend', windup: 999 };
     run(c, CONFIG.introTime + 0.01);
-    c.loseHp(30);
+    c.loseHp(20);
     run(c, 0.1);
     expect(c.has('enemy', 'stun')).toBe(false);
-    c.loseHp(30);
+    c.loseHp(20);
     run(c, 0.1);
     expect(c.has('enemy', 'stun')).toBe(true);
     delete c.enemy.statuses.stun;
-    c.loseHp(1);
+    c.loseHp(10);
     run(c, 0.1);
     expect(c.has('enemy', 'stun')).toBe(false);
+    c.loseHp(10);
+    run(c, 0.1);
+    expect(c.has('enemy', 'stun')).toBe(true);
   });
 
   it('the Out-of-Office Sign cancels the first big hit of a fight, never a small one, and only once', () => {

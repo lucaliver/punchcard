@@ -504,7 +504,7 @@ const zh: Record<EnKey, string> = {
   'relic.nameTag.name': '姓名牌',
   'relic.nameTag.d': '每场战斗开始时，敌人会陷入易伤状态 {$nameTagTime} 秒。',
   'relic.fireDrillBell.name': '消防演习铃',
-  'relic.fireDrillBell.d': '每场战斗中第一次生命值低于 {n}% 时，敌人会被击晕 {$bellStun} 秒。',
+  'relic.fireDrillBell.d': '每当你失去 {n} 点生命，敌人会被击晕 {$bellStun} 秒。',
   'relic.outOfOffice.name': '外出公告牌',
   'relic.outOfOffice.d': '每场战斗中第一次 {n} 点或以上的伤害不会命中你。',
   'perk.fastTrack': '快速通道',

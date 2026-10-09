@@ -34,8 +34,8 @@ export const HIGHLIGHTER_MULT = 2;
 export const PUNCH_DAMAGE = 2;
 /** How long the Name Tag leaves the enemy Vulnerable at the start of a fight (s). */
 export const NAME_TAG_TIME = 8;
-/** Share of max HP the Fire Drill Bell rings at. */
-const BELL_HP = 0.3;
+/** HP lost to ring the Fire Drill Bell once. */
+const BELL_LOSS = 30;
 export const BELL_STUN = 5;
 /** The smallest hit the Out-of-Office Sign turns away. */
 const OOO_MIN_HIT = 15;
@@ -277,15 +277,19 @@ const defs: RelicDef[] = [
   {
     id: 'fireDrillBell',
     rarity: 'epic',
-    n: Math.round(BELL_HP * 100),
-    armed: (c) => !c.mem.bell,
+    n: BELL_LOSS,
+    progress: (c) => (c.mem.bell ?? 0) / BELL_LOSS,
     hooks: {
-      // Once per fight, the first time the hero is under the threshold.
+      // Every BELL_LOSS HP the hero loses (whatever takes it) rings the bell.
       tick: (c) => {
-        if (c.mem.bell || c.hero.hp > c.hero.maxHp * BELL_HP) return;
-        c.mem.bell = 1;
-        c.applyStatus('enemy', 'stun', 1, BELL_STUN);
-        proc(c, 'fireDrillBell');
+        const taken = c.stats.damageTaken;
+        c.mem.bell = (c.mem.bell ?? 0) + taken - (c.mem.bellSeen ?? 0);
+        c.mem.bellSeen = taken;
+        while (c.mem.bell >= BELL_LOSS) {
+          c.mem.bell -= BELL_LOSS;
+          c.applyStatus('enemy', 'stun', 1, BELL_STUN);
+          proc(c, 'fireDrillBell');
+        }
       },
     },
   },

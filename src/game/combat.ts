@@ -1640,7 +1640,10 @@ export class Combat {
   loseHp(n: number): void {
     const lost = Math.min(this.hero.hp, n);
     this.hero.hp -= lost;
-    if (lost > 0) this.hurtLog.push({ t: this.time, n: lost });
+    if (lost > 0) {
+      this.stats.damageTaken += lost;
+      this.hurtLog.push({ t: this.time, n: lost });
+    }
     this.events.emit({ type: 'damage', target: 'hero', amount: lost, blocked: 0, source: 'dot', hitIndex: 0, kind: 'blood' });
     this.checkDeaths();
   }

@@ -507,7 +507,7 @@ const es: Record<EnKey, string> = {
   'relic.nameTag.name': 'Etiqueta con Nombre',
   'relic.nameTag.d': 'El enemigo empieza cada combate Vulnerable durante {$nameTagTime} segundos.',
   'relic.fireDrillBell.name': 'Campana del Simulacro',
-  'relic.fireDrillBell.d': 'La primera vez que bajas del {n}% de PS en un combate, el enemigo queda aturdido {$bellStun} segundos.',
+  'relic.fireDrillBell.d': 'Cada vez que pierdes {n} PS, el enemigo queda aturdido {$bellStun} segundos.',
   'relic.outOfOffice.name': 'Cartel de Fuera de la Oficina',
   'relic.outOfOffice.d': 'El primer golpe de {n} de daño o más de cada combate nunca te alcanza.',
   'perk.fastTrack': 'Vía rápida',

@@ -508,7 +508,7 @@ const it: Record<EnKey, string> = {
   'relic.nameTag.name': 'Cartellino col Nome',
   'relic.nameTag.d': 'Il nemico inizia ogni combattimento Vulnerabile per {$nameTagTime} secondi.',
   'relic.fireDrillBell.name': 'Campanella Antincendio',
-  'relic.fireDrillBell.d': 'La prima volta che scendi sotto il {n}% dei PV in un combattimento, il nemico è stordito per {$bellStun} secondi.',
+  'relic.fireDrillBell.d': 'Ogni volta che perdi {n} PV, il nemico è stordito per {$bellStun} secondi.',
   'relic.outOfOffice.name': 'Cartello Fuori Sede',
   'relic.outOfOffice.d': 'Il primo colpo da {n} danni o più di ogni combattimento non va a segno.',
   'perk.fastTrack': 'Raccomandazione',

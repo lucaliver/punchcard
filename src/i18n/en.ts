@@ -505,7 +505,7 @@ const en = {
   'relic.nameTag.name': 'Name Tag',
   'relic.nameTag.d': 'The enemy starts every fight Vulnerable for {$nameTagTime} seconds.',
   'relic.fireDrillBell.name': 'Fire Drill Bell',
-  'relic.fireDrillBell.d': 'The first time you drop under {n}% HP in a fight, the enemy is stunned for {$bellStun} seconds.',
+  'relic.fireDrillBell.d': 'Every time you lose {n} HP, the enemy is stunned for {$bellStun} seconds.',
   'relic.outOfOffice.name': 'Out-of-Office Sign',
   'relic.outOfOffice.d': 'The first hit of {n} damage or more in each fight never lands.',
   'perk.fastTrack': 'Fast Track',
