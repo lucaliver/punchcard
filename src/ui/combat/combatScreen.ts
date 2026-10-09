@@ -102,6 +102,7 @@ export function combatScreen(run: RunState, combat: Combat, cb: CombatCallbacks)
   const finish = (result: 'win' | 'lose'): void => {
     if (state.ended) return;
     state.ended = true;
+    r.belt.classList.add('halted');
     cards.cancelDrag();
     const boss = combat.enemy.def.tier === 'boss';
     if (result === 'win') {

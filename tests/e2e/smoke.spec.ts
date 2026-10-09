@@ -195,6 +195,8 @@ test('keyboard: Space starts the fight, then pauses and resumes it; D opens the 
   await page.getByRole('button', { name: /enter floor 1/i }).click();
   await page.keyboard.press('Space');
   await expect(page.locator('.js-start')).toHaveCount(0);
+  // The fight runs once the clock-in card is away.
+  await expect(page.locator('.timecard')).toHaveCount(0);
   await page.keyboard.press('Space');
   await expect(page.locator('.modal-back')).toBeVisible();
   expect(await page.evaluate('window.__game.musicTrack()')).toBe('pause');

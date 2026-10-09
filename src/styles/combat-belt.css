@@ -26,6 +26,8 @@
 }
 .belt.stalled::after { animation: alarm-blink 0.8s steps(1) infinite; }
 .belt.stalled .belt-track { filter: grayscale(0.7); }
+/* the fight is over and the belt has stopped: so do its lights, tape and sparks (the time card's clock-out still plays) */
+.belt.halted::after, .belt.halted :not(.timecard, .timecard *), .belt.halted :not(.timecard, .timecard *)::before, .belt.halted :not(.timecard, .timecard *)::after { animation-play-state: paused; }
 @keyframes tape {
   to { background-position: 24px 0, 24px 100%; }
 }
