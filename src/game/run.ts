@@ -42,7 +42,7 @@ export interface RunStats {
 }
 
 /** Shape of the saved run; a save of another version is dropped. */
-const SAVE_VERSION = 6;
+const SAVE_VERSION = 7;
 
 export interface RunState {
   version: number;
@@ -60,7 +60,6 @@ export interface RunState {
   /** Nodes entered so far, in order (the path drawn on the map). */
   path: number[];
   /** Card rewards skipped for max HP so far: each one raises the next skip's pay. */
-  skips: number;
   /** True once the current node has been completed. */
   cleared: boolean;
   stats: RunStats;
@@ -201,7 +200,6 @@ export function newRun(hero: HeroId, seed: number, scripted: readonly number[] =
     cleared: false,
     stats: { kills: 0, elites: 0, cardsPlayed: 0, damageTaken: 0, time: 0 },
     money: 0,
-    skips: 0,
     uid: peekUid(),
     mods,
   };
@@ -493,20 +491,20 @@ function newCard(run: RunState, id: string): CardInst {
   return card;
 }
 
-/** Skipping a card reward pays max HP (so passing on a weak offer still pays), a little more every time. */
-export const skipPay = (run: RunState): number => CONFIG.skipMaxHp + CONFIG.skipMaxHpStep * run.skips;
+/** Skipping a card reward pays max HP (so passing on a weak offer still pays), one more every few rooms of the run. */
+export const skipPay = (run: RunState): number => CONFIG.skipMaxHp + Math.floor(run.path.length / CONFIG.skipMaxHpRooms);
 
-/** Skipping also pays one more card, dealt like the offer's (same kind and act odds) but never one of the cards just shown. */
-export function skipReward(run: RunState, kind: RewardKind, shown: string[]): CardInst | null {
+/** Skipping also pays one more card, as rare as the rarest one just shown (of the hero's class or neutral) but never one of them. */
+export function skipReward(run: RunState, shown: string[]): CardInst | null {
   const pay = skipPay(run);
   run.maxHp += pay;
   run.hp += pay;
-  run.skips++;
   const rng = rngOf(run);
-  const odds = rewardOdds(kind, currentNode(run).act);
+  const top = Math.max(0, ...shown.map((id) => RARITY_ORDER.indexOf(CARDS[id].rarity)));
   let def: CardDef | null = null;
-  for (let tries = 0; !def && tries < 80; tries++) {
-    const pool = rewardPool(run.hero, rng.weighted(odds, ([, w]) => w)[0]).filter((c) => !shown.includes(c.id));
+  // The rarest shown rarity, or the next one down when every card of it is on offer already.
+  for (let i = top; !def && i >= 0; i--) {
+    const pool = rewardPool(run.hero, RARITY_ORDER[i]).filter((c) => !shown.includes(c.id));
     if (pool.length) def = pickReward(rng, run.hero, pool);
   }
   run.rng = rng.state;
@@ -780,7 +778,7 @@ const isNode = (n: unknown, i: number, len: number): n is RunNode => {
 /** Saved data is untrusted: a run that doesn't have the exact shape (or names content that no longer exists) is dropped. */
 function parseRun(raw: unknown): RunState | null {
   if (!isObj(raw) || raw.version !== SAVE_VERSION) return null;
-  const { hero, hp, maxHp, seed, rng, uid, current, cleared, deck, relics, relicFlags, nodes, path, stats, money, skips, mods, reward } = raw;
+  const { hero, hp, maxHp, seed, rng, uid, current, cleared, deck, relics, relicFlags, nodes, path, stats, money, mods, reward } = raw;
   const heroId = HERO_LIST.find((hd) => hd.id === hero)?.id;
   if (!heroId || !isNum(hp) || !isNum(maxHp) || !isNum(seed) || !isNum(rng) || !isNum(uid) || typeof cleared !== 'boolean') return null;
   if (!Array.isArray(deck) || !deck.every(isCard) || !isStrings(relics)) return null;
@@ -809,7 +807,6 @@ function parseRun(raw: unknown): RunState | null {
     cleared,
     stats: { kills, elites, cardsPlayed, damageTaken, time },
     money: isNum(money) ? money : 0,
-    skips: isNum(skips) ? skips : 0,
     uid,
     mods: isStrings(mods) ? mods.filter((id) => id in MODIFIERS) : [],
     reward: cleared && offers.length ? offers.map(({ id, up }) => ({ id, up })) : undefined,

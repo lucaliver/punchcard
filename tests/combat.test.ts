@@ -2665,18 +2665,20 @@ describe('the Copy Room', () => {
     expect(canCopy(r)).toBe(false);
   });
 
-  it('skipping a card reward pays max HP and a card not on offer, and every skip pays more than the one before', () => {
+  it('skipping a card reward pays max HP (one more every few rooms) and a card not on offer, as rare as the rarest shown', () => {
     const r = newRun('warrior', 5);
     const hp = r.maxHp;
     const decked = r.deck.length;
     const shown = rollRewards(r, 'fight').map((o) => o.def.id);
     expect(skipPay(r)).toBe(CONFIG.skipMaxHp);
-    const bonus = skipReward(r, 'fight', shown);
+    const top = Math.max(...shown.map((id) => RARITY_ORDER.indexOf(CARDS[id].rarity)));
+    const bonus = skipReward(r, shown);
     expect(bonus && shown.includes(bonus.id)).toBe(false);
+    expect(bonus && RARITY_ORDER.indexOf(CARDS[bonus.id].rarity)).toBe(top);
     expect(r.deck.length).toBe(decked + 1);
-    expect(skipPay(r)).toBe(CONFIG.skipMaxHp + CONFIG.skipMaxHpStep);
-    skipReward(r, 'fight', shown);
-    expect(r.maxHp).toBe(hp + 2 * CONFIG.skipMaxHp + CONFIG.skipMaxHpStep);
+    expect(r.maxHp).toBe(hp + CONFIG.skipMaxHp);
+    r.path.length = CONFIG.skipMaxHpRooms;
+    expect(skipPay(r)).toBe(CONFIG.skipMaxHp + 1);
   });
 
   it('opens on two fights and a Lost and Found, then splits in two lanes', () => {

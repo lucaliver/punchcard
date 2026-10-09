@@ -129,8 +129,8 @@ export const CONFIG = {
   /** Break Room: a rest heals this share of max HP plus this share of the HP missing. Skipping a card reward: the max HP it pays. */
   restHeal: 0.9,
   skipMaxHp: 3,
-  /** Each time a card reward is skipped for max HP, the next skip pays this much more. */
-  skipMaxHpStep: 2,
+  /** Skipping pays one more max HP every this many rooms walked in the run. */
+  skipMaxHpRooms: 3,
   /** Copy Room: a card can't be shredded below this many deck cards; a photocopy costs this much HP (and needs more left). */
   shredMinDeck: 10,
   copyHpCost: 8,

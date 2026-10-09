@@ -2,7 +2,7 @@ import { trackReward } from '../../analytics';
 import { t } from '../../core/i18n';
 import { sfx } from '../../audio/sfx';
 import { burst, haptic } from '../fx/fx';
-import { addCard, type RewardOffer, rewardKindOf, type RunState, skipPay, skipReward, swapCard } from '../../game/run';
+import { addCard, type RewardOffer, type RunState, skipPay, skipReward, swapCard } from '../../game/run';
 import type { CardInst } from '../../game/types';
 import type { Screen } from '../app';
 import { icon } from '../art/icons';
@@ -46,7 +46,7 @@ export function rewardScreen(run: RunState, picks: RewardOffer[], adds: boolean,
         sfx('tap');
         const pay = skipPay(run);
         trackReward(run, offered, null, null);
-        const bonus = skipReward(run, rewardKindOf(run), offered);
+        const bonus = skipReward(run, offered);
         // Max HP goes up: hearts rise, then on to the map.
         swapBtn.disabled = true;
         skipBtn.disabled = true;
