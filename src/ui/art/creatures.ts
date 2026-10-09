@@ -1206,35 +1206,6 @@ ${shadow}
 <g fill="#ffd900" ${OUT}><rect x="148" y="94" width="12" height="9"/><rect x="162" y="94" width="12" height="9"/></g><g fill="#2a8ae8" ${OUT}><rect x="148" y="108" width="12" height="9"/><rect x="162" y="108" width="12" height="9"/></g><g fill="#ff3d9a" ${OUT}><rect x="148" y="122" width="12" height="9"/><rect x="162" y="122" width="12" height="9"/></g>
 <circle cx="161" cy="152" r="10" fill="#8a94a8" ${OUT}/><path d="M161 144v8" stroke="#120e18" stroke-width="3"/>`;
 
-/** The Coffee Machine: a bean-to-cup break-room machine with a scowling screen for a face, a keypad, a coin slot with a coin stuck in it and a toothy cup bay, steam hissing off the top, a "BOSS" sticky note in one hand. */
-const coffeeMachine = `
-<defs>${lg('cm-b', '#7a7aa0', '#2e2c4a')}${glow('cm-g', '#ff3b3b')}${rg('cm-c', '#fff6e0', '#c8a070')}</defs>
-${shadow}
-<g class="eye" fill="none" stroke="#f6f0e4" stroke-width="5" stroke-linecap="round" opacity=".85"><path d="M70 22c-8-7 8-11 0-20M100 20c-8-7 8-11 0-20M130 22c-8-7 8-11 0-20"/></g>
-<path d="M68 38l-6-14h76l-6 14z" fill="#8a5a2a" ${OUT}/><path d="M76 30h12M104 30h14" stroke="#3a2410" stroke-width="3"/>
-<rect x="38" y="36" width="124" height="142" rx="14" fill="url(#cm-b)" ${OUT}/>
-<rect x="28" y="172" width="144" height="16" rx="4" fill="#3a3450" ${OUT}/>
-<!-- face: a screen with angry eyes -->
-<rect x="52" y="48" width="96" height="42" rx="6" fill="#120e18" ${OUT}/>
-${eyes(76, 124, 70, 7, '#ff4a3a', 'cm-g')}
-<path d="M62 56l26 10M138 56l-26 10" stroke="#f6f0e4" stroke-width="5" stroke-linecap="round"/>
-<path d="M88 82h24" stroke="#ff4a3a" stroke-width="3" stroke-dasharray="3 3"/>
-<!-- keypad -->
-<rect x="48" y="98" width="42" height="38" rx="4" fill="#c8c0d8" ${OUT}/>
-<g fill="#f6f0e4" ${OUT}><rect x="53" y="103" width="9" height="8"/><rect x="65" y="103" width="9" height="8"/><rect x="77" y="103" width="9" height="8"/><rect x="53" y="114" width="9" height="8"/><rect x="65" y="114" width="9" height="8"/><rect x="77" y="114" width="9" height="8"/><rect x="53" y="125" width="9" height="7"/><rect x="65" y="125" width="9" height="7"/><rect x="77" y="125" width="9" height="7"/></g>
-<!-- coin slot with a coin stuck in it -->
-<rect x="108" y="98" width="44" height="38" rx="4" fill="#c8c0d8" ${OUT}/>
-<rect x="122" y="104" width="16" height="26" rx="3" fill="#120e18" ${OUT}/>
-<circle cx="130" cy="114" r="9" fill="#ffd900" ${OUT}/><path d="M126 114h8" stroke="#a87800" stroke-width="3"/>
-<!-- cup bay as a toothy mouth, with a spout and a cup -->
-<rect x="58" y="142" width="84" height="30" rx="4" fill="#120e18" ${OUT}/>
-<path d="M62 143l5 9 5-9 5 9 5-9 5 9 5-9 5 9 5-9 5 9 5-9 5 9 5-9 5 9" fill="#f6f0e4" stroke="#120e18" stroke-width="2" stroke-linejoin="round"/>
-<rect x="88" y="136" width="24" height="9" rx="2" fill="#c8c0d8" ${OUT}/>
-<path d="M82 152h36l-5 20H87z" fill="url(#cm-c)" ${OUT}/><path d="M85 158h30" stroke="#6a3a1a" stroke-width="5"/>
-<!-- hand with a sticky note -->
-<g class="limb"><path d="M38 110c-14 4-20 14-18 28" stroke="#120e18" stroke-width="9" fill="none" stroke-linecap="round"/><path d="M38 110c-14 4-20 14-18 28" stroke="#c8c0d8" stroke-width="4" fill="none" stroke-linecap="round"/>
-<g transform="rotate(-10 16 150)"><rect x="2" y="138" width="30" height="28" fill="#ffd900" ${OUT}/><path d="M7 148h20M7 155h14" stroke="#120e18" stroke-width="3"/></g></g>`;
-
 /** The Withered Ficus: a big dried-out office plant in a pink pot, drooping brown leaves, spikes and a sour face. */
 const witheredFicus = `
 <defs>${glow('wf-g', '#ff3d9a')}${rg('wf-p', '#ff8ac8', '#d4287a')}</defs>
@@ -1613,7 +1584,6 @@ export const CREATURES: Record<string, string> = {
   punchClock,
   smokeDetector,
   microwave,
-  coffeeMachine,
   witheredFicus,
   factorySiren,
   sushiChef,

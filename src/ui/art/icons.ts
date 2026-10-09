@@ -218,7 +218,7 @@ export const ICONS: Record<string, { el: Element; svg: string; wide?: boolean }>
     el: 'fire',
     svg: `<path d="M8 28h38v16c0 9-7 16-16 16h-6C15 60 8 53 8 44z"/><path d="M46 32h5c6 0 10 4 10 9s-4 9-10 9h-6v-7h6c2 0 3-1 3-2s-1-2-3-2h-5z"/><g ${S} stroke-width="4.5"><path d="M18 22c-4-5 4-8 0-14M28 22c-4-5 4-8 0-14M38 22c-4-5 4-8 0-14"/></g>`,
   },
-  // The Coffee Machine's tray: a paper cup with a band, a teaspoon and a fork.
+  // The coffee chore's tray: a paper cup with a band, a teaspoon and a fork.
   paperCup: {
     el: 'fire',
     svg: `<path d="M10 14h44l-6 44H16z"/><rect x="6" y="8" width="52" height="9" rx="2"/><path fill="#16121f" opacity=".35" d="M13 30h38l-1 10H14z"/><path ${HI} d="M18 22l-2 26h4z"/>`,

@@ -1,4 +1,4 @@
-/* The Coffee Machine's chore: its front panel, over the belt, the mana bar and the sleeve (the enemy, its move bar and your ability stay in view) */
+/* The coffee chore: its front panel, over the belt, the mana bar and the sleeve (the enemy, its move bar and your ability stay in view) */
 .task-window {
   display: none;
   position: absolute;

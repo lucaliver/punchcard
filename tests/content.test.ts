@@ -80,7 +80,7 @@ describe('content integrity', () => {
     }
   });
 
-  it("the Coffee Machine's drinks and steps are named in every language, and the Slaves CEO's coffee move is a chore", () => {
+  it("the coffee chore's drinks and steps are named in every language, and the Slaves CEO's coffee move is a chore", () => {
     const keys = [
       ...COFFEE_ITEMS.map((i) => `task.coffee.${i}`),
       ...COFFEE_DRINKS.map((d) => `drink.${d}`),

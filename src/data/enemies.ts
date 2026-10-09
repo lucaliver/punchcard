@@ -704,16 +704,6 @@ const defs: EnemyDef[] = [
     ruleBreaker: true,
   },
   {
-    id: 'coffeeMachine',
-    act: 2,
-    tier: 'normal',
-    hp: 85,
-    art: 'coffeeMachine',
-    main: atk('steamBlast', 7, 6, ramp),
-    every: 2,
-    specials: [atk('scaldingHot', 14, 9, { intent: 'charge' })],
-  },
-  {
     // Her song ties your hands and the belt keeps running: for a few seconds your cards play themselves, for free, wanted or not.
     id: 'factorySiren',
     act: 3,
@@ -855,7 +845,6 @@ export const DIFFICULTY = [
   'powerSocket',
   'overthinker',
   'sushiChef',
-  'coffeeMachine',
   'changeManager',
   'leaver',
   'wellnessCoach',

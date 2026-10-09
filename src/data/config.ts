@@ -115,7 +115,7 @@ export const CONFIG = {
   /** An update window's buttons answer only after it has been up this long (s), so a tap meant for a card doesn't answer it. */
   popupArm: 0.4,
   /**
-   * The Coffee Machine's chore (`MoveDef.task`, `game/coffee.ts`): `brewTime` s the machine takes to pour and `doneHold` s the finished cup stays up; a mistake takes `penalty` s off the move's countdown
+   * The coffee chore (`MoveDef.task`, `game/coffee.ts`): `brewTime` s the machine takes to pour and `doneHold` s the finished cup stays up; a mistake takes `penalty` s off the move's countdown
    * (`penaltyMax` s in all); the Boss then `calm`s down (the enemy is stunned that long). The order: a `price` ([min, max] cents) paid with `payCoins` ([min, max]) coins, `decoys` more in the purse (no fewer than `minCoins` of them ever make the price),
    * a `codeLength` keys code on a pad of `keys`, `sugar` ([min, max]) sugars out of a dial that goes up to `maxSugar`.
    */
