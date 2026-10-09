@@ -1,6 +1,7 @@
 import { describe, expect, it } from 'vitest';
 import type { Combat } from '../../src/game/combat';
 import { CoffeeTask } from '../../src/game/coffee';
+import { SushiOrder } from '../../src/game/sushi';
 import { Rng } from '../../src/core/rng';
 import { CONFIG } from '../../src/data/config';
 import { ENEMIES } from '../../src/data/enemies';
@@ -255,6 +256,8 @@ describe("the Sushi Chef's order", () => {
     return c;
   };
   const pieces = (c: Combat) => c.belt.filter((b) => CARDS[b.card.id].sushi);
+  /** Every kind that can be in an order. */
+  const KINDS = Object.keys(CARDS).filter((id) => CARDS[id].sushi === 'piece');
   /** Runs until a piece of this kind rides the belt. */
   const untilOn = (c: Combat, id: string): CombatCardRef => {
     for (let i = 0; i < 60 * 30 && !pieces(c).some((b) => b.card.id === id); i++) c.tick(1 / 60);
@@ -292,7 +295,7 @@ describe("the Sushi Chef's order", () => {
     });
     run(c, CONFIG.introTime + 0.1);
     const order = sushiOf(c);
-    const wrong = ['sushiSalmon', 'sushiMaki', 'sushiEgg', 'sushiShrimp'].find((id) => id !== order.next)!;
+    const wrong = KINDS.find((id) => id !== order.next)!;
     expect(c.playCard(untilOn(c, wrong).uid)).toBe(order.next === wrong);
     eatAll(c);
     expect(order.phase).toBe('done');
@@ -311,7 +314,7 @@ describe("the Sushi Chef's order", () => {
     const c = omakaseFight({ ...omakase, windup: 999 });
     run(c, CONFIG.introTime + 0.1);
     const order = sushiOf(c);
-    const other = ['sushiSalmon', 'sushiMaki', 'sushiEgg', 'sushiShrimp'].find((id) => id !== order.next)!;
+    const other = KINDS.find((id) => id !== order.next)!;
     const piece = untilOn(c, other);
     const t0 = c.enemy.timer;
     expect(c.playCard(piece.uid)).toBe(false);
@@ -323,19 +326,46 @@ describe("the Sushi Chef's order", () => {
     expect(order.eaten).toBe(0);
   });
 
-  it('a piece that rides off the belt costs nothing and is dealt again; the order is never starved', () => {
+  it('the piece to eat riding off the belt costs seconds and is dealt again; the order is never starved, nothing reaches the deck', () => {
     const c = omakaseFight({ ...omakase, windup: 999 });
     run(c, CONFIG.introTime + 0.1);
     const order = sushiOf(c);
     const hp = c.hero.hp;
-    // Let the belt run for several turns without touching it: the next piece keeps coming round.
+    // Let the belt run for several turns without touching it: the next piece keeps coming round, and missing it hurts the countdown only.
     for (let i = 0; i < 4; i++) {
       run(c, 12);
       untilOn(c, order.next);
     }
     expect(c.hero.hp).toBe(hp);
-    expect(c.stats.cardsLost).toBe(c.stats.cardsLost);
+    expect(order.errors).toBeGreaterThan(0);
+    expect(order.fined).toBeLessThanOrEqual(CONFIG.sushi.penaltyMax);
+    expect(order.eaten).toBe(0);
     expect([...c.draw, ...c.discard, ...c.exhaust].some((x) => CARDS[x.id].sushi)).toBe(false);
+  });
+
+  it('the fugu is never in the order; eating it bites, costs seconds and is gone, and the belt deals it more as the order goes on', () => {
+    const c = omakaseFight({ ...omakase, windup: 999 });
+    run(c, CONFIG.introTime + 0.1);
+    const order = sushiOf(c);
+    expect(order.order.every((id) => CARDS[id].sushi === 'piece')).toBe(true);
+    c.addTempCard('sushiFugu', 'belt');
+    const fugu = c.belt.find((b) => b.card.id === 'sushiFugu')!.card;
+    const hp = c.hero.hp;
+    const t0 = c.enemy.timer;
+    expect(c.playCard(fugu.uid)).toBe(false);
+    expect(c.hero.hp).toBe(hp - CARDS.sushiFugu.vals[0]);
+    expect(c.enemy.timer).toBeCloseTo(t0 + CONFIG.sushi.penalty, 5);
+    expect(c.belt.some((b) => b.card.uid === fugu.uid)).toBe(false);
+    expect(order.eaten).toBe(0);
+    // The more is eaten, the more of what is dealt is not what the order wants.
+    const stray = (eaten: number): number => {
+      const o = new SushiOrder(new Rng(5));
+      for (let i = 0; i < eaten; i++) o.eat(o.next);
+      let n = 0;
+      for (let i = 0; i < 3000; i++) if (!o.order.slice(o.eaten).includes(o.serve([])!)) n++;
+      return n;
+    };
+    expect(stray(CONFIG.sushi.length - 1)).toBeGreaterThan(stray(0) * 1.5);
   });
 
   it('when the countdown runs out the hit lands, the window closes and the pieces go', () => {

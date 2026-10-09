@@ -993,9 +993,14 @@ export class Combat {
 
   private expire(card: CombatCard): void {
     const def = CARDS[card.id];
-    // A piece of sushi that slipped off is gone, not lost: nothing reacts to it, and the order deals it again.
+    // A plate of sushi that slipped off is gone, not lost: nothing reacts to it, and the order deals it again. If it was the piece to eat now (and no other is riding), it costs seconds.
     if (def.sushi) {
       this.events.emit({ type: 'cardExpired', card });
+      const order = this.chore;
+      if (order instanceof SushiOrder && order.phase === 'eat' && card.id === order.next && !this.belt.some((b) => b.card.id === card.id)) {
+        this.events.emit({ type: 'text', target: 'hero', key: 'combat.sushiMissed', tone: 'bad' });
+        this.fine(order);
+      }
       return;
     }
     // A hex stays on the card through the piles until it's broken; one already cracked is gone.
@@ -1080,11 +1085,19 @@ export class Combat {
   private eat(card: CombatCard): boolean {
     const order = this.chore;
     if (!(order instanceof SushiOrder) || this.result || this.begging) return false;
+    const def = CARDS[card.id];
     const r = order.eat(card.id);
-    if (r === 'wrong') this.fine(order);
-    if (r !== 'ok') return false;
+    if (r === 'ignored') return false;
+    if (r === 'wrong') {
+      this.events.emit({ type: 'text', target: 'hero', key: def.sushi === 'trap' ? 'combat.sushiTrap' : 'combat.sushiWrong', tone: 'bad' });
+      this.fine(order);
+      // A trap is swallowed: it bites, and it is gone. Any other wrong plate stays where it is.
+      if (def.sushi !== 'trap') return false;
+      this.withCard(card, def, () => def.play?.(this, this.cardVals(card), card));
+    }
     this.belt = this.belt.filter((b) => b.card.uid !== card.uid);
     this.events.emit({ type: 'cardEaten', card });
+    if (r === 'wrong') return false;
     // The order is complete: the plates still riding are cleared away.
     if (order.phase === 'done') this.clearSushi();
     return true;

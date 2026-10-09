@@ -441,11 +441,11 @@
 /* only the belt repeats an Echo card: from the sleeve it is spent as usual */
 .sleeve .c-wave { display: none; }
 
-/* a piece of sushi has nothing to pay and nothing to read: no cost badge, no face, the picture fills the card */
+/* a plate of sushi has nothing to pay: no cost badge; one with nothing to read (a piece of the order) has no face either, and the picture fills the card */
 .card.sushi .c-cost { visibility: hidden; }
-.card.sushi .c-face { display: none; }
-.card.sushi .c-art { flex: 1; height: auto; border-bottom: 0; }
-.card.sushi .c-art .pico { font-size: 62cqw; }
+.card.bare .c-face { display: none; }
+.card.bare .c-art { flex: 1; height: auto; border-bottom: 0; }
+.card.bare .c-art .pico { font-size: 62cqw; }
 
 /* an Echo card, played and still there: it pulses */
 .card.echoed { animation: echo-pulse 0.2s steps(2); }

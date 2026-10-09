@@ -161,8 +161,11 @@ export interface CardDef {
   /** Whether the condition its face names (`{?poison}`…) holds right now: the belt and the sleeve light the condition up. Share the check with `play` (`WHEN`). */
   when?: (c: Combat) => boolean;
   play?: (c: Combat, v: number[], card: CombatCard) => void;
-  /** A piece of the Sushi Chef's order (`SushiOrder`): a tap tries to eat it (`Combat.eat`); it can't be played, stashed or caught, and is never kept: off the belt it is gone (the order deals it again). */
-  sushi?: true;
+  /**
+   * A plate on the Sushi Chef's belt (`SushiOrder`): a tap tries to eat it (`Combat.eat`); it can't be played, stashed or caught, and is never kept: off the belt it is gone (the order deals it again).
+   * A `piece` can be part of the order; a `trap` never is, and eating it runs its `play` (the fugu).
+   */
+  sushi?: 'piece' | 'trap';
   /** Triggered when the card leaves the belt without being played. */
   onExpire?: (c: Combat, v: number[], card: CombatCard) => void;
 }

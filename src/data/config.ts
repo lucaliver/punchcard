@@ -153,16 +153,20 @@ export const CONFIG = {
     calm: 3,
   },
   /**
-   * The Sushi Chef's chore (`MoveDef.task` = 'sushi', `game/sushi.ts`): an order of `length` pieces, eaten in that order off the belt, which serves nothing but sushi meanwhile;
-   * `decoy` is the chance a piece dealt is a random one instead of one the order still wants, `doneHold` s the finished order is shown. A wrong piece takes `penalty` s off the move's countdown
-   * (`penaltyMax` s in all); done in time, the Chef is stunned `calm` s.
+   * The Sushi Chef's chore (`MoveDef.task` = 'sushi', `game/sushi.ts`): an order of `length` pieces, eaten in that order off the belt, which serves nothing but sushi meanwhile.
+   * The chance a plate dealt is a random one instead of one the order still wants starts at `decoy` and grows by `decoyRamp` for every piece eaten (up to `decoyMax`); `fugu` of those random ones
+   * are the trap, which hurts when eaten. A wrong plate, or the next piece riding off the belt, takes `penalty` s off the move's countdown (`penaltyMax` s in all); `doneHold` s the finished order is shown;
+   * done in time, the Chef is stunned `calm` s.
    */
   sushi: {
-    length: 5,
-    decoy: 0.4,
+    length: 6,
+    decoy: 0.3,
+    decoyRamp: 0.08,
+    decoyMax: 0.7,
+    fugu: 0.25,
     doneHold: 1.2,
     penalty: 2,
-    penaltyMax: 6,
+    penaltyMax: 8,
     calm: 3,
   },
   /** The Weak Spot target shows at least this far (share of the sprite) from every edge. */

@@ -1333,6 +1333,8 @@ test("the Sushi Chef's omakase: a slip lists the pieces, the belt serves sushi a
   if (await start.count()) await start.click();
   await expect.poll(() => combat(page, 'return c.intro <= 0;')).toBe(true);
   await combat(page, 'while (!c.enemy.move.task) c.skipEnemyMove();');
+  // The test is about taps, not the clock: the move waits.
+  await combat(page, 'c.enemy.move = { ...c.enemy.move, windup: 999 };');
   const slip = page.locator('.sushi-slip.on');
   await expect(slip).toBeVisible();
   const length = (await combat(page, 'return c.chore.order.length;')) as number;

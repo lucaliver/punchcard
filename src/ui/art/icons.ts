@@ -489,6 +489,26 @@ export const ICONS: Record<string, { el: Element; svg: string; wide?: boolean }>
     el: 'blood',
     svg: `<rect x="6" y="40" width="52" height="16" rx="8" stroke="#16121f" stroke-width="3" stroke-linejoin="round"/><path d="M6 42c0-20 14-28 28-26 14 2 24 10 24 26z" stroke="#16121f" stroke-width="3" stroke-linejoin="round"/><path fill="none" stroke="#16121f" stroke-width="3" d="M18 40c0-8 4-14 10-17M30 40c0-8 4-14 12-16M42 40c0-6 2-10 7-12"/>`,
   },
+  sushiOnigiri: {
+    el: 'steel',
+    svg: `<path d="M32 6c5 0 9 4 14 14l11 28c1 5-2 10-8 10H15c-6 0-9-5-8-10L18 20C23 10 27 6 32 6z" stroke="#16121f" stroke-width="3" stroke-linejoin="round"/><rect x="19" y="38" width="26" height="20" fill="#16121f"/><path d="M26 44h12M26 50h12" stroke="#fff" stroke-width="2" opacity=".35"/>`,
+  },
+  sushiTemaki: {
+    el: 'nature',
+    svg: `<path d="M6 12l42-8 12 14L26 60z" stroke="#16121f" stroke-width="3" stroke-linejoin="round"/><path d="M26 60L52 8" fill="none" stroke="#16121f" stroke-width="3"/><g stroke="#16121f" stroke-width="2.5"><circle cx="14" cy="10" r="5"/><circle cx="26" cy="7" r="5"/><circle cx="38" cy="5" r="5"/></g>`,
+  },
+  sushiRoe: {
+    el: 'blood',
+    svg: `<path d="M10 58V30h44v28z" stroke="#16121f" stroke-width="3" stroke-linejoin="round"/><rect x="10" y="34" width="44" height="16" fill="#16121f"/><g stroke="#16121f" stroke-width="2.5"><circle cx="17" cy="22" r="6"/><circle cx="30" cy="18" r="6"/><circle cx="43" cy="22" r="6"/><circle cx="23" cy="10" r="6"/><circle cx="37" cy="9" r="6"/></g>`,
+  },
+  sushiTempura: {
+    el: 'holy',
+    svg: `<path d="M6 40C6 22 20 12 36 12c10 0 16 6 14 14-2 6-8 8-12 6-4 8-14 14-26 14-4 0-6-2-6-6z" stroke="#16121f" stroke-width="3" stroke-linejoin="round"/><path d="M48 24l14-10-2 16-8-2z" stroke="#16121f" stroke-width="3" stroke-linejoin="round"/><path d="M14 38c2-8 8-14 16-16M24 40c2-6 6-10 12-12" fill="none" stroke="#16121f" stroke-width="3" stroke-linecap="round"/><circle cx="12" cy="26" r="2" fill="#16121f"/><circle cx="20" cy="18" r="2" fill="#16121f"/>`,
+  },
+  sushiFugu: {
+    el: 'curse',
+    svg: `<circle cx="30" cy="34" r="22"/><path d="M30 8l-3 8h6zM10 18l8 5-4 5zM50 18l-8 5 4 5zM6 36l8-1v6zM54 36l-8-1v6zM18 54l5-7 4 5zM42 54l-5-7-4 5z" /><path d="M52 34l10-8v16z"/><circle cx="22" cy="30" r="5" fill="#16121f"/><circle cx="38" cy="30" r="5" fill="#16121f"/><path d="M22 44c5 3 11 3 16 0" fill="none" stroke="#16121f" stroke-width="3" stroke-linecap="round"/>`,
+  },
   // Boris, a little fish
   fish: {
     el: 'necro',

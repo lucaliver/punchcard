@@ -3,8 +3,9 @@ import { CARDS } from '../data/cards';
 import { CONFIG } from '../data/config';
 import type { Chore } from './chore';
 
-/** Every piece of sushi there is (the cards with `CardDef.sushi`). */
-const PIECES = Object.keys(CARDS).filter((id) => CARDS[id].sushi);
+/** Every piece of sushi that can be part of an order, and every plate that never is (the cards with `CardDef.sushi`). */
+const PIECES = Object.keys(CARDS).filter((id) => CARDS[id].sushi === 'piece');
+const TRAPS = Object.keys(CARDS).filter((id) => CARDS[id].sushi === 'trap');
 
 /** `ignored`: not the moment to eat (nothing happens, no penalty). */
 export type SushiResult = 'ok' | 'wrong' | 'ignored';
@@ -48,8 +49,8 @@ export class SushiOrder implements Chore {
   }
 
   /**
-   * The next piece the belt deals (a card id) while the order is on, given the pieces already riding it: mostly one the order still wants and the belt hasn't got
-   * (the one wanted soonest twice as likely), now and then a random one to make the belt busy.
+   * The next plate the belt deals (a card id) while the order is on, given the plates already riding it: mostly a piece the order still wants and the belt hasn't got
+   * (the one wanted soonest twice as likely), otherwise a random piece or, now and then, a trap; the more is eaten, the more the belt fills with those.
    */
   serve(onBelt: string[]): string | null {
     if (this.phase !== 'eat') return null;
@@ -58,7 +59,9 @@ export class SushiOrder implements Chore {
       const i = missing.indexOf(id);
       if (i >= 0) missing.splice(i, 1);
     }
-    if (!missing.length || this.rng.chance(CONFIG.sushi.decoy)) return this.rng.pick(PIECES);
+    const c = CONFIG.sushi;
+    if (!missing.length || this.rng.chance(Math.min(c.decoyMax, c.decoy + c.decoyRamp * this.eaten)))
+      return this.rng.chance(c.fugu) ? this.rng.pick(TRAPS) : this.rng.pick(PIECES);
     return this.rng.pick([...missing, missing[0]]);
   }
 

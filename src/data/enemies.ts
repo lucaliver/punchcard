@@ -18,7 +18,7 @@ const BOARD_FAST = 1.5;
 const AUDIT = 18;
 
 /** Seconds the Sushi Chef's Omakase takes to land: the order (a few pieces, in turn) fits in it with a little to spare. */
-const OMAKASE = 22;
+const OMAKASE = 26;
 
 /** What the half-HP moves bring (their texts quote these, see `data/values.ts`). */
 export const HALF = { securityBlock: 30, slavesStall: 8, complianceSlow: 20 } as const;
