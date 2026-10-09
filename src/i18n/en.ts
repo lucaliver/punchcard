@@ -1491,7 +1491,6 @@ const en = {
   'move.mindfulness': 'Mindfulness',
   'move.burpees': 'Burpees',
   'move.hairFlip': 'Hair Flip',
-  'move.overreaction': 'Overreaction',
   'move.highHeels': 'High Heels',
   'move.catwalk': 'Catwalk',
   'move.shortCircuit': 'Short Circuit',

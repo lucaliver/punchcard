@@ -1499,7 +1499,6 @@ const es: Record<EnKey, string> = {
   'move.mindfulness': 'Mindfulness',
   'move.burpees': 'Burpees',
   'move.hairFlip': 'Apartarse el pelo',
-  'move.overreaction': 'Reacción exagerada',
   'move.highHeels': 'Tacones altos',
   'move.catwalk': 'Pasarela',
   'move.shortCircuit': 'Cortocircuito',

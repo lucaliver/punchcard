@@ -414,9 +414,8 @@ const defs: EnemyDef[] = [
     main: atk('hairFlip', 6, 6),
     every: 2,
     specials: [
-      { id: 'overreaction', intent: 'buff', windup: 5, status: [gainStrength] },
       { id: 'catwalk', intent: 'debuff', windup: 5, status: [{ id: 'slowdown', t: 14, target: 'hero' }] },
-      atk('highHeels', 15, 10, { intent: 'charge' }),
+      atk('highHeels', 15, 10, { intent: 'charge', ...ramp }),
     ],
     deepBelt: 5,
     ruleBreaker: true,

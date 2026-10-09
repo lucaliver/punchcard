@@ -1481,7 +1481,6 @@ const zh: Record<EnKey, string> = {
   'move.mindfulness': '正念',
   'move.burpees': '波比跳',
   'move.hairFlip': '甩头发',
-  'move.overreaction': '反应过度',
   'move.highHeels': '高跟鞋',
   'move.catwalk': '猫步',
   'move.shortCircuit': '短路',
