@@ -1242,6 +1242,11 @@ export const ICONS: Record<string, { el: Element; svg: string; wide?: boolean }>
     el: 'steel',
     svg: `<rect x="2" y="16" width="60" height="32"/><path d="M8 32l11-10v6h26v-6l11 10-11 10v-6H19v6z" fill="#16121f"/>`,
   },
+  // Bulky: a heavy crate that will not fit through the sleeve.
+  bulky: {
+    el: 'steel',
+    svg: `<path d="M4 12h56v46H4z"/><path d="M10 18h44v34H10z" fill="#16121f"/><path d="M12 20l40 30M52 20L12 50" stroke="currentColor" stroke-width="5"/><path d="M26 6h12v6H26z"/>`,
+  },
   // Max HP up: a heart with an arrow.
   heartUp: {
     el: 'nature',

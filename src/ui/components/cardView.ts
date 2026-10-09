@@ -16,6 +16,7 @@ export const TAG_ICON: Record<string, string> = {
   fleeting: 'mouse',
   volatile: 'feather',
   large: 'large',
+  bulky: 'bulky',
   echo: 'echoKw',
   anchor: 'anchor',
   credit: 'debt',
