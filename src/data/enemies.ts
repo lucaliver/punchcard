@@ -402,8 +402,16 @@ const defs: EnemyDef[] = [
     every: 2,
     specials: [
       atk('beybladeChair', 3, 9, { hits: 6, intent: 'charge' }),
-      { id: 'slowSink', intent: 'debuff', windup: 4, status: [{ id: 'slowdown', t: 8, target: 'hero' }] },
-      { id: 'postureCheck', intent: 'buff', windup: 4, status: [{ id: 'strength', v: 2, target: 'enemy' }] },
+      // The seat sinks under you while he sits up straight.
+      {
+        id: 'adjustSeat',
+        intent: 'debuff',
+        windup: 5,
+        status: [
+          { id: 'slowdown', t: 8, target: 'hero' },
+          { id: 'strength', v: 2, target: 'enemy' },
+        ],
+      },
     ],
   },
   {
@@ -435,7 +443,6 @@ const defs: EnemyDef[] = [
     specials: [
       { id: 'surge', intent: 'buff', windup: 5, block: 12, status: [gainStrength] },
       { id: 'brownout', intent: 'drain', windup: 5, drainMana: 2 },
-      atk('overload', 14, 10, { intent: 'charge' }),
     ],
     beltOff: 10,
     ruleBreaker: true,
