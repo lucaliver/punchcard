@@ -574,24 +574,7 @@ export const mageCards: CardDef[] = [
       c.gainMana(v[1] * c.stacks('hero', 'multitasking'));
     },
   },
-  // Poison into Burn, Rush with a payoff, Dodge with teeth, a tap-spam charger
-  {
-    id: 'spontaneousCombustion',
-    face: '{poison}|{burn}',
-    cls: 'mage',
-    type: 'skill',
-    rarity: 'rare',
-    cost: 1,
-    vals: [2],
-    upVals: [1],
-    art: 'spontaneousCombustion',
-    play: (c, v) => {
-      const poison = c.fighter('enemy').statuses.poison;
-      if (!poison) return;
-      c.removeStatus('enemy', 'poison');
-      c.applyStatus('enemy', 'burn', Math.ceil(poison.v / v[0]));
-    },
-  },
+  // Rush with a payoff, Dodge with teeth, a tap-spam charger
   {
     id: 'speedrun',
     face: '{dmg:0}|+{1}/{rush}',

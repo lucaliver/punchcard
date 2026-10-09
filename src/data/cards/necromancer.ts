@@ -664,4 +664,21 @@ export const necromancerCards: CardDef[] = [
     play: (c, v) => void c.hit(v[0]),
     onExpire: (c, v) => void c.heal('hero', v[1]),
   },
+  {
+    id: 'spontaneousCombustion',
+    face: '{poison}|{burn}',
+    cls: 'necromancer',
+    type: 'skill',
+    rarity: 'rare',
+    cost: 1,
+    vals: [2],
+    upVals: [1],
+    art: 'spontaneousCombustion',
+    play: (c, v) => {
+      const poison = c.fighter('enemy').statuses.poison;
+      if (!poison) return;
+      c.removeStatus('enemy', 'poison');
+      c.applyStatus('enemy', 'burn', Math.ceil(poison.v / v[0]));
+    },
+  },
 ];
