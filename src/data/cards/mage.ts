@@ -1,5 +1,6 @@
 import type { Combat } from '../../game/combat';
 import type { CardDef } from '../../game/types';
+import { WHEN } from './conditions';
 
 /** Whole seconds of Rush the belt has left (Any% Speedrun). */
 const rushLeft = (c: Combat): number => (c.has('hero', 'rush') ? Math.floor(c.fighter('hero').statuses.rush.t) : 0);
@@ -74,7 +75,8 @@ export const mageCards: CardDef[] = [
     vals: [7, 16],
     upVals: [9, 20],
     art: 'iceLance',
-    play: (c, v) => void c.hit(c.has('enemy', 'chill') ? v[1] : v[0], { kind: 'ice' }),
+    when: WHEN.chill,
+    play: (c, v) => void c.hit(WHEN.chill(c) ? v[1] : v[0], { kind: 'ice' }),
   },
   {
     id: 'caffeineJolt',
@@ -239,8 +241,9 @@ export const mageCards: CardDef[] = [
     vals: [8, 7],
     upVals: [11, 10],
     art: 'blueScreen',
+    when: WHEN.chill,
     play: (c, v) => {
-      const chilled = c.has('enemy', 'chill');
+      const chilled = WHEN.chill(c);
       c.hit(v[0], { kind: 'ice' });
       if (chilled) c.applyStatus('enemy', 'stun', 1, v[1]);
     },
@@ -353,8 +356,9 @@ export const mageCards: CardDef[] = [
     vals: [8, 26],
     upVals: [11, 34],
     art: 'thermalShock',
+    when: WHEN.shock,
     play: (c, v) => {
-      const shock = c.has('enemy', 'chill') && c.has('enemy', 'burn');
+      const shock = WHEN.shock(c);
       c.hit(shock ? v[1] : v[0]);
       // The glass cracks: the Chill is spent.
       if (shock) c.removeStatus('enemy', 'chill');

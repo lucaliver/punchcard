@@ -125,6 +125,7 @@
   font-size: 0.75em;
   color: var(--muted);
 }
+.gl .cond.met { color: var(--k); background: var(--y); box-shadow: 0 0 0 1px var(--k); }
 .gl .cond .pico,
 .gl .each .pico { font-size: 1.1em; color: var(--k); --ink2: var(--y); }
 .gk { display: contents; }

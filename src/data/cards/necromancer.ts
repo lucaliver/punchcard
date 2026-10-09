@@ -1,4 +1,5 @@
 import type { CardDef } from '../../game/types';
+import { WHEN } from './conditions';
 
 /** The Necromancer rots enemies away: Poison, weakening curses and life drain. */
 export const necromancerCards: CardDef[] = [
@@ -156,7 +157,8 @@ export const necromancerCards: CardDef[] = [
     vals: [10, 18],
     upVals: [14, 24],
     art: 'envelope',
-    play: (c, v) => void c.hit(c.has('enemy', 'poison') ? v[1] : v[0], { kind: 'arcane' }),
+    when: WHEN.poison,
+    play: (c, v) => void c.hit(WHEN.poison(c) ? v[1] : v[0], { kind: 'arcane' }),
   },
   {
     id: 'sickLeave',
@@ -238,7 +240,8 @@ export const necromancerCards: CardDef[] = [
     vals: [2, 5],
     upVals: [4, 7],
     art: 'speech',
-    play: (c, v) => c.applyStatus('enemy', 'poison', c.has('enemy', 'poison') ? v[1] : v[0]),
+    when: WHEN.poison,
+    play: (c, v) => c.applyStatus('enemy', 'poison', WHEN.poison(c) ? v[1] : v[0]),
   },
   {
     id: 'mangioni',
@@ -361,7 +364,8 @@ export const necromancerCards: CardDef[] = [
     vals: [5, 14],
     upVals: [7, 18],
     art: 'rugPull',
-    play: (c, v) => void c.hit(c.has('enemy', 'weak') ? v[1] : v[0]),
+    when: WHEN.weak,
+    play: (c, v) => void c.hit(WHEN.weak(c) ? v[1] : v[0]),
   },
   {
     id: 'healthcarePlan',

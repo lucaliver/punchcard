@@ -1,4 +1,5 @@
 import type { CardDef } from '../../game/types';
+import { WHEN } from './conditions';
 
 export const neutralCards: CardDef[] = [
   // Mana growth: add empty crystals (they fill up over time). Once per fight, never free.
@@ -565,7 +566,8 @@ export const neutralCards: CardDef[] = [
     vals: [6, 16],
     upVals: [8, 22],
     art: 'kickHimWhenHesDown',
-    play: (c, v) => void c.hit(c.has('enemy', 'stun') ? v[1] : v[0]),
+    when: WHEN.stun,
+    play: (c, v) => void c.hit(WHEN.stun(c) ? v[1] : v[0]),
   },
   {
     id: 'lunchBreak',

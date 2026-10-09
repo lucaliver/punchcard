@@ -152,7 +152,9 @@ export function cardFace(card: CardLike, combat?: Combat | null): string {
             .split('+')
             .map((c) => icon(GLYPHS[c].icon))
             .join('');
-          return mark === '?' ? `<span class="cond">(${icons})</span>` : `<span class="each">${icon('loop')}${icons}</span>`;
+          return mark === '?'
+            ? `<span class="cond${combat && def.when?.(combat) ? ' met' : ''}">(${icons})</span>`
+            : `<span class="each">${icon('loop')}${icons}</span>`;
         }
         const g = GLYPHS[k!];
         const val =

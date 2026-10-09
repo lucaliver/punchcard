@@ -1,11 +1,6 @@
 import type { Combat } from '../../game/combat';
 import type { CardDef } from '../../game/types';
-
-/** Just Cause hits harder once the enemy is at or under this share of its max HP. */
-export const JUST_CAUSE_HP = 0.3;
-
-/** Hardship Case gives its bigger Block at or under this share of the hero's max HP. */
-export const HARDSHIP_HP = 0.5;
+import { WHEN } from './conditions';
 
 /** Dress Code's Block: it shrinks by `v[1]` for every other card on the belt. */
 const dressBlock = (c: Combat, v: number[], self: number): number => Math.max(0, v[0] - v[1] * c.belt.filter((b) => b.card.uid !== self).length);
@@ -179,7 +174,8 @@ export const warriorCards: CardDef[] = [
     vals: [15, 30],
     upVals: [20, 40],
     art: 'picketSign',
-    play: (c, v) => void c.hit(c.enemy.hp <= c.enemy.maxHp * JUST_CAUSE_HP ? v[1] : v[0]),
+    when: WHEN.enemyLow,
+    play: (c, v) => void c.hit(WHEN.enemyLow(c) ? v[1] : v[0]),
   },
   {
     id: 'backPay',
@@ -210,7 +206,8 @@ export const warriorCards: CardDef[] = [
     vals: [6, 14],
     upVals: [8, 28],
     art: 'grievance',
-    play: (c, v) => void c.hit(c.hero.block > 0 ? v[1] : v[0]),
+    when: WHEN.block,
+    play: (c, v) => void c.hit(WHEN.block(c) ? v[1] : v[0]),
   },
   {
     id: 'safetyRegs',
@@ -417,7 +414,8 @@ export const warriorCards: CardDef[] = [
     vals: [8, 24],
     upVals: [10, 32],
     art: 'hardshipCase',
-    play: (c, v) => c.gainBlock('hero', c.hero.hp <= c.hero.maxHp * HARDSHIP_HP ? v[1] : v[0]),
+    when: WHEN.heroLow,
+    play: (c, v) => c.gainBlock('hero', WHEN.heroLow(c) ? v[1] : v[0]),
   },
   {
     id: 'indexFund',
@@ -445,7 +443,8 @@ export const warriorCards: CardDef[] = [
     vals: [6, 18],
     upVals: [8, 24],
     art: 'trustFall',
-    play: (c, v) => void c.hit(c.hero.block > 0 ? v[0] : v[1]),
+    when: WHEN.bare,
+    play: (c, v) => void c.hit(WHEN.bare(c) ? v[1] : v[0]),
   },
   {
     id: 'step1',
@@ -570,7 +569,8 @@ export const warriorCards: CardDef[] = [
     vals: [8, 12],
     upVals: [11, 16],
     art: 'spanishInquisition',
-    play: (c, v) => void c.hit(c.has('enemy', 'vulnerable') ? v[1] : v[0]),
+    when: WHEN.vulnerable,
+    play: (c, v) => void c.hit(WHEN.vulnerable(c) ? v[1] : v[0]),
   },
   {
     id: 'paperTrail',
@@ -608,8 +608,9 @@ export const warriorCards: CardDef[] = [
     vals: [5],
     upVals: [7],
     art: 'whistleblower',
+    when: WHEN.vulnerable,
     play: (c, v) => {
-      const left = c.has('enemy', 'vulnerable') ? c.fighter('enemy').statuses.vulnerable.t : 0;
+      const left = WHEN.vulnerable(c) ? c.fighter('enemy').statuses.vulnerable.t : 0;
       c.applyStatus('enemy', 'vulnerable', 1, left > 0 ? left : v[0]);
     },
   },

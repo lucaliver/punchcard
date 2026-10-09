@@ -163,6 +163,8 @@ export interface CardDef {
   };
   /** What the face shows in a fight, for a card whose values depend on the moment (what it would do if played now): the same maths `play` uses. */
   shown?: (c: Combat, v: number[], card: CombatCard) => number[];
+  /** Whether the condition its face names (`{?poison}`…) holds right now: the belt and the sleeve light the condition up. Share the check with `play` (`WHEN`). */
+  when?: (c: Combat) => boolean;
   play?: (c: Combat, v: number[], card: CombatCard) => void;
   /** A piece of the sushi game (`StatusDef.feed`): a tap picks it, a tap on a second one with the same id eats both (`Combat.pairUp`: each heals `vals[0]`); it can't be stashed or caught, and is gone for good once it leaves the belt. */
   pair?: true;

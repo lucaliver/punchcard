@@ -123,6 +123,7 @@ tests/         combat, content, balance.sim (+ bot), balance.stats, e2e/
 - Special mechanics (`ride`, `onOverflow`, `tip`, `sweep`, `costDrop`, `inSleeve`, `span`/`tall`/`lockRow`, the `large` keyword, `pack`) are
   documented on `CardDef`. Curse *cards* live in `neutral.ts` (their rarity is a power level: common = a nuisance, rare = hurts or clogs, epic = shuts down belt space or can't be cleared; they never drop as rewards and can't be upgraded); **hexes** (`hexes.ts`) are a different thing (a curse on one
   belt card, chipped away by taps, on the belt or in the sleeve; a hex with `stages`, like Crumple, shows the card as a picture instead of the stone: one icon per tap left).
+- A card that branches on the fight's state (`{?poison}`, `{?block}`…) gives `CardDef.when` from `WHEN` (`data/cards/conditions.ts`) and its `play` reads the same function: the belt and sleeve faces light the condition up (`.cond.met`) while it holds.
 - A card whose numbers move with the fight (Dress Code's Block, Raise Denied's damage) gives `CardDef.shown` (the same maths its `play` uses): the belt and sleeve faces read `Combat.shownVals`, so they show what the card would do right now.
 - A card's `desc` names another card with `[@id]` (rendered as its name): in the detail view it is bold, coloured and tappable (opens that card; a test checks the ids exist).
 - Rarities are common, rare, epic and legendary (`special` only for cards a fight generates); basic cards of the starter decks are common with `starterOnly` (never a reward, a vending drop or a cross-training offer).
