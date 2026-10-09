@@ -86,7 +86,7 @@ function markup(run: RunState, combat: Combat): string {
     </section>
     <!-- right above the belt: your HP, Block and statuses stay in view while you play -->
     <section class="hero-row">
-      <div class="hero-portrait">${creature(heroId)}</div>
+      <div class="hero-portrait">${creature(heroId)}<i class="snore" aria-hidden="true">${icon('zzz')}</i></div>
       <div class="hero-info">
         <div class="statuses js-hstatus"></div>
         <div class="hpline">

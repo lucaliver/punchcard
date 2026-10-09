@@ -32,7 +32,7 @@ export const GLYPHS: Record<string, { icon: string; unit?: string; sign?: string
   mana: { icon: 'crystal', sign: '+', tone: 'blue' },
   stun: { icon: 'stars', unit: 's', tone: 'purple' },
   /** You are stunned (not the enemy). */
-  selfStun: { icon: 'ko', unit: 's', tone: 'purple' },
+  selfStun: { icon: 'asleep', unit: 's', tone: 'purple' },
   chill: { icon: 'snow', unit: 's', tone: 'blue' },
   rush: { icon: 'speedCards', unit: 's', tone: 'amber' },
   burn: { icon: 'flame', tone: 'red' },
@@ -187,7 +187,7 @@ const KEYWORD_ICON: Record<string, string> = {
   block: 'shield',
   mana: 'crystal',
   crystal: 'crystalSlot',
-  asleep: 'ko',
+  asleep: 'asleep',
   x: 'xCost',
 };
 

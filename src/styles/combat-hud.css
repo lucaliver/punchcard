@@ -305,6 +305,14 @@
   80% { opacity: 1; }
   to { top: 62%; opacity: 0; }
 }
+/* asleep (a stun): a snore drifts up from the head */
+.hero-portrait .snore { display: none; position: absolute; z-index: 1; top: 4%; right: 6%; font-size: calc(var(--portrait) * 0.34); color: var(--b); --ink2: var(--paper); }
+.hero-portrait.stunned .snore { display: block; animation: snore 1.2s steps(4) infinite; }
+@keyframes snore {
+  0% { transform: translate(0, 6px); opacity: 0; }
+  30% { opacity: 1; }
+  100% { transform: translate(-3px, -4px); opacity: 0; }
+}
 /* taking a hit: the hero winces (squashed down for a beat; after the shiver so it wins) */
 .hero-portrait.hurt .riso { animation: wince 0.3s steps(2); }
 @keyframes wince {

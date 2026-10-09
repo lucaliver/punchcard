@@ -435,7 +435,7 @@ const defs: StatusDef[] = [
     passable: true,
     icon: 'stars',
     look: 'stunned',
-    selfIcon: 'ko',
+    selfIcon: 'asleep',
     selfName: true,
     timeMul: 0,
     handsTied: true,

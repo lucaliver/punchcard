@@ -1066,6 +1066,11 @@ export const ICONS: Record<string, { el: Element; svg: string; wide?: boolean }>
     el: 'steel',
     svg: `<g fill="none" stroke="currentColor" stroke-width="6" stroke-linecap="round"><path d="M32 32c0-4 6-4 6 0s-6 8-12 4-6-14 4-16 18 4 18 14-10 20-22 18-20-12-18-22"/></g><path d="M50 6l3 6 6 1-5 4 1 6-5-3-5 3 1-6-5-4 6-1z"/>`,
   },
+  // Asleep (a stunned hero): a face with closed eyes and a snore.
+  asleep: {
+    el: 'arcane',
+    svg: `<circle cx="27" cy="38" r="23"/><g fill="none" stroke="#16121f" stroke-width="3.5" stroke-linecap="round"><path d="M12 36q5 5 10 0M32 36q5 5 10 0"/></g><ellipse cx="27" cy="49" rx="4" ry="3" fill="#16121f"/><path d="M42 4h16v5l-9 10h9v5H42v-5l9-10h-9z"/>`,
+  },
   thoughtBubble: {
     el: 'arcane',
     svg: `<path d="M18 8h30c8 0 12 5 12 12v8c0 7-4 12-12 12H30l-10 8v-8h-2c-8 0-12-5-12-12v-8C6 13 10 8 18 8z"/><circle cx="12" cy="54" r="5"/><circle cx="4" cy="61" r="3"/><g fill="#16121f"><rect x="20" y="21" width="6" height="6"/><rect x="30" y="21" width="6" height="6"/><rect x="40" y="21" width="6" height="6"/></g>`,
