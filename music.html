@@ -1,7 +1,9 @@
 <!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Punchcard OST</title>
 <style>
 /* the game's soundtrack in a list: tap a track to play it (published too: /music.html) */
-body { margin: 0; padding: 16px; background: var(--bg); color: var(--paper); font-family: var(--font); }
+/* the game's styles lock the page (html, body: overflow hidden, 100% high): this one scrolls */
+html:root, html:root body { height: auto; min-height: 100%; overflow: auto; overscroll-behavior: auto; }
+html:root body { margin: 0; padding: 16px; background: var(--bg); color: var(--paper); font-family: var(--font); }
 main { max-width: 520px; margin: 0 auto; }
 h1 { margin: 0 0 4px; font: 28px/1 var(--font-display); letter-spacing: 2px; color: var(--y); }
 .sub { margin: 0 0 16px; opacity: 0.7; }
