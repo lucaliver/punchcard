@@ -457,7 +457,7 @@ const defs: EnemyDef[] = [
     art: 'changeManager',
     main: atk('sprintBolt', 7, 7),
     every: 2,
-    specials: [{ id: 'pivotWard', intent: 'defend', windup: 6, block: 10, status: [gainStrength] }, atk('rightsizing', 17, 10, { intent: 'charge' })],
+    specials: [{ id: 'pivotWard', intent: 'defend', windup: 6, block: 10, status: [gainStrength] }],
     halfSpeech: true,
     halfArt: 'changeManagerAngry',
     onHalf: (c) => c.closeBeltRows(1),
