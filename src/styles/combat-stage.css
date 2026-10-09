@@ -428,6 +428,8 @@
 .threat { --t-ink: var(--tone, var(--muted)); --t-ink2: var(--tone-hi, var(--intent-idle-hi)); }
 .threat .t-ico { color: var(--t-ink); }
 .threat[data-intent='charge'] { background-color: var(--y); }
+/* the enemy is down: its bar greys out, whatever it was charging */
+.threat.down { --t-ink: var(--muted); --t-ink2: var(--paper-dim); background-color: var(--paper); }
 .threat.pop { animation: pop 0.2s steps(2); }
 @keyframes pop {
   from { transform: scaleY(0.4); }

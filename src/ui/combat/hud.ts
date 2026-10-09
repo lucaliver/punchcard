@@ -271,6 +271,7 @@ export function createHud(v: CombatView, onPassive: () => void): { render(): voi
     setHtml(r.intentTime, rate > 0 ? `${left >= 10 ? Math.ceil(left) : left.toFixed(1)}s` : icon('pause'));
     const hostile = !v.state.ended && (m.intent === 'attack' || m.intent === 'charge' || !!m.release);
     toggle(r.intent, 'urgent', hostile && left < 1.1);
+    toggle(r.intent, 'down', combat.result === 'win');
 
     // Preview how much HP the hit will take (after Block), and flash the screen edges just before it lands.
     const hs = combat.hero;

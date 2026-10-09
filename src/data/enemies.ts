@@ -232,10 +232,10 @@ const defs: EnemyDef[] = [
     id: 'slavesCeo',
     act: 1,
     tier: 'boss',
-    hp: 190,
-    block: 25,
+    hp: 180,
+    block: 40,
     art: 'slavesCeo',
-    main: atk('taylorsStopwatch', 8, 6, ramp),
+    main: atk('taylorsStopwatch', 10, 8, ramp),
     every: 2,
     specials: [
       {

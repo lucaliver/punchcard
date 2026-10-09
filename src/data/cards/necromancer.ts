@@ -433,7 +433,7 @@ export const necromancerCards: CardDef[] = [
     face: '{petrify:0}|{cheaper:1}',
     cls: 'necromancer',
     type: 'skill',
-    rarity: 'rare',
+    rarity: 'epic',
     cost: 1,
     vals: [3, 1],
     upVals: [5, 1],
