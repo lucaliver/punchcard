@@ -42,7 +42,7 @@ export interface RunStats {
 }
 
 /** Shape of the saved run; a save of another version is dropped. */
-const SAVE_VERSION = 7;
+const SAVE_VERSION = 8;
 
 export interface RunState {
   version: number;
@@ -59,7 +59,8 @@ export interface RunState {
   current: number;
   /** Nodes entered so far, in order (the path drawn on the map). */
   path: number[];
-  /** Card rewards skipped for max HP so far: each one raises the next skip's pay. */
+  /** Mana crystals added for good by the Tailor, on top of the hero's own and the stationery's. */
+  crystals: number;
   /** True once the current node has been completed. */
   cleared: boolean;
   stats: RunStats;
@@ -202,6 +203,7 @@ export function newRun(hero: HeroId, seed: number, scripted: readonly number[] =
     money: 0,
     uid: peekUid(),
     mods,
+    crystals: 0,
   };
 }
 
@@ -393,6 +395,7 @@ export function combatSetup(run: RunState): CombatSetup {
     scale: enemyScale(node, run.mods),
     beltMul: resolveMods(run.mods).beltMul,
     canBeg: true,
+    bonusMaxMana: run.crystals,
     seed,
   };
 }
@@ -636,10 +639,9 @@ export function crossTrain(run: RunState, id: string): CardInst {
   return card;
 }
 
-/** Tailor: the uniform is let out, for good: more max HP, filled up. */
-export function tailorVest(run: RunState): void {
-  run.maxHp += CONFIG.tailorMaxHp;
-  run.hp += CONFIG.tailorMaxHp;
+/** Tailor: a mana crystal sewn into the lining, for the rest of the run. */
+export function tailorCrystal(run: RunState): void {
+  run.crystals += CONFIG.tailorCrystals;
   run.cleared = true;
 }
 
@@ -778,7 +780,7 @@ const isNode = (n: unknown, i: number, len: number): n is RunNode => {
 /** Saved data is untrusted: a run that doesn't have the exact shape (or names content that no longer exists) is dropped. */
 function parseRun(raw: unknown): RunState | null {
   if (!isObj(raw) || raw.version !== SAVE_VERSION) return null;
-  const { hero, hp, maxHp, seed, rng, uid, current, cleared, deck, relics, relicFlags, nodes, path, stats, money, mods, reward } = raw;
+  const { hero, hp, maxHp, seed, rng, uid, current, cleared, deck, relics, relicFlags, nodes, path, stats, money, mods, crystals, reward } = raw;
   const heroId = HERO_LIST.find((hd) => hd.id === hero)?.id;
   if (!heroId || !isNum(hp) || !isNum(maxHp) || !isNum(seed) || !isNum(rng) || !isNum(uid) || typeof cleared !== 'boolean') return null;
   if (!Array.isArray(deck) || !deck.every(isCard) || !isStrings(relics)) return null;
@@ -809,6 +811,7 @@ function parseRun(raw: unknown): RunState | null {
     money: isNum(money) ? money : 0,
     uid,
     mods: isStrings(mods) ? mods.filter((id) => id in MODIFIERS) : [],
+    crystals: isNum(crystals) ? Math.max(0, crystals) : 0,
     reward: cleared && offers.length ? offers.map(({ id, up }) => ({ id, up })) : undefined,
   };
 }

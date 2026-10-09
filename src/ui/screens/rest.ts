@@ -13,12 +13,12 @@ export const HEAL_ANIM_MS = 1900;
 /** The quick version (`fast`), for a small bonus on the way to the map. */
 export const HEAL_FAST_MS = 900;
 
-/** Pixel hearts float up from the bottom of the screen, then "+N" pops in the middle (with a `note` under it, e.g. "max HP"). */
-export function playHealing(screen: HTMLElement, amount: number, note?: string, fast = false): void {
+/** Pixel hearts (or another `glyph`) float up from the bottom of the screen, then "+N" pops in the middle (with a `note` under it, e.g. "max HP"). */
+export function playHealing(screen: HTMLElement, amount: number, note?: string, fast = false, glyph = 'heart'): void {
   sfx('heal');
   const layer = h('div', { class: `heal-rise ${fast ? 'fast' : ''}`, 'aria-hidden': 'true' });
   for (let i = 0; i < 18; i++) {
-    const heart = h('i', { html: icon('heart') });
+    const heart = h('i', { html: icon(glyph) });
     heart.style.left = `${5 + Math.random() * 90}%`;
     heart.style.setProperty('--d', `${(1 + Math.random() * 0.7).toFixed(2)}s`);
     heart.style.setProperty('--dl', `${(Math.random() * 0.6).toFixed(2)}s`);

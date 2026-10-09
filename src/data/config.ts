@@ -138,7 +138,7 @@ export const CONFIG = {
   shredMinDeck: 10,
   copyHpCost: 8,
   /** Tailor: the max HP the let-out uniform gives. */
-  tailorMaxHp: 10,
+  tailorCrystals: 1,
   /** Lost & Found: how many relics lie in the box. */
   lostFoundChoices: 3,
   /** Rewards and the Vending Machine deal a card of the hero's class this many times as likely as a neutral one (a class stays itself). */

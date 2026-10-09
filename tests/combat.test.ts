@@ -21,6 +21,8 @@ import {
   rewardChoices,
   rollRewards,
   swapCard,
+  tailorCrystal,
+  combatSetup,
   canShred,
   fightPay,
   gainRelic,
@@ -3566,6 +3568,12 @@ describe('task batch', () => {
     for (let seed = 1; seed <= 20; seed++) {
       expect(newRun('warrior', seed).nodes.filter((n) => n.type === 'tailor').length).toBeLessThanOrEqual(1);
     }
+  });
+  it('the Tailor sews in a mana crystal that every later fight starts with', () => {
+    const r = newRun('warrior', 3);
+    const before = new Combat(combatSetup(r)).hero.maxMana;
+    tailorCrystal(r);
+    expect(new Combat(combatSetup(r)).hero.maxMana).toBe(before + CONFIG.tailorCrystals);
   });
   it('All You Can Eat: the belt serves matching sushi, eating a pair heals and a piece that falls hurts', () => {
     const c = setup();
