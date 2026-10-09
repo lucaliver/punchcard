@@ -856,10 +856,8 @@ describe('combat engine', () => {
     expect(c.beltRate()).toBeGreaterThan(0);
   });
 
-  it('Crunch doubles the belt speed, then it wears off; the CEO casts it just before firing you', () => {
-    const { specials } = ENEMIES.slavesCeo;
-    expect(specials.at(-1)?.id).toBe('youreFired');
-    expect(specials.at(-2)?.status?.[0]).toMatchObject({ id: 'crunch', t: 10 });
+  it('Crunch doubles the belt speed, then it wears off; the CEO casts it', () => {
+    expect(ENEMIES.slavesCeo.specials.find((m) => m.id === 'crunchTime')?.status?.[0]).toMatchObject({ id: 'crunch', t: 10 });
     const c = setup({ enemy: ENEMIES.slavesCeo });
     run(c, CONFIG.introTime + 0.01);
     const base = c.beltRate();

@@ -246,19 +246,9 @@ const defs: EnemyDef[] = [
     main: atk('taylorsStopwatch', 10, 8, ramp),
     every: 2,
     specials: [
-      {
-        id: 'writeUpsAndDeadlines',
-        intent: 'curse',
-        windup: 7,
-        curse: [
-          { id: 'writeUp', n: 1, to: 'draw' },
-          { id: 'deadline', n: 1, to: 'belt' },
-        ],
-      },
       // The Boss wants his coffee now: a window covers your belt and sleeve with the machine's coin slot, keypad and cup bay. Do the chore before the move lands, and the move is off.
       { id: 'getBossCoffee', intent: 'charge', windup: GET_COFFEE, dmg: 16, task: 'coffee' },
       { id: 'crunchTime', intent: 'debuff', windup: 5, status: [{ id: 'crunch', t: 10, target: 'hero' }] },
-      atk('youreFired', 24, 12, { intent: 'charge' }),
     ],
     halfSpeech: true,
     // The emergency button: at half HP everything stops for a moment.
