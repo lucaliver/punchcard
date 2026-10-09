@@ -107,7 +107,8 @@ const wideIcons = new Set<string>();
 function loadImage(src: string): Promise<HTMLImageElement> {
   return new Promise((resolve, reject) => {
     const img = new Image();
-    img.onload = () => resolve(img);
+    // `decode()` makes sure the pixels are ready: a mobile browser under load can fire `load` on an SVG that still draws blank.
+    img.onload = () => void (img.decode ? img.decode().catch(() => undefined) : Promise.resolve()).then(() => resolve(img));
     img.onerror = reject;
     img.src = src;
   });
@@ -130,7 +131,7 @@ function upscale(src: HTMLCanvasElement, k: number): string {
 }
 
 /** Rasterises a 200×200 creature into per-ink pixel layers. */
-async function buildSprite(svgBody: string, size: number): Promise<Sprite> {
+async function buildSprite(svgBody: string, size: number, attempt = 0): Promise<Sprite> {
   const img = await loadSvg(`<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200" width="${size}" height="${size}">${svgBody}</svg>`);
   const [, g] = canvas(size, size);
   g.drawImage(img, 0, 0, size, size);
@@ -149,6 +150,8 @@ async function buildSprite(svgBody: string, size: number): Promise<Sprite> {
     pix[i] = nearest(r, gg, b);
     on[i] = 1;
   }
+  // A drawing that came out blank is a browser hiccup (see `loadImage`), not a blank creature: draw it again.
+  if (!on.includes(1) && attempt < REDRAWS) return buildSprite(svgBody, size, attempt + 1);
   let [x0, y0, x1, y1] = [size, size, 0, 0];
   for (let i = 0; i < size * size; i++) {
     if (!on[i]) continue;
@@ -211,7 +214,7 @@ async function buildSprite(svgBody: string, size: number): Promise<Sprite> {
 }
 
 /** Rasterises a 64×64 icon (128×64 when `wide`) to a 1-bit alpha mask (light pixels on, dark details off). */
-async function buildMask(svgBody: string, size: number, wide: boolean): Promise<string> {
+async function buildMask(svgBody: string, size: number, wide: boolean, attempt = 0): Promise<string> {
   const w = wide ? size * 2 : size;
   const img = await loadSvg(
     `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ${wide ? 128 : 64} 64" width="${w}" height="${size}" fill="#fff" color="#fff">${svgBody}</svg>`,
@@ -226,10 +229,13 @@ async function buildMask(svgBody: string, size: number, wide: boolean): Promise<
     d[i * 4] = d[i * 4 + 1] = d[i * 4 + 2] = 0;
     d[i * 4 + 3] = v;
   }
+  if (!d.some((v, i) => i % 4 === 3 && v) && attempt < REDRAWS) return buildMask(svgBody, size, wide, attempt + 1);
   g.putImageData(im, 0, 0);
   return upscale(c, 4);
 }
 
+/** Times a blank drawing is tried again before it is believed. */
+const REDRAWS = 3;
 export const SPRITE_RES = 64;
 export const ICON_RES = 20;
 
@@ -248,11 +254,21 @@ const BATCH = 16;
  */
 export async function preloadArt(src: { creatures: Record<string, string>; icons: Record<string, { svg: string; wide?: boolean }> }): Promise<void> {
   for (const [id, body] of Object.entries(src.creatures)) {
-    queue.set(`c:${id}`, () => buildSprite(body, SPRITE_RES).then((s) => void (sprites.set(id, s), fillSprites(id, s))));
+    queue.set(`c:${id}`, () =>
+      buildSprite(body, SPRITE_RES).then((s) => {
+        sprites.set(id, s);
+        fillSprites(id, s);
+      }),
+    );
   }
   for (const [id, ic] of Object.entries(src.icons)) {
     if (ic.wide) wideIcons.add(id);
-    queue.set(`i:${id}`, () => buildMask(ic.svg, ICON_RES, !!ic.wide).then((m) => void (masks.set(id, m), fillIcons(id, m))));
+    queue.set(`i:${id}`, () =>
+      buildMask(ic.svg, ICON_RES, !!ic.wide).then((m) => {
+        masks.set(id, m);
+        fillIcons(id, m);
+      }),
+    );
   }
   while (queue.size) {
     const keys = [...wanted].filter((k) => queue.has(k));
@@ -261,7 +277,7 @@ export async function preloadArt(src: { creatures: Record<string, string>; icons
       const job = queue.get(k)!;
       queue.delete(k);
       wanted.delete(k);
-      return job();
+      return job().catch((e) => console.warn(`art ${k} failed`, e));
     });
     await Promise.all(jobs);
     await new Promise((resolve) => setTimeout(resolve));
