@@ -1233,6 +1233,8 @@ const zh: Record<EnKey, string> = {
   'status.lostBadge.d': '下一张消耗[mana]的卡牌免费。层数：{v}。',
   'card.fireExit.name': '消防出口',
   'card.fireExit.desc': '获得 {0} 点[block]。如果它未打出就离开传送带，仍然获得 {1} 点[block]。',
+  'card.rageQuit.name': '愤而辞职',
+  'card.rageQuit.desc': '造成 {0} 点伤害。如果它未打出就离开传送带，仍然造成 {1} 点伤害。',
   'card.lostBadge.name': '丢失的工牌',
   'card.lostBadge.desc': '失去 {0} 点生命。你打出的下一张消耗[mana]的卡牌免费。',
   'status.grudgeLedger': '记仇账本',

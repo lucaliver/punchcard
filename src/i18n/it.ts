@@ -1251,6 +1251,8 @@ const it: Record<EnKey, string> = {
   'status.lostBadge.d': 'La prossima carta che costa [mana] è gratis. Cariche: {v}.',
   'card.fireExit.name': 'Uscita di Emergenza',
   'card.fireExit.desc': 'Ottieni {0} di [block]. Se lascia il nastro senza essere giocata, ottieni comunque {1} di [block].',
+  'card.rageQuit.name': 'Dimissioni Furiose',
+  'card.rageQuit.desc': 'Infliggi {0} di danno. Se lascia il nastro senza essere giocata, infliggi comunque {1} di danno.',
   'card.lostBadge.name': 'Badge Smarrito',
   'card.lostBadge.desc': 'Perdi {0} HP. La prossima carta che giochi e che costa [mana] è gratis.',
   'status.grudgeLedger': 'Registro dei Rancori',

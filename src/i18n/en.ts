@@ -1243,6 +1243,8 @@ const en = {
   'status.lostBadge.d': 'The next card that costs [mana] is free. Stacks: {v}.',
   'card.fireExit.name': 'Fire Exit',
   'card.fireExit.desc': 'Gain {0} [block]. If it leaves the belt unplayed, gain {1} [block] anyway.',
+  'card.rageQuit.name': 'Rage Quit',
+  'card.rageQuit.desc': 'Deal {0} damage. If it leaves the belt unplayed, deal {1} damage anyway.',
   'card.lostBadge.name': 'Lost Badge',
   'card.lostBadge.desc': 'Lose {0} HP. The next card you play that costs [mana] is free.',
   'status.grudgeLedger': 'Grudge Ledger',

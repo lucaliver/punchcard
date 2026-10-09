@@ -1250,6 +1250,8 @@ const es: Record<EnKey, string> = {
   'status.lostBadge.d': 'La próxima carta que cueste [mana] es gratis. Acumulaciones: {v}.',
   'card.fireExit.name': 'Salida de incendios',
   'card.fireExit.desc': 'Gana {0} de [block]. Si sale de la cinta sin jugarse, ganas {1} de [block] igualmente.',
+  'card.rageQuit.name': 'Renuncia furiosa',
+  'card.rageQuit.desc': 'Inflige {0} de daño. Si sale de la cinta sin jugarse, inflige {1} de daño igualmente.',
   'card.lostBadge.name': 'Credencial perdida',
   'card.lostBadge.desc': 'Pierdes {0} PV. La próxima carta que juegues y cueste [mana] es gratis.',
   'status.grudgeLedger': 'Libro de rencores',

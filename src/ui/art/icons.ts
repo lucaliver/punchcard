@@ -853,6 +853,11 @@ export const ICONS: Record<string, { el: Element; svg: string; wide?: boolean }>
     el: 'steel',
     svg: `<path d="M6 4h36v56H6z"/><path d="M12 10h24v44H12z" fill="#16121f"/><circle cx="24" cy="21" r="5"/><path d="M24 27v12M24 31l-8 4M24 31l8-3M24 39l-7 12M24 39l8 10" fill="none" stroke="currentColor" stroke-width="4" stroke-linecap="round"/><path d="M46 24l16 10-16 10z"/>`,
   },
+  // A picket sign with an exclamation mark: Rage Quit.
+  rageQuit: {
+    el: 'blood',
+    svg: `<path d="M4 4h56v34H4z"/><path d="M10 10h44v22H10z" fill="#16121f"/><path d="M29 13h6l-1 12h-4zM29 27h6v4h-6z"/><path d="M28 38h8v24h-8z"/>`,
+  },
   lostBadge: {
     el: 'steel',
     svg: `<rect x="14" y="14" width="36" height="46"/><rect x="26" y="4" width="12" height="10"/><circle cx="32" cy="30" r="8" fill="#16121f"/><path d="M20 46h24M20 53h16" stroke="#16121f" stroke-width="4"/><path d="M28 28l8 4M36 28l-8 4" stroke="currentColor" stroke-width="3"/>`,

@@ -2175,6 +2175,13 @@ describe('cards that fill the classes out', () => {
     expect(c.belt.some((b) => b.card.uid === exit.uid)).toBe(false);
     expect(c.hero.block).toBe(CARDS.fireExit.vals[1]);
 
+    // Its attack twin hits instead.
+    c.addTempCard('rageQuit', 'belt');
+    const foe = c.enemy.hp + c.enemy.block;
+    c.belt[c.belt.length - 1].pos = EXPIRE_POS + 0.1;
+    run(c, CONFIG.fallGrace + 0.1);
+    expect(c.enemy.hp + c.enemy.block).toBeLessThan(foe);
+
     c.hero.mana = 5;
     const hp = c.hero.hp;
     cast(c, 'lostBadge');
