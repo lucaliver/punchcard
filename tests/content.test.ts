@@ -125,6 +125,10 @@ describe('content integrity', () => {
     expect(CREATURES[DEBUG_ENEMY.art]).toBeTruthy();
   });
 
+  it('every enemy with a half-HP trait has an angrier face to change into', () => {
+    for (const e of ENEMY_LIST.filter((x) => x.onHalf)) expect(CREATURES[e.halfArt ?? ''], e.id).toBeTruthy();
+  });
+
   it('every enemy past the first three can grow stronger, except the ones with nothing to hit with or a single move', () => {
     const exempt = ['toxicCoworker', 'guyAsleep', 'overthinker'];
     for (const e of ENEMY_LIST.slice(3)) {

@@ -292,7 +292,7 @@ export interface StatusDef {
   tick?: (c: Combat, side: Side, s: StatusVal, dt: number) => void;
   /** The particles that burst when the status lands (`kind` is a palette of `ui/fx/fx.ts`). */
   burst?: { kind: string; n: number };
-  /** A class its sprite wears while the enemy carries the status (the look is in `combat-stage.css`). */
+  /** A class its sprite wears while the enemy carries the status, or the belt while the hero does (the look is in `combat-stage.css` / `combat-belt.css`). */
   look?: string;
   /** On the hero: while it lasts the belt serves these cards (ids, dealt in matching pairs: `CardDef.pair`) instead of the deck. The pieces still riding when it ends stay on the belt. */
   feed?: string[];

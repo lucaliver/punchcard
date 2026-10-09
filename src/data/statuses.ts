@@ -424,11 +424,12 @@ const defs: StatusDef[] = [
     passable: true,
     icon: 'flame',
     burst: { kind: 'fire', n: 10 },
+    look: 'burning',
     onAttack: (c, side, s) => void c.damage(side === 'enemy' ? 'hero' : 'enemy', side, s.v, { raw: true, ignoreBlock: true, kind: 'burn' }, 'dot'),
   },
-  { id: 'poison', tone: 'toxic', kind: 'dot', good: false, passable: true, halves: true, icon: 'poisonBottle' },
-  { id: 'weak', tone: 'purple', kind: 'timed', good: false, passable: true, icon: 'broken', dealtMul: 0.75 },
-  { id: 'vulnerable', tone: 'red', kind: 'timed', good: false, passable: true, icon: 'crack', takenMul: 1.5 },
+  { id: 'poison', tone: 'toxic', kind: 'dot', good: false, passable: true, halves: true, icon: 'poisonBottle', look: 'poisoned' },
+  { id: 'weak', tone: 'purple', kind: 'timed', good: false, passable: true, icon: 'broken', dealtMul: 0.75, look: 'weakened' },
+  { id: 'vulnerable', tone: 'red', kind: 'timed', good: false, passable: true, icon: 'crack', takenMul: 1.5, look: 'exposed' },
   {
     id: 'chill',
     tone: 'blue',
@@ -456,15 +457,15 @@ const defs: StatusDef[] = [
     handsTied: true,
     canPlay: (_c, side) => (side === 'hero' ? 'combat.stunned' : null),
   },
-  { id: 'hurry', tone: 'purple', kind: 'timed', good: false, icon: 'stopwatch', beltMul: CONFIG.beltHurry },
+  { id: 'hurry', tone: 'purple', kind: 'timed', good: false, icon: 'stopwatch', beltMul: CONFIG.beltHurry, look: 'hurried' },
   // Emergency button: the belt stops dead.
-  { id: 'stalled', tone: 'purple', kind: 'timed', good: false, icon: 'pause', beltMul: 0 },
-  { id: 'crunch', tone: 'purple', kind: 'timed', good: false, icon: 'siren', beltMul: CONFIG.beltCrunch },
+  { id: 'stalled', tone: 'purple', kind: 'timed', good: false, icon: 'pause', beltMul: 0, look: 'stalled' },
+  { id: 'crunch', tone: 'purple', kind: 'timed', good: false, icon: 'siren', beltMul: CONFIG.beltCrunch, look: 'crunching' },
   // Every card turns black: only the art and the cost are left to go by.
   { id: 'blackout', tone: 'purple', kind: 'timed', good: false, icon: 'bulbOff', hidesCards: true },
   // Restructured: the belt is cut to one row, and opens again when it runs out.
   { id: 'restructured', tone: 'purple', kind: 'timed', good: false, icon: 'lane', onEnd: (c) => c.openBeltRows() },
-  { id: 'slowdown', tone: 'purple', kind: 'timed', good: false, icon: 'cone', beltMul: CONFIG.beltSlow },
+  { id: 'slowdown', tone: 'purple', kind: 'timed', good: false, icon: 'cone', beltMul: CONFIG.beltSlow, look: 'slowed' },
   // Enemy passives (permanent traits).
   {
     id: 'noRepeatsPolicy',

@@ -117,6 +117,8 @@ export function bindCombatFx(v: CombatView, cards: CardLayer, onEnd: (result: 'w
         }
         if (e.target === 'enemy') {
           if (e.amount > 0) v.retrigger(r.enemyArt, 'hit');
+          // The whole hit stopped by Block: the sprite shrugs it off.
+          else if (e.blocked > 0 && e.source !== 'dot') v.retrigger(r.enemyArt, 'parried');
           if (e.source !== 'dot') sfx(SOUND_FOR_KIND[e.kind] ?? 'blunt');
           if (e.amount >= 15) shake('small');
         } else if (e.source !== 'dot' || e.amount > 0) {
@@ -134,6 +136,7 @@ export function bindCombatFx(v: CombatView, cards: CardLayer, onEnd: (result: 'w
         floatText(p.x, p.y, `+${e.amount}`, 'heal');
         burst('heal', p.x, p.y, 16);
         sfx('heal');
+        if (e.target === 'enemy') v.retrigger(r.enemyArt, 'healed');
         break;
       }
       case 'block': {
@@ -144,6 +147,7 @@ export function bindCombatFx(v: CombatView, cards: CardLayer, onEnd: (result: 'w
         burst('block', p.x, p.y, 10, 0.5, 24);
         sfx('block');
         v.retrigger(chip, 'pop');
+        if (e.target === 'enemy') v.retrigger(r.enemyArt, 'shielded');
         break;
       }
       case 'status': {
@@ -152,6 +156,7 @@ export function bindCombatFx(v: CombatView, cards: CardLayer, onEnd: (result: 'w
         floatText(p.x, p.y - 36, statusName(e.id, e.target), 'status').dataset.tone = def.tone;
         sfx(def.good ? 'status' : 'debuff');
         if (def.burst) burst(def.burst.kind, p.x, p.y, def.burst.n);
+        if (e.target === 'enemy' && def.good && !def.passive) v.retrigger(r.enemyArt, 'buffed');
         break;
       }
       case 'text': {

@@ -1414,6 +1414,125 @@ const debugEnemy = `
 ${shadow}
 <path fill-rule="evenodd" d="M40 40h120v120H40zM54 54v92h92V54z" fill="#f6f0e4" ${OUT}/>`;
 
+/** What anger adds to a sprite: glowing red eyes, steep brows, a fanged snarl, an anger vein and puffs of steam, laid over the calm drawing. */
+interface Rage {
+  eyes?: [x: number, y: number, r: number][];
+  brows: [x1: number, y1: number, x2: number, y2: number][];
+  mouth?: [x1: number, x2: number, y: number, h: number];
+  vein?: [x: number, y: number];
+  steam: [x: number, y: number][];
+}
+const rage = (o: Rage): string => {
+  const eyes = (o.eyes ?? [])
+    .map(
+      ([x, y, r]) =>
+        `<g class="eye"><circle cx="${x}" cy="${y}" r="${r * 1.5}" fill="#ff3b3b" ${OUT}/><rect x="${x - 1.5}" y="${y - r}" width="3" height="${r * 2}" rx="1.5" fill="#120e18"/><circle cx="${x - r * 0.5}" cy="${y - r * 0.6}" r="${r * 0.3}" fill="#fff"/></g>`,
+    )
+    .join('');
+  const brows = o.brows.map(([a, b, c, d]) => `<path d="M${a} ${b}L${c} ${d}" stroke="#120e18" stroke-width="7" stroke-linecap="round"/>`).join('');
+  let mouth = '';
+  if (o.mouth) {
+    const [x1, x2, y, h] = o.mouth;
+    const n = Math.max(3, Math.round((x2 - x1) / 8));
+    const w = (x2 - x1) / n;
+    const teeth = Array.from({ length: n }, (_, k) => `M${x1 + k * w} ${y}l${w / 2} ${h * 0.7}l${w / 2} ${-h * 0.7}z`).join('');
+    mouth = `<path d="M${x1} ${y}H${x2}L${x2 - 4} ${y + h}H${x1 + 4}z" fill="#120e18" ${OUT}/><path d="${teeth}" fill="#f6f0e4"/>`;
+  }
+  const vein = o.vein
+    ? `<path d="M${o.vein[0]} ${o.vein[1]}l7 3-4 5 8 4M${o.vein[0] + 10} ${o.vein[1] - 2}l-3 6 6 2" stroke="#ff3b3b" stroke-width="3" fill="none" stroke-linecap="round" stroke-linejoin="round"/>`
+    : '';
+  const steam = o.steam.map(([x, y]) => `<circle cx="${x}" cy="${y}" r="6"/><circle cx="${x + 7}" cy="${y - 9}" r="4"/>`).join('');
+  return `${eyes}${brows}${mouth}${vein}<g fill="#f6f0e4" opacity=".9" ${OUT}>${steam}</g>`;
+};
+
+/** The half-HP faces: the same creature, angrier (`EnemyDef.halfArt`). */
+const snitchAngry = `${snitch}${rage({
+  eyes: [
+    [84, 68, 7],
+    [116, 68, 7],
+  ],
+  brows: [
+    [62, 50, 92, 68],
+    [138, 50, 108, 68],
+  ],
+  mouth: [84, 116, 101, 13],
+  vein: [112, 42],
+  steam: [
+    [36, 22],
+    [164, 24],
+  ],
+})}`;
+const securityMonitorAngry = `${securityMonitor}${rage({
+  eyes: [[100, 69, 8]],
+  brows: [
+    [72, 57, 100, 66],
+    [128, 57, 100, 66],
+  ],
+  mouth: [80, 120, 87, 9],
+  steam: [
+    [44, 70],
+    [150, 76],
+  ],
+})}`;
+const slavesCeoAngry = `${slavesCeo}${rage({
+  eyes: [
+    [84, 68, 8],
+    [116, 68, 8],
+  ],
+  brows: [
+    [66, 50, 96, 64],
+    [134, 50, 104, 64],
+  ],
+  vein: [66, 74],
+  steam: [
+    [150, 58],
+    [40, 60],
+  ],
+})}`;
+const complianceOfficerAngry = `${complianceOfficer}${rage({
+  eyes: [[100, 82, 10]],
+  brows: [
+    [68, 66, 98, 80],
+    [132, 66, 102, 80],
+  ],
+  mouth: [76, 124, 105, 12],
+  vein: [64, 88],
+  steam: [
+    [40, 50],
+    [160, 40],
+  ],
+})}`;
+const changeManagerAngry = `${changeManager}${rage({
+  eyes: [
+    [88, 76, 5],
+    [112, 76, 5],
+  ],
+  brows: [
+    [76, 68, 94, 76],
+    [124, 68, 106, 76],
+  ],
+  mouth: [86, 114, 89, 10],
+  vein: [120, 84],
+  steam: [
+    [170, 82],
+    [28, 92],
+  ],
+})}`;
+const touristAngry = `${tourist}<g ${OUT}><rect x="66" y="56" width="26" height="16" rx="6" fill="#ff3b3b"/><rect x="96" y="56" width="26" height="16" rx="6" fill="#ff3b3b"/></g><path d="M70 60h8M100 60h8" stroke="#fff" stroke-width="3" stroke-linecap="round" opacity=".7"/>${rage(
+  {
+    brows: [
+      [62, 52, 92, 64],
+      [126, 52, 98, 64],
+    ],
+    mouth: [70, 112, 83, 12],
+    vein: [112, 50],
+    steam: [
+      [134, 40],
+      [24, 60],
+    ],
+  },
+)}`;
+
 export const CREATURES: Record<string, string> = {
   debugEnemy,
   leaver,
@@ -1421,12 +1540,15 @@ export const CREATURES: Record<string, string> = {
   exaggeratedGirl,
   powerSocket,
   snitch,
+  snitchAngry,
   seniorBoomer,
   toxicCoworker,
   teamLeader,
   goblinConsultant,
   securityMonitor,
+  securityMonitorAngry,
   slavesCeo,
+  slavesCeoAngry,
   hrBitch,
   guyAsleep,
   newHire,
@@ -1442,14 +1564,17 @@ export const CREATURES: Record<string, string> = {
   hrOrientationVideo,
   hrOrientationVideoAngry,
   changeManager,
+  changeManagerAngry,
   overthinker,
   wellnessCoach,
   beanCounter,
   complianceOfficer,
+  complianceOfficerAngry,
   veteran,
   nightJanitor,
   micromanager,
   tourist,
+  touristAngry,
   conveyorSis,
   theBoard,
   punchClock,

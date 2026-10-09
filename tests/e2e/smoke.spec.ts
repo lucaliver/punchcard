@@ -115,7 +115,8 @@ test('the combat layout never moves when statuses appear', async ({ page }) => {
     page,
     "for (const id of ['poison', 'burn', 'strength']) c.applyStatus('enemy', id, 3); c.applyStatus('enemy', 'weak', 1, 5); c.applyStatus('hero', 'strength', 2); c.applyStatus('hero', 'dodge', 1); c.gainBlock('hero', 9);",
   );
-  await page.waitForTimeout(300);
+  // Let the one-shot reactions (the buff pop scales the sprite for a moment) settle.
+  await page.waitForTimeout(700);
   // The sprite bobs a few pixels while idle: compare size only for it.
   const norm = (s: string) =>
     s

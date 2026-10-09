@@ -7,6 +7,28 @@
   touch-action: none;
   z-index: 2;
 }
+/* Statuses that change the belt's speed put caution tape on both banks (`look` of Slowdown, Stalled, Hurry, Crunch):
+   --tape is the stripe colour, --tape-dur how fast it crawls (none = still) */
+.belt.slowed { --tape: var(--y); --tape-dur: 2.4s; }
+.belt.stalled { --tape: var(--paper); --tape-dur: 0s; }
+.belt.hurried { --tape: var(--p); --tape-dur: 0.4s; }
+.belt.crunching { --tape: var(--red); --tape-dur: 0.2s; }
+.belt:is(.slowed, .stalled, .hurried, .crunching)::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  pointer-events: none;
+  background:
+    repeating-linear-gradient(-45deg, var(--tape) 0 6px, var(--k) 6px 12px) 0 0 / 24px 6px repeat-x,
+    repeating-linear-gradient(-45deg, var(--tape) 0 6px, var(--k) 6px 12px) 0 100% / 24px 6px repeat-x;
+  animation: tape var(--tape-dur) steps(6) infinite;
+}
+.belt.stalled::after { animation: alarm-blink 0.8s steps(1) infinite; }
+.belt.stalled .belt-track { filter: grayscale(0.7); }
+@keyframes tape {
+  to { background-position: 24px 0, 24px 100%; }
+}
 .belt-track {
   /* The spectral stream: a violet current of drifting ink dots between pixel-toothed banks. */
   position: absolute;

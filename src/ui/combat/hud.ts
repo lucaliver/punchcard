@@ -369,6 +369,8 @@ export function createHud(v: CombatView, onPassive: () => void): { render(): voi
     // The hero's portrait does too (Dodge: it turns into a ghost).
     const heroLooks = new Set(LOOKS.filter((s) => combat.has('hero', s.id)).map((s) => s.look));
     for (const look of ALL_LOOKS) toggle(r.portrait, look, heroLooks.has(look));
+    // The belt too, for the statuses that change its speed (Slowdown, Stalled, Hurry, Crunch).
+    for (const look of ALL_LOOKS) toggle(r.belt, look, heroLooks.has(look));
     toggle(r.enemyArt, 'absorbing', !!combat.enemy.move.absorb && combat.enemyTimeRate() > 0);
     // Blackout: the cards hide what they do (their art, name and cost stay).
     toggle(v.el, 'blackout', combat.cardsHidden);

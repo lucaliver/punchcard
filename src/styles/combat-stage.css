@@ -185,6 +185,36 @@
 @keyframes weak-pulse {
   50% { scale: 0.8; }
 }
+/* status looks (before .hit, so a hit still wins while it lasts) */
+/* Poison: a sickly green rim and bubbles rising off the sprite */
+.enemy-art.poisoned .riso { filter: drop-shadow(2px 0 0 var(--green)) drop-shadow(-2px 0 0 var(--green)) hue-rotate(-20deg) saturate(1.2); }
+.enemy-art.poisoned::after {
+  content: '';
+  position: absolute;
+  left: 18%;
+  right: 18%;
+  bottom: 20%;
+  height: 40%;
+  z-index: 2;
+  pointer-events: none;
+  background:
+    radial-gradient(circle, var(--mint) 38%, transparent 44%) 0 0 / 18px 18px,
+    radial-gradient(circle, var(--green) 38%, transparent 44%) 9px 9px / 18px 18px;
+  animation: bubbles 0.8s steps(4) infinite;
+}
+@keyframes bubbles {
+  to { background-position: 0 -18px, 9px -9px; }
+}
+/* Burn: it flickers orange, as if lit from below */
+.enemy-art.burning .riso { animation: flicker 0.3s steps(1) infinite; }
+@keyframes flicker {
+  0% { filter: drop-shadow(0 -3px 0 var(--y)) drop-shadow(0 3px 0 var(--red)); }
+  50% { filter: drop-shadow(0 -5px 0 var(--red)) drop-shadow(0 2px 0 var(--y)) saturate(1.3); }
+}
+/* Weak: it slumps (sunk a little, sallow) */
+.enemy-art.weakened .riso { translate: 0 6px; filter: saturate(0.55) brightness(0.9); }
+/* Vulnerable: exposed, a red rim all round */
+.enemy-art.exposed .riso { filter: drop-shadow(2px 0 0 var(--red)) drop-shadow(-2px 0 0 var(--red)) drop-shadow(0 2px 0 var(--red)) drop-shadow(0 -2px 0 var(--red)); }
 .enemy-art.hit .riso { animation: jolt 0.24s steps(3), hitflash 0.16s steps(1); }
 @keyframes hitflash {
   0% { filter: invert(1); }
@@ -193,6 +223,32 @@
 @keyframes jolt {
   33% { transform: translateX(10px); }
   66% { transform: translateX(-6px); }
+}
+/* one-shot reactions on the wrapper (retriggered from combatFx): a rim of ink in the colour of what happened, as `rage` does */
+.enemy-art.shielded { animation: shield-up 0.4s steps(4); }
+@keyframes shield-up {
+  0%, 50% { filter: drop-shadow(3px 0 0 var(--b)) drop-shadow(-3px 0 0 var(--b)) drop-shadow(0 3px 0 var(--b)) drop-shadow(0 -3px 0 var(--b)); scale: 1.04; }
+  25%, 75% { filter: none; scale: 1; }
+}
+.enemy-art.healed { animation: healed 0.5s steps(5); }
+@keyframes healed {
+  0%, 40% { filter: drop-shadow(3px 0 0 var(--mint)) drop-shadow(-3px 0 0 var(--mint)); translate: 0 -8px; }
+  20%, 60% { filter: none; translate: 0 -4px; }
+  100% { filter: none; translate: 0 0; }
+}
+.enemy-art.buffed { animation: buffed 0.45s steps(3); }
+@keyframes buffed {
+  0%, 66% { filter: drop-shadow(3px 0 0 var(--y)) drop-shadow(-3px 0 0 var(--y)) drop-shadow(0 -3px 0 var(--y)); scale: 1.12; }
+  33% { filter: none; scale: 1.06; }
+  100% { filter: none; scale: 1; }
+}
+/* a whole hit stopped by Block: it rocks back and a paper-white rim flashes */
+.enemy-art.parried { animation: parried 0.3s steps(3); }
+@keyframes parried {
+  0% { translate: 10px 0; filter: drop-shadow(2px 0 0 var(--paper)) drop-shadow(-2px 0 0 var(--paper)); }
+  33% { translate: -5px 0; filter: none; }
+  66% { translate: 3px 0; }
+  100% { translate: 0 0; }
 }
 /* heavy hit: the stage prints in negative for a beat (with the hit-stop) */
 .stage.impact { animation: impact 0.1s steps(1); }

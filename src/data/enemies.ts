@@ -55,6 +55,7 @@ const defs: EnemyDef[] = [
     specials: [atk('ratOut', 14, 10, { intent: 'charge' })],
     // Tells the boss: from half HP on, your belt is rushed for the rest of the fight.
     halfSpeech: true,
+    halfArt: 'snitchAngry',
     onHalf: (c) => c.applyStatus('hero', 'hurry', 1, 9999),
   },
   {
@@ -210,6 +211,7 @@ const defs: EnemyDef[] = [
       atk('patDown', 11, 7, { intent: 'defend', block: 14, windup: 6 }),
       { id: 'needToKnow', intent: 'curse', windup: 2, curse: [{ id: 'papersPlease', n: 2, to: 'draw' }] },
     ],
+    halfArt: 'securityMonitorAngry',
     onHalf: (c) => c.gainBlock('enemy', HALF.securityBlock),
   },
   {
@@ -252,6 +254,7 @@ const defs: EnemyDef[] = [
     ],
     halfSpeech: true,
     // The emergency button: at half HP everything stops for a moment.
+    halfArt: 'slavesCeoAngry',
     onHalf: (c) => c.applyStatus('hero', 'stalled', 1, HALF.slavesStall),
   },
 
@@ -359,6 +362,7 @@ const defs: EnemyDef[] = [
       { id: 'paperwork', intent: 'curse', windup: 7, curse: [{ id: 'papersPlease', n: 2, to: 'draw' }], status: [gainStrength] },
       atk('violation', 15, 10, { intent: 'charge' }),
     ],
+    halfArt: 'complianceOfficerAngry',
     onHalf: (c) => c.applyStatus('hero', 'slowdown', 1, HALF.complianceSlow),
   },
   {
@@ -449,6 +453,7 @@ const defs: EnemyDef[] = [
     every: 2,
     specials: [{ id: 'pivotWard', intent: 'defend', windup: 6, block: 10, status: [gainStrength] }, atk('rightsizing', 17, 10, { intent: 'charge' })],
     halfSpeech: true,
+    halfArt: 'changeManagerAngry',
     onHalf: (c) => c.closeBeltRows(1),
   },
   {
@@ -758,6 +763,7 @@ const defs: EnemyDef[] = [
       atk('overbooked', 18, 11, { intent: 'charge' }),
     ],
     halfSpeech: true,
+    halfArt: 'touristAngry',
     onHalf: (c) => c.applyStatus('enemy', 'haste', 1, 9999),
   },
   {
