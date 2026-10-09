@@ -37,7 +37,7 @@ Field-by-field details live in the doc comments of `src/game/types.ts` and of th
 - A screen undoes in `leave()` what `enter()` did: listeners, emitter subscriptions, timers, temporary music.
 - **Save data is untrusted.** `loadRun` (`run.ts`), `settings.ts` and `meta.ts` validate every field on load and drop or reset what is wrong. Changing a saved shape (or adding an act) → bump `SAVE_VERSION` (`run.ts`): a run saved by another version is simply dropped, never migrated (the meta progress is kept and validated field by field).
 - Ids follow English names. Renaming = rename the id everywhere (no alias table: old saves are not kept alive).
-- Test what you change: engine rule → `combat.test.ts`; data shape → `content.test.ts`; flow/screen → `smoke.spec.ts`.
+- Test what you change: engine rule → `tests/combat/` (the file of its area); data shape → `content.test.ts`; flow/screen → `smoke.spec.ts`.
 
 ### Future-proof
 
@@ -80,7 +80,7 @@ src/
   analytics/   anonymous play counters: `index.ts` (what is counted and when), `goatcounter.ts` (the only file that knows the service)
   audio/       sfx (synth), music (sequencer + tracks)
   styles/      index.css imports partials in order; responsive.css stays last
-tests/         combat, content, balance.sim (+ bot), balance.stats, e2e/
+tests/         combat/ (engine tests by area), content, balance.sim (+ bot), balance.stats, e2e/
 docs/          MECHANICS.md
 dev/           art.html, og.html, map-editor.html (dev server only)
 ```
@@ -133,7 +133,7 @@ Icons (`ICONS`) and creatures (`CREATURES`) are SVG written for the ink palette 
 
 ## Testing
 
-- `combat.test.ts`: engine rules (add one per mechanic). `content.test.ts`: data integrity. `balance.sim.test.ts` + `bot.ts`: bot win rates, relative only (the bot must be able to do every chore a fight asks). `balance.stats.test.ts`: per-mana card output and enemy threat computed from the data (`npm run stats` writes a git-ignored `BALANCE.md`: generate it when you need the numbers, never commit it). `tests/e2e/smoke.spec.ts`: flows on a mobile viewport with real touch where it matters; `freshGame` unlocks every hero unless `locked`.
+- `tests/combat/`: engine rules, one file per area (`engine` rules, statuses and belt; `enemies` and their rules; `chores`; `cards`; `rogue`; `run` maps, rewards and saves; `relics`), shared fight setup in `helpers.ts`; add one test per mechanic to the file of its area. `content.test.ts`: data integrity. `balance.sim.test.ts` + `bot.ts`: bot win rates, relative only (the bot must be able to do every chore a fight asks). `balance.stats.test.ts`: per-mana card output and enemy threat computed from the data (`npm run stats` writes a git-ignored `BALANCE.md`: generate it when you need the numbers, never commit it). `tests/e2e/smoke.spec.ts`: flows on a mobile viewport with real touch where it matters; `freshGame` unlocks every hero unless `locked`.
 - Other browsers: `npx playwright test --browser=webkit` passes; Firefox needs a config without `isMobile`.
 - Screenshot scripts go in the git-ignored `screenshots/`.
 
