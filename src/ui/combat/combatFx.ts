@@ -168,6 +168,7 @@ export function bindCombatFx(v: CombatView, cards: CardLayer, onEnd: (result: 'w
         const p = v.pointOf('hero');
         floatText(p.x, p.y - 50, t(`relic.${e.id}.name`), 'status good');
         sfx('status');
+        haptic('proc');
         break;
       }
       case 'cantAfford': {
@@ -365,8 +366,10 @@ export function bindCombatFx(v: CombatView, cards: CardLayer, onEnd: (result: 'w
         burst('block', p.x, p.y, 24, 1.2);
         sfx('enemyDown');
         shake('big');
+        haptic('kill');
         setTimeout(
           () => {
+            haptic('heavy');
             burst('heal', p.x, p.y, 24, 1.4);
             sfx('levelUp');
           },

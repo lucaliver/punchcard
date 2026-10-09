@@ -195,6 +195,8 @@ const HAPTICS = {
   scrub: 15,
   hit: 25,
   heavy: 60,
+  /** A stationery or a trait going off. */
+  proc: [12, 30, 12],
   alarm: [30, 60, 30],
   ability: [20, 40, 20],
   locked: [10, 30, 10, 30, 10],
@@ -204,13 +206,13 @@ const HAPTICS = {
 export type HapticId = keyof typeof HAPTICS;
 
 let lastHaptic = 0;
-/** Vibrates (if the player allows it, the page is visible and the player has already touched it; never twice within 50ms). */
+/** Vibrates (if the player allows it, the page is visible and the player has already touched it; never twice within 50ms, except a pattern or a heavy knock: the big moments always get through). */
 export function haptic(id: HapticId): void {
   if (!settings.haptics || !('vibrate' in navigator) || document.hidden) return;
   // Before the first gesture browsers block (and warn about) vibration.
   if (navigator.userActivation && !navigator.userActivation.hasBeenActive) return;
   const now = performance.now();
-  if (now - lastHaptic < 50) return;
+  if (now - lastHaptic < 50 && !(Array.isArray(HAPTICS[id]) || id === 'heavy')) return;
   lastHaptic = now;
   try {
     navigator.vibrate(HAPTICS[id]);

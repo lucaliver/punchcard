@@ -122,6 +122,7 @@ export function combatScreen(run: RunState, combat: Combat, cb: CombatCallbacks)
             () => {
               burst(i % 2 ? 'fire' : 'gold', p.x + (Math.random() - 0.5) * 120, p.y + (Math.random() - 0.5) * 140, 24, 1.3, 90);
               shake(i % 3 ? 'small' : 'big');
+              haptic(i % 3 ? 'hit' : 'heavy');
             },
             120 + i * BOSS_BLAST_GAP,
           );

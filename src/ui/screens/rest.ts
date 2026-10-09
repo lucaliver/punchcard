@@ -3,6 +3,7 @@ import { sfx } from '../../audio/sfx';
 import { canUpgrade, rest, restHeal, upgradeCard, type RunState } from '../../game/run';
 import type { Screen } from '../app';
 import { h } from '../dom';
+import { haptic } from '../fx/fx';
 import { icon } from '../art/icons';
 import { CARD_SHOW_MS, playCardChange } from '../components/cardShow';
 import { openDeck } from '../components/modals';
@@ -16,6 +17,7 @@ export const HEAL_FAST_MS = 900;
 /** Pixel hearts (or another `glyph`) float up from the bottom of the screen, then "+N" pops in the middle (with a `note` under it, e.g. "max HP"). */
 export function playHealing(screen: HTMLElement, amount: number, note?: string, fast = false, glyph = 'heart'): void {
   sfx('heal');
+  haptic('ability');
   const layer = h('div', { class: `heal-rise ${fast ? 'fast' : ''}`, 'aria-hidden': 'true' });
   for (let i = 0; i < 18; i++) {
     const heart = h('i', { html: icon(glyph) });
