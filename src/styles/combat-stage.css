@@ -185,36 +185,15 @@
 @keyframes weak-pulse {
   50% { scale: 0.8; }
 }
-/* status looks (before .hit, so a hit still wins while it lasts) */
-/* Poison: a sickly green rim and bubbles rising off the sprite */
-.enemy-art.poisoned .riso { filter: drop-shadow(2px 0 0 var(--green)) drop-shadow(-2px 0 0 var(--green)) hue-rotate(-20deg) saturate(1.2); }
-.enemy-art.poisoned::after {
-  content: '';
-  position: absolute;
-  left: 18%;
-  right: 18%;
-  bottom: 20%;
-  height: 40%;
-  z-index: 2;
-  pointer-events: none;
-  background:
-    radial-gradient(circle, var(--mint) 38%, transparent 44%) 0 0 / 18px 18px,
-    radial-gradient(circle, var(--green) 38%, transparent 44%) 9px 9px / 18px 18px;
-  animation: bubbles 0.8s steps(4) infinite;
-}
-@keyframes bubbles {
-  to { background-position: 0 -18px, 9px -9px; }
-}
-/* Burn: it flickers orange, as if lit from below */
-.enemy-art.burning .riso { animation: flicker 0.3s steps(1) infinite; }
-@keyframes flicker {
-  0% { filter: drop-shadow(0 -3px 0 var(--y)) drop-shadow(0 3px 0 var(--red)); }
-  50% { filter: drop-shadow(0 -5px 0 var(--red)) drop-shadow(0 2px 0 var(--y)) saturate(1.3); }
-}
+/* status looks (before .hit, so a hit still wins while it lasts). Each look only sets its own piece of the filter and they
+   stack, so poison and burn together wear two rims, one outside the other. */
+.enemy-art .riso { filter: var(--f-poison,) var(--f-burn,) var(--f-exposed,) var(--f-weak,); }
+.enemy-art.poisoned { --f-poison: drop-shadow(2px 0 0 var(--green)) drop-shadow(-2px 0 0 var(--green)) drop-shadow(0 2px 0 var(--green)) drop-shadow(0 -2px 0 var(--green)); }
+.enemy-art.burning { --f-burn: drop-shadow(2px 0 0 var(--y)) drop-shadow(-2px 0 0 var(--y)) drop-shadow(0 2px 0 var(--y)) drop-shadow(0 -2px 0 var(--y)); }
+.enemy-art.exposed { --f-exposed: drop-shadow(2px 0 0 var(--red)) drop-shadow(-2px 0 0 var(--red)) drop-shadow(0 2px 0 var(--red)) drop-shadow(0 -2px 0 var(--red)); }
 /* Weak: it slumps (sunk a little, sallow) */
-.enemy-art.weakened .riso { translate: 0 6px; filter: saturate(0.55) brightness(0.9); }
-/* Vulnerable: exposed, a red rim all round */
-.enemy-art.exposed .riso { filter: drop-shadow(2px 0 0 var(--red)) drop-shadow(-2px 0 0 var(--red)) drop-shadow(0 2px 0 var(--red)) drop-shadow(0 -2px 0 var(--red)); }
+.enemy-art.weakened { --f-weak: saturate(0.55) brightness(0.9); }
+.enemy-art.weakened .riso { translate: 0 6px; }
 .enemy-art.hit .riso { animation: jolt 0.24s steps(3), hitflash 0.16s steps(1); }
 @keyframes hitflash {
   0% { filter: invert(1); }
