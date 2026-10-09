@@ -174,7 +174,7 @@
   animation: stun-jitter 0.3s steps(1) infinite;
 }
 .belt-stun.on { display: block; }
-/* The stretch of the belt an enemy's rule keeps shut (Assembly Line): still hazard stripes, a solid edge where the cards become playable.
+/* The stretch of the belt an enemy's rule keeps shut (Assembly Line): still hazard stripes, a solid edge.
    The cards stay readable under it. It sits on the side the cards come in from (right when the belt runs right to left). */
 .belt-zone {
   display: none;
@@ -182,7 +182,8 @@
   top: 0;
   bottom: 0;
   right: 0;
-  width: calc(var(--zone, 0.5) * 100%);
+  /* a card is playable once its front passes the line, so the veil ends one card before it: a card that turns playable has already left the veil */
+  width: calc(var(--zone, 0.5) * 100% - var(--cw-belt));
   z-index: var(--z-belt-window);
   pointer-events: none;
   border-left: 3px solid var(--tone);
