@@ -103,10 +103,12 @@
   50% { transform: rotate(2deg); }
 }
 
-/* Lost & Found: the box hops and its lid snaps open now and then (the sprite's second frame) */
+/* Lost & Found: the box hops and its lid snaps open now and then (the sprite's second frame). Restructuring (`shuffle`) has the same beat without the hop: the org chart's boxes trade places */
 .room-art.flap { animation: hop 2.4s steps(1) infinite; }
-.room-art.flap .alt { position: absolute; inset: 0; animation: flap-open 2.4s steps(1) infinite; }
-.room-art.flap .riso:first-child { animation: flap-shut 2.4s steps(1) infinite; }
+.room-art.flap .alt,
+.room-art.shuffle .alt { position: absolute; inset: 0; animation: flap-open 2.4s steps(1) infinite; }
+.room-art.flap .riso:first-child,
+.room-art.shuffle .riso:first-child { animation: flap-shut 2.4s steps(1) infinite; }
 @keyframes hop {
   0%, 55% { transform: none; }
   60% { transform: translateY(-8px); }

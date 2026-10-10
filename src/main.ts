@@ -65,6 +65,7 @@ import { tailorScreen } from './ui/screens/tailor';
 import { lostFoundScreen } from './ui/screens/lostFound';
 import { vendingScreen } from './ui/screens/vending';
 import { crossTrainingScreen } from './ui/screens/crossTraining';
+import { restructuringScreen } from './ui/screens/restructuring';
 import { rewardScreen } from './ui/screens/reward';
 import { studioScreen } from './ui/screens/studio';
 import { languageScreen } from './ui/screens/language';
@@ -90,6 +91,7 @@ const ROOMS: Partial<Record<NodeType, (run: RunState, onDone: () => void) => Scr
   lostFound: lostFoundScreen,
   vending: vendingScreen,
   crossTraining: crossTrainingScreen,
+  restructuring: restructuringScreen,
 };
 
 function goTitle(): void {

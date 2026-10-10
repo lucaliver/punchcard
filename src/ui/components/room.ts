@@ -15,6 +15,7 @@ export const ROOM_SCENE: Partial<Record<NodeType, { anim: string; inks: string[]
   tailor: { anim: 'sway', inks: ['var(--paper)', 'var(--paper)', 'var(--y)'] },
   lostFound: { anim: 'flap', inks: ['var(--paper)', 'var(--paper)', 'var(--y)'], alt: true },
   vending: { anim: 'thump', inks: ['var(--paper)', 'var(--p)', 'var(--y)'] },
+  restructuring: { anim: 'shuffle', inks: ['var(--paper)', 'var(--paper)', 'var(--p)'], alt: true },
 };
 
 const NO_SCENE = { anim: '', inks: [], alt: false };

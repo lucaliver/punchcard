@@ -1181,6 +1181,61 @@ test('vending machine: a card drops into the deck and costs HP', async ({ page }
   expect(await page.evaluate('window.__game.run.hp < window.__game.run.maxHp')).toBe(true);
 });
 
+/** Opens the Restructuring room on the first floor past the opening and returns the uids of the deck. */
+async function enterRestructuring(page: Page): Promise<number[]> {
+  await freshGame(page, { veteran: true });
+  await page.getByRole('button', { name: /new run/i }).click();
+  await page.getByRole('button', { name: /start shift/i }).click();
+  const floor = await roomFloor(page, 'restructuring');
+  await page.getByRole('button', { name: new RegExp(`enter floor ${floor}`, 'i') }).click();
+  await expect(page.locator('.room-art')).toBeVisible();
+  return page.evaluate('window.__game.run.deck.map((c) => c.uid)') as Promise<number[]>;
+}
+
+const deckUids = (page: Page): Promise<number[]> => page.evaluate('window.__game.run.deck.map((c) => c.uid)') as Promise<number[]>;
+
+test('restructuring: a lateral move turns a card into another one for free, and may stop after the first', async ({ page }) => {
+  const before = await enterRestructuring(page);
+  await page.getByRole('button', { name: /lateral move/i }).click();
+  await page.locator('.deck-grid .card').first().click();
+  await page.getByRole('button', { name: 'Reposition', exact: true }).click();
+  const stop = page.getByRole('button', { name: /that's enough/i });
+  await expect(stop).toBeVisible();
+  const after = await deckUids(page);
+  expect(after).toHaveLength(before.length);
+  expect(before.filter((u) => !after.includes(u))).toHaveLength(1);
+  await stop.click();
+  await expect(page.locator('.node.open').first()).toBeVisible();
+  expect(await page.evaluate('window.__game.run.hp')).toBe(await page.evaluate('window.__game.run.maxHp'));
+});
+
+test('restructuring: pulling strings costs HP once and lets you pick both new cards', async ({ page }) => {
+  const before = await enterRestructuring(page);
+  const maxHp = (await page.evaluate('window.__game.run.maxHp')) as number;
+  await page.getByRole('button', { name: /pull strings/i }).click();
+  await page.locator('.deck-grid .card').first().click();
+  await page.getByRole('button', { name: 'Reposition', exact: true }).click();
+  // Three cards of the same rarity to pick from.
+  await expect(page.locator('.modal .deck-grid .card')).toHaveCount(3);
+  await page.locator('.modal .deck-grid .card').nth(1).click();
+  await page.getByRole('button', { name: 'Transfer', exact: true }).click();
+  const next = page.getByRole('button', { name: /next card/i });
+  await expect(next).toBeVisible();
+  const paid = (await page.evaluate('window.__game.run.hp')) as number;
+  expect(paid).toBeLessThan(maxHp);
+  await expect(page.locator('.chip.hp')).toContainText(`${paid}/`);
+  await next.click();
+  await page.locator('.deck-grid .card').first().click();
+  await page.getByRole('button', { name: 'Reposition', exact: true }).click();
+  await page.locator('.modal .deck-grid .card').first().click();
+  await page.getByRole('button', { name: 'Transfer', exact: true }).click();
+  await expect(page.locator('.node.open').first()).toBeVisible();
+  const after = await deckUids(page);
+  expect(before.filter((u) => !after.includes(u))).toHaveLength(2);
+  // The second card was free: the HP was taken once.
+  expect(await page.evaluate('window.__game.run.hp')).toBe(paid);
+});
+
 test('Power Socket: the belt goes dead and a crank knob turns it, both rows', async ({ page }) => {
   await freshGame(page, { veteran: true });
   await page.getByRole('button', { name: /new run/i }).click();

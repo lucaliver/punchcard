@@ -1858,6 +1858,11 @@ export const ICONS: Record<string, { el: Element; svg: string; wide?: boolean }>
     el: 'steel',
     svg: `<rect x="22" y="4" width="20" height="12"/><path ${S} stroke-width="4" d="M32 16v10M12 26h40M12 26v10M32 26v10M52 26v10"/><rect x="4" y="36" width="16" height="12"/><rect x="24" y="36" width="16" height="12"/><rect x="44" y="36" width="16" height="12"/><path fill="#16121f" d="M2 56L62 50l0 5L2 61z"/>`,
   },
+  /** The map's Restructuring room: two boxes of an org chart and the arrow that trades them. */
+  orgChart: {
+    el: 'steel',
+    svg: `<rect x="22" y="4" width="20" height="14"/><path ${S} stroke-width="4" d="M32 18v8M14 26h36M14 26v6M50 26v6"/><rect x="4" y="32" width="20" height="14"/><rect x="40" y="32" width="20" height="14"/><path ${S} stroke-width="4" d="M12 55h40M18 49l-6 6 6 6M46 49l6 6-6 6"/>`,
+  },
   inventoryShrinkage: {
     el: 'steel',
     svg: `<path d="M8 22l8-14h32l8 14z"/><path d="M8 24h48v34H8z"/><path ${HI} d="M10 26h6v30h-6z"/><path fill="#16121f" d="M24 30h16v10h8L32 54 16 40h8z"/>`,

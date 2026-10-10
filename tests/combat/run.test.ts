@@ -2,13 +2,15 @@ import { describe, expect, it } from 'vitest';
 import { CONFIG, relicGuarantee, rewardUpgradeChance } from '../../src/data/config';
 import { ENEMIES, enemiesFor } from '../../src/data/enemies';
 import { HEROES } from '../../src/data/heroes';
-import { CARDS, RARITY_ORDER, cardCostOf } from '../../src/data/cards';
+import { CARD_LIST, CARDS, RARITY_ORDER, cardCostOf } from '../../src/data/cards';
 import { RELICS } from '../../src/data/relics';
 import { hasStamp, markRated, memosOpen, ratingDue, runHistory, stampAct, unlockAll } from '../../src/game/meta';
 import { ACT_DEFS } from '../../src/data/acts';
 import {
   applyCombat,
   canCopy,
+  canPullStrings,
+  canRestructure,
   canVend,
   currentNode,
   enemyScale,
@@ -21,8 +23,11 @@ import {
   gainRelic,
   loadRun,
   newRun,
+  payRestructure,
   photocopyCard,
+  restructureCard,
   rollRelics,
+  rollRestructure,
   shredCard,
   skipPay,
   skipReward,
@@ -110,6 +115,12 @@ describe('run maps', () => {
         const boss = nodes.find((n) => n.act === act && n.type === 'boss')!;
         for (const n of nodes.filter((m) => m.next.includes(boss.id))) expect(n.type).toBe('rest');
       }
+  });
+
+  it('deal the Restructuring room at most once per run, and in some runs', () => {
+    const count = (nodes: { type: string }[]): number => nodes.filter((n) => n.type === 'restructuring').length;
+    for (const nodes of maps) expect(count(nodes)).toBeLessThanOrEqual(1);
+    expect(maps.some((nodes) => count(nodes) === 1)).toBe(true);
   });
 
   it('open act 1 with two fights and then always a special room, on the shared road', () => {
@@ -362,6 +373,40 @@ describe('the Copy Room', () => {
     expect(r.hp).toBe(r.maxHp - vendingCost('epic'));
     r.hp = vendingCost('rare');
     expect(canVend(r, 'rare')).toBe(false);
+  });
+
+  it('the Restructuring turns a card into another of its rarity, from scratch, and keeps the deck as big', () => {
+    const r = newRun('warrior', 5);
+    const strike = r.deck[0];
+    Object.assign(strike, { up: true, perks: ['fastTrack'] });
+    const size = r.deck.length;
+    const rarity = CARDS[strike.id].rarity;
+    const offer = rollRestructure(r, strike.uid, CONFIG.restructureChoices);
+    expect(offer).toHaveLength(CONFIG.restructureChoices);
+    expect(new Set(offer.map((c) => c.id)).size).toBe(offer.length);
+    for (const c of offer) {
+      expect(c.rarity).toBe(rarity);
+      expect(c.id).not.toBe(strike.id);
+    }
+    const card = restructureCard(r, strike.uid, offer[0].id);
+    expect(card).toMatchObject({ id: offer[0].id, up: false });
+    expect(card?.perks).toBeUndefined();
+    expect(r.deck).toHaveLength(size);
+    expect(r.deck[0]).toBe(card);
+    expect(r.deck.some((c) => c.uid === strike.uid)).toBe(false);
+  });
+
+  it('the Restructuring leaves curses alone, and the paid way never takes the last HP', () => {
+    const r = newRun('warrior', 5);
+    const curse = CARD_LIST.find((c) => c.cls === 'curse');
+    expect(curse).toBeTruthy();
+    expect(canRestructure(r, { uid: 900, id: curse?.id ?? '', up: false })).toBe(false);
+    expect(canRestructure(r, r.deck[0])).toBe(true);
+    const hp = r.hp;
+    payRestructure(r);
+    expect(r.hp).toBe(hp - CONFIG.restructureHp);
+    r.hp = CONFIG.restructureHp;
+    expect(canPullStrings(r)).toBe(false);
   });
 
   it('the Lost & Found offers relics the run does not hold yet', () => {

@@ -244,8 +244,8 @@ export function simulateRun(hero: HeroId, seed: number, opts: BotOpts): RunOutco
     } else if (node.type === 'vending') {
       if (canVend(run, 'rare') && run.hp > run.maxHp * 0.7) vend(run, 'rare');
       run.cleared = true;
-    } else if (node.type === 'crossTraining') {
-      // Off-class cards don't help the bot's plan: it walks past the seminar.
+    } else if (node.type === 'crossTraining' || node.type === 'restructuring') {
+      // Off-class cards and a reshuffled deck don't help the bot's plan: it walks past.
       run.cleared = true;
     } else if (node.type === 'copy') {
       // Thin the deck: shred a plain starter card (never a mana crystal).

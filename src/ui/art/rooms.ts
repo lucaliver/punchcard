@@ -154,6 +154,49 @@ ${shadow}
 <path d="M44 174h92" stroke="#ff3d9a" stroke-width="3"/>`;
 
 /**
+ * Restructuring: the org chart on the HR whiteboard, a scowling boss over three boxes. Its second frame (`swapped`) has the boxes of the
+ * first two traded and as shocked as a box can be; the CSS flips between the two now and then. The dots on a box's corner tell them apart.
+ */
+const orgChart = (swapped: boolean): string => {
+  const box = (x: number, fill: string, dots: number, shock: boolean): string => `
+<path d="M${x} 74h40v28H${x}z" fill="${fill}" ${OUT}/>
+<circle cx="${x + 13}" cy="86" r="3" fill="${INK}"/><circle cx="${x + 27}" cy="86" r="3" fill="${INK}"/>
+${shock ? `<ellipse cx="${x + 20}" cy="95" rx="3" ry="3.5" fill="${INK}"/>` : `<path d="M${x + 14} 92q6 5 12 0" stroke="${INK}" stroke-width="3" fill="none" stroke-linecap="round"/>`}
+${[0, 1, 2]
+  .slice(0, dots)
+  .map((i) => `<circle cx="${x + 33 - i * 6}" cy="79" r="2" fill="${PAPER}" stroke="${INK}" stroke-width="1.5"/>`)
+  .join('')}`;
+  const blue = { fill: '#6a9af8', dots: 1 };
+  const pink = { fill: '#ff3d9a', dots: 2 };
+  const [left, middle] = swapped ? [pink, blue] : [blue, pink];
+  return `
+${shadow}
+<!-- the stand and the tray, with a marker and an eraser on it -->
+<path d="M34 142l-8 44h10l7-44zM166 142l8 44h-10l-7-44z" fill="#3a3450" ${OUT}/>
+<path d="M12 12h176v124H12z" fill="#3a3450" ${OUT}/>
+<path d="M19 19h162v110H19z" fill="${PAPER}" ${OUT}/>
+<path d="M16 134h168v10H16z" fill="#6a9af8" ${OUT}/>
+<path d="M32 124h34v8H32z" fill="#ff3d9a" ${OUT}/><path d="M32 124h8v8h-8z" fill="${INK}"/>
+<path d="M140 120h30v14h-30z" fill="${PAPER}" ${OUT}/><path d="M140 128h30v6h-30z" fill="#ffd900" ${OUT}/>
+<!-- a sticky note and a magnet that holds nothing up -->
+<path d="M26 26h24v22H26z" fill="#ffd900" ${OUT}/><path d="M31 33h14M31 39h9" stroke="${INK}" stroke-width="2.5" stroke-linecap="round"/>
+<circle cx="164" cy="30" r="5" fill="#ff3d9a" ${OUT}/>
+<!-- the chart: the boss, and the lines down to the boxes -->
+<path d="M100 48v14M46 62h108M46 62v12M100 62v12M154 62v12" stroke="${INK}" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M76 26h48v22H76z" fill="#3a3450" ${OUT}/>
+<path d="M88 14h24v12H88z" fill="${INK}" ${OUT}/><path d="M88 22h24" stroke="#ff3d9a" stroke-width="3"/>
+<circle cx="90" cy="37" r="3" fill="${PAPER}"/><circle cx="110" cy="37" r="3" fill="${PAPER}"/>
+<path d="M84 29l12 4M116 29l-12 4" stroke="${PAPER}" stroke-width="3" stroke-linecap="round"/>
+<path d="M94 43h12" stroke="${PAPER}" stroke-width="3" stroke-linecap="round"/>
+${box(26, left.fill, left.dots, swapped)}
+${box(80, middle.fill, middle.dots, swapped)}
+${box(134, '#ffd900', 3, false)}
+<!-- the arrow that says who goes where -->
+<path d="M46 108Q73 134 100 108M40 114l6-8 7 7M94 113l6-8 7 7" stroke="${INK}" stroke-width="8" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M46 108Q73 134 100 108M40 114l6-8 7 7M94 113l6-8 7 7" stroke="#ff3d9a" stroke-width="4" fill="none" stroke-linecap="round" stroke-linejoin="round"/>`;
+};
+
+/**
  * The contract screen's hand: a skeleton's hand in a pink sleeve with a white cuff, pinching the corner of the paper (the pinch is at the top left).
  * The sleeve runs out of the box on purpose (no closed end), and `contractSleeve` continues it (see `.contract-hand` in title.css).
  */
@@ -190,6 +233,8 @@ export const ROOM_SPRITES: Record<string, string> = {
   'room.lostFound': mimic(false),
   'room.lostFound.open': mimic(true),
   'room.vending': vending,
+  'room.restructuring': orgChart(false),
+  'room.restructuring.open': orgChart(true),
 };
 
 /** The studio's mark: a ring, a blue L behind the Aries glyph (a pink ram's horns over a V), the horns ribbed like the studio's old sketch. */

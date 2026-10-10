@@ -221,6 +221,10 @@ export const CONFIG = {
   /** Copy Room: a card can't be shredded below this many deck cards; a photocopy costs this much HP (and needs more left). */
   shredMinDeck: 10,
   copyHpCost: 8,
+  /** Restructuring: the cards a visit can move, the HP the paid way costs (once, it lets the player pick), and how many cards of the same rarity it offers to pick from. */
+  restructureCards: 2,
+  restructureHp: 10,
+  restructureChoices: 3,
   /** Tailor: the max HP the let-out uniform gives. */
   tailorCrystals: 1,
   /** Lost & Found: how many relics lie in the box. */

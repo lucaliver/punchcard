@@ -28,6 +28,7 @@ export const NODE_ICON: Record<RunNode['type'], string> = {
   lostFound: 'lostBox',
   vending: 'vendingMachine',
   crossTraining: 'whiteboard',
+  restructuring: 'orgChart',
   boss: 'tophat',
 };
 /** What a room is called on the map and in its info (the last act's boss is the final one). */

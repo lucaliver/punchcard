@@ -13,7 +13,19 @@ import type { Combat, CombatSetup } from './combat';
 import { discover, heroHidden, heroUnlocked, logRun, progress, type RunRecord, recordFight, recordRun, seeRelics, stampAct } from './meta';
 import type { CardDef, CardInst, EnemyDef, HeroId, RelicDef, RunLog } from './types';
 
-export const NODE_TYPES = ['fight', 'elite', 'rest', 'promotion', 'copy', 'tailor', 'lostFound', 'vending', 'crossTraining', 'boss'] as const;
+export const NODE_TYPES = [
+  'fight',
+  'elite',
+  'rest',
+  'promotion',
+  'copy',
+  'tailor',
+  'lostFound',
+  'vending',
+  'crossTraining',
+  'restructuring',
+  'boss',
+] as const;
 export type NodeType = (typeof NODE_TYPES)[number];
 
 /** A room of a lane as written in `LANES`: a real room type or a slot still to be dealt. */
@@ -88,9 +100,9 @@ const LANES: Slot[][] = [
   ['promotion', 'fight', 'special', 'fight', 'rest', 'special', 'fight', 'rest'],
 ];
 /** A `special` slot of a lane becomes one of these when the act is built; one act never deals the same room twice. */
-export const SPECIALS: NodeType[] = ['copy', 'tailor', 'lostFound', 'vending', 'crossTraining'];
+export const SPECIALS: NodeType[] = ['copy', 'tailor', 'lostFound', 'vending', 'crossTraining', 'restructuring'];
 /** Rooms that show up once in a whole run, however many acts it has. */
-const ONCE_PER_RUN: NodeType[] = ['tailor'];
+const ONCE_PER_RUN: NodeType[] = ['tailor', 'restructuring'];
 /** Floors on a single road at the start of act 1, before the map splits in two (then the lanes skip as many floors). The last of them is always a special room. */
 const ACT1_OPENING = 3;
 /** Links between the lanes per act: diagonal (to the other lane one floor up) or flat (across the same floor, both ways). */
@@ -547,10 +559,13 @@ export function addCard(run: RunState, id: string): void {
   run.deck.push(newCard(run, id));
 }
 
-/** The new card replaces one already in the deck (a reward). */
-export function swapCard(run: RunState, removeUid: number, id: string, up = false): void {
+/** The new card replaces one already in the deck (a reward). Returns it, or nothing when the card to replace isn't in the deck. */
+export function swapCard(run: RunState, removeUid: number, id: string, up = false): CardInst | undefined {
   const idx = run.deck.findIndex((c) => c.uid === removeUid);
-  if (idx >= 0) run.deck[idx] = { ...newCard(run, id), up };
+  if (idx < 0) return undefined;
+  const card = { ...newCard(run, id), up };
+  run.deck[idx] = card;
+  return card;
 }
 
 export function upgradeCard(run: RunState, uid: number): void {
@@ -687,6 +702,41 @@ export function photocopyCard(run: RunState, uid: number): void {
   run.deck.push(copy);
   run.hp -= CONFIG.copyHpCost;
   run.cleared = true;
+}
+
+/** The cards a restructuring can turn a deck card into: the others of its rarity (as for a reward: no basic card, no pack). */
+const restructurePool = (run: RunState, card: CardInst): CardDef[] => rewardPool(run.hero, CARDS[card.id].rarity).filter((c) => c.id !== card.id);
+
+/** Restructuring moves a deck card unless it is a curse or a card a fight deals, or nothing else has its rarity to turn it into. */
+export const canRestructure = (run: RunState, card: CardInst): boolean => !fixed(card) && restructurePool(run, card).length > 0;
+export const canPullStrings = (run: RunState): boolean => run.hp > CONFIG.restructureHp;
+
+/** `n` different cards the deck card could turn into (the hero's class weighs `classCardWeight` against neutral, as in a reward). */
+export function rollRestructure(run: RunState, uid: number, n: number): CardDef[] {
+  const card = run.deck.find((c) => c.uid === uid);
+  if (!card) return [];
+  const rng = rngOf(run);
+  let left = restructurePool(run, card);
+  const picks: CardDef[] = [];
+  while (picks.length < n && left.length) {
+    const def = pickReward(rng, run.hero, left);
+    picks.push(def);
+    left = left.filter((c) => c !== def);
+  }
+  run.rng = rng.state;
+  discover(picks.map((c) => c.id));
+  return picks;
+}
+
+/** The deck card turns into another one of its rarity, starting from scratch (no upgrade, no perks). Returns the new card. */
+export function restructureCard(run: RunState, uid: number, id: string): CardInst | undefined {
+  run.cleared = true;
+  return swapCard(run, uid, id);
+}
+
+/** The paid way takes its HP once, with the first card it moves. */
+export function payRestructure(run: RunState): void {
+  run.hp -= CONFIG.restructureHp;
 }
 
 /** A new shift starts rested: heals fully as the next act's map opens. Returns the HP gained. */
