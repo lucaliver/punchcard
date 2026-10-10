@@ -377,7 +377,8 @@ const defs: EnemyDef[] = [
     every: 2,
     specials: [
       { id: 'ceaseAndDesist', intent: 'debuff', windup: 6, status: [gainStrength, { id: 'stun', t: 3, target: 'hero' }] },
-      atk('classAction', 17, 10, { intent: 'charge' }),
+      // Everything on the belt and in the sleeve is thrown out for pages of fine print.
+      { id: 'termsAndConditions', intent: 'curse', windup: 8, swap: 'boilerplate' },
     ],
     start: [{ id: 'finePrint', v: 2 }],
   },
@@ -523,7 +524,8 @@ const defs: EnemyDef[] = [
     id: 'veteran',
     act: 2,
     tier: 'normal',
-    hp: 90,
+    hp: 30,
+    block: 90,
     art: 'veteran',
     main: atk('grumble', 9, 7, ramp),
     every: 2,
@@ -575,7 +577,11 @@ const defs: EnemyDef[] = [
     art: 'graveyardIntern',
     main: atk('sleepTyping', 8, 6),
     every: 2,
-    specials: [{ id: 'energyDrink', intent: 'buff', windup: 5, status: [{ id: 'strength', v: 2, target: 'enemy' }] }],
+    specials: [
+      { id: 'energyDrink', intent: 'buff', windup: 5, status: [{ id: 'strength', v: 2, target: 'enemy' }] },
+      // Seen but not heard: he fades out of the conversation, and your cards go right through him.
+      { id: 'ghosting', intent: 'buff', windup: 5, status: [{ id: 'dodge', t: 5, target: 'enemy' }] },
+    ],
     start: [{ id: 'microsleep' }],
   },
   {

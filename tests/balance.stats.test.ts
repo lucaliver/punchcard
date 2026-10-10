@@ -284,6 +284,7 @@ function effectsOf(m: MoveDef): string {
   if (m.hex) e.push(`hex ${m.hex.id} ${Math.round(m.hex.share * 100)}%`);
   if (m.inflate) e.push(`inflate ${m.inflate}`);
   if (m.infect) e.push(`infect ${m.infect}`);
+  if (m.swap) e.push(`swaps belt and sleeve for ${m.swap}`);
   if (m.absorb) e.push('absorbs damage');
   if (m.release) e.push('releases it');
   if (m.fx) e.push('custom effect');

@@ -336,6 +336,8 @@ export interface MoveDef {
   inflate?: number;
   /** Virus: this many random cards (belt first, then the rest of the deck) are infected until next played. */
   infect?: number;
+  /** Every card on the belt and in the sleeve goes to the discard pile, and a new temporary copy of this card (a curse) takes its place. */
+  swap?: string;
   /** While this move charges, the damage the enemy takes from cards is stored instead of lost… */
   absorb?: boolean;
   /** …and a `release` move adds everything stored to its hit. */

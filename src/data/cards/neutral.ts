@@ -1230,6 +1230,19 @@ export const curseCards: CardDef[] = [
     play: () => {},
   },
   {
+    // The Contract Lawyer's: his Terms & Conditions swap your whole belt and sleeve for it.
+    id: 'boilerplate',
+    face: '{clog}',
+    cls: 'curse',
+    type: 'curse',
+    rarity: 'common',
+    cost: 2,
+    vals: [],
+    keywords: ['exhaust', 'bulky'],
+    art: 'boilerplate',
+    play: () => {},
+  },
+  {
     // The Work Wife's: fills the sleeve at the start of the fight and gets cheaper every second.
     id: 'dunderMifflinBox',
     face: '{cheaper:0}/s|{rush:1}',

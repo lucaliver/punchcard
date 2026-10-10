@@ -696,6 +696,10 @@ export const ICONS: Record<string, { el: Element; svg: string; wide?: boolean }>
     el: 'curse',
     svg: `<path d="M2 32c8-14 16-18 22-14 5-2 11-2 16 0 6-4 14 0 22 14-8 13-18 19-30 19S10 45 2 32z"/><path d="M6 32c12 5 40 5 52 0" stroke="#16121f" stroke-width="4" fill="none"/>`,
   },
+  boilerplate: {
+    el: 'curse',
+    svg: `<path d="M8 4h40v56H8z"/><g fill="#16121f"><rect x="14" y="10" width="28" height="5"/><rect x="14" y="20" width="28" height="3"/><rect x="14" y="27" width="28" height="3"/><rect x="14" y="34" width="28" height="3"/><rect x="14" y="41" width="18" height="3"/></g><path d="M14 54c4-6 6 2 10-2s4 3 8-1" stroke="#16121f" stroke-width="2.5" fill="none"/><circle cx="46" cy="46" r="11" stroke="#16121f" stroke-width="3"/><circle cx="46" cy="46" r="4" fill="#16121f"/>`,
+  },
   writeUp: {
     el: 'curse',
     svg: `<path d="M4 6h38v52H4z"/><g fill="#16121f"><rect x="10" y="14" width="26" height="4"/><rect x="10" y="24" width="26" height="4"/><rect x="10" y="34" width="16" height="4"/></g><path d="M38 54l18-36 6 3-18 36-7 3z"/>`,

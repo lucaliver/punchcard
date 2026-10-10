@@ -887,6 +887,7 @@ export class Combat {
     if (m.hex) this.hexCards(m.hex.id, m.hex.share);
     if (m.inflate) this.inflateCards(m.inflate);
     if (m.infect) this.infectCards(m.infect);
+    if (m.swap) this.swapCards(m.swap);
     m.fx?.(this);
   }
 
@@ -1837,6 +1838,25 @@ export class Combat {
     }
     this.events.emit({ type: 'cardAdded', card, to });
     return card;
+  }
+
+  /** Every card on the belt and in the sleeve goes to the discard pile (nothing that leaves the belt triggers) and a new temporary `id` takes its place, where it was. */
+  swapCards(id: string): void {
+    const swap = (old: CombatCard): CombatCard => {
+      delete old.disc;
+      this.discard.push(old);
+      this.events.emit({ type: 'cardDiscarded', card: old });
+      return { uid: -++this.tempUid, id, up: false, bonus: 0, temp: true };
+    };
+    this.dragged = null;
+    for (const b of this.belt) {
+      b.card = swap(b.card);
+      delete b.falling;
+      delete b.pinned;
+    }
+    this.sleeve = this.sleeve.map((c) => (c ? swap(c) : null));
+    const first = this.belt[0]?.card ?? this.sleeveCards()[0];
+    if (first) this.events.emit({ type: 'cardAdded', card: first, to: 'belt' });
   }
 
   /** Removes every curse from the belt, the sleeve and the piles (one from the run's own deck is gone for good). Returns how many. */

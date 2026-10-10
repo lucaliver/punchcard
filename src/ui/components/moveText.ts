@@ -62,6 +62,10 @@ export function moveEffect(m: MoveDef, verbose = false, values: MoveValues = bas
       `<span class="fx fx-curse" data-card="${cu.id}">${icon(cu.hex ? HEXES[cu.hex].icon : 'skull')}${verbose ? t('move.fx.adds', { card }) : card}<b>${n}</b></span>`,
     );
   }
+  if (m.swap) {
+    const card = t(`card.${m.swap}.name`);
+    parts.push(`<span class="fx fx-curse" data-card="${m.swap}">${icon('skull')}${verbose ? t('move.fx.swap', { card }) : card}</span>`);
+  }
   if (m.inflate) parts.push(`<span class="fx fx-bad" data-rule="inflation">${icon('inflation')}${t('move.fx.inflate', { n: m.inflate })}</span>`);
   if (m.infect)
     parts.push(`<span class="fx fx-bad" data-tone="green" data-rule="virus">${icon('virus')}${t('move.fx.infect', { n: m.infect })}</span>`);
@@ -114,7 +118,7 @@ export function moveTone(m: MoveDef): Tone | null {
   if (onHero) return STATUSES[onHero.id].tone;
   if (m.infect) return 'green';
   if (m.inflate) return 'red';
-  if (m.curse || m.hex) return 'purple';
+  if (m.curse || m.hex || m.swap) return 'purple';
   if (m.steal) return 'amber';
   if (m.drainMana) return 'blue';
   if (m.absorb) return 'mint';
@@ -127,7 +131,7 @@ export function moveTone(m: MoveDef): Tone | null {
 /** A move's icon: its intent's, or the status's own when applying one status is all it does (Snark: Poison). */
 export function moveIcon(m: MoveDef): string {
   const st = m.status?.length === 1 ? m.status[0] : undefined;
-  const only = st && !m.dmg && !m.block && !m.heal && !m.curse && !m.hex && !m.steal && !m.inflate && !m.infect && !m.drainMana;
+  const only = st && !m.dmg && !m.block && !m.heal && !m.curse && !m.hex && !m.steal && !m.inflate && !m.infect && !m.swap && !m.drainMana;
   return only ? STATUSES[st.id].icon : (INTENT_ICON[m.intent] ?? 'star');
 }
 

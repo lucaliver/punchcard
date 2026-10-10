@@ -198,6 +198,30 @@ describe('Fine Print and the Golden Parachute', () => {
     expect(c.enemy.hp).toBe(now);
   });
 
+  it('Contract Lawyer: Terms & Conditions swap the belt and the sleeve for Boilerplate, and the old cards go to the discard pile', () => {
+    const terms = ENEMIES.contractLawyer.specials.find((m) => m.id === 'termsAndConditions')!;
+    const c = vs('contractLawyer');
+    run(c, 6);
+    expect(c.stash(c.belt[c.belt.length - 1].card.uid, 0)).toBe(true);
+    const beltSize = c.belt.length;
+    const old = [...c.belt.map((b) => b.card.uid), ...c.sleeveCards().map((x) => x.uid)];
+    const discarded = c.discard.length;
+    c.enemy.move = terms;
+    c.enemy.timer = 0;
+    run(c, terms.windup + 0.1);
+    const now = [...c.belt.map((b) => b.card), ...c.sleeveCards()];
+    expect(c.belt.length).toBeGreaterThanOrEqual(beltSize);
+    expect(c.sleeveCards()).toHaveLength(1);
+    expect(c.sleeve[0]?.id).toBe('boilerplate');
+    // Everything that was there is gone from the belt and the sleeve (only cards drawn after the swap are new ones).
+    expect(now.filter((card) => old.includes(card.uid))).toHaveLength(0);
+    expect(c.belt.filter((b) => b.card.id === 'boilerplate').length).toBeGreaterThan(0);
+    expect(c.discard.length).toBeGreaterThanOrEqual(discarded + old.length);
+    const boiler = c.sleeve[0]!;
+    expect(c.keywords(boiler)).toContain('bulky');
+    expect(c.cardCost(boiler)).toBe(2);
+  });
+
   it('Outgoing VP: the first lethal hit only retires him, the second one wins', () => {
     const c = vs('outgoingVp');
     expect(c.has('enemy', 'goldenParachute')).toBe(true);
@@ -263,6 +287,21 @@ describe('act 3 rules', () => {
     expect(c.has('enemy', 'vulnerable')).toBe(true);
     run(c, 4);
     expect(c.has('enemy', 'stun')).toBe(false);
+  });
+
+  it('Ghosting: the Intern charges, then dodges for a while: hits go through him until it wears off', () => {
+    const ghosting = ENEMIES.graveyardIntern.specials.find((m) => m.id === 'ghosting')!;
+    const c = setup({ enemy: { ...ENEMIES.graveyardIntern, main: ghosting, start: [] } });
+    run(c, CONFIG.introTime + CONFIG.enemyDelay + ghosting.windup + 0.1);
+    expect(c.has('enemy', 'dodge')).toBe(true);
+    expect(c.isImmune('enemy')).toBe(true);
+    const hp = c.enemy.hp;
+    c.hit(20, { raw: true });
+    expect(c.enemy.hp).toBe(hp);
+    // Nothing else is charging now, so the Dodge is not renewed.
+    c.enemy.move = { ...c.enemy.move, windup: 999 };
+    run(c, ghosting.status![0].t! + 0.1);
+    expect(c.has('enemy', 'dodge')).toBe(false);
   });
 
   it('the Assembly Line only lets a card be played once it has passed the middle of the belt', () => {

@@ -290,6 +290,8 @@
 }
 .enemy-art.chilled .ink-Y,
 .enemy-art.chilled .ink-P { opacity: 0.35; }
+/* Dodge: the enemy is a ghost, the hits go through */
+.enemy-art.ghost .riso { opacity: 0.45; }
 .enemy-art.enraged .riso { animation: rage 0.5s steps(1) infinite; }
 @keyframes rage {
   50% { filter: drop-shadow(3px 0 0 var(--p)) drop-shadow(-3px 0 0 var(--p)) drop-shadow(0 3px 0 var(--p)); }
