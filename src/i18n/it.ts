@@ -1710,7 +1710,7 @@ const it: Record<EnKey, string> = {
   'hero.rogue.passiveShort':
     'Ogni carta che cade dal nastro toglie {$stickyDiscount} al costo di una carta a caso nella tua manica, finché non viene giocata. Il mana dato dalle carte può superare il massimo.',
   'hero.rogue.ability': 'Inventario',
-  'hero.rogue.abilityShort': 'Tutto ciò che è sul nastro cade subito.',
+  'hero.rogue.abilityShort': 'Tutto ciò che è sul nastro cade subito e ottieni mana pari al costo originale di quelle carte.',
   'status.pocketLint': 'Pelucchi in Tasca',
   'status.pocketLint.d': 'Ogni carta che cade dal nastro fa {v} danni.',
   'status.offshoreAccount': 'Conto Offshore',

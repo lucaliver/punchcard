@@ -1686,7 +1686,7 @@ const zh: Record<EnKey, string> = {
   'hero.rogue.passiveName': '粘手',
   'hero.rogue.passiveShort': '每张从传送带掉落的牌，使你袖口中一张随机牌的费用减少 {$stickyDiscount}，直到被打出。卡牌效果获得的法力可以超过上限。',
   'hero.rogue.ability': '盘点',
-  'hero.rogue.abilityShort': '传送带上的所有牌立刻掉落。',
+  'hero.rogue.abilityShort': '传送带上的所有牌立刻掉落，你获得等同于这些牌原始费用的法力。',
   'status.pocketLint': '口袋绒毛',
   'status.pocketLint.d': '每有一张牌从传送带掉落，造成 {v} 点伤害。',
   'status.offshoreAccount': '离岸账户',

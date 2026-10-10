@@ -1696,7 +1696,7 @@ const en = {
   'hero.rogue.passiveShort':
     'Every card falling off the belt takes {$stickyDiscount} off the cost of a random card in your sleeve, until it is played. Mana from card effects can go above your max.',
   'hero.rogue.ability': 'Stocktake',
-  'hero.rogue.abilityShort': 'Everything on the belt falls at once.',
+  'hero.rogue.abilityShort': 'Everything on the belt falls at once, and you gain mana equal to the original cost of those cards.',
   'status.pocketLint': 'Pocket Lint',
   'status.pocketLint.d': 'Every card that falls off the belt deals {v} damage.',
   'status.offshoreAccount': 'Offshore Account',

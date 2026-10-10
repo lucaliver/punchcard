@@ -76,6 +76,17 @@ describe('the Rogue', () => {
     expect(c.discard).toHaveLength(2);
   });
 
+  it('Stocktake pays the original cost of the fallen cards in mana', () => {
+    const c = rogueFight();
+    onBelt(c, 'punch');
+    onBelt(c, 'punch');
+    c.hero.maxMana = Math.max(c.hero.maxMana, c.abilityCost());
+    c.hero.mana = c.abilityCost();
+    const worth = 2 * CARDS.punch.cost;
+    expect(c.useAbility()).toBe(true);
+    expect(c.hero.mana).toBe(worth);
+  });
+
   it('Fire Sale uses up the sleeve and deals damage by the original costs, discounts ignored', () => {
     const c = rogueFight(['borrowedStapler']);
     inSleeve(c, 'borrowedStapler');

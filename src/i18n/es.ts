@@ -1704,7 +1704,7 @@ const es: Record<EnKey, string> = {
   'hero.rogue.passiveShort':
     'Cada carta que se cae de la cinta resta {$stickyDiscount} al coste de una carta al azar de tu manga, hasta que se juega. El maná de los efectos de cartas puede superar el máximo.',
   'hero.rogue.ability': 'Inventario',
-  'hero.rogue.abilityShort': 'Todo lo que hay en la cinta cae de golpe.',
+  'hero.rogue.abilityShort': 'Todo lo que hay en la cinta cae de golpe y ganas maná igual al coste original de esas cartas.',
   'status.pocketLint': 'Pelusa de Bolsillo',
   'status.pocketLint.d': 'Cada carta que cae de la cinta hace {v} de daño.',
   'status.offshoreAccount': 'Cuenta Offshore',

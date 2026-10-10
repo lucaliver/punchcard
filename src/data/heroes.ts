@@ -139,8 +139,8 @@ const rogue: HeroDef = {
   ability: {
     id: 'stocktake',
     cost: 6,
-    // Everything on the belt falls at once, each card making a card in the sleeve cheaper.
-    use: (c) => void c.dropBelt(),
+    // Everything on the belt falls at once (each card making a card in the sleeve cheaper) and pays its original cost in mana.
+    use: (c) => c.gainMana(c.dropFront(c.belt.length)),
   },
   hooks: {},
 };
