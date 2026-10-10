@@ -108,6 +108,40 @@ describe('the Rogue', () => {
     expect(c.hero.mana).toBe(3);
   });
 
+  it('Lost Property drops the oldest belt card, Company Property pays mana for a full sleeve, Dumpster Dive cheapens the sleeve', () => {
+    const c = rogueFight();
+    c.enemy.block = 0;
+    const old = onBelt(c, 'borrowedStapler');
+    c.belt.find((b) => b.card.uid === old)!.pos = 0.8;
+    const young = onBelt(c, 'hideTheEvidence');
+    c.belt.find((b) => b.card.uid === young)!.pos = 0.2;
+    const lost = onBelt(c, 'lostProperty');
+    c.belt.find((b) => b.card.uid === lost)!.pos = 0.1;
+    c.hero.mana = c.hero.maxMana;
+    expect(c.playCard(lost)).toBe(true);
+    expect(c.belt.some((b) => b.card.uid === old)).toBe(false);
+    expect(c.belt.some((b) => b.card.uid === young)).toBe(true);
+
+    const d = rogueFight();
+    d.hero.mana = 0;
+    d.hero.maxMana = 6;
+    d.hero.mana = 3;
+    for (let i = 0; i < d.sleeve.length - 1; i++) inSleeve(d, 'borrowedStapler');
+    const card = onBelt(d, 'companyProperty');
+    expect(d.playCard(card)).toBe(true);
+    expect(d.hero.mana).toBe(1);
+    for (let i = 0; i < d.sleeve.length; i++) if (!d.sleeve[i]) inSleeve(d, 'borrowedStapler');
+    d.hero.mana = 3;
+    expect(d.playCard(onBelt(d, 'companyProperty'))).toBe(true);
+    expect(d.hero.mana).toBe(2);
+
+    const e = rogueFight();
+    inSleeve(e, 'borrowedStapler');
+    e.hero.mana = e.hero.maxMana;
+    expect(e.playCard(onBelt(e, 'dumpsterDive'))).toBe(true);
+    expect(e.cardCost(e.sleeve[0]!)).toBe(CARDS.borrowedStapler.cost - 1);
+  });
+
   it('Restructuring shuffles the draw pile and sorts it so the dearest cards are drawn first', () => {
     const c = rogueFight();
     c.draw = ['borrowedStapler', 'hideTheEvidence', 'fenceIt', 'coffee', 'inventoryShrinkage', 'shoplifting', 'lostProperty'].map((id, i) => ({

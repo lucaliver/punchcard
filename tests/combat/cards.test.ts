@@ -787,11 +787,9 @@ describe('cards that fill the classes out', () => {
     expect(c.exhaust.some((x) => x.uid === 50)).toBe(false);
 
     const d = quiet();
-    d.discard.push({ uid: 60, id: 'punch', up: false, bonus: 0, temp: false });
     const hp = d.enemy.hp;
     cast(d, 'companyProperty');
     expect(d.enemy.hp).toBeLessThan(hp);
-    expect(d.sleeve.some((x) => x?.uid === 60)).toBe(true);
   });
 
   it('Lunch Break heals and stops the belt, Any% Speedrun pays for the Rush left, Fidget Spinner charges Multitasking', () => {

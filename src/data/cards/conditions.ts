@@ -20,5 +20,6 @@ export const WHEN = {
   enemyLow: (c: Combat): boolean => c.enemy.hp <= c.enemy.maxHp * JUST_CAUSE_HP,
   heroLow: (c: Combat): boolean => c.hero.hp <= c.hero.maxHp * HARDSHIP_HP,
   block: (c: Combat): boolean => c.hero.block > 0,
+  sleeveFull: (c: Combat): boolean => !c.sleeve.includes(null),
   bare: (c: Combat): boolean => c.hero.block <= 0,
 } as const;

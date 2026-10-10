@@ -1,4 +1,5 @@
 import type { CardDef } from '../../game/types';
+import { WHEN } from './conditions';
 
 /** The Rogue turns the cards that fall off the belt into a hoard: the sleeve is the stash, its cost the loot. */
 export const rogueCards: CardDef[] = [
@@ -71,27 +72,31 @@ export const rogueCards: CardDef[] = [
   },
   {
     id: 'lostProperty',
-    face: '{addCard:0}{sleeve}',
+    face: '{dmg:0}|{exit}',
     cls: 'rogue',
-    type: 'skill',
+    type: 'attack',
     rarity: 'common',
     cost: 2,
-    vals: [2],
-    upVals: [3],
+    vals: [5],
+    upVals: [7],
     art: 'lostProperty',
-    play: (c, v) => void c.retrieve(v[0], 'sleeve'),
+    // The oldest belt card slips off: Sticky Fingers, Pocket Lint and Clean Getaway answer it.
+    play: (c, v) => {
+      c.hit(v[0]);
+      if (!c.result) c.dropOldest();
+    },
   },
   {
     id: 'dumpsterDive',
-    face: '{addCard:0}{lane}',
+    face: '{cheaper:0}{sleeve}',
     cls: 'rogue',
     type: 'skill',
     rarity: 'rare',
     cost: 2,
-    vals: [2],
-    upVals: [3],
+    vals: [1],
+    upVals: [2],
     art: 'dumpsterDive',
-    play: (c, v) => void c.retrieve(v[0], 'belt'),
+    play: (c, v) => c.cheapenSleeve(v[0]),
   },
   {
     id: 'salaryAdvance',
@@ -174,17 +179,19 @@ export const rogueCards: CardDef[] = [
   },
   {
     id: 'companyProperty',
-    face: '{dmg:0}|{addCard}{sleeve}',
+    face: '{dmg:0}|{?sleeve}{mana:1}',
     cls: 'rogue',
     type: 'attack',
     rarity: 'common',
     cost: 2,
-    vals: [5],
-    upVals: [7],
+    vals: [5, 1],
+    upVals: [7, 1],
     art: 'companyProperty',
+    when: WHEN.sleeveFull,
     play: (c, v) => {
+      const full = WHEN.sleeveFull(c);
       c.hit(v[0]);
-      c.retrieve(1, 'sleeve');
+      if (full) c.gainMana(v[1]);
     },
   },
   // The heist movies: raids on the other classes' desks. The loot arrives crumpled (it has to be smoothed out before it can be played), better the rarer it is.

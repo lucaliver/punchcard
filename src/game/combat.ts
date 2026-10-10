@@ -1275,17 +1275,19 @@ export class Combat {
 
   /** Every belt card slips off at once, the one nearest the exit first, as if it had fallen off the end. Returns how many. */
   dropBelt(): number {
-    const cards = [...this.belt].sort((a, b) => b.pos - a.pos);
     let n = 0;
-    for (const b of cards) {
-      if (this.result) break;
-      const i = this.belt.indexOf(b);
-      if (i < 0) continue;
-      this.belt.splice(i, 1);
-      this.expire(b.card);
-      n++;
-    }
+    while (!this.result && this.dropOldest()) n++;
     return n;
+  }
+
+  /** The belt card nearest the exit (the oldest) slips off as if it had fallen. Returns false when the belt is empty. */
+  dropOldest(): boolean {
+    let oldest: BeltCard | undefined;
+    for (const b of this.belt) if (!oldest || b.pos > oldest.pos) oldest = b;
+    if (!oldest) return false;
+    this.belt.splice(this.belt.indexOf(oldest), 1);
+    this.expire(oldest.card);
+    return true;
   }
 
   /** Uses up these sleeve cards (they leave the fight). Returns what they were worth: their costs without the sleeve's discount. */
