@@ -526,7 +526,6 @@ const defs: EnemyDef[] = [
     every: 2,
     specials: [
       { id: 'backInMyDay', intent: 'debuff', windup: 7, inflate: 4 },
-      atk('oldSchool', 18, 11, { intent: 'charge' }),
       { id: 'longStory', intent: 'debuff', windup: 6, status: [{ id: 'slowdown', t: 8, target: 'hero' }] },
     ],
   },
@@ -559,7 +558,6 @@ const defs: EnemyDef[] = [
     every: 2,
     specials: [
       { id: 'energyDrink', intent: 'buff', windup: 5, status: [{ id: 'strength', v: 2, target: 'enemy' }] },
-      atk('allNighter', 17, 10, { intent: 'charge' }),
     ],
     start: [{ id: 'microsleep' }],
   },
@@ -736,16 +734,7 @@ const defs: EnemyDef[] = [
         curse: [
           { id: 'carryOn', n: 1, to: 'belt', hex: 'suitcase' },
           { id: 'dutyFree', n: 1, to: 'belt', hex: 'suitcase' },
-        ],
-      },
-      atk('allInclusive', 4, 8, { hits: 3 }),
-      {
-        id: 'souvenirShop',
-        intent: 'curse',
-        windup: 5,
-        curse: [
-          { id: 'snowGlobe', n: 2, to: 'draw', hex: 'suitcase' },
-          { id: 'dutyFree', n: 2, to: 'draw', hex: 'suitcase' },
+          { id: 'snowGlobe', n: 1, to: 'belt', hex: 'suitcase' },
         ],
       },
       atk('overbooked', 18, 11, { intent: 'charge' }),

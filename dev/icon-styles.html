@@ -1,0 +1,214 @@
+<!doctype html><html><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>icon styles</title>
+<style>
+html, body { height: auto !important; overflow: auto !important; overscroll-behavior: auto !important; }
+body { margin: 0; padding: 14px; background: var(--paper) !important; color: var(--k); user-select: text; }
+h2 { position: sticky; top: 0; z-index: 99; display: flex; align-items: center; gap: 12px; margin: 22px 0 8px; padding: 8px 10px; background: var(--k); color: var(--paper); font: 700 12px/1.35 var(--font-display); letter-spacing: 1px; }
+h2 b { flex: none; display: grid; place-items: center; min-width: 34px; height: 34px; padding: 0 4px; font: 700 24px/1 var(--font-display); color: var(--k); background: var(--y); }
+h2 span { flex: 1; }
+.note { margin: 0 0 12px; font: 14px/1.4 var(--font); max-width: 760px; }
+.row { display: flex; flex-wrap: wrap; gap: 16px; }
+.row .card { --cw: 128px; }
+.row.small .card { --cw: 88px; }
+.row.small { margin-top: 10px; }
+.xi { position: relative; z-index: 1; image-rendering: pixelated; display: block; }
+.xshape { position: absolute; left: 50%; top: 50%; translate: -50% -50%; background: var(--art-dot); }
+.xmini { position: absolute; right: 5cqw; bottom: 3cqw; z-index: 2; font-size: 15cqw; }
+.xspark { position: absolute; z-index: 2; width: 2.4cqw; height: 2.4cqw; background: var(--art-ink2); }
+</style></head><body><div id="out"></div>
+<script type="module">
+import '/src/styles/index.css';
+import { preloadArt, INK_HEX } from '/src/ui/art/riso.ts';
+import { CREATURES } from '/src/ui/art/creatures.ts';
+import { ICONS, icon } from '/src/ui/art/icons.ts';
+import { CARD_ART } from '/src/ui/art/cardArt.ts';
+import { CARDS } from '/src/data/cards/index.ts';
+import { cardView, GLYPHS } from '/src/ui/components/cardView.ts';
+await preloadArt({ creatures: CREATURES, icons: ICONS, scenes: CARD_ART });
+await Promise.all([document.fonts.load('700 100px Silkscreen'), document.fonts.load('30px Jersey')]);
+await document.fonts.ready;
+
+const IDS = ['punch', 'bobTheBuilder', 'bellaCiao', 'coffee', 'skillIssue', 'heavyLifting', 'cactusOnTheDesk'];
+
+// ---------------------------------------------------------------- icon rasteriser (the game's mask rule, with three levels)
+const probe = document.createElement('canvas').getContext('2d');
+const rgbOf = (css) => { probe.clearRect(0, 0, 1, 1); probe.fillStyle = css; probe.fillRect(0, 0, 1, 1); const d = probe.getImageData(0, 0, 1, 1).data; return [d[0], d[1], d[2]]; };
+const K = rgbOf(INK_HEX.K);
+const mul = (a, b) => a.map((v, i) => Math.round((v * b[i]) / 255));
+const INKS = { Y: rgbOf(INK_HEX.Y), P: rgbOf(INK_HEX.P), B: rgbOf(INK_HEX.B) };
+const ELEMENT_INK = { steel: INKS.B, fire: INKS.Y, ice: INKS.B, arcane: mul(INKS.P, INKS.B), blood: INKS.P, nature: mul(INKS.Y, INKS.B), shadow: mul(INKS.P, INKS.B), holy: INKS.Y, curse: INKS.P, necro: mul(INKS.Y, INKS.B) };
+
+/** 0 = nothing, 1 = body (a light pixel in the source), 2 = detail (a dark one: the game knocks these out) */
+async function levels(svgBody, size, wide = false) {
+  const w = wide ? size * 2 : size;
+  const img = new Image();
+  img.src = `data:image/svg+xml;charset=utf-8,${encodeURIComponent(`<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ${wide ? 128 : 64} 64" width="${w}" height="${size}" fill="#fff" color="#fff">${svgBody}</svg>`)}`;
+  await img.decode();
+  const c = document.createElement('canvas'); c.width = w; c.height = size;
+  const g = c.getContext('2d', { willReadFrequently: true });
+  g.drawImage(img, 0, 0, w, size);
+  const d = g.getImageData(0, 0, w, size).data;
+  const out = new Uint8Array(w * size);
+  for (let i = 0; i < w * size; i++) {
+    if (d[i * 4 + 3] <= 100) continue;
+    out[i] = (d[i * 4] + d[i * 4 + 1] + d[i * 4 + 2]) / 3 > 110 ? 1 : 2;
+  }
+  return { w, h: size, lv: out };
+}
+
+/** Paints levels into a canvas with room for a shadow all round. opts: halftone, detailInk, shadow ('solid' | 'rich'), ink2 (rgb), shadowRgb */
+function paint({ w, h, lv }, o) {
+  const pad = 3;
+  const W = w + pad * 2, H = h + pad * 2;
+  const c = document.createElement('canvas'); c.width = W; c.height = H;
+  const g = c.getContext('2d');
+  const im = g.createImageData(W, H);
+  const put = (x, y, rgb) => { const i = (y * W + x) * 4; im.data[i] = rgb[0]; im.data[i + 1] = rgb[1]; im.data[i + 2] = rgb[2]; im.data[i + 3] = 255; };
+  const at = (x, y) => (x < 0 || y < 0 || x >= w || y >= h ? 0 : lv[y * w + x]);
+  const solid = (x, y) => at(x, y) === 1;
+  const shade = o.shadowRgb ?? o.ink2;
+  // shadow first (under the body)
+  for (let y = 0; y < H; y++) for (let x = 0; x < W; x++) {
+    const sx = x - pad, sy = y - pad;
+    if (o.shadow === 'rich') {
+      if (solid(sx - 1, sy - 1)) put(x, y, shade);
+      else if (solid(sx - 2, sy - 2) && (x + y) % 2 === 0) put(x, y, shade);
+    } else if (solid(sx - 1, sy - 1)) put(x, y, shade);
+  }
+  for (let y = 0; y < h; y++) for (let x = 0; x < w; x++) {
+    const v = at(x, y);
+    if (!v) continue;
+    if (v === 2) { if (o.detailInk) put(x + pad, y + pad, o.ink2); else if (o.shadow && solid(x - 1, y - 1)) put(x + pad, y + pad, shade); else im.data[((y + pad) * W + x + pad) * 4 + 3] = 0; continue; }
+    if (o.halftone) {
+      // lit from the top-left: the first pixel in from a top-left edge is a screen, not solid ink
+      const edge = (!solid(x - 1, y - 1) || !solid(x - 1, y) || !solid(x, y - 1)) && (x + y) % 2 === 0;
+      if (edge) { if (o.shadow && solid(x - 1, y - 1)) put(x + pad, y + pad, shade); continue; }
+    }
+    put(x + pad, y + pad, K);
+  }
+  g.putImageData(im, 0, 0);
+  return c;
+}
+const pngOf = (c) => c.toDataURL();
+const maskOf = (lvl) => {
+  const c = document.createElement('canvas'); c.width = lvl.w; c.height = lvl.h;
+  const g = c.getContext('2d'); const im = g.createImageData(lvl.w, lvl.h);
+  lvl.lv.forEach((v, i) => { if (v === 1) { im.data[i * 4 + 3] = 255; } });
+  g.putImageData(im, 0, 0);
+  const u = document.createElement('canvas'); u.width = lvl.w * 4; u.height = lvl.h * 4;
+  const ug = u.getContext('2d'); ug.imageSmoothingEnabled = false; ug.drawImage(c, 0, 0, u.width, u.height);
+  return u.toDataURL();
+};
+
+// ---------------------------------------------------------------- redrawn icons (style 5): bolder silhouettes, details cut in dark
+const D = '#16121f';
+const REDRAW = {
+  punch: `<rect x="32" y="6" width="26" height="40" rx="2"/><g fill="${D}"><rect x="37" y="12" width="13" height="3"/><rect x="37" y="19" width="16" height="3"/><rect x="37" y="26" width="11" height="3"/></g>
+<g stroke="#fff" stroke-width="3" stroke-linecap="round"><path d="M32 54l6 4M30 46l8 2M30 38l-6-4"/></g>
+<g stroke="${D}" stroke-width="2.4"><rect x="0" y="22" width="6" height="30"/><path d="M8 20h18a8 8 0 0 1 8 8v16a8 8 0 0 1-8 8H8z"/><rect x="24" y="18" width="18" height="9" rx="4.5"/><rect x="24" y="27" width="18" height="9" rx="4.5"/><rect x="24" y="36" width="18" height="9" rx="4.5"/><rect x="20" y="45" width="18" height="9" rx="4.5"/></g>`,
+  bobTheBuilder: `<rect x="6" y="52" width="22" height="9" stroke="${D}" stroke-width="2"/><rect x="34" y="52" width="24" height="9" stroke="${D}" stroke-width="2"/>
+<g stroke="${D}" stroke-width="2.4"><path d="M8 42a24 24 0 0 1 48 0z"/><rect x="4" y="40" width="56" height="10" rx="4"/><rect x="28" y="12" width="8" height="28"/></g><path d="M14 36a20 18 0 0 1 8-12" stroke="${D}" stroke-width="3" fill="none"/>`,
+  bellaCiao: `<g stroke="#fff" stroke-width="3.6" fill="none" stroke-linecap="round"><path d="M56 22c4 6 4 14 0 20"/><path d="M61 16c7 10 7 22 0 32"/></g>
+<g stroke="${D}" stroke-width="2.4"><rect x="4" y="25" width="14" height="14" rx="3"/><path d="M24 40h8l3 16h-9z"/><path d="M18 26L48 10v44L18 38z"/><rect x="46" y="6" width="7" height="52" rx="2"/></g><path d="M30 24v18M39 19v27" stroke="${D}" stroke-width="2.6"/>`,
+  coffee: `<g stroke="#fff" stroke-width="3.4" fill="none" stroke-linecap="round"><path d="M17 15c-4-3 4-5 0-9M26 15c-4-3 4-5 0-9M35 15c-4-3 4-5 0-9"/></g>
+<path d="M44 29h4a8 8 0 0 1 0 16h-4" stroke="#fff" stroke-width="5.5" fill="none"/><path d="M10 22h36v24a10 10 0 0 1-10 10H20a10 10 0 0 1-10-10z"/><ellipse cx="28" cy="22" rx="16" ry="4" fill="${D}"/><rect x="10" y="33" width="36" height="5" fill="${D}"/>`,
+  skillIssue: `<g stroke="${D}" stroke-width="2.4"><path d="M32 6l22 44H10z"/><ellipse cx="32" cy="52" rx="27" ry="6"/><circle cx="32" cy="6" r="4.5"/></g>
+<path d="M26 24v17h13" stroke="${D}" stroke-width="5.4" fill="none" stroke-linejoin="round" stroke-linecap="round"/><path d="M56 12l2 5 5 1-5 2-2 5-2-5-5-2 5-1zM6 20l1.5 4 4 1-4 1.5L6 31l-1.5-4.5-4-1.5 4-1z"/>`,
+  heavyLifting: `<rect x="2" y="29" width="60" height="6" rx="2"/>
+<g stroke="${D}" stroke-width="2.4"><rect x="10" y="9" width="11" height="46" rx="3"/><rect x="43" y="9" width="11" height="46" rx="3"/><rect x="23" y="17" width="7" height="30" rx="2"/><rect x="34" y="17" width="7" height="30" rx="2"/></g>
+<g stroke="#fff" stroke-width="3" stroke-linecap="round"><path d="M2 12h4M2 52h4M58 12h4M58 52h4"/></g>`,
+};
+
+// ---------------------------------------------------------------- composing the styles
+const starPoly = (n, ro, ri) => 'polygon(' + Array.from({ length: n * 2 }, (_, i) => { const r = i % 2 ? ri : ro; const a = (Math.PI * i) / n - Math.PI / 2; return `${(50 + r * Math.cos(a)).toFixed(1)}% ${(50 + r * Math.sin(a)).toFixed(1)}%`; }).join(',') + ')';
+const SHAPES = {
+  attack: { clip: starPoly(10, 50, 33), size: 52 },
+  defense: { clip: 'circle(50%)', size: 46 },
+  skill: { clip: 'polygon(50% 0, 100% 50%, 50% 100%, 0 50%)', size: 50 },
+  power: { clip: 'polygon(25% 3%, 75% 3%, 100% 50%, 75% 97%, 25% 97%, 0 50%)', size: 48 },
+  curse: { clip: starPoly(7, 50, 38), size: 50 },
+};
+
+const STYLES = [
+  { tag: '0', title: 'ATTUALE — silhouette nera 20×20, ombra a inchiostro sfalsato', note: 'Riferimento: così sono oggi.', run: async () => {} },
+  { tag: '1', title: 'MEZZITONI — la prima fila di pixel verso la luce (in alto a sinistra) è un retino, non inchiostro pieno', note: 'Stessa icona, stessa maschera: dà volume con lo stesso inchiostro nero, come una stampa riso.',
+    run: async (card, id) => place(card, paint(await levels(ICONS[CARDS[id].art].svg, 20), { halftone: 1, shadow: 'solid', ink2: ink2(card) }), 20, 34) },
+  { tag: '2', title: 'DUE INCHIOSTRI — i dettagli scuri, oggi buttati via, escono nell’inchiostro d’accento del tipo', note: 'Nessun ridisegno: occhi, puntini e tagli delle icone attuali diventano il secondo colore (lo stesso dell’ombra).',
+    run: async (card, id) => place(card, paint(await levels(ICONS[CARDS[id].art].svg, 20), { detailInk: true, shadow: 'solid', ink2: ink2(card) }), 20, 34) },
+  { tag: '3', title: 'PIÙ GRANDE + COMPOSIZIONE — icona a 28 pixel e a 46cqw, con l’effetto in piccolo e scintille', note: 'L’icona sale (da 34 a 46), l’icona della regola principale (spada, scudo…) le fa da secondo elemento.',
+    run: async (card, id) => {
+      place(card, paint(await levels(ICONS[CARDS[id].art].svg, 28), { shadow: 'solid', ink2: ink2(card) }), 28, 44);
+      const kind = (CARDS[id].face.match(/\{(\w+)/) ?? [])[1];
+      const g = kind && GLYPHS[kind];
+      const art = card.querySelector('.c-art');
+      if (g) art.insertAdjacentHTML('beforeend', `<span class="xmini">${icon(g.icon)}</span>`);
+      art.insertAdjacentHTML('beforeend', `<i class="xspark" style="left:9cqw;top:6cqw"></i><i class="xspark" style="left:15cqw;top:11cqw"></i><i class="xspark" style="right:9cqw;top:7cqw"></i>`);
+    } },
+  { tag: '4', title: 'FONDO CON FORMA — dietro l’icona una forma nell’inchiostro scuro del tipo', note: 'Attacco: burst. Difesa: cerchio. Abilità: rombo. Potere: esagono. Maledizione: stella. Solo CSS.',
+    run: async (card, id) => {
+      const s = SHAPES[CARDS[id].type] ?? SHAPES.attack;
+      const art = card.querySelector('.c-art');
+      art.style.position = 'relative';
+      const sh = document.createElement('div');
+      sh.className = 'xshape';
+      sh.style.cssText = `width:${s.size}cqw;height:${s.size}cqw;clip-path:${s.clip}`;
+      art.prepend(sh);
+      const pico = art.querySelector('.pico');
+      pico.style.position = 'relative'; pico.style.zIndex = '1';
+    } },
+  { tag: '5', title: 'ICONE RIDISEGNATE — silhouette più chiare e coraggiose, stessa maschera e stesso stile di oggi', note: 'Pugno contro la timbratura, elmetto con mattoni, megafono con onde, tazza con vapore, cappello da asino con L, bilanciere. Il cactus era già buono: non toccato.',
+    run: async (card, id) => {
+      if (!REDRAW[id]) return;
+      const lv = await levels(REDRAW[id], 20);
+      const art = card.querySelector('.c-art');
+      const old = art.querySelector('.pico');
+      const ni = document.createElement('i');
+      ni.className = 'pico'; ni.style.cssText = `--m:url('${maskOf(lv)}')`;
+      old.replaceWith(ni);
+    } },
+  { tag: '6', title: 'OMBRA RICCA — l’ombra è lunga 2 pixel (piena + retino) e prende il colore dell’elemento', note: 'L’ombra non è più sempre quella del tipo di carta: acciaio blu, sangue rosa, natura verde, arcano viola.',
+    run: async (card, id) => {
+      const el = ICONS[CARDS[id].art].el;
+      place(card, paint(await levels(ICONS[CARDS[id].art].svg, 20), { shadow: 'rich', ink2: ink2(card), shadowRgb: ELEMENT_INK[el] ?? ink2(card) }), 20, 34);
+    } },
+  { tag: '7', title: 'COMBINATO — 1 + 2 + 3 + 4 + 6: retino, due inchiostri, più grande, forma dietro, ombra ricca', note: 'La somma di tutto: è per capire se sono troppi effetti insieme.',
+    run: async (card, id) => {
+      const s = SHAPES[CARDS[id].type] ?? SHAPES.attack;
+      const art = card.querySelector('.c-art');
+      art.style.position = 'relative';
+      const sh = document.createElement('div');
+      sh.className = 'xshape'; sh.style.cssText = `width:${s.size}cqw;height:${s.size}cqw;clip-path:${s.clip}`;
+      art.prepend(sh);
+      const el = ICONS[CARDS[id].art].el;
+      place(card, paint(await levels(ICONS[CARDS[id].art].svg, 28), { halftone: 1, detailInk: true, shadow: 'rich', ink2: ink2(card), shadowRgb: ELEMENT_INK[el] ?? ink2(card) }), 28, 44);
+    } },
+];
+
+function ink2(card) { return rgbOf(getComputedStyle(card).getPropertyValue('--art-ink2').trim() || INK_HEX.Y); }
+/** puts a painted canvas in place of the icon, at the same pixel size as `base` pixels fill `cqw` */
+function place(card, canvas, base, cqw) {
+  const art = card.querySelector('.c-art');
+  const img = new Image(); img.src = pngOf(canvas); img.className = 'xi'; img.draggable = false;
+  const k = canvas.width / base;
+  img.style.width = `${cqw * k}cqw`; img.style.height = `${cqw * k * (canvas.height / canvas.width)}cqw`;
+  art.querySelector('.pico').replaceWith(img);
+}
+
+const only = new URLSearchParams(location.search).get('only');
+const out = document.getElementById('out');
+for (const s of STYLES) {
+  if (only && !only.split(',').includes(s.tag)) continue;
+  const sec = document.createElement('section');
+  sec.innerHTML = `<h2><b>${s.tag}</b><span>${s.title}</span></h2><p class="note">${s.note}</p>`;
+  for (const cls of ['', 'small']) {
+    const row = document.createElement('div'); row.className = `row ${cls}`;
+    for (const id of IDS) {
+      const card = cardView({ uid: 1, id, up: false });
+      await s.run(card, id);
+      row.append(card);
+    }
+    sec.append(row);
+  }
+  out.append(sec);
+}
+document.title = 'ready';
+</script></body></html>

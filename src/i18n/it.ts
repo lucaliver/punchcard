@@ -832,7 +832,7 @@ const it: Record<EnKey, string> = {
   'rule.sushi.d':
     "Mentre la mossa si carica il nastro serve solo sushi e lo Chef ti dà due foglietti: ognuno elenca i pezzi da mangiare, uno alla volta, un piatto su un piattino colorato. Tocca il piatto giusto sul piattino giusto, seguendo l'uno o l'altro foglietto, prima che colpisca e la mossa salta, e il nemico resta stordito per {$sushiCalm}s. Ogni piattino sbagliato ti costa {$sushiHp} PV e toglie {$sushiPenalty}s al conto alla rovescia; anche il pezzo che ti serve, se esce dal nastro, toglie i secondi. Il nastro corre più veloce a ogni pezzo mangiato. Le tue carte sul nastro e nelle maniche restano a portata di mano.",
   'rule.inflation': 'Inflazione',
-  'rule.inflation.d': 'La carta costa {$inflationCost} di mana in più finché non la giochi una volta.',
+  'rule.inflation.d': 'La carta costa {$inflationCost} di mana in più finché non la giochi.',
   'rule.virus': 'Virus',
   'rule.virus.d': 'La carta costa {$virusCost} di mana in più. Dopo {$virusDelay}s sul nastro infetta la carta dietro di sé. Giocarla la cura.',
   'rule.drain': 'Drenaggio di mana',
@@ -1567,8 +1567,6 @@ const it: Record<EnKey, string> = {
   'move.fuseBox': 'Scatola dei Fusibili',
   'move.selfieStick': 'Asta per Selfie',
   'move.lostLuggage': 'Bagaglio Smarrito',
-  'move.allInclusive': 'Tutto Incluso',
-  'move.souvenirShop': 'Negozio di Souvenir',
   'move.overbooked': 'Overbooking',
   'move.rollerSlap': 'Sberla a Rullo',
   'move.fullSpeedAhead': 'Tutta Velocità',

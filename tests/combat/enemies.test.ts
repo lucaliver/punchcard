@@ -349,8 +349,8 @@ describe('act 3 elites and boss', () => {
     c.enemy.move = luggage;
     c.enemy.timer = 0;
     run(c, luggage.windup + 0.1);
-    const cards = [...c.draw, ...c.belt.map((b) => b.card)].filter((x) => x.hex?.id === 'suitcase');
-    expect(cards.map((x) => x.id).sort()).toEqual(['carryOn', 'dutyFree']);
+    const cards = [...c.draw, ...c.discard, ...c.belt.map((b) => b.card)].filter((x) => x.hex?.id === 'suitcase');
+    expect(cards.map((x) => x.id).sort()).toEqual(['carryOn', 'dutyFree', 'snowGlobe']);
     for (const card of cards) {
       expect(cardKeywordsOf(card)).toContain('large');
       expect(card.hex?.left).toBe(HEXES.suitcase.taps);

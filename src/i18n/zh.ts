@@ -1546,8 +1546,6 @@ const zh: Record<EnKey, string> = {
   'move.fuseBox': '保险丝盒',
   'move.selfieStick': '自拍杆',
   'move.lostLuggage': '遗失行李',
-  'move.allInclusive': '全包套餐',
-  'move.souvenirShop': '纪念品店',
   'move.overbooked': '超额预订',
   'move.rollerSlap': '滚筒巴掌',
   'move.fullSpeedAhead': '全速前进',

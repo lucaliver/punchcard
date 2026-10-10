@@ -829,7 +829,7 @@ const en = {
   'rule.sushi.d':
     'The belt serves nothing but sushi while the move charges, and the Chef hands you two slips: each lists pieces to eat in turn, a dish on a coloured plate. Tap the right dish on the right plate, following either slip, before it lands and the move is off, and the enemy is stunned for {$sushiCalm}s. Every wrong plate costs {$sushiHp} HP and takes {$sushiPenalty}s off the countdown; the piece you need riding off the belt takes the seconds too. The belt runs faster with every piece eaten. Your cards on the belt and in the sleeve stay in reach.',
   'rule.inflation': 'Inflation',
-  'rule.inflation.d': 'The card costs {$inflationCost} more mana until you play it once.',
+  'rule.inflation.d': 'The card costs {$inflationCost} more mana until you play it.',
   'rule.virus': 'Virus',
   'rule.virus.d': 'The card costs {$virusCost} more mana. After {$virusDelay}s on the belt it infects the card behind it. Playing it cures it.',
   'rule.drain': 'Mana drain',
@@ -1554,8 +1554,6 @@ const en = {
   'move.fuseBox': 'Fuse Box',
   'move.selfieStick': 'Selfie Stick',
   'move.lostLuggage': 'Lost Luggage',
-  'move.allInclusive': 'All Inclusive',
-  'move.souvenirShop': 'Souvenir Shop',
   'move.overbooked': 'Overbooked',
   'move.rollerSlap': 'Roller Slap',
   'move.fullSpeedAhead': 'Full Speed Ahead',

@@ -30,7 +30,7 @@ export const TIME_THEFT = 5;
 
 const warrior: HeroDef = {
   id: 'warrior',
-  hp: 60,
+  hp: 70,
   maxMana: 3,
   regen: 1.25,
   blockDecay: CONFIG.heroBlockDecay,
@@ -55,7 +55,7 @@ const warrior: HeroDef = {
 const mage: HeroDef = {
   id: 'mage',
   unlock: { finishRun: 'warrior' },
-  hp: 70,
+  hp: 60,
   maxMana: 3,
   regen: 1.25,
   blockDecay: 1.0,
@@ -85,7 +85,7 @@ const mage: HeroDef = {
 const necromancer: HeroDef = {
   id: 'necromancer',
   unlock: { reachBoss: 1 },
-  hp: 50,
+  hp: 60,
   maxMana: 2,
   regen: 1.25,
   blockDecay: 0.9,
@@ -117,7 +117,7 @@ const necromancer: HeroDef = {
 const rogue: HeroDef = {
   id: 'rogue',
   unlock: { allStamped: ACT_DEFS.length },
-  hp: 50,
+  hp: 60,
   maxMana: 3,
   regen: 1.25,
   blockDecay: 1.0,

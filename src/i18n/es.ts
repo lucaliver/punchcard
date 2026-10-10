@@ -834,7 +834,7 @@ const es: Record<EnKey, string> = {
   'rule.sushi.d':
     'Mientras el movimiento se carga la cinta solo sirve sushi y el Chef te da dos notas: cada una lista las piezas que comer, una tras otra, un plato en un platillo de color. Toca el plato correcto en el platillo correcto, siguiendo una nota u otra, antes de que llegue y el movimiento se cancela, y el enemigo queda aturdido {$sushiCalm}s. Cada platillo equivocado te cuesta {$sushiHp} PV y quita {$sushiPenalty}s a la cuenta atrás; la pieza que necesitas, si se cae de la cinta, también quita los segundos. La cinta va más rápida con cada pieza comida. Tus cartas en la cinta y en las mangas siguen a mano.',
   'rule.inflation': 'Inflación',
-  'rule.inflation.d': 'La carta cuesta {$inflationCost} más de maná hasta que la juegues una vez.',
+  'rule.inflation.d': 'La carta cuesta {$inflationCost} más de maná hasta que la juegues.',
   'rule.virus': 'Virus',
   'rule.virus.d': 'La carta cuesta {$virusCost} más de maná. Tras {$virusDelay}s en la cinta infecta a la carta de detrás. Jugarla la cura.',
   'rule.drain': 'Drenaje de maná',
@@ -1562,8 +1562,6 @@ const es: Record<EnKey, string> = {
   'move.fuseBox': 'Caja de fusibles',
   'move.selfieStick': 'Palo de selfie',
   'move.lostLuggage': 'Equipaje perdido',
-  'move.allInclusive': 'Todo incluido',
-  'move.souvenirShop': 'Tienda de souvenirs',
   'move.overbooked': 'Overbooking',
   'move.rollerSlap': 'Bofetada de rodillo',
   'move.fullSpeedAhead': 'A toda velocidad',
