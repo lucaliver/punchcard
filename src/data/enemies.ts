@@ -559,9 +559,7 @@ const defs: EnemyDef[] = [
     art: 'graveyardIntern',
     main: atk('sleepTyping', 8, 6),
     every: 2,
-    specials: [
-      { id: 'energyDrink', intent: 'buff', windup: 5, status: [{ id: 'strength', v: 2, target: 'enemy' }] },
-    ],
+    specials: [{ id: 'energyDrink', intent: 'buff', windup: 5, status: [{ id: 'strength', v: 2, target: 'enemy' }] }],
     start: [{ id: 'microsleep' }],
   },
   {

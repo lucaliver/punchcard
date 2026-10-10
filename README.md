@@ -33,7 +33,6 @@ mosse. Tra uno scontro e l'altro migliori il mazzo.
 - **Nemici sempre telegrafati:** un attacco base lento e pesante più una mossa speciale periodica.
 - **Ricompensa = sempre uno scambio:** il mazzo ha dimensione fissa.
 - **Sleeve:** pochi slot per tenere carte da parte.
-- **Nessun timer di energia**, nessuna valuta da spendere: solo la paga di fine run.
 
 ---
 
@@ -112,9 +111,7 @@ cristalli; il resto arriva come ricompensa.
 
 - **Riso pop + pixel, un po' dark:** notte viola retinata; carte e bottoni come stampe su carta con ombre nette.
   Quattro inchiostri (rosa fluo, blu, giallo, scuro) più le sovrastampe.
-- **Mai:** sfumature per l'ombra, glow, finto 3D, cerchi decorativi, emoji come icone.
-- **Fabbrica con misura:** l'atto 1 è una fabbrica nella cripta (ossa, candele, un po' di ottone); ingranaggi, caldaie e
-  automi crescono atto dopo atto.
+- **Temi principali:** fabbrica/lavoro/ufficio.
 - **Pixel art** generata all'avvio da disegni vettoriali. Animazioni a scatti (tranne le finestre).
 - **Colori delle carte:** banda del nome = classe; illustrazione = categoria; gemma = rarità.
 - **Font:** Silkscreen per i titoli, Jersey 10 per interfaccia e numeri, Chakra Petch per i testi lunghi.
