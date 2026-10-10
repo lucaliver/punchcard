@@ -78,6 +78,9 @@ export const LUNCH_EVERY = 5;
 /** Forklift Certified: the Block it gives (its stacks are the Strength) once the hero's HP falls below half. */
 export const FORKLIFT_BLOCK = 20;
 
+/** Clean Getaway: every this many cards falling off the belt give the Block. */
+export const CLEAN_GETAWAY_EVERY = 2;
+
 /** A status tick that runs `fn` once per whole second the status has been up (n = 1, 2, 3…). */
 const everySecond =
   (fn: (c: Combat, side: Side, n: number, s: StatusVal) => void): NonNullable<StatusDef['tick']> =>
@@ -329,7 +332,7 @@ const defs: StatusDef[] = [
       c.applyStatus(side, 'krustyKrab', -1, 0, true);
     },
   },
-  // Pocket Lint and Clean Getaway (Rogue powers): every card slipping off the belt (caught in the sleeve or not) deals damage / gives Block for `v`.
+  // Pocket Lint and Clean Getaway (Rogue powers): every card slipping off the belt (caught in the sleeve or not) deals `v` damage; every second one gives `v` Block.
   {
     id: 'pocketLint',
     tone: 'red',
@@ -346,8 +349,12 @@ const defs: StatusDef[] = [
     kind: 'stacks',
     good: true,
     icon: 'shield',
+    // `e` counts the falls here, not seconds.
+    progress: (_c, _side, s) => ((s.e ?? 0) % CLEAN_GETAWAY_EVERY) / CLEAN_GETAWAY_EVERY,
     onExpire: (c, side, s) => {
-      if (side === 'hero') c.gainBlock('hero', s.v);
+      if (side !== 'hero') return;
+      s.e = (s.e ?? 0) + 1;
+      if (s.e % CLEAN_GETAWAY_EVERY === 0) c.gainBlock('hero', s.v);
     },
   },
   // Light Fingers: a card falling into a full sleeve cuts `v` more mana off every card in it.

@@ -402,10 +402,11 @@ export function createHud(v: CombatView, onPassive: () => void): { render(): voi
 
   const renderMana = (): void => {
     const hs = combat.hero;
-    if (hs.maxMana !== lastMaxMana) {
-      lastMaxMana = hs.maxMana;
+    const shown = Math.max(hs.maxMana, hs.mana);
+    if (shown !== lastMaxMana) {
+      lastMaxMana = shown;
       const had = r.pips.children.length;
-      r.pips.replaceChildren(...Array.from({ length: hs.maxMana }, (_, i) => h('div', { class: `pip ${had && i >= had ? 'gain' : ''}` })));
+      r.pips.replaceChildren(...Array.from({ length: shown }, (_, i) => h('div', { class: `pip ${had && i >= had ? 'gain' : ''}` })));
     }
     const pips = r.pips.children;
     for (let i = 0; i < pips.length; i++) {

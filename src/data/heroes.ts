@@ -134,6 +134,7 @@ const rogue: HeroDef = {
   startUpgraded: ['borrowedStapler', 'hideTheEvidence'],
   sleeve: 3,
   fallDiscount: STICKY_FINGERS,
+  manaOverflow: true,
   ink: 'var(--rust)',
   ability: {
     id: 'stocktake',

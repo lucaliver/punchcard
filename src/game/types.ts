@@ -513,6 +513,8 @@ export interface HeroDef {
   sleeve: number;
   /** Every card falling off the belt takes this much off the cost of one random card in the sleeve, until it is played (Sticky Fingers). */
   fallDiscount?: number;
+  /** Mana from card effects (`Combat.gainMana`) may go above the max, up to the mana cap; the regen still stops at the max (Sticky Fingers' second part). */
+  manaOverflow?: boolean;
   starterRelic?: string;
   /** The status that is this hero's passive: it leads the hero's status row (empty too) in place of a passive icon. */
   passiveStatus?: string;

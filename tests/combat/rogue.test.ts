@@ -195,9 +195,17 @@ describe('the Rogue', () => {
     const hp = c.enemy.hp;
     onBelt(c, 'borrowedStapler');
     onBelt(c, 'hideTheEvidence');
+    onBelt(c, 'borrowedStapler');
     c.dropBelt();
-    expect(hp - c.enemy.hp).toBe(6);
-    expect(c.hero.block).toBe(4);
+    expect(hp - c.enemy.hp).toBe(9);
+    expect(c.hero.block).toBe(2);
+  });
+
+  it('Sticky Fingers lets card effects take mana above the max, but not the regen', () => {
+    const c = rogueFight();
+    c.hero.mana = c.hero.maxMana;
+    c.gainMana(2);
+    expect(c.hero.mana).toBe(c.hero.maxMana + 2);
   });
 
   it("Identity Theft does the enemy's move to it, and the enemy loses it", () => {

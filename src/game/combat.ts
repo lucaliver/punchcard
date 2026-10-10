@@ -1722,7 +1722,8 @@ export class Combat {
   gainMana(n: number): void {
     const h = this.hero;
     const before = h.mana;
-    h.mana = Math.min(h.maxMana, h.mana + n);
+    const limit = this.heroDef.manaOverflow ? Math.max(h.maxMana, this.manaCap()) : h.maxMana;
+    h.mana = Math.min(limit, Math.max(before, h.mana + n));
     if (h.mana > before) this.events.emit({ type: 'mana', amount: h.mana - before });
   }
 
