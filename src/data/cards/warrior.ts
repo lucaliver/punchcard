@@ -134,21 +134,6 @@ export const warriorCards: CardDef[] = [
     play: (c, v) => c.applyStatus('hero', 'strength', v[0]),
   },
   {
-    id: 'declareBankruptcy',
-    face: '{dmg:0}×X',
-    cls: 'warrior',
-    type: 'attack',
-    rarity: 'rare',
-    cost: -1,
-    vals: [4],
-    upVals: [6],
-    span: 2,
-    keywords: ['large'],
-    art: 'bankrupt',
-    // X cost: the engine appends the mana spent as the last value.
-    play: (c, v) => void c.hit(v[0], { hits: v[v.length - 1] }),
-  },
-  {
     id: 'stonks',
     face: '{dmg:0}|{grow:1}',
     cls: 'warrior',
@@ -359,19 +344,6 @@ export const warriorCards: CardDef[] = [
     upVals: [3],
     art: 'steelToes',
     play: (c, v) => c.applyStatus('hero', 'steelToes', v[0]),
-  },
-  {
-    id: 'overstock',
-    face: '{block:0}×X',
-    cls: 'warrior',
-    type: 'defense',
-    rarity: 'rare',
-    cost: -1,
-    vals: [4],
-    upVals: [6],
-    art: 'overstock',
-    // X cost: the engine appends the mana spent as the last value.
-    play: (c, v) => c.gainBlock('hero', v[0] * v[v.length - 1]),
   },
   // Pop culture
   {

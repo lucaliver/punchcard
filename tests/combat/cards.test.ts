@@ -1086,6 +1086,37 @@ describe('Necromancer: the exhaust pile', () => {
     expect(temps()).toBe(2 * CARDS.hiringSpree.vals[0]);
   });
 
+  it('Body Count poisons by the exhaust pile, one for every two cards (rounded down)', () => {
+    const c = quiet();
+    for (let i = 0; i < 5; i++) exhausted(c, 'punch', 930 + i);
+    cast(c, 'bodyCount');
+    expect(c.stacks('enemy', 'poison')).toBe(2);
+  });
+
+  it('Lazarus hits and brings one exhausted card back to the draw pile', () => {
+    const c = quiet();
+    exhausted(c, 'punch', 940);
+    const hp = c.enemy.hp;
+    cast(c, 'lazarus');
+    expect(hp - c.enemy.hp).toBe(CARDS.lazarus.vals[0]);
+    expect(c.exhaust.some((x) => x.uid === 940)).toBe(false);
+    expect(c.draw.some((x) => x.uid === 940)).toBe(true);
+  });
+
+  it('Color Coding gives Block for a card of the same type as the one before, curses ignored', () => {
+    const c = quiet();
+    cast(c, 'colorCoding');
+    const block = CARDS.colorCoding.vals[0];
+    cast(c, 'punch');
+    expect(c.hero.block).toBe(0);
+    cast(c, 'punch');
+    expect(c.hero.block).toBe(block);
+    cast(c, 'bobTheBuilder');
+    expect(c.hero.block).toBe(block + CARDS.bobTheBuilder.vals[0]);
+    cast(c, 'bobTheBuilder');
+    expect(c.hero.block).toBe(2 * block + 2 * CARDS.bobTheBuilder.vals[0]);
+  });
+
   it('Sign Here gives mana and Block and shuffles a common curse into the draw pile', () => {
     const c = quiet();
     c.hero.mana = 2;

@@ -393,6 +393,18 @@ export const neutralCards: CardDef[] = [
     play: (c, v) => c.gainBlock('hero', v[0]),
   },
   {
+    id: 'colorCoding',
+    face: '{*copy}{block:0}',
+    cls: 'neutral',
+    type: 'power',
+    rarity: 'rare',
+    cost: 2,
+    vals: [3],
+    upVals: [5],
+    art: 'colorCoding',
+    play: (c, v) => c.applyStatus('hero', 'colorCoding', v[0]),
+  },
+  {
     id: 'workLifeBalance',
     face: '{dmg:0}|{*dmg}{block:1}|{timer:2}',
     cls: 'neutral',

@@ -87,6 +87,52 @@ export const rogueCards: CardDef[] = [
     },
   },
   {
+    id: 'declareBankruptcy',
+    face: '{dmg:0}×X',
+    cls: 'rogue',
+    type: 'attack',
+    rarity: 'rare',
+    cost: -1,
+    vals: [4],
+    upVals: [6],
+    span: 2,
+    keywords: ['large'],
+    art: 'bankrupt',
+    // X cost: the engine appends the mana spent as the last value.
+    play: (c, v) => void c.hit(v[0], { hits: v[v.length - 1] }),
+  },
+  {
+    id: 'overstock',
+    face: '{block:0}×X',
+    cls: 'rogue',
+    type: 'defense',
+    rarity: 'rare',
+    cost: -1,
+    vals: [4],
+    upVals: [6],
+    art: 'overstock',
+    // X cost: the engine appends the mana spent as the last value.
+    play: (c, v) => c.gainBlock('hero', v[0] * v[v.length - 1]),
+  },
+  {
+    id: 'sleepingOnTheJob',
+    face: '{rush:0}{stun:1}|{selfStun:2}',
+    cls: 'rogue',
+    type: 'skill',
+    rarity: 'rare',
+    cost: 2,
+    upCost: 1,
+    vals: [5, 5, 5],
+    keywords: ['exhaust'],
+    art: 'sleepingOnTheJob',
+    // Everyone is out for a while, but the belt is not: it races on and your cards slip off it (Sticky Fingers, Pocket Lint and Clean Getaway answer every one).
+    play: (c, v) => {
+      c.rushBelt(v[0]);
+      c.applyStatus('enemy', 'stun', 1, v[1]);
+      c.applyStatus('hero', 'stun', 1, v[2]);
+    },
+  },
+  {
     id: 'emergencyExit',
     face: '{block:0}|{exit}',
     cls: 'rogue',

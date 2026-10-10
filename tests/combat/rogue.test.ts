@@ -279,6 +279,18 @@ describe('the Rogue', () => {
     expect(c.cardCost(c.sleeve[0]!)).toBe(CARDS.plausibleDeniability.cost - 2);
   });
 
+  it('Sleeping on the Job rushes the belt, stuns the enemy and puts the Rogue to sleep', () => {
+    const c = rogueFight();
+    c.hero.maxMana = c.hero.mana = 4;
+    expect(c.playCard(onBelt(c, 'sleepingOnTheJob'))).toBe(true);
+    expect(c.has('hero', 'rush')).toBe(true);
+    expect(c.has('enemy', 'stun')).toBe(true);
+    expect(c.has('hero', 'stun')).toBe(true);
+    // Asleep: no card by hand.
+    expect(c.playCard(onBelt(c, 'borrowedStapler'))).toBe(false);
+    expect(c.exhaust.map((x) => x.id)).toContain('sleepingOnTheJob');
+  });
+
   it('Emergency Exit gives Block and drops the oldest belt card', () => {
     const c = rogueFight();
     onBelt(c, 'borrowedStapler');

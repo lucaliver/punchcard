@@ -84,6 +84,9 @@ export const FORKLIFT_BLOCK = 20;
 /** Clean Getaway: every this many cards falling off the belt give the Block. */
 export const CLEAN_GETAWAY_EVERY = 2;
 
+/** The card types, for a status that remembers the last one played. */
+const CARD_TYPES: CardType[] = ['attack', 'defense', 'skill', 'power', 'curse'];
+
 /** A status tick that runs `fn` once per whole second the status has been up (n = 1, 2, 3…). */
 const everySecond =
   (fn: (c: Combat, side: Side, n: number, s: StatusVal) => void): NonNullable<StatusDef['tick']> =>
@@ -170,6 +173,21 @@ const defs: StatusDef[] = [
     icon: 'speedCards',
     onCardPlayed: (c, side, def) => {
       if (def.type === 'attack') c.rushBelt(c.stacks(side, 'blueCollarBlues'));
+    },
+  },
+  // Color Coding (a power): a card of the same type as the one played just before it gives `v` Block. `e` is that last type (its place in `CARD_TYPES`, from 1); curses don't count.
+  {
+    id: 'colorCoding',
+    tone: 'teal',
+    kind: 'stacks',
+    good: true,
+    icon: 'copy',
+    onCardPlayed: (c, side, def) => {
+      const s = c.fighter(side).statuses.colorCoding;
+      if (def.type === 'curse' || !s) return;
+      const type = CARD_TYPES.indexOf(def.type) + 1;
+      if (s.e === type) c.gainBlock(side, s.v);
+      s.e = type;
     },
   },
   // Open Casket (a Necromancer power): every card the hero uses up poisons the enemy for `v`.

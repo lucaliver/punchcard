@@ -1518,6 +1518,22 @@ export const ICONS: Record<string, { el: Element; svg: string; wide?: boolean }>
     el: 'nature',
     svg: `<path d="M4 4h32v56H4z"/><path fill="#16121f" d="M9 9h22v46H9z"/><path d="M26 30h4v6h-4z"/><path d="M40 26h10v-9l14 15-14 15v-9H40z"/>`,
   },
+  sleepingOnTheJob: {
+    el: 'holy',
+    svg: `<path d="M2 40h60v6H2z"/><path d="M8 46h6v16H8zM50 46h6v16h-6z"/><circle cx="22" cy="30" r="10"/><path d="M30 38c8-6 18-4 26 2H30z"/><path fill="#16121f" d="M17 28h8v3h-8z"/><path d="M40 6h14l-14 14h14v4H36v-4l14-14H40z"/>`,
+  },
+  bodyCount: {
+    el: 'necro',
+    svg: `<path d="M10 62V24a22 22 0 0 1 44 0v38z"/><g fill="#16121f"><rect x="18" y="20" width="4" height="22"/><rect x="26" y="20" width="4" height="22"/><rect x="34" y="20" width="4" height="22"/><rect x="42" y="20" width="4" height="22"/><path d="M14 40l36-14v5L14 45z"/></g>`,
+  },
+  lazarus: {
+    el: 'necro',
+    svg: `<path d="M10 62V26a22 22 0 0 1 44 0v36z"/><path fill="#16121f" d="M37 12L23 36h9l-4 16 16-26h-9z"/><path d="M2 58h60v6H2z"/>`,
+  },
+  colorCoding: {
+    el: 'steel',
+    svg: `<path d="M4 18h20l4 6h32v36H4z"/><path fill="#16121f" d="M4 30h56v3H4z"/><path d="M8 4h14v10H8z"/><path d="M26 4h14v10H26z"/><path d="M44 4h14v10H44z"/><path fill="#16121f" d="M10 40h10v14H10zM27 40h10v14H27zM44 40h10v14H44z"/>`,
+  },
   // Rooms and statuses
   shredder: {
     el: 'steel',

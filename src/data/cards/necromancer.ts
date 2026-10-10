@@ -723,6 +723,38 @@ export const necromancerCards: CardDef[] = [
     play: (c, v) => c.applyStatus('hero', 'hiringSpree', v[0]),
   },
   {
+    id: 'bodyCount',
+    face: '{exhaust}/{0}={poison}',
+    cls: 'necromancer',
+    type: 'skill',
+    rarity: 'rare',
+    cost: 2,
+    upCost: 1,
+    vals: [2],
+    art: 'bodyCount',
+    // One Poison for every `v[0]` cards in the exhaust pile (rounded down).
+    play: (c, v) => {
+      const n = Math.floor(c.exhaust.length / v[0]);
+      if (n > 0) c.applyStatus('enemy', 'poison', n);
+    },
+  },
+  {
+    id: 'lazarus',
+    face: '{dmg:0}|{exhaust}{pile}',
+    cls: 'necromancer',
+    type: 'attack',
+    rarity: 'common',
+    cost: 2,
+    vals: [6],
+    upVals: [9],
+    art: 'lazarus',
+    // Back from the exhaust pile, into the draw pile (never a consumed or temporary card).
+    play: (c, v) => {
+      c.hit(v[0]);
+      if (!c.result) c.recycleExhausted(1);
+    },
+  },
+  {
     id: 'ccTheBoss',
     face: '{debuff}{pass}',
     cls: 'necromancer',
