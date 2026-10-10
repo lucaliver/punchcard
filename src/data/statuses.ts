@@ -1,5 +1,6 @@
 import type { Combat } from '../game/combat';
 import type { CardType, Side, StatusDef, StatusVal, Tone } from '../game/types';
+import { TEMP_STAFF } from './cards/necromancer';
 import { CONFIG } from './config';
 
 /** How long every card played brings the Light Sleeper's hit closer (seconds). */
@@ -75,6 +76,8 @@ export const COFFEE_EVERY = 6;
 
 /** Forgotten Lunch: seconds between two helpings of Poison. */
 export const LUNCH_EVERY = 5;
+/** Hiring Spree: seconds between two temps dealt into the draw pile. */
+export const HIRING_EVERY = 8;
 /** Forklift Certified: the Block it gives (its stacks are the Strength) once the hero's HP falls below half. */
 export const FORKLIFT_BLOCK = 20;
 
@@ -306,6 +309,19 @@ const defs: StatusDef[] = [
     progress: cycle(LUNCH_EVERY),
     tick: everySecond((c, _side, n, s) => {
       if (n % LUNCH_EVERY === 0) c.applyStatus('enemy', 'poison', s.v);
+    }),
+  },
+  // Hiring Spree (a power): `v` random temps (Intern, Ghost Writer, Burnout Case) shuffled into the draw pile every few seconds.
+  {
+    id: 'hiringSpree',
+    tone: 'toxic',
+    kind: 'stacks',
+    good: true,
+    icon: 'addCard',
+    progress: cycle(HIRING_EVERY),
+    tick: everySecond((c, _side, n, s) => {
+      if (n % HIRING_EVERY !== 0) return;
+      for (let i = 0; i < s.v; i++) c.addTempCard(c.rng.pick([...TEMP_STAFF]), 'draw');
     }),
   },
   // Eight Hours (a power): every `v`-th card the hero plays is played twice. `e` counts the cards since the last echo; curses don't count.

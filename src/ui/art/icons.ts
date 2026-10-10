@@ -1486,6 +1486,34 @@ export const ICONS: Record<string, { el: Element; svg: string; wide?: boolean }>
     el: 'steel',
     svg: `<path d="M0 20h14M50 20h14" fill="none" stroke="currentColor" stroke-width="5" stroke-linecap="round"/><path d="M8 4l4-2 22 30-5 4z"/><path d="M56 4l-4-2-22 30 5 4z"/><path d="M27 34l-5 10M37 34l5 10" fill="none" stroke="currentColor" stroke-width="5" stroke-linecap="round"/><circle cx="19" cy="52" r="9"/><circle cx="45" cy="52" r="9"/><circle cx="19" cy="52" r="4" fill="#16121f"/><circle cx="45" cy="52" r="4" fill="#16121f"/>`,
   },
+  intern: {
+    el: 'necro',
+    svg: `<circle cx="32" cy="14" r="10"/><path d="M12 62V42c0-9 9-15 20-15s20 6 20 15v20z"/><path fill="#16121f" d="M29 28h6l3 6-6 14-6-14z"/><path d="M44 40h12v14a4 4 0 0 1-4 4h-4a4 4 0 0 1-4-4z"/><path d="M56 43h4a3 3 0 0 1 0 8h-4" fill="none" stroke="currentColor" stroke-width="3"/>`,
+  },
+  ghostWriter: {
+    el: 'shadow',
+    svg: `<path d="M4 58V28C4 14 13 4 24 4s20 10 20 24v30l-6-5-7 5-7-5-7 5-6-5z"/><circle cx="17" cy="26" r="4" fill="#16121f"/><circle cx="31" cy="26" r="4" fill="#16121f"/><path d="M40 62l-1-9 15-30 6 3-14 30z"/><path fill="#16121f" d="M40 62l-1-9 5 3z"/>`,
+  },
+  burnoutCase: {
+    el: 'fire',
+    svg: `<path d="M32 2c2 6 9 8 9 14a9 9 0 0 1-18 0c0-4 3-6 4-9 1 3 3 4 4 4-2-4-1-6 1-9z"/><path d="M20 30h24v-5h-5v2H25v-2h-5z"/><path d="M6 30h52v30H6z"/><path fill="#16121f" d="M6 42h52v3H6zM28 40h8v8h-8z"/>`,
+  },
+  tempAgency: {
+    el: 'necro',
+    svg: `<circle cx="32" cy="16" r="9"/><path d="M16 40v-4a16 11 0 0 1 32 0v4z"/><circle cx="11" cy="30" r="6"/><path d="M0 52v-3a11 8 0 0 1 22 0v3z"/><circle cx="53" cy="30" r="6"/><path d="M42 52v-3a11 8 0 0 1 22 0v3z"/><path d="M4 56h56v6H4z"/>`,
+  },
+  openPlanOffice: {
+    el: 'steel',
+    svg: `<path d="M3 5h58v54H3z"/><path fill="#16121f" d="M30 5h4v22h-4zM3 29h24v4H3zM37 29h24v4H37zM30 37h4v22h-4z"/><circle cx="16" cy="17" r="5" fill="#16121f"/><circle cx="48" cy="17" r="5" fill="#16121f"/><circle cx="16" cy="47" r="5" fill="#16121f"/><circle cx="48" cy="47" r="5" fill="#16121f"/>`,
+  },
+  hiringSpree: {
+    el: 'nature',
+    svg: `<path d="M8 2h5v60H8z"/><path d="M13 6h44l-9 14 9 14H13z"/><path fill="#16121f" d="M31 12h6v6h6v4h-6v6h-6v-6h-6v-4h6z"/>`,
+  },
+  emergencyExit: {
+    el: 'nature',
+    svg: `<path d="M4 4h32v56H4z"/><path fill="#16121f" d="M9 9h22v46H9z"/><path d="M26 30h4v6h-4z"/><path d="M40 26h10v-9l14 15-14 15v-9H40z"/>`,
+  },
   // Rooms and statuses
   shredder: {
     el: 'steel',

@@ -279,6 +279,16 @@ describe('the Rogue', () => {
     expect(c.cardCost(c.sleeve[0]!)).toBe(CARDS.plausibleDeniability.cost - 2);
   });
 
+  it('Emergency Exit gives Block and drops the oldest belt card', () => {
+    const c = rogueFight();
+    onBelt(c, 'borrowedStapler');
+    onBelt(c, 'hideTheEvidence');
+    expect(c.playCard(onBelt(c, 'emergencyExit'))).toBe(true);
+    expect(c.hero.block).toBe(CARDS.emergencyExit.vals[0]);
+    expect(c.belt.map((b) => b.card.id)).toEqual(['hideTheEvidence']);
+    expect(c.discard.map((x) => x.id)).toContain('borrowedStapler');
+  });
+
   it('Offshore Account adds damage to attacks for every whole mana above the max, counted after the card is paid', () => {
     const c = rogueFight();
     c.enemy.block = 0;

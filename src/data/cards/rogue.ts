@@ -87,6 +87,22 @@ export const rogueCards: CardDef[] = [
     },
   },
   {
+    id: 'emergencyExit',
+    face: '{block:0}|{exit}',
+    cls: 'rogue',
+    type: 'defense',
+    rarity: 'common',
+    cost: 2,
+    vals: [7],
+    upVals: [10],
+    art: 'emergencyExit',
+    // The oldest belt card slips off: Sticky Fingers, Pocket Lint and Clean Getaway answer it.
+    play: (c, v) => {
+      c.gainBlock('hero', v[0]);
+      c.dropOldest();
+    },
+  },
+  {
     id: 'dumpsterDive',
     face: '{cheaper:0}{sleeve}',
     cls: 'rogue',

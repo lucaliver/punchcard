@@ -1,6 +1,9 @@
 import type { CardDef } from '../../game/types';
 import { WHEN } from './conditions';
 
+/** The temps the Necromancer's hiring cards deal into the draw pile (unplayable and fleeting: they pay when they ride off the belt). */
+export const TEMP_STAFF = ['intern', 'ghostWriter', 'burnoutCase'] as const;
+
 /** The Necromancer rots enemies away: Poison, weakening curses and life drain. */
 export const necromancerCards: CardDef[] = [
   // Starters
@@ -678,6 +681,48 @@ export const necromancerCards: CardDef[] = [
     },
   },
   {
+    id: 'tempAgency',
+    face: '{addCard:0}',
+    cls: 'necromancer',
+    type: 'skill',
+    rarity: 'rare',
+    cost: 1,
+    vals: [3],
+    upVals: [4],
+    art: 'tempAgency',
+    // Upgraded, the interns it sends are upgraded too.
+    play: (c, v, card) => {
+      for (let i = 0; i < v[0]; i++) c.addTempCard('intern', 'draw', card.up);
+    },
+  },
+  {
+    id: 'openPlanOffice',
+    face: '{addCard}{addCard}{addCard}',
+    cls: 'necromancer',
+    type: 'skill',
+    rarity: 'epic',
+    cost: 2,
+    upCost: 1,
+    vals: [],
+    art: 'openPlanOffice',
+    // One of each temp.
+    play: (c, _v, card) => {
+      for (const id of TEMP_STAFF) c.addTempCard(id, 'draw', card.up);
+    },
+  },
+  {
+    id: 'hiringSpree',
+    face: '{*timer}{addCard:0}',
+    cls: 'necromancer',
+    type: 'power',
+    rarity: 'epic',
+    cost: 2,
+    vals: [1],
+    upVals: [2],
+    art: 'hiringSpree',
+    play: (c, v) => c.applyStatus('hero', 'hiringSpree', v[0]),
+  },
+  {
     id: 'ccTheBoss',
     face: '{debuff}{pass}',
     cls: 'necromancer',
@@ -719,6 +764,45 @@ export const necromancerCards: CardDef[] = [
     art: 'loompa',
     play: (c, v) => void c.hit(v[0]),
     onExpire: (c, v) => void c.heal('hero', v[1]),
+  },
+  {
+    id: 'intern',
+    face: '{?exit}{poison:0}',
+    cls: 'necromancer',
+    type: 'skill',
+    rarity: 'special',
+    cost: 0,
+    vals: [2],
+    upVals: [3],
+    keywords: ['unplayable', 'fleeting'],
+    art: 'intern',
+    onExpire: (c, v) => c.applyStatus('enemy', 'poison', v[0]),
+  },
+  {
+    id: 'ghostWriter',
+    face: '{?exit}{weak:0}',
+    cls: 'necromancer',
+    type: 'skill',
+    rarity: 'special',
+    cost: 0,
+    vals: [5],
+    upVals: [8],
+    keywords: ['unplayable', 'fleeting'],
+    art: 'ghostWriter',
+    onExpire: (c, v) => c.applyStatus('enemy', 'weak', 1, v[0]),
+  },
+  {
+    id: 'burnoutCase',
+    face: '{?exit}{heal:0}',
+    cls: 'necromancer',
+    type: 'skill',
+    rarity: 'special',
+    cost: 0,
+    vals: [3],
+    upVals: [5],
+    keywords: ['unplayable', 'fleeting'],
+    art: 'burnoutCase',
+    onExpire: (c, v) => void c.heal('hero', v[0]),
   },
   {
     id: 'spontaneousCombustion',

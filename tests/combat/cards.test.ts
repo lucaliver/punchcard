@@ -3,7 +3,7 @@ import { Combat, type CombatSetup } from '../../src/game/combat';
 import { CONFIG, EXPIRE_POS } from '../../src/data/config';
 import { ENEMIES } from '../../src/data/enemies';
 import { HEROES } from '../../src/data/heroes';
-import { COFFEE_EVERY, FORKLIFT_BLOCK, LUNCH_EVERY, STATUSES, TABS_EVERY } from '../../src/data/statuses';
+import { COFFEE_EVERY, FORKLIFT_BLOCK, HIRING_EVERY, LUNCH_EVERY, STATUSES, TABS_EVERY } from '../../src/data/statuses';
 import { CARDS, cardValsOf } from '../../src/data/cards';
 import { applyCombat, combatSetup, newRun } from '../../src/game/run';
 import type { CardInst } from '../../src/game/types';
@@ -1050,6 +1050,40 @@ describe('Necromancer: the exhaust pile', () => {
     const before = c.exhaust.length;
     cast(c, 'massGrave');
     expect(hp - c.enemy.hp).toBe(before * CARDS.massGrave.vals[0]);
+  });
+
+  it('Temp Agency and Open Plan Office deal unplayable temps into the draw pile; each pays when it rides off the belt and is used up', () => {
+    const c = quiet();
+    cast(c, 'tempAgency');
+    cast(c, 'openPlanOffice');
+    const temps = c.draw.filter((x) => ['intern', 'ghostWriter', 'burnoutCase'].includes(x.id));
+    expect(temps.map((x) => x.id).sort()).toEqual(['burnoutCase', 'ghostWriter', 'intern', 'intern', 'intern', 'intern']);
+    // They can't be played, only let go.
+    c.addTempCard('intern', 'belt');
+    expect(c.playCard(c.belt[c.belt.length - 1].card.uid)).toBe(false);
+    c.hero.hp = c.hero.maxHp - 10;
+    const hp = c.hero.hp;
+    c.addTempCard('ghostWriter', 'belt');
+    c.addTempCard('burnoutCase', 'belt');
+    c.dropBelt();
+    expect(c.stacks('enemy', 'poison')).toBe(CARDS.intern.vals[0]);
+    expect(c.has('enemy', 'weak')).toBe(true);
+    expect(c.hero.hp - hp).toBe(CARDS.burnoutCase.vals[0]);
+    expect(c.exhaust.map((x) => x.id)).toEqual(expect.arrayContaining(['intern', 'ghostWriter', 'burnoutCase']));
+  });
+
+  it('Hiring Spree shuffles a random temp into the draw pile every few seconds', () => {
+    const c = quiet();
+    cast(c, 'hiringSpree');
+    // The belt keeps dealing from the draw pile, so count them wherever they are.
+    const temps = (): number =>
+      [...c.draw, ...c.discard, ...c.exhaust, ...c.belt.map((b) => b.card)].filter((x) => ['intern', 'ghostWriter', 'burnoutCase'].includes(x.id))
+        .length;
+    expect(temps()).toBe(0);
+    run(c, HIRING_EVERY + 0.1);
+    expect(temps()).toBe(CARDS.hiringSpree.vals[0]);
+    run(c, HIRING_EVERY);
+    expect(temps()).toBe(2 * CARDS.hiringSpree.vals[0]);
   });
 
   it('Sign Here gives mana and Block and shuffles a common curse into the draw pile', () => {
