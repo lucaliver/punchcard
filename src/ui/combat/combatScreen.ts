@@ -24,6 +24,7 @@ import { bindMop } from './mop';
 import { clockText } from '../screens/journey';
 import { createCardLayer } from './cardLayer';
 import { bindCombatFx } from './combatFx';
+import { createBadgeWindow } from './badgeWindow';
 import { createTaskWindow } from './coffeeWindow';
 import { createShellWindow } from './shellWindow';
 import { createSushiSlip } from './sushiSlip';
@@ -92,6 +93,7 @@ export function combatScreen(run: RunState, combat: Combat, cb: CombatCallbacks)
   const hud = createHud(v, () => passiveInfo());
   const taskWindow = createTaskWindow(v);
   const shellWindow = createShellWindow(v);
+  const badgeWindow = createBadgeWindow(v);
   const sushiSlip = createSushiSlip(v);
 
   /** The time card on the belt: stamped IN as the fight starts (then it leaves), OUT when it's won (it stays). */
@@ -541,6 +543,7 @@ export function combatScreen(run: RunState, combat: Combat, cb: CombatCallbacks)
     hud.render();
     taskWindow.render();
     shellWindow.render();
+    badgeWindow.render();
     sushiSlip.render();
     cards.render();
     const draggedSeen = lastDragged;

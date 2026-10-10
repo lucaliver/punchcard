@@ -903,6 +903,10 @@ export const ICONS: Record<string, { el: Element; svg: string; wide?: boolean }>
     el: 'blood',
     svg: `<path d="M4 4h56v34H4z"/><path d="M10 10h44v22H10z" fill="#16121f"/><path d="M29 13h6l-1 12h-4zM29 27h6v4h-6z"/><path d="M28 38h8v24h-8z"/>`,
   },
+  idBadge: {
+    el: 'steel',
+    svg: `<rect x="4" y="14" width="34" height="46"/><rect x="15" y="8" width="12" height="8"/><g fill="#16121f"><rect x="18" y="10" width="6" height="3"/><circle cx="21" cy="30" r="6"/><path d="M11 47c2-7 6-9 10-9s8 2 10 9z"/><rect x="4" y="52" width="34" height="4"/></g><path d="M42 26l16 8-16 8v-6h-4v-4h4z"/>`,
+  },
   lostBadge: {
     el: 'steel',
     svg: `<rect x="14" y="14" width="36" height="46"/><rect x="26" y="4" width="12" height="10"/><circle cx="32" cy="30" r="8" fill="#16121f"/><path d="M20 46h24M20 53h16" stroke="#16121f" stroke-width="4"/><path d="M28 28l8 4M36 28l-8 4" stroke="currentColor" stroke-width="3"/>`,

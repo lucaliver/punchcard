@@ -436,3 +436,189 @@
 @keyframes ss-next {
   50% { outline-color: var(--paper); }
 }
+
+/* The Punch Clock's badge reader: a grey plastic box with a lamp at each end of its screen, a slot the badge runs through (a lip hides the badge's lower part) and a speed gauge whose green segments are the zone it takes */
+.bd-reader {
+  --bw: 84px;
+  --led: var(--brass);
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  max-width: 340px;
+  margin: 0 auto;
+  padding: 6px;
+  color: var(--k);
+  background: var(--muted);
+  border: var(--line) solid var(--k);
+  box-shadow: inset 0 0 0 2px var(--coin-silver), var(--off) var(--off) 0 var(--shadow);
+}
+.bd-reader[data-led='drag'] { --led: var(--y); }
+.bd-reader[data-led='bad'] { --led: var(--red); }
+.bd-reader[data-led='ok'] { --led: var(--mint); }
+.bd-reader[data-pace='fast'] { animation: bd-rattle 0.12s steps(2) infinite; }
+.bd-top { display: flex; align-items: center; gap: 6px; }
+.bd-led {
+  flex: none;
+  width: 14px;
+  height: 14px;
+  background: var(--led);
+  border: 2px solid var(--k);
+  border-radius: 50%;
+  box-shadow: 0 0 0 2px var(--coin-silver);
+}
+.bd-reader[data-led='idle'] .bd-led, .bd-reader[data-led='bad'] .bd-led { animation: bd-blink 0.6s steps(1) infinite; }
+.bd-led:last-child { animation-delay: 0.3s; }
+.bd-screen {
+  position: relative;
+  flex: 1;
+  min-width: 0;
+  height: 46px;
+  display: flex;
+  align-items: center;
+  padding: 3px 8px;
+  overflow: hidden;
+  font-family: var(--font-ui);
+  font-size: 15px;
+  line-height: 1;
+  text-transform: uppercase;
+  color: var(--mint);
+  background-color: var(--void);
+  background-image: repeating-linear-gradient(0deg, transparent 0 2px, var(--white-a6) 2px 3px);
+  border: var(--line) solid var(--k);
+}
+.bd-line.flicker { animation: bd-flicker 0.5s steps(1); }
+.bd-reader.refused .bd-screen { animation: bd-glitch 0.45s steps(1); }
+.bd-reader.read .bd-screen { color: var(--void); background-color: var(--mint); }
+/* the verdict is stamped over the empty part of the track, askew */
+.bd-stamp {
+  position: absolute;
+  right: 4px;
+  top: 4px;
+  z-index: 2;
+  padding: 1px 6px;
+  font-family: var(--font-display);
+  font-size: 15px;
+  color: var(--red);
+  background: var(--paper);
+  border: 3px solid var(--red);
+  box-shadow: 2px 2px 0 var(--shadow);
+  rotate: -7deg;
+  pointer-events: none;
+}
+.bd-stamp:empty { display: none; }
+/* a read badge rests at the far end, so the stamp moves to the other side */
+.bd-reader.read .bd-stamp { right: auto; left: 4px; }
+.bd-stamp[data-kind='ok'] { color: var(--green); border-color: var(--green); }
+.bd-stamp.print { animation: stamp-in 0.15s steps(2); }
+.tk-val.late { color: var(--p); }
+
+.bd-track { position: relative; height: 70px; touch-action: none; }
+.bd-groove {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 4px;
+  height: 22px;
+  background: var(--void);
+  border: 2px solid var(--k);
+  box-shadow: 0 0 0 2px var(--coin-silver);
+}
+.bd-reader[data-pace='ok'] .bd-groove { box-shadow: 0 0 0 3px var(--mint); }
+.bd-reader[data-pace='slow'] .bd-groove { box-shadow: 0 0 0 3px var(--brass); }
+.bd-reader[data-pace='fast'] .bd-groove { box-shadow: 0 0 0 3px var(--red); }
+.bd-badge {
+  position: absolute;
+  bottom: 10px;
+  left: calc(var(--at, 0) * (100% - var(--bw)));
+  width: var(--bw);
+  height: 52px;
+  display: flex;
+  align-items: flex-start;
+  gap: 4px;
+  padding: 4px 4px 0;
+  color: var(--k);
+  background: var(--paper);
+  border: var(--line) solid var(--k);
+  box-shadow: 2px 2px 0 var(--shadow);
+  touch-action: none;
+  user-select: none;
+  -webkit-user-select: none;
+  cursor: grab;
+}
+.bd-badge.held { z-index: 1; box-shadow: 4px 4px 0 var(--shadow); cursor: grabbing; }
+.bd-badge.spit { transition: left 0.3s steps(5); animation: bd-spit 0.3s steps(3); }
+.bd-clip { position: absolute; top: -7px; left: 50%; width: 14px; height: 8px; margin-left: -7px; background: var(--coin-silver); border: 2px solid var(--k); }
+.bd-photo { flex: none; display: block; width: 28px; height: 28px; overflow: hidden; background: var(--b); border: 2px solid var(--k); }
+.bd-photo > * { display: block; width: 100%; height: 100%; }
+/* a few lines of small print beside the photo */
+.bd-bars { flex: 1; height: 14px; margin-top: 2px; background: repeating-linear-gradient(0deg, var(--k) 0 2px, transparent 2px 5px); }
+.bd-stripe { position: absolute; left: 0; right: 0; bottom: 0; height: 9px; background: var(--k); border-top: 2px solid var(--p); }
+/* the reader's lip, in front of the badge's lower part */
+.bd-lip {
+  position: absolute;
+  left: -4px;
+  right: -4px;
+  bottom: 0;
+  height: 28px;
+  pointer-events: none;
+  background: var(--coin-silver);
+  border: 2px solid var(--k);
+  box-shadow: 0 -2px 0 var(--shadow);
+}
+.bd-lip::after { content: ''; position: absolute; left: 6px; right: 6px; top: 7px; height: 5px; background: var(--void); border: 2px solid var(--k); }
+
+/* sparks fly from the badge when it runs too fast, and in a bigger burst when it is read */
+.bd-sparks { display: none; position: absolute; bottom: 28px; left: calc(var(--at, 0) * (100% - var(--bw)) + var(--bw) / 2); pointer-events: none; }
+.bd-reader[data-pace='fast'] .bd-sparks, .bd-reader.read .bd-sparks { display: block; }
+.bd-sparks i {
+  position: absolute;
+  width: 6px;
+  height: 6px;
+  background: var(--y);
+  animation: bd-spark 0.4s steps(4) infinite;
+}
+.bd-sparks i:nth-child(even) { background: var(--p); animation-delay: 0.15s; }
+.bd-sparks i:nth-child(1) { --a: -80deg; }
+.bd-sparks i:nth-child(2) { --a: -55deg; }
+.bd-sparks i:nth-child(3) { --a: -30deg; }
+.bd-sparks i:nth-child(4) { --a: -5deg; }
+.bd-sparks i:nth-child(5) { --a: 20deg; }
+.bd-sparks i:nth-child(6) { --a: 45deg; }
+.bd-sparks i:nth-child(7) { --a: 70deg; }
+.bd-sparks i:nth-child(8) { --a: 95deg; }
+.bd-reader.read .bd-badge { animation: cup-hop 0.4s steps(2) 3; }
+
+.bd-gauge { display: flex; align-items: center; gap: 6px; }
+.bd-gauge small { font-family: var(--font-ui); font-size: 13px; line-height: 1; text-transform: uppercase; }
+.bd-segs { flex: 1; display: flex; gap: 2px; }
+.bd-segs i { flex: 1; height: 14px; background: var(--void); border: 2px solid var(--k); }
+.bd-segs i[data-zone='ok'] { border-color: var(--mint); }
+.bd-segs i.lit { background: var(--brass); }
+.bd-segs i.lit[data-zone='ok'] { background: var(--mint); }
+.bd-segs i.lit[data-zone='high'] { background: var(--red); }
+/* the reader has moved its zone */
+.bd-reader.recalibrated .bd-segs { animation: bd-blink 0.3s steps(1) 2; }
+
+@keyframes bd-blink {
+  50% { opacity: 0.2; }
+}
+@keyframes bd-flicker {
+  0%, 40% { opacity: 0; }
+  20% { opacity: 1; translate: 3px 0; }
+  60%, 100% { opacity: 1; }
+}
+@keyframes bd-glitch {
+  0%, 50% { color: var(--paper); background-color: var(--red); translate: -3px 0; }
+  25%, 75% { background-color: var(--void); translate: 3px 0; }
+}
+@keyframes bd-rattle {
+  50% { translate: 1px -1px; }
+}
+@keyframes bd-spit {
+  50% { rotate: -10deg; translate: 0 -12px; }
+}
+@keyframes bd-spark {
+  from { transform: rotate(var(--a)) translateY(0); opacity: 1; }
+  to { transform: rotate(var(--a)) translateY(-44px); opacity: 0; }
+}

@@ -82,6 +82,8 @@ export const VALUES = {
   coffeePenalty: CONFIG.coffee.penalty,
   shellsCalm: CONFIG.shells.calm,
   shellsPenalty: CONFIG.shells.penalty,
+  badgeCalm: CONFIG.badge.calm,
+  badgePenalty: CONFIG.badge.penalty,
   sushiCalm: CONFIG.sushi.calm,
   sushiPenalty: CONFIG.sushi.penalty,
   sushiHp: CONFIG.sushi.wrongHp,

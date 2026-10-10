@@ -343,8 +343,8 @@ export interface MoveDef {
   fx?: (c: Combat) => void;
 }
 
-/** The chores a move can set: the Boss's coffee, the Board's shell game with three covered cards, or the Sushi Chef's order eaten off the belt. */
-export type TaskId = 'coffee' | 'shells' | 'sushi';
+/** The chores a move can set: the Boss's coffee, the Board's shell game with three covered cards, the Sushi Chef's order eaten off the belt, or the Punch Clock's badge swipe. */
+export type TaskId = 'coffee' | 'shells' | 'sushi' | 'badge';
 
 /** How the belt runs while a boss is in a phase: how many rows it has and how fast it goes (a multiplier on top of everything else). */
 export interface BeltSetting {

@@ -1,6 +1,7 @@
 import { expect } from 'vitest';
 import { Combat, type CombatSetup } from '../../src/game/combat';
 import { CoffeeTask } from '../../src/game/coffee';
+import { BadgeSwipe } from '../../src/game/badge';
 import { ShellGame } from '../../src/game/shells';
 import { SushiOrder } from '../../src/game/sushi';
 import { ENEMIES } from '../../src/data/enemies';
@@ -15,6 +16,11 @@ export const coffeeOf = (c: Combat): CoffeeTask => {
 export const shellsOf = (c: Combat): ShellGame => {
   expect(c.chore).toBeInstanceOf(ShellGame);
   return c.chore as ShellGame;
+};
+
+export const badgeOf = (c: Combat): BadgeSwipe => {
+  expect(c.chore).toBeInstanceOf(BadgeSwipe);
+  return c.chore as BadgeSwipe;
 };
 
 export const sushiOf = (c: Combat): SushiOrder => {

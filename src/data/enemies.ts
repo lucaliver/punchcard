@@ -11,6 +11,9 @@ const SIREN_SONG = 8;
 /** Seconds the Boss's coffee move takes to land: the chore (pay, key in the code, cup and spoon, sugar, pour) fits in it with a little to spare. */
 const GET_COFFEE = 26;
 
+/** Seconds the Punch Clock's badge swipe takes to land: a refusal or two (it never reads the first) and a few tries at the right speed fit in it. */
+const BADGE_SWIPE = 16;
+
 /** The Board's belt multipliers: phase 1 crawls (with a third row), phase 2 runs. */
 const BOARD_SLOW = 0.7;
 const BOARD_FAST = 1.5;
@@ -642,6 +645,7 @@ const defs: EnemyDef[] = [
     specials: [
       { id: 'overtimeDemand', intent: 'debuff', windup: 5, status: [gainStrength, { id: 'crunch', t: 8, target: 'hero' }] },
       atk('lateFee', 14, 9, { intent: 'charge' }),
+      { id: 'badgeSwipe', intent: 'charge', windup: BADGE_SWIPE, dmg: 16, task: 'badge' },
     ],
     start: [{ id: 'overtimeCreep' }],
   },

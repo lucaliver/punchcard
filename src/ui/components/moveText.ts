@@ -166,6 +166,7 @@ export const RULES: Record<string, { icon: string; title: TKey; desc: TKey }> = 
   coffee: { icon: 'coffee', title: 'rule.task', desc: 'rule.task.d' },
   shells: { icon: 'gavel', title: 'rule.shells', desc: 'rule.shells.d' },
   sushi: { icon: 'sushiPlate', title: 'rule.sushi', desc: 'rule.sushi.d' },
+  badge: { icon: 'idBadge', title: 'rule.badge', desc: 'rule.badge.d' },
 };
 
 /** Inside a move description (threat info, handbook): press a curse, status, hex or rule to learn what it does. */

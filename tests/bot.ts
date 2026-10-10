@@ -2,6 +2,7 @@ import { Combat } from '../src/game/combat';
 import { CARDS } from '../src/data/cards';
 import { COFFEE_SERVICE } from '../src/data/coffee';
 import { CoffeeTask } from '../src/game/coffee';
+import { BadgeSwipe } from '../src/game/badge';
 import { ShellGame } from '../src/game/shells';
 import { SushiOrder } from '../src/game/sushi';
 import {
@@ -75,6 +76,11 @@ export function botDecide(c: Combat, rnd: () => number, opts: BotOpts): void {
   // The shell game: the bot keeps its eye on the right card and picks it as soon as the cards stop.
   if (c.chore instanceof ShellGame) {
     if (c.chore.phase === 'pick') c.pickShell(c.chore.prizePlace);
+    return;
+  }
+  // The badge reader: a swipe at the middle of the zone each decision (the reader refuses the first good ones anyway).
+  if (c.chore instanceof BadgeSwipe) {
+    c.swipeBadge((c.chore.min + c.chore.max) / 2);
     return;
   }
   // The coffee chore: one right move per decision (a person takes a moment for each), cards are out of reach meanwhile.

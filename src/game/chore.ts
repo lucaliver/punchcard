@@ -1,4 +1,5 @@
 import type { Rng } from '../core/rng';
+import { BadgeSwipe } from './badge';
 import { CoffeeTask } from './coffee';
 import { ShellGame } from './shells';
 import { SushiOrder } from './sushi';
@@ -30,4 +31,5 @@ export const CHORES: Record<TaskId, (rng: Rng) => Chore> = {
   coffee: (rng) => new CoffeeTask(rng),
   shells: (rng) => new ShellGame(rng),
   sushi: (rng) => new SushiOrder(rng),
+  badge: (rng) => new BadgeSwipe(rng),
 };

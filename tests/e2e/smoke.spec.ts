@@ -1377,3 +1377,44 @@ test("the Sushi Chef's omakase: two slips of dishes on coloured plates, the belt
   expect(((await combat(page, 'return c.beltRate();')) as number) < speed * 1.5).toBe(true);
   expect(problems).toEqual([]);
 });
+
+test("the Punch Clock's badge swipe: the badge is dragged through the reader, which refuses the first good swipe; the next one ends the move", async ({
+  page,
+}) => {
+  const problems = await freshGame(page);
+  await page.getByRole('button', { name: /debug/i }).click();
+  await page.locator('.debug-tabs button').last().click();
+  await page.locator('.debug-foe[data-enemy="punchClock"]').click();
+  await expect(page.locator('.combat')).toBeVisible();
+  const start = page.locator('.js-start');
+  if (await start.count()) await start.click();
+  await expect.poll(() => combat(page, 'return c.intro <= 0;')).toBe(true);
+  await combat(page, 'while (!c.enemy.move.task) c.skipEnemyMove();');
+  // The test is about the drag, not its speed or the clock: any speed is in the zone, and the move waits.
+  await combat(page, 'c.enemy.move = { ...c.enemy.move, windup: 999 };');
+  const win = page.locator('.badge-window.on');
+  await expect(win).toBeVisible();
+  await combat(page, 'c.chore.min = 0.01; c.chore.max = 1e9;');
+  const swipe = async (): Promise<void> => {
+    // Hovering waits for the window to stop moving (it stamps itself in).
+    await page.locator('.bd-badge').hover();
+    const track = (await page.locator('.bd-track').boundingBox())!;
+    const badge = (await page.locator('.bd-badge').boundingBox())!;
+    await page.mouse.down();
+    await page.mouse.move(track.x + track.width + 20, badge.y + badge.height / 3, { steps: 10 });
+    await page.mouse.up();
+  };
+  // The first one is right and is refused anyway: it shakes the window, stamps the screen and costs seconds.
+  await swipe();
+  expect(await combat(page, 'return c.chore.last.kind;')).toBe('glitch');
+  expect(await combat(page, 'return c.chore.errors;')).toBe(1);
+  await expect(page.locator('.bd-stamp')).not.toBeEmpty();
+  // Once the reader has no refusals left, the next swipe reads.
+  // (The zone drifted after the refusal.)
+  await combat(page, 'c.chore.glitches = 0; c.chore.min = 0.01; c.chore.max = 1e9;');
+  await swipe();
+  await expect(page.locator('.badge-window.served')).toBeVisible();
+  await expect(win).toBeHidden({ timeout: 12000 });
+  expect(await combat(page, "return c.has('enemy', 'stun');")).toBe(true);
+  expect(problems).toEqual([]);
+});

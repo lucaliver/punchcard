@@ -194,6 +194,9 @@ const HAPTICS = {
   hexTap: 8,
   /** The mop over rust: a weak, half-hearted buzz. */
   scrub: 15,
+  /** The badge through the reader: a fine hum while the speed is right, a rough buzz when it is too fast (too slow stays silent). */
+  swipe: 6,
+  swipeRough: 18,
   hit: 25,
   heavy: 60,
   /** A stationery or a trait going off. */

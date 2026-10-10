@@ -5,6 +5,7 @@ import { STATUSES } from '../data/statuses';
 import { CARDS, CARD_LIST, CLASS_HIT, cardCostOf, cardKeywordsOf, cardValsOf, fullCostOf, isLarge } from '../data/cards';
 import { HEXES } from '../data/hexes';
 import { HEROES } from '../data/heroes';
+import { BadgeSwipe, type BadgeResult } from './badge';
 import { CHORES, type Chore } from './chore';
 import { CoffeeTask, type CoffeeAction, type CoffeeResult } from './coffee';
 import { ShellGame, type ShellResult } from './shells';
@@ -2093,6 +2094,15 @@ export class Combat {
     if (!(game instanceof ShellGame) || this.result || this.begging) return null;
     const r = game.pick(place);
     if (r === 'wrong') this.fine(game);
+    return r;
+  }
+
+  /** The hero drags the badge through the reader at this speed (tracks per second); a refusal is fined. Returns null when there is no badge to swipe. */
+  swipeBadge(speed: number): BadgeResult | null {
+    const reader = this.chore;
+    if (!(reader instanceof BadgeSwipe) || this.result || this.begging) return null;
+    const r = reader.swipe(speed);
+    if (r !== 'ok' && r !== 'ignored') this.fine(reader);
     return r;
   }
 

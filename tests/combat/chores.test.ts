@@ -1,12 +1,13 @@
 import { describe, expect, it } from 'vitest';
 import type { Combat } from '../../src/game/combat';
+import { type BadgeSwipe, GLITCHES } from '../../src/game/badge';
 import { CoffeeTask } from '../../src/game/coffee';
 import { SushiOrder } from '../../src/game/sushi';
 import { Rng } from '../../src/core/rng';
 import { CONFIG } from '../../src/data/config';
 import { ENEMIES } from '../../src/data/enemies';
 import { CARDS } from '../../src/data/cards';
-import { setup, run, coffeeOf, shellsOf, sushiOf } from './helpers';
+import { setup, run, coffeeOf, shellsOf, sushiOf, badgeOf } from './helpers';
 
 const COFFEE_MOVE = ENEMIES.slavesCeo.specials.find((m) => m.task === 'coffee')!;
 
@@ -428,5 +429,106 @@ describe("the Sushi Chef's slips", () => {
     c.playBelt('skill');
     expect(c.belt.some((b) => b.card.uid === piece.uid)).toBe(true);
     expect(sushiOf(c).eatenCount).toBe(0);
+  });
+});
+
+describe("the Punch Clock's badge reader", () => {
+  const swipeMove = ENEMIES.punchClock.specials.find((m) => m.task === 'badge')!;
+  /** The badge swipe is up first, then the clock idles for good. */
+  const swipeFight = (move = swipeMove, seed = 42): Combat => {
+    const c = setup({
+      enemy: { ...ENEMIES.punchClock, start: [], main: { id: 'wait', intent: 'idle', windup: 9999 }, specials: [move], every: 1 },
+      hp: 80,
+      maxHp: 80,
+      seed,
+    });
+    c.skipEnemyMove();
+    return c;
+  };
+  /** The speed the reader takes best right now. */
+  const right = (r: BadgeSwipe): number => (r.min + r.max) / 2;
+  /** Swipes at the right speed until the reader gives in (it refuses the first good ones). */
+  const swipeUntilRead = (c: Combat): number => {
+    const reader = badgeOf(c);
+    let n = 0;
+    while (reader.phase === 'swipe' && n < 10) {
+      c.swipeBadge(right(reader));
+      n++;
+    }
+    return n;
+  };
+
+  it('a window covers the belt and the sleeve; the move is a chore of the Punch Clock', () => {
+    const c = swipeFight();
+    const said: string[] = [];
+    c.events.on((e) => {
+      if (e.type === 'speech') said.push(e.key);
+    });
+    run(c, CONFIG.introTime + 0.1);
+    expect(badgeOf(c).phase).toBe('swipe');
+    expect(c.isCovered(c.belt[0].card.uid)).toBe(true);
+    expect(said).toEqual(['enemy.punchClock.order']);
+  });
+
+  it('it never reads the first swipe, however right it is, and gives in once the refusals are used up', () => {
+    for (let seed = 1; seed <= 20; seed++) {
+      const c = swipeFight(swipeMove, seed);
+      run(c, CONFIG.introTime + 0.1);
+      const reader = badgeOf(c);
+      expect(c.swipeBadge(right(reader))).toBe('glitch');
+      expect(reader.last?.glitch && GLITCHES.includes(reader.last.glitch)).toBe(true);
+      const tries = swipeUntilRead(c) + 1;
+      expect(reader.phase).toBe('done');
+      expect(tries).toBeGreaterThanOrEqual(CONFIG.badge.glitches[0] + 1);
+      expect(tries).toBeLessThanOrEqual(CONFIG.badge.glitches[1] + 1);
+    }
+  });
+
+  it('a swipe too slow or too fast is refused and says so', () => {
+    const c = swipeFight();
+    run(c, CONFIG.introTime + 0.1);
+    const reader = badgeOf(c);
+    expect(c.swipeBadge(reader.min * 0.5)).toBe('slow');
+    expect(reader.last?.kind).toBe('slow');
+    expect(c.swipeBadge(reader.max * 1.5)).toBe('fast');
+    expect(reader.last?.kind).toBe('fast');
+    expect(reader.errors).toBe(2);
+  });
+
+  it('the zone drifts after a refusal, within its limits, and a read badge is celebrated, ends the chore and stuns the clock', () => {
+    const c = swipeFight();
+    run(c, CONFIG.introTime + 0.1);
+    const reader = badgeOf(c);
+    const zones = new Set<string>();
+    for (let i = 0; i < 12; i++) {
+      c.swipeBadge(0);
+      zones.add(reader.min.toFixed(4));
+      expect(reader.min).toBeGreaterThanOrEqual(CONFIG.badge.target[0] * (1 - CONFIG.badge.tolerance) - 1e-9);
+      expect(reader.max).toBeLessThanOrEqual(CONFIG.badge.target[1] * (1 + CONFIG.badge.tolerance) + 1e-9);
+      expect(reader.max).toBeLessThan(CONFIG.badge.scale);
+    }
+    expect(zones.size).toBeGreaterThan(1);
+    swipeUntilRead(c);
+    expect(c.swipeBadge(right(reader))).toBe('ignored');
+    run(c, CONFIG.badge.doneHold + 0.1);
+    expect(c.chore).toBeNull();
+    expect(c.hero.hp).toBe(80);
+    expect(c.has('enemy', 'stun')).toBe(true);
+  });
+
+  it('a refusal costs seconds, up to a cap; when the countdown runs out the hit lands', () => {
+    const c = swipeFight({ ...swipeMove, windup: 999 });
+    run(c, CONFIG.introTime + 0.1);
+    const reader = badgeOf(c);
+    const t0 = c.enemy.timer;
+    c.swipeBadge(0);
+    expect(c.enemy.timer).toBeCloseTo(t0 + CONFIG.badge.penalty, 5);
+    for (let i = 0; i < 10; i++) c.swipeBadge(0);
+    expect(reader.fined).toBe(CONFIG.badge.penaltyMax);
+    const d = swipeFight();
+    run(d, CONFIG.introTime + swipeMove.windup + 0.1);
+    expect(d.hero.hp).toBeLessThan(80);
+    expect(d.chore).toBeNull();
+    expect(d.swipeBadge(1)).toBeNull();
   });
 });

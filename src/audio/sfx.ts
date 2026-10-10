@@ -195,6 +195,16 @@ const SOUNDS = {
   cup: () => noise(0.08, { freq: 700, to: 400, vol: 0.14 }),
   /** The machine starts to pour: a rising whirr. */
   brew: () => noise(CONFIG.coffee.brewTime, { freq: 300, to: 900, vol: 0.1, q: 1.2, attack: 0.3 }),
+  /** The badge goes through the reader: a quick zip with a little click at its end. */
+  swipe: () => {
+    noise(0.16, { freq: 1400, to: 4200, vol: 0.12, q: 2 });
+    tone(2400, 0.03, { type: 'square', vol: 0.04, delay: 0.16 });
+  },
+  /** The reader turns the badge down: a sad two-note slide, the second one flat. */
+  denied: () => {
+    tone(392, 0.16, { type: 'square', vol: 0.07, to: 370 });
+    tone(262, 0.34, { type: 'square', vol: 0.07, to: 150, delay: 0.17 });
+  },
   /** A system warning chime: two falling square beeps. */
   popup: () => {
     tone(880, 0.09, { type: 'square', vol: 0.07 });
