@@ -3,6 +3,7 @@ import { CONFIG } from './config';
 import { CARDS } from './cards';
 import { HARDSHIP_HP, JUST_CAUSE_HP } from './cards/conditions';
 import { STICKY_FINGERS, THICK_SKIN, TIME_THEFT, VIRULENCE_START, PICKET_BLOCK, PICKET_TIME } from './heroes';
+import { COPIER_LINE, MATCH_LINE, STAMP_LINE } from '../game/match3';
 import { PERKS } from './perks';
 import { BELL_STUN, CLOCK_BLOCK, MUG_MANA, NAME_TAG_TIME, PLANT_HEAL, PUNCH_DAMAGE, SHREDDER_BLOCK, STAPLER_DAMAGE } from './relics';
 import {
@@ -88,6 +89,9 @@ export const VALUES = {
   sushiCalm: CONFIG.sushi.calm,
   sushiPenalty: CONFIG.sushi.penalty,
   sushiHp: CONFIG.sushi.wrongHp,
+  matchLine: MATCH_LINE,
+  matchStamp: STAMP_LINE,
+  matchCopier: COPIER_LINE,
   // Rules on cards
   virusDelay: CONFIG.virusDelay,
   virusCost: CONFIG.virusCost,

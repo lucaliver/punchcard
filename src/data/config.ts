@@ -190,6 +190,18 @@ export const CONFIG = {
     penaltyMax: 8,
     calm: 3,
   },
+  /**
+   * The Supervisor's minigame (`EnemyDef.minigame` = 'match3', `game/match3.ts`): a `cols`×`rows` board of `kinds` kinds of office stuff. Every piece cleared takes `tileHp` HP off him (a
+   * share of his max HP when the floor has made him tougher, see `Combat.matchSwap`), and each cascade after the first pays `combo` more (round 2 pays 1 + combo, round 3 1 + 2 × combo…).
+   * Four in a line leaves a stamp that clears its line when it goes, five a copier that clears a whole kind.
+   */
+  match3: {
+    cols: 6,
+    rows: 6,
+    kinds: 5,
+    tileHp: 5,
+    combo: 0.5,
+  },
   /** The Weak Spot target shows at least this far (share of the sprite) from every edge. */
   weakSpotMargin: 0.25,
   /** Hours a page can stay open before the home asks for a reload (the game runs offline, so a forgotten tab misses updates). */

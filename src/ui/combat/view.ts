@@ -70,6 +70,7 @@ function markup(run: RunState, combat: Combat): string {
       <div class="enemy-wrap">
         <div class="enemy-art">${creature(enemyDef.art)}<button class="weak-spot" aria-label="${t('status.weakSpot')}">${icon('target')}</button></div>
         <div class="mop" aria-hidden="true">${icon('mop')}</div>
+        ${combat.minigame ? `<button class="minigame-btn" aria-label="${t('combat.minigame')}">${icon('kanban')}<span>${t(`task.${combat.minigame.id}.title`)}</span></button>` : ''}
       </div>
       <div class="enemy-info">
         <div class="statuses js-estatus"></div>
@@ -167,6 +168,8 @@ function queryRefs(el: HTMLElement) {
     pips: $('.mana-pips', el),
     manaNum: $('.mana-num', el),
     manaTap: $<HTMLButtonElement>('.mana-tap', el),
+    /** The button beside an enemy with a minigame (`EnemyDef.minigame`): it opens and closes the window. */
+    minigame: el.querySelector<HTMLButtonElement>('.minigame-btn'),
     crank: $('.crank', el),
     sleeve: $('.js-sleeve', el),
     belt: $('.belt', el),

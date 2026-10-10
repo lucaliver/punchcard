@@ -1375,6 +1375,36 @@ const boardMid = `
 <path d="M80 26V4h40v22z" fill="url(#tb-s)" ${OUT}/><rect x="80" y="16" width="40" height="6" fill="#ff3d9a"/><path d="M72 28h56" stroke="#120e18" stroke-width="5" stroke-linecap="round"/>
 <g ${OUT}><ellipse cx="88" cy="50" rx="6" ry="5" fill="#120e18"/></g><circle cx="112" cy="50" r="10" fill="none" stroke="#ffd900" stroke-width="3"/><g class="eye" fill="#120e18"><circle cx="112" cy="50" r="4"/></g><path d="M112 60c2 12 4 18 8 26" stroke="#ffd900" stroke-width="2" fill="none"/>
 <path d="M86 68h28" stroke="#120e18" stroke-width="3.5" stroke-linecap="round"/><path d="M90 64l4 0M106 64h4" stroke="#120e18" stroke-width="0"/>`;
+/** The Supervisor: a short-sleeved shirt, a pink tie and a headset, shouting from behind his glasses; a clipboard of everything you still owe in one hand, a stopwatch held up in the other. */
+const supervisor = `
+${shadow}
+<path d="M80 140v40M120 140v40" stroke="#3a3450" stroke-width="20" stroke-linecap="round"/>
+<g ${OUT}><path d="M62 178h30v10H58z" fill="#120e18"/><path d="M108 178h30l4 10h-34z" fill="#120e18"/></g>
+<path d="M60 74c8-8 22-12 40-12s32 4 40 12l6 70H54z" fill="#f6f0e4" ${OUT}/>
+<rect x="54" y="138" width="92" height="22" fill="#3a3450" ${OUT}/><rect x="92" y="141" width="16" height="16" fill="#ffd900" ${OUT}/>
+<path d="M82 64L100 114M118 64L100 114" stroke="#1c5fd0" stroke-width="5" stroke-linecap="round"/>
+<path d="M92 64l8 12 8-12z" fill="#ff3d9a" ${OUT}/><path d="M95 78h10l5 50-10 8-10-8z" fill="#ff3d9a" ${OUT}/>
+<g ${OUT}><rect x="108" y="104" width="22" height="28" fill="#ffd900"/></g><rect x="112" y="108" width="14" height="10" fill="#1c5fd0"/><path d="M112 124h14M112 128h10" stroke="#120e18" stroke-width="2"/>
+<path d="M76 62l24 18 24-18-8-8H84z" fill="#fff" ${OUT}/>
+<g class="limb"><path d="M64 84L46 112L50 136" fill="none" stroke="#120e18" stroke-width="15" stroke-linecap="round" stroke-linejoin="round"/><path d="M64 84L46 112L50 136" fill="none" stroke="#f2b88a" stroke-width="9" stroke-linecap="round" stroke-linejoin="round"/>
+<g ${OUT}><rect x="22" y="104" width="38" height="52" fill="#c98a4a"/><rect x="27" y="112" width="28" height="40" fill="#f6f0e4"/></g><rect x="33" y="99" width="16" height="9" fill="#9a94ac" ${OUT}/>
+<path d="M31 122h20M31 130h20M31 138h12" stroke="#1c5fd0" stroke-width="3"/><path d="M31 146l4 4 9-9" fill="none" stroke="#f63a1e" stroke-width="3.5" stroke-linecap="round"/></g>
+<path d="M62 70h18v22H58z" fill="#f6f0e4" ${OUT}/>
+<path d="M138 70h-18v22h22z" fill="#f6f0e4" ${OUT}/>
+<path d="M138 84L164 98L160 66" fill="none" stroke="#120e18" stroke-width="15" stroke-linecap="round" stroke-linejoin="round"/><path d="M138 84L164 98L160 66" fill="none" stroke="#f2b88a" stroke-width="9" stroke-linecap="round" stroke-linejoin="round"/>
+<g ${OUT}><circle cx="162" cy="42" r="21" fill="#f6f0e4"/><rect x="157" y="14" width="10" height="8" fill="#ffd900"/></g>
+<path d="M162 42V28M162 42l10 8" stroke="#120e18" stroke-width="3.5" stroke-linecap="round"/><circle cx="162" cy="42" r="3" fill="#ff3d9a"/>
+<rect x="88" y="54" width="24" height="12" fill="#f2b88a"/>
+<ellipse cx="100" cy="36" rx="31" ry="33" fill="#f2b88a" ${OUT}/>
+<path d="M72 26c4-14 16-20 28-18 12 0 24 6 28 18-8-6-18-8-28-8s-20 2-28 8z" fill="#8a5a2a" ${OUT}/>
+<path d="M68 40C64 12 82 2 100 2s36 10 32 38" fill="none" stroke="#120e18" stroke-width="5" stroke-linecap="round"/>
+<rect x="63" y="36" width="10" height="18" rx="3" fill="#ff3d9a" ${OUT}/><path d="M68 54c4 10 14 14 26 10" fill="none" stroke="#120e18" stroke-width="3"/><circle cx="95" cy="64" r="4.5" fill="#120e18"/>
+<g ${OUT}><rect x="75" y="30" width="22" height="15" rx="4" fill="#d8e8ff"/><rect x="103" y="30" width="22" height="15" rx="4" fill="#d8e8ff"/></g><path d="M97 36h6" stroke="#120e18" stroke-width="3"/>
+<g class="eye"><circle cx="87" cy="38" r="4" fill="#120e18"/><circle cx="113" cy="38" r="4" fill="#120e18"/></g><path d="M79 34l5-2M107 34l5-2" stroke="#fff" stroke-width="2" opacity=".8"/>
+<path d="M74 24l24 8M126 24l-24 8" stroke="#120e18" stroke-width="5.5" stroke-linecap="round"/>
+<path d="M84 52c6-6 12-4 16 0 4-4 10-6 16 0-4 6-12 6-16 2-4 4-12 4-16-2z" fill="#8a5a2a" ${OUT}/>
+<path d="M88 58q12 16 24 0z" fill="#120e18" ${OUT}/><path d="M91 59h18v3H91z" fill="#fff"/><ellipse cx="100" cy="67" rx="6" ry="3" fill="#ff3d9a"/>`;
+
 /** The Board, one head lost per phase (`EnemyDef.phases`): three porcelain-masked directors in hats on one brass-and-steel chassis (a silent grin, a frown, a monocle), ticker tape pouring from its chest. */
 const board = (left: boolean, right: boolean): string =>
   `${boardBody}${boardNeck(BOARD_NECK.left, left)}${boardNeck(BOARD_NECK.right, right)}${boardNeck(BOARD_NECK.mid, true)}${left ? boardLeft : ''}${right ? boardRight : ''}${boardMid}`;
@@ -1573,6 +1603,7 @@ export const CREATURES: Record<string, string> = {
   complianceOfficer,
   complianceOfficerAngry,
   veteran,
+  supervisor,
   nightJanitor,
   micromanager,
   tourist,

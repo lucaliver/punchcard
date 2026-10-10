@@ -348,6 +348,9 @@ export interface MoveDef {
 /** The chores a move can set: the Boss's coffee, the Board's shell game with three covered cards, the Sushi Chef's order eaten off the belt, or the Punch Clock's badge swipe. */
 export type TaskId = 'coffee' | 'shells' | 'sushi' | 'badge';
 
+/** The minigames an enemy can leave open to the hero (`EnemyDef.minigame`): a game of its own that hurts it, played in a window the hero opens and closes at will. */
+export type MinigameId = 'match3';
+
 /** How the belt runs while a boss is in a phase: how many rows it has and how fast it goes (a multiplier on top of everything else). */
 export interface BeltSetting {
   rows: number;
@@ -408,6 +411,8 @@ export interface EnemyDef {
   beltOff?: number;
   /** A surprise (no pre-fight line): seconds into the fight when its hidden passive kicks in: mana stops coming back by itself and a button next to the mana bar gives `CONFIG.manaTapAmount` per tap (`Combat.tapMana`). It says `enemy.<id>.speech`. */
   manaTap?: number;
+  /** A minigame the hero can open from a button beside the enemy (`Combat.minigame`): the fight runs on underneath while its window covers the belt, and what it scores hurts the enemy (`enemy.<id>.game` says how). */
+  minigame?: MinigameId;
   /** Only met as the very first fight of the very first run (never dealt at random). */
   firstRunOnly?: boolean;
   /** Bends the rules of the belt or of what you may play (not just numbers): every act 2 opens on one of these, so the act's fun shows at once. */

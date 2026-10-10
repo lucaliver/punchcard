@@ -631,3 +631,130 @@
   from { transform: rotate(var(--a)) translateY(0); opacity: 1; }
   to { transform: rotate(var(--a)) translateY(-44px); opacity: 0; }
 }
+
+/* The Supervisor's button: beside his sprite, it opens and closes the Backlog (a match-3 window over the belt); lit while the window is up */
+.minigame-btn {
+  position: absolute;
+  right: 6px;
+  top: 50%;
+  translate: 0 -50%;
+  z-index: 3;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 2px;
+  width: 72px;
+  min-height: 64px;
+  padding: 4px 2px;
+  touch-action: manipulation;
+  user-select: none;
+  -webkit-user-select: none;
+  color: var(--k);
+  background: var(--y);
+  border: var(--line) solid var(--k);
+  box-shadow: var(--off) var(--off) 0 var(--shadow);
+  font-family: var(--font-display);
+  font-size: 11px;
+  line-height: 1;
+}
+.minigame-btn .pico { font-size: 32px; color: var(--k); --ink2: var(--paper); }
+.minigame-btn:active { translate: 2px calc(-50% + 2px); box-shadow: 1px 1px 0 var(--shadow); }
+.minigame-btn.open { color: var(--paper); background: var(--p); }
+.minigame-btn.open .pico { color: var(--paper); --ink2: var(--k); }
+
+/* The Backlog: the board sits in the dark stage, clear of the ability button's column on the right, where a note on how to line up pieces is pinned above the button */
+.m3-window .tk-stage { position: relative; }
+.m3-window .tk-stage > .m3-hint {
+  position: absolute;
+  top: 8px;
+  right: 6px;
+  width: calc(var(--tk-gap, 100px) - 6px);
+  margin: 0;
+  font-size: 12px;
+  line-height: 1.15;
+  color: var(--paper);
+}
+@media (max-height: 700px) {
+  .m3-window .tk-stage > .m3-hint { display: none; }
+}
+.tk-stage > .m3-board {
+  position: relative;
+  flex: none;
+  width: calc(var(--cell, 40px) * var(--cols, 6));
+  height: calc(var(--cell, 40px) * var(--rows, 6));
+  overflow: hidden;
+  touch-action: none;
+  user-select: none;
+  -webkit-user-select: none;
+}
+/* a piece is a square of its kind's card colour under its picture; its cell is `--x`, `--y` (a new one starts above the board) and it travels there in steps */
+.m3-piece {
+  --m3-bg: var(--paper);
+  position: absolute;
+  left: 0;
+  top: 0;
+  display: grid;
+  place-items: center;
+  width: var(--cell);
+  height: var(--cell);
+  font-size: calc(var(--cell) * 0.7);
+  color: var(--k);
+  --ink2: var(--paper);
+  translate: calc(var(--x) * var(--cell)) calc(var(--y) * var(--cell));
+  transition: translate var(--dur-match) steps(5);
+}
+.m3-board.still .m3-piece { transition: none; }
+.m3-piece::before {
+  content: '';
+  position: absolute;
+  inset: 2px;
+  background: var(--m3-bg);
+  border: 2px solid var(--k);
+}
+.m3-piece .pico { position: relative; }
+.m3-piece[data-kind='0'] { --m3-bg: var(--cat-attack); }
+.m3-piece[data-kind='1'] { --m3-bg: var(--cat-defense); }
+.m3-piece[data-kind='2'] { --m3-bg: var(--cat-skill); }
+.m3-piece[data-kind='3'] { --m3-bg: var(--cat-curse); }
+.m3-piece[data-kind='4'] { --m3-bg: var(--cat-power); }
+/* a stamp clears its row or its column when it goes (stripes along it); a copier takes a whole kind with it */
+.m3-piece[data-special='row']::before { background-image: repeating-linear-gradient(0deg, transparent 0 4px, var(--k-a27) 4px 7px); border-color: var(--p); }
+.m3-piece[data-special='col']::before { background-image: repeating-linear-gradient(90deg, transparent 0 4px, var(--k-a27) 4px 7px); border-color: var(--p); }
+.m3-piece[data-special='bomb'] { color: var(--paper); --ink2: var(--y); }
+.m3-piece[data-special='bomb']::before { background: var(--k); border-color: var(--y); }
+.m3-piece.sel { z-index: 2; scale: 1.14; }
+.m3-piece.sel::before { border-color: var(--p); }
+.m3-piece.pop { animation: m3-pop var(--dur-match) steps(3) forwards; }
+.m3-piece.made { animation: m3-made var(--dur-match) steps(3); }
+.m3-piece.nope { animation: m3-nope 0.25s steps(2); }
+/* what a round took off the enemy, where its pieces went */
+.m3-hp {
+  position: absolute;
+  left: 0;
+  top: 0;
+  z-index: 5;
+  translate: calc((var(--x) + 0.5) * var(--cell) - 50%) calc(var(--y) * var(--cell));
+  color: var(--paper);
+  text-shadow: var(--ring-k);
+  font-family: var(--font-ui);
+  font-size: 24px;
+  line-height: 1;
+  pointer-events: none;
+  animation: m3-hp calc(var(--dur-match) * 3) steps(6) forwards;
+}
+@keyframes m3-pop {
+  40% { scale: 1.25; }
+  to { scale: 0; opacity: 0; }
+}
+@keyframes m3-made {
+  0% { scale: 0.4; }
+  60% { scale: 1.3; }
+}
+@keyframes m3-nope {
+  25% { rotate: -8deg; }
+  75% { rotate: 8deg; }
+}
+@keyframes m3-hp {
+  to { margin-top: -28px; opacity: 0; }
+}

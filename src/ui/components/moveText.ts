@@ -152,6 +152,7 @@ export function enemyTraits(e: EnemyDef, inFight = false): { icon: string; name:
     if (e.beltOff !== undefined) traits.push({ icon: 'crank', name: '', desc: t(`enemy.${e.id}.off`) });
     if (e.manaTap !== undefined) traits.push({ icon: 'crystal', name: '', desc: t(`enemy.${e.id}.tap`) });
   }
+  if (e.minigame) traits.push({ icon: 'kanban', name: '', desc: t(`enemy.${e.id}.game`) });
   if (e.onHalf && !(inFight && e.halfSecret))
     traits.push({ icon: HALF_ICON, name: t('status.half', { n: halfPct(e) }), desc: keywordHtml(t(`enemy.${e.id}.half`)) });
   return traits;

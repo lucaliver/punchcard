@@ -32,6 +32,9 @@ import { COFFEE_DRINKS, COFFEE_ITEMS } from '../src/data/coffee';
 import { MODIFIER_LIST } from '../src/data/modifiers';
 import { DEBUG_ENEMY, ENEMIES } from '../src/data/enemies';
 import { CHORES } from '../src/game/chore';
+import { MINIGAMES } from '../src/game/minigame';
+import { CONFIG } from '../src/data/config';
+import { KIND_ICONS } from '../src/ui/combat/match3Window';
 import { Rng } from '../src/core/rng';
 import { RELIC_LIST } from '../src/data/relics';
 import { ABILITY_ICON, PASSIVE_ICON } from '../src/ui/combat/view';
@@ -101,6 +104,26 @@ describe('content integrity', () => {
       for (const k of [`enemy.${enemy}.order`, `enemy.${enemy}.calm`, `task.${task}.title`, RULES[task].title, RULES[task].desc])
         for (const strings of [enStrings, itStrings, esStrings, zhStrings] as Record<string, string>[]) expect(strings[k], k).toBeTruthy();
     }
+  });
+
+  it('every minigame an enemy leaves open has a game to make, its pieces drawn and its texts in every language', () => {
+    const games = ENEMY_LIST.flatMap((e) => (e.minigame ? [{ enemy: e.id, game: e.minigame }] : []));
+    expect(new Set(games.map((g) => g.game))).toEqual(new Set(Object.keys(MINIGAMES)));
+    for (const { enemy, game } of games) {
+      expect(MINIGAMES[game](new Rng(1)).id, game).toBe(game);
+      for (const k of [
+        `enemy.${enemy}.game`,
+        `task.${game}.title`,
+        `task.${game}.cleared`,
+        `task.${game}.hint`,
+        `task.${game}.piece`,
+        'combat.minigame',
+        'combat.minigame.close',
+      ])
+        for (const strings of [enStrings, itStrings, esStrings, zhStrings] as Record<string, string>[]) expect(strings[k], k).toBeTruthy();
+    }
+    expect(KIND_ICONS).toHaveLength(CONFIG.match3.kinds);
+    for (const id of [...KIND_ICONS, 'copy', 'kanban']) expect(ICONS[id], id).toBeTruthy();
   });
 
   it('the handbook lists every keyword the game explains', () => {

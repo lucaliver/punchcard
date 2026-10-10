@@ -128,6 +128,8 @@
   --dur-fly: 280ms;
   --dur-fall: 400ms;
   --dur-slip: 350ms;
+  /* a step of the Supervisor's match-3 (pieces pop, then the board falls): the window plays a move's rounds one step at a time */
+  --dur-match: 260ms;
   --dur-door-read: 1000ms;
   /* the boss's title card after the door (script removes it when its animation ends) */
   --dur-boss-intro: 2200ms;

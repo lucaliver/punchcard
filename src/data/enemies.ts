@@ -533,6 +533,22 @@ const defs: EnemyDef[] = [
     ],
   },
   {
+    // His HP is a backlog of 1000: the cards barely scratch it, but a button beside him opens the Backlog (a match-3), and every piece cleared there takes HP off him.
+    // The fight runs on while the window covers the belt, so the hero keeps going in and out of it.
+    id: 'supervisor',
+    act: 2,
+    tier: 'normal',
+    hp: 1000,
+    art: 'supervisor',
+    main: atk('overTheShoulder', 4, 8),
+    every: 2,
+    specials: [
+      { id: 'urgentRequest', intent: 'curse', windup: 7, curse: [{ id: 'deadline', n: 1, to: 'belt' }] },
+      atk('annualAppraisal', 12, 12, { intent: 'charge', status: [gainStrength] }),
+    ],
+    minigame: 'match3',
+  },
+  {
     // Cuts in with "any updates?" whenever you stop playing for a moment. Nothing else to learn: one rule, two specials.
     id: 'micromanager',
     act: 2,
@@ -840,6 +856,7 @@ export const DIFFICULTY = [
   'beanCounter',
   'complianceOfficer',
   'veteran',
+  'supervisor',
   'printer',
   'theNerd',
   'nightJanitor',

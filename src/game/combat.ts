@@ -8,6 +8,8 @@ import { HEROES } from '../data/heroes';
 import { BadgeSwipe, type BadgeResult } from './badge';
 import { CHORES, type Chore } from './chore';
 import { CoffeeTask, type CoffeeAction, type CoffeeResult } from './coffee';
+import { MatchThree, type MoveResult } from './match3';
+import { MINIGAMES, type Minigame } from './minigame';
 import { ShellGame, type ShellResult } from './shells';
 import { SushiOrder } from './sushi';
 import { RELICS } from '../data/relics';
@@ -207,6 +209,9 @@ export class Combat {
   chore: Chore | null = null;
   /** The chore of the move being charged has been set up already (so a finished one doesn't open again). */
   private taskSeen = false;
+  /** The minigame the enemy leaves open to the hero (`EnemyDef.minigame`), and whether its window is up: while it is, it covers the belt and the sleeve the way a chore's window does. */
+  readonly minigame: Minigame | null;
+  minigameOpen = false;
   private popupWait: number | null = null;
   /** The hero has sat through an update: Postpone now takes longer. */
   private updated = false;
@@ -286,6 +291,8 @@ export class Combat {
       stored: 0,
       mem: {},
     };
+    // The minigame has a stream of its own: playing it never changes which cards the deck deals.
+    this.minigame = e.minigame ? MINIGAMES[e.minigame](new Rng(this.rng.int(1, 2 ** 31 - 1))) : null;
     this.enemy.move = this.nextEnemyMove();
     for (const s of e.start ?? []) this.applyStatus('enemy', s.id, s.v ?? 1, s.t ?? 0, true);
     const box = e.fillSleeve;
@@ -445,20 +452,20 @@ export class Combat {
     return !card.passed && this.keywords(card).includes('pending');
   }
 
-  /** The sleeve is out of reach: sunk (`EnemyDef.deepBelt`) or under the chore window. */
+  /** The sleeve is out of reach: sunk (`EnemyDef.deepBelt`) or under the chore window or the minigame's. */
   private get lowerBarred(): boolean {
-    return this.lowerHidden || !!this.chore?.covers;
+    return this.lowerHidden || !!this.chore?.covers || this.minigameOpen;
   }
 
   /**
    * True when this belt card is out of reach, barred by a curse: a wide card (Gatekeeping) stretches left of its face over the cards ahead of it (on both rows if it's
-   * tall), and a row lock (Priority Task) holds its whole row, until paid off. An enemy's window over the belt (`popup`, `task`) covers every card.
+   * tall), and a row lock (Priority Task) holds its whole row, until paid off. An enemy's window over the belt (`popup`, `task`) and the minigame's cover every card.
    */
   isCovered(uid: number): boolean {
     const b = this.belt[this.beltIndex(uid)];
     if (!b) return false;
     // The enemy's window is over the whole belt.
-    if (this.popup || this.chore?.covers) return true;
+    if (this.popup || this.chore?.covers || this.minigameOpen) return true;
     return this.belt.some((w) => {
       if (w === b) return false;
       const def = CARDS[w.card.id];
@@ -2145,6 +2152,28 @@ export class Combat {
       this.loseHp(CONFIG.badge.wrongHp);
     }
     return r;
+  }
+
+  /** The hero opens the minigame's window over the belt, or closes it again (the fight never waits for it). Returns false when there is no minigame to open or the fight isn't on. */
+  openMinigame(open: boolean): boolean {
+    if (!this.minigame || this.result || this.intro > 0 || this.begging) return false;
+    this.minigameOpen = open;
+    return true;
+  }
+
+  /**
+   * The hero swaps two pieces of the Supervisor's board (cells, see `MatchThree`): what the move clears takes HP off the enemy at once, and the result tells the window what to play.
+   * A floor that has made the enemy tougher makes each piece worth the same share of his HP, so every floor asks for the same moves. Returns null when the window isn't open or the swap isn't allowed.
+   */
+  matchSwap(a: number, b: number): MoveResult | null {
+    const game = this.minigame;
+    if (!(game instanceof MatchThree) || !this.minigameOpen || this.result || this.begging) return null;
+    const res = game.swap(a, b);
+    // Counted as damage over time: no hit stop, no blow's sound, and the window plays its own.
+    if (!res) return null;
+    const hp = Math.max(1, Math.round((res.hp * this.enemy.maxHp) / this.enemy.def.hp));
+    this.damage('hero', 'enemy', hp, { raw: true, ignoreBlock: true, kind: 'blunt' }, 'dot');
+    return res;
   }
 
   /** The hero scrubs a rust spot with the mop: `amount` of its grime comes off, and it's gone at 0. */

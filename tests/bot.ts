@@ -3,6 +3,7 @@ import { CARDS } from '../src/data/cards';
 import { COFFEE_SERVICE } from '../src/data/coffee';
 import { CoffeeTask } from '../src/game/coffee';
 import { BadgeSwipe } from '../src/game/badge';
+import { MatchThree } from '../src/game/match3';
 import { ShellGame } from '../src/game/shells';
 import { SushiOrder } from '../src/game/sushi';
 import {
@@ -59,6 +60,26 @@ const DEBUFFS = ['karoshi', 'chainSmoking', 'waterCooler', 'blackFriday', 'walko
 /** Taps a second the bot gives Conveyor Sis's mana button (about what a thumb does). */
 const TAPS_PER_SECOND = 4;
 
+/** The Supervisor's backlog: the bot keeps the window open `MINIGAME_OPEN` seconds of every `MINIGAME_CYCLE` (the rest it plays its cards) and makes a move every `MINIGAME_GAP` seconds, a person's time to look at a board. */
+const MINIGAME_CYCLE = 9;
+const MINIGAME_OPEN = 6;
+const MINIGAME_GAP = 1.6;
+const lastMatchMove = new WeakMap<Combat, number>();
+
+/** Makes a move on the board (a swap with a special in it first, otherwise any that is allowed) when it is time; returns whether the window is open (then the cards are out of reach). */
+function botMatch(c: Combat, game: MatchThree, rnd: () => number): boolean {
+  const open = c.time % MINIGAME_CYCLE < MINIGAME_OPEN;
+  c.openMinigame(open);
+  if (!open || c.time - (lastMatchMove.get(c) ?? -MINIGAME_GAP) < MINIGAME_GAP) return open;
+  const swaps = game.swaps();
+  const special = swaps.filter(([a, b]) => game.cells[a]?.special || game.cells[b]?.special);
+  const pool = special.length ? special : swaps;
+  const [a, b] = pool[Math.floor(rnd() * pool.length)];
+  c.matchSwap(a, b);
+  lastMatchMove.set(c, c.time);
+  return true;
+}
+
 /** The next right move of the Boss's coffee. */
 function botCoffee(c: Combat, task: CoffeeTask): void {
   if (task.phase === 'coins') {
@@ -88,6 +109,8 @@ export function botDecide(c: Combat, rnd: () => number, opts: BotOpts): void {
     botCoffee(c, c.chore);
     return;
   }
+  // The Supervisor's backlog: while its window is open the cards are out of reach.
+  if (c.minigame instanceof MatchThree && botMatch(c, c.minigame, rnd)) return;
   // The IT guy's window: it postpones it, and plays in the seconds that leaves.
   if (c.popup) {
     c.postponeUpdate();

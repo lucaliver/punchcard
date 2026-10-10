@@ -1418,3 +1418,49 @@ test("the Punch Clock's badge swipe: the badge is dragged through the reader, wh
   expect(await combat(page, "return c.has('enemy', 'stun');")).toBe(true);
   expect(problems).toEqual([]);
 });
+
+test("the Supervisor's backlog: a button beside him opens a match-3 over the belt, a drag swaps two pieces and takes HP off him, and the button closes it again", async ({
+  page,
+}) => {
+  const problems = await freshGame(page);
+  await page.getByRole('button', { name: /debug/i }).click();
+  await page.locator('.debug-tabs button').last().click();
+  await page.locator('.debug-foe[data-enemy="supervisor"]').click();
+  await expect(page.locator('.combat')).toBeVisible();
+  const start = page.locator('.js-start');
+  if (await start.count()) await start.click();
+  await expect.poll(() => combat(page, 'return c.intro <= 0;')).toBe(true);
+  // His moves never land, and the cards stay out of the way.
+  await combat(page, 'c.enemy.move = { ...c.enemy.move, windup: 99999 };');
+  const button = page.locator('.minigame-btn');
+  const win = page.locator('.m3-window.on');
+  await expect(button).toBeVisible();
+  await expect(win).toBeHidden();
+  await button.click();
+  await expect(win).toBeVisible();
+  await expect(page.locator('.m3-piece')).toHaveCount(36);
+  expect(await combat(page, 'return c.minigameOpen;')).toBe(true);
+  // The belt and the sleeve are under the window.
+  await combat(page, "c.addTempCard('punch', 'belt');");
+  expect(await combat(page, 'return c.isCovered(c.belt[c.belt.length - 1].card.uid);')).toBe(true);
+  // Drag one piece onto its neighbour: a swap the board allows.
+  const [a, b] = (await combat(page, 'const [a, b] = c.minigame.swaps()[0]; return [c.minigame.cells[a].id, c.minigame.cells[b].id];')) as [
+    number,
+    number,
+  ];
+  // Hovering waits for the window to stop moving (it stamps itself in).
+  await page.locator(`.m3-piece[data-id="${a}"]`).hover();
+  const to = (await page.locator(`.m3-piece[data-id="${b}"]`).boundingBox())!;
+  await page.mouse.down();
+  await page.mouse.move(to.x + to.width / 2, to.y + to.height / 2, { steps: 6 });
+  await page.mouse.up();
+  expect(await combat(page, 'return c.minigame.moves;')).toBe(1);
+  expect(await combat(page, 'return c.enemy.maxHp - c.enemy.hp;')).toBeGreaterThan(0);
+  await expect(page.locator('.m3-window .tk-step')).toContainText(/\d+/);
+  // The pieces settle back into a full board.
+  await expect.poll(() => page.locator('.m3-piece:not(.pop)').count()).toBe(36);
+  await button.click();
+  await expect(win).toBeHidden();
+  expect(await combat(page, 'return c.minigameOpen;')).toBe(false);
+  expect(problems).toEqual([]);
+});

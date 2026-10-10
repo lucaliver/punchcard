@@ -27,6 +27,7 @@ import { bindCombatFx } from './combatFx';
 import { createBadgeWindow } from './badgeWindow';
 import { createTaskWindow } from './coffeeWindow';
 import { createShellWindow } from './shellWindow';
+import { createMatch3Window } from './match3Window';
 import { createSushiSlip } from './sushiSlip';
 import { createHud } from './hud';
 import { ABILITY_ICON, createCombatView, PASSIVE_ICON } from './view';
@@ -95,6 +96,7 @@ export function combatScreen(run: RunState, combat: Combat, cb: CombatCallbacks)
   const shellWindow = createShellWindow(v);
   const badgeWindow = createBadgeWindow(v);
   const sushiSlip = createSushiSlip(v);
+  const match3Window = createMatch3Window(v);
 
   /** The time card on the belt: stamped IN as the fight starts (then it leaves), OUT when it's won (it stays). */
   const timeCard = (kind: 'in' | 'out', time: string, done?: () => void): void => {
@@ -325,6 +327,15 @@ export function combatScreen(run: RunState, combat: Combat, cb: CombatCallbacks)
     combat.tapMana();
     haptic('tap');
   });
+  // The Supervisor's button: opens the Backlog over the belt and closes it again (the fight runs on either way).
+  r.minigame?.addEventListener('click', () => {
+    if (state.paused || state.waiting || state.ended) return;
+    cards.cancelDrag();
+    if (combat.openMinigame(!combat.minigameOpen)) {
+      sfx('button');
+      haptic('tap');
+    }
+  });
   // The mana bar explains itself only on a hold (it's right under the thumb while playing).
   onTapOrHold(r.manaRow, () => {}, manaInfo);
 
@@ -545,6 +556,7 @@ export function combatScreen(run: RunState, combat: Combat, cb: CombatCallbacks)
     shellWindow.render();
     badgeWindow.render();
     sushiSlip.render();
+    match3Window.render();
     cards.render();
     const draggedSeen = lastDragged;
     lastDragged = combat.beltCranked;

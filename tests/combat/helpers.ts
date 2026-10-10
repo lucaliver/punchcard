@@ -3,6 +3,7 @@ import { Combat, type CombatSetup } from '../../src/game/combat';
 import { CoffeeTask } from '../../src/game/coffee';
 import { BadgeSwipe } from '../../src/game/badge';
 import { ShellGame } from '../../src/game/shells';
+import { MatchThree } from '../../src/game/match3';
 import { SushiOrder } from '../../src/game/sushi';
 import { ENEMIES } from '../../src/data/enemies';
 import { HEROES } from '../../src/data/heroes';
@@ -26,6 +27,12 @@ export const badgeOf = (c: Combat): BadgeSwipe => {
 export const sushiOf = (c: Combat): SushiOrder => {
   expect(c.chore).toBeInstanceOf(SushiOrder);
   return c.chore as SushiOrder;
+};
+
+/** The Supervisor's match-3 board (a test that finds another minigame, or none, fails here). */
+export const matchOf = (c: Combat): MatchThree => {
+  expect(c.minigame).toBeInstanceOf(MatchThree);
+  return c.minigame as MatchThree;
 };
 
 export const deckOf = (ids: string[]): CardInst[] => ids.map((id, i) => ({ uid: i + 1, id, up: false }));
