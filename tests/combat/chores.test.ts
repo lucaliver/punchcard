@@ -512,17 +512,19 @@ describe("the Punch Clock's badge reader", () => {
     expect(c.swipeBadge(right(reader))).toBe('ignored');
     run(c, CONFIG.badge.doneHold + 0.1);
     expect(c.chore).toBeNull();
-    expect(c.hero.hp).toBe(80);
+    // Only the refusals hurt: the read badge itself costs nothing and the move never lands.
+    expect(c.hero.hp).toBe(80 - reader.errors * CONFIG.badge.wrongHp);
     expect(c.has('enemy', 'stun')).toBe(true);
   });
 
-  it('a refusal costs seconds, up to a cap; when the countdown runs out the hit lands', () => {
+  it('a refusal costs seconds, up to a cap, and a little blood; when the countdown runs out the hit lands', () => {
     const c = swipeFight({ ...swipeMove, windup: 999 });
     run(c, CONFIG.introTime + 0.1);
     const reader = badgeOf(c);
     const t0 = c.enemy.timer;
     c.swipeBadge(0);
     expect(c.enemy.timer).toBeCloseTo(t0 + CONFIG.badge.penalty, 5);
+    expect(c.hero.hp).toBe(80 - CONFIG.badge.wrongHp);
     for (let i = 0; i < 10; i++) c.swipeBadge(0);
     expect(reader.fined).toBe(CONFIG.badge.penaltyMax);
     const d = swipeFight();

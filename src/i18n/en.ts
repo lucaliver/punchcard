@@ -363,7 +363,8 @@ const en = {
   'task.badge.title': 'CLOCK IN: SWIPE BADGE',
   'task.badge.try': 'Try {n}',
   'task.badge.badge': 'Employee badge',
-  'task.badge.gauge': 'SPEED',
+  'task.badge.gauge.slow': 'SLOW',
+  'task.badge.gauge.fast': 'FAST',
   'task.badge.note': 'Not too slow. Not too fast.',
   'task.badge.step.start': 'SWIPE YOUR BADGE',
   'task.badge.step.drag': 'SWIPING…',
@@ -856,7 +857,7 @@ const en = {
     'The belt serves nothing but sushi while the move charges, and the Chef hands you two slips: each lists pieces to eat in turn, a dish on a coloured plate. Tap the right dish on the right plate, following either slip, before it lands and the move is off, and the enemy is stunned for {$sushiCalm}s. Every wrong plate costs {$sushiHp} HP and takes {$sushiPenalty}s off the countdown; the piece you need riding off the belt takes the seconds too. The belt runs faster with every piece eaten. Your cards on the belt and in the sleeve stay in reach.',
   'rule.badge': 'Badge Swipe',
   'rule.badge.d':
-    'A window covers your belt and your sleeve while the move charges: drag your badge through the reader, not too slow and not too fast. The speed it takes drifts after every refusal, and the reader always refuses the first good swipe (sometimes the second too). Get it read before the move lands and the move is off, and the enemy is stunned for {$badgeCalm}s. Every refused swipe takes {$badgePenalty}s off the countdown.',
+    'A window covers your belt and your sleeve while the move charges: drag your badge through the reader, not too slow and not too fast. The speed it takes drifts after every refusal, and the reader always refuses the first good swipe (sometimes the second too). Get it read before the move lands and the move is off, and the enemy is stunned for {$badgeCalm}s. Every refused swipe costs {$badgeHp} HP and takes {$badgePenalty}s off the countdown.',
   'rule.inflation': 'Inflation',
   'rule.inflation.d': 'The card costs {$inflationCost} more mana until you play it.',
   'rule.virus': 'Virus',

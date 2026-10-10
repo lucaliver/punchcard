@@ -365,7 +365,8 @@ const es: Record<EnKey, string> = {
   'task.badge.title': 'FICHAR: PASA LA TARJETA',
   'task.badge.try': 'Intento {n}',
   'task.badge.badge': 'Tarjeta de empleado',
-  'task.badge.gauge': 'VELOCIDAD',
+  'task.badge.gauge.slow': 'LENTO',
+  'task.badge.gauge.fast': 'RÁPIDO',
   'task.badge.note': 'Ni muy despacio, ni muy deprisa.',
   'task.badge.step.start': 'PASA TU TARJETA',
   'task.badge.step.drag': 'DESLIZANDO…',
@@ -861,7 +862,7 @@ const es: Record<EnKey, string> = {
     'Mientras el movimiento se carga la cinta solo sirve sushi y el Chef te da dos notas: cada una lista las piezas que comer, una tras otra, un plato en un platillo de color. Toca el plato correcto en el platillo correcto, siguiendo una nota u otra, antes de que llegue y el movimiento se cancela, y el enemigo queda aturdido {$sushiCalm}s. Cada platillo equivocado te cuesta {$sushiHp} PV y quita {$sushiPenalty}s a la cuenta atrás; la pieza que necesitas, si se cae de la cinta, también quita los segundos. La cinta va más rápida con cada pieza comida. Tus cartas en la cinta y en las mangas siguen a mano.',
   'rule.badge': 'Pasar la Tarjeta',
   'rule.badge.d':
-    'Mientras el movimiento se carga una ventana tapa tu cinta y tu manga: arrastra la tarjeta por el lector, ni muy despacio ni muy deprisa. La velocidad que acepta cambia tras cada rechazo, y el lector siempre rechaza el primer pase bueno (a veces también el segundo). Consigue que lo lea antes de que caiga el movimiento y se cancela, y el enemigo queda aturdido {$badgeCalm}s. Cada pase rechazado quita {$badgePenalty}s a la cuenta atrás.',
+    'Mientras el movimiento se carga una ventana tapa tu cinta y tu manga: arrastra la tarjeta por el lector, ni muy despacio ni muy deprisa. La velocidad que acepta cambia tras cada rechazo, y el lector siempre rechaza el primer pase bueno (a veces también el segundo). Consigue que lo lea antes de que caiga el movimiento y se cancela, y el enemigo queda aturdido {$badgeCalm}s. Cada pase rechazado cuesta {$badgeHp} PV y quita {$badgePenalty}s a la cuenta atrás.',
   'rule.inflation': 'Inflación',
   'rule.inflation.d': 'La carta cuesta {$inflationCost} más de maná hasta que la juegues.',
   'rule.virus': 'Virus',

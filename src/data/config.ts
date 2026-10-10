@@ -155,7 +155,7 @@ export const CONFIG = {
   /**
    * The Punch Clock's chore (`MoveDef.task` = 'badge', `game/badge.ts`): a swipe has to run at `centre ± tolerance` tracks per second (a share of the reader's track every second), the centre
    * starting within `target`; after every refusal it drifts by up to `drift` of itself (kept within `target`). The first `glitches` ([min, max]) swipes that would have passed are refused anyway.
-   * `scale` is the top of the gauge (tracks per second). A refusal takes `penalty` s off the move's countdown (`penaltyMax` s in all); `doneHold` s the read badge is shown; done in time, the clock is stunned `calm` s.
+   * `scale` is the top of the gauge (tracks per second). A refusal takes `penalty` s off the move's countdown (`penaltyMax` s in all) and costs `wrongHp` HP; `doneHold` s the read badge is shown; done in time, the clock is stunned `calm` s.
    */
   badge: {
     target: [0.9, 1.5],
@@ -163,6 +163,7 @@ export const CONFIG = {
     drift: 0.2,
     glitches: [1, 2],
     scale: 2.4,
+    wrongHp: 3,
     doneHold: 1.4,
     penalty: 1.5,
     penaltyMax: 5,

@@ -2097,12 +2097,15 @@ export class Combat {
     return r;
   }
 
-  /** The hero drags the badge through the reader at this speed (tracks per second); a refusal is fined. Returns null when there is no badge to swipe. */
+  /** The hero drags the badge through the reader at this speed (tracks per second); a refusal is fined and costs a little blood. Returns null when there is no badge to swipe. */
   swipeBadge(speed: number): BadgeResult | null {
     const reader = this.chore;
     if (!(reader instanceof BadgeSwipe) || this.result || this.begging) return null;
     const r = reader.swipe(speed);
-    if (r !== 'ok' && r !== 'ignored') this.fine(reader);
+    if (r !== 'ok' && r !== 'ignored') {
+      this.fine(reader);
+      this.loseHp(CONFIG.badge.wrongHp);
+    }
     return r;
   }
 

@@ -362,7 +362,8 @@ const zh: Record<EnKey, string> = {
   'task.badge.title': '打卡：刷工牌',
   'task.badge.try': '第 {n} 次',
   'task.badge.badge': '员工工牌',
-  'task.badge.gauge': '速度',
+  'task.badge.gauge.slow': '慢',
+  'task.badge.gauge.fast': '快',
   'task.badge.note': '别太慢，也别太快。',
   'task.badge.step.start': '请刷工牌',
   'task.badge.step.drag': '刷卡中…',
@@ -852,7 +853,7 @@ const zh: Record<EnKey, string> = {
     '招式蓄力时，传送带上只有寿司，主厨还会给你两张单子：每张列出要依次吃掉的寿司，每块都放在有颜色的盘子上。在招式落下前，按任意一张单子的顺序，点按对的寿司和对的盘子，招式就取消，敌人还会眩晕 {$sushiCalm} 秒。每点错一个盘子，会失去 {$sushiHp} 点生命，倒计时还减少 {$sushiPenalty} 秒；需要的那块漏出传送带，也会减少这些秒数。每吃掉一块，传送带就更快。传送带和袖口里的牌依然够得着。',
   'rule.badge': '刷工牌',
   'rule.badge.d':
-    '招式蓄力时，一个窗口会盖住传送带和袖口：把工牌拖过读卡器，别太慢也别太快。每被拒绝一次，读卡器接受的速度就会漂移，而且它总会拒绝第一次刷得对的卡（有时第二次也拒绝）。在招式落下前让它读到，招式就取消，敌人还会眩晕 {$badgeCalm} 秒。每被拒绝一次，倒计时减少 {$badgePenalty} 秒。',
+    '招式蓄力时，一个窗口会盖住传送带和袖口：把工牌拖过读卡器，别太慢也别太快。每被拒绝一次，读卡器接受的速度就会漂移，而且它总会拒绝第一次刷得对的卡（有时第二次也拒绝）。在招式落下前让它读到，招式就取消，敌人还会眩晕 {$badgeCalm} 秒。每被拒绝一次，会失去 {$badgeHp} 点生命，倒计时还减少 {$badgePenalty} 秒。',
   'rule.inflation': '通货膨胀',
   'rule.inflation.d': '这张卡牌的费用 +{$inflationCost} 点法力，直到你打出它一次。',
   'rule.virus': '病毒',

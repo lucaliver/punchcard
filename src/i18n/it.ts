@@ -366,7 +366,8 @@ const it: Record<EnKey, string> = {
   'task.badge.title': 'TIMBRA: STRISCIA IL BADGE',
   'task.badge.try': 'Tentativo {n}',
   'task.badge.badge': 'Badge aziendale',
-  'task.badge.gauge': 'VELOCITÀ',
+  'task.badge.gauge.slow': 'PIANO',
+  'task.badge.gauge.fast': 'FORTE',
   'task.badge.note': 'Né troppo piano, né troppo forte.',
   'task.badge.step.start': 'STRISCIA IL BADGE',
   'task.badge.step.drag': 'STRISCIO…',
@@ -859,7 +860,7 @@ const it: Record<EnKey, string> = {
     "Mentre la mossa si carica il nastro serve solo sushi e lo Chef ti dà due foglietti: ognuno elenca i pezzi da mangiare, uno alla volta, un piatto su un piattino colorato. Tocca il piatto giusto sul piattino giusto, seguendo l'uno o l'altro foglietto, prima che colpisca e la mossa salta, e il nemico resta stordito per {$sushiCalm}s. Ogni piattino sbagliato ti costa {$sushiHp} PV e toglie {$sushiPenalty}s al conto alla rovescia; anche il pezzo che ti serve, se esce dal nastro, toglie i secondi. Il nastro corre più veloce a ogni pezzo mangiato. Le tue carte sul nastro e nelle maniche restano a portata di mano.",
   'rule.badge': 'Strisciata del Badge',
   'rule.badge.d':
-    'Mentre la mossa si carica una finestra copre il nastro e la manica: trascina il badge nel lettore, né troppo piano né troppo forte. La velocità richiesta cambia a ogni rifiuto, e il lettore rifiuta sempre la prima strisciata buona (a volte anche la seconda). Fatti leggere il badge prima che la mossa arrivi e la mossa salta, e il nemico resta stordito per {$badgeCalm}s. Ogni strisciata rifiutata toglie {$badgePenalty}s al conto alla rovescia.',
+    'Mentre la mossa si carica una finestra copre il nastro e la manica: trascina il badge nel lettore, né troppo piano né troppo forte. La velocità richiesta cambia a ogni rifiuto, e il lettore rifiuta sempre la prima strisciata buona (a volte anche la seconda). Fatti leggere il badge prima che la mossa arrivi e la mossa salta, e il nemico resta stordito per {$badgeCalm}s. Ogni strisciata rifiutata costa {$badgeHp} PV e toglie {$badgePenalty}s al conto alla rovescia.',
   'rule.inflation': 'Inflazione',
   'rule.inflation.d': 'La carta costa {$inflationCost} di mana in più finché non la giochi.',
   'rule.virus': 'Virus',

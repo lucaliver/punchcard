@@ -445,8 +445,6 @@
   display: flex;
   flex-direction: column;
   gap: 6px;
-  max-width: 340px;
-  margin: 0 auto;
   padding: 6px;
   color: var(--k);
   background: var(--muted);
@@ -457,7 +455,9 @@
 .bd-reader[data-led='bad'] { --led: var(--red); }
 .bd-reader[data-led='ok'] { --led: var(--mint); }
 .bd-reader[data-pace='fast'] { animation: bd-rattle 0.12s steps(2) infinite; }
-.bd-top { display: flex; align-items: center; gap: 6px; }
+.badge-window .tk-stage { padding-right: 6px; }
+/* the reader is as wide as the window: the ability button sits over its lower right corner, so the screen row stops short of it */
+.bd-top { display: flex; align-items: center; gap: 6px; margin-right: var(--tk-gap, 0px); }
 .bd-led {
   flex: none;
   width: 14px;
@@ -514,19 +514,6 @@
 .tk-val.late { color: var(--p); }
 
 .bd-track { position: relative; height: 70px; touch-action: none; }
-.bd-groove {
-  position: absolute;
-  left: 0;
-  right: 0;
-  bottom: 4px;
-  height: 22px;
-  background: var(--void);
-  border: 2px solid var(--k);
-  box-shadow: 0 0 0 2px var(--coin-silver);
-}
-.bd-reader[data-pace='ok'] .bd-groove { box-shadow: 0 0 0 3px var(--mint); }
-.bd-reader[data-pace='slow'] .bd-groove { box-shadow: 0 0 0 3px var(--brass); }
-.bd-reader[data-pace='fast'] .bd-groove { box-shadow: 0 0 0 3px var(--red); }
 .bd-badge {
   position: absolute;
   bottom: 10px;
@@ -554,19 +541,36 @@
 /* a few lines of small print beside the photo */
 .bd-bars { flex: 1; height: 14px; margin-top: 2px; background: repeating-linear-gradient(0deg, var(--k) 0 2px, transparent 2px 5px); }
 .bd-stripe { position: absolute; left: 0; right: 0; bottom: 0; height: 9px; background: var(--k); border-top: 2px solid var(--p); }
-/* the reader's lip, in front of the badge's lower part */
+/* the reader's lip, in front of the badge's lower part, with the slot in it: hazard stripes run along it towards its end (mint) while it waits, and it lights up with the speed of the swipe */
 .bd-lip {
   position: absolute;
   left: -4px;
   right: -4px;
   bottom: 0;
-  height: 28px;
+  height: 30px;
   pointer-events: none;
   background: var(--coin-silver);
   border: 2px solid var(--k);
   box-shadow: 0 -2px 0 var(--shadow);
 }
-.bd-lip::after { content: ''; position: absolute; left: 6px; right: 6px; top: 7px; height: 5px; background: var(--void); border: 2px solid var(--k); }
+.bd-lip::after {
+  content: '';
+  position: absolute;
+  left: 8px;
+  right: 8px;
+  top: 7px;
+  height: 10px;
+  background-color: var(--void);
+  background-image: linear-gradient(135deg, var(--hazard-light) 25%, transparent 25%, transparent 50%, var(--hazard-light) 50%, var(--hazard-light) 75%, transparent 75%);
+  background-size: 10px 10px;
+  border: 2px solid var(--k);
+  border-right: 8px solid var(--mint);
+  animation: bd-flow 0.8s steps(5) infinite;
+}
+.bd-reader:not([data-led='idle']) .bd-lip::after { animation: none; }
+.bd-reader[data-pace='ok'] .bd-lip::after { background-image: none; background-color: var(--mint); }
+.bd-reader[data-pace='slow'] .bd-lip::after { background-image: none; background-color: var(--brass); }
+.bd-reader[data-pace='fast'] .bd-lip::after { background-image: none; background-color: var(--red); }
 
 /* sparks fly from the badge when it runs too fast, and in a bigger burst when it is read */
 .bd-sparks { display: none; position: absolute; bottom: 28px; left: calc(var(--at, 0) * (100% - var(--bw)) + var(--bw) / 2); pointer-events: none; }
@@ -589,17 +593,22 @@
 .bd-sparks i:nth-child(8) { --a: 95deg; }
 .bd-reader.read .bd-badge { animation: cup-hop 0.4s steps(2) 3; }
 
-.bd-gauge { display: flex; align-items: center; gap: 6px; }
-.bd-gauge small { font-family: var(--font-ui); font-size: 13px; line-height: 1; text-transform: uppercase; }
-.bd-segs { flex: 1; display: flex; gap: 2px; }
-.bd-segs i { flex: 1; height: 14px; background: var(--void); border: 2px solid var(--k); }
-.bd-segs i[data-zone='ok'] { border-color: var(--mint); }
+.bd-gauge { display: flex; align-items: flex-end; gap: 6px; }
+.bd-gauge small { flex: none; font-family: var(--font-display); font-size: 9px; line-height: 1; letter-spacing: 0.04em; padding-bottom: 2px; }
+/* a segment's colour says what that speed does: brass = too slow, mint = read, red = too fast; the green ones are taller, and a lit one is filled */
+.bd-segs { flex: 1; min-width: 0; display: flex; align-items: flex-end; gap: 2px; }
+.bd-segs i { flex: 1; height: 12px; background: var(--void); border: 2px solid var(--brass); }
+.bd-segs i[data-zone='ok'] { height: 20px; border-color: var(--mint); }
+.bd-segs i[data-zone='high'] { border-color: var(--red); }
 .bd-segs i.lit { background: var(--brass); }
 .bd-segs i.lit[data-zone='ok'] { background: var(--mint); }
 .bd-segs i.lit[data-zone='high'] { background: var(--red); }
 /* the reader has moved its zone */
 .bd-reader.recalibrated .bd-segs { animation: bd-blink 0.3s steps(1) 2; }
 
+@keyframes bd-flow {
+  to { background-position: 10px 0; }
+}
 @keyframes bd-blink {
   50% { opacity: 0.2; }
 }

@@ -20,7 +20,7 @@ const SMOOTH = 0.4;
 /** Below this the badge counts as standing still (tracks per second). */
 const STILL = 0.05;
 /** Segments of the speed gauge, and the sparks that fly off a fast or a read badge. */
-const SEGMENTS = 12;
+const SEGMENTS = 16;
 const SPARKS = 8;
 /** The clock above the reader starts this many minutes into the day (08:58) and loses a minute to every swipe: it is always late in the end. */
 const CLOCK_START = 8 * 60 + 58;
@@ -68,13 +68,12 @@ export function createBadgeWindow(v: CombatView): { render(): void } {
         <div class="tk-lcd"><span class="tk-msg"></span><b class="tk-val"></b></div>
         <div class="tk-stage">
           <div class="bd-reader" data-pace="idle" data-led="idle">
-            <div class="bd-top">
-              <i class="bd-led"></i>
-              <div class="bd-screen"><span class="bd-line"></span></div>
-              <i class="bd-led"></i>
+            <div class="bd-gauge">
+              <small>${t('task.badge.gauge.slow')}</small>
+              <span class="bd-segs">${'<i></i>'.repeat(SEGMENTS)}</span>
+              <small>${t('task.badge.gauge.fast')}</small>
             </div>
             <div class="bd-track">
-              <i class="bd-groove"></i>
               <b class="bd-stamp"></b>
               <button class="bd-badge" aria-label="${t('task.badge.badge')}">
                 <i class="bd-clip"></i>
@@ -85,7 +84,11 @@ export function createBadgeWindow(v: CombatView): { render(): void } {
               <i class="bd-lip"></i>
               <span class="bd-sparks">${'<i></i>'.repeat(SPARKS)}</span>
             </div>
-            <div class="bd-gauge"><small>${t('task.badge.gauge')}</small><span class="bd-segs">${'<i></i>'.repeat(SEGMENTS)}</span></div>
+            <div class="bd-top">
+              <i class="bd-led"></i>
+              <div class="bd-screen"><span class="bd-line"></span></div>
+              <i class="bd-led"></i>
+            </div>
           </div>
         </div>
       </div>`,
