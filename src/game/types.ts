@@ -276,8 +276,10 @@ export interface StatusDef {
   onEnd?: (c: Combat, side: Side, s: StatusVal) => void;
   /** A hit on the carrier was just turned away by `immune` (Matador). */
   onDodge?: (c: Combat, side: Side, s: StatusVal) => void;
-  /** One of the hero's cards was just used up for this fight (played with Exhaust or Consume, scrapped from the sleeve, or swept off the belt): not a power, not a card that vanished some other way (Shredder). */
+  /** One of the hero's cards was just used up for this fight (played with Exhaust or Consume, scrapped from the sleeve, swept off the belt, or a Fleeting one that slipped off it): not a power, not a card that vanished some other way (Shredder). */
   onExhaust?: (c: Combat, side: Side, s: StatusVal, card: CombatCard) => void;
+  /** While active on the hero, extra damage for its cards (`def` = the card dealing it, null for anything else), like Strength but of any shape (Offshore Account). */
+  bonusDamage?: (c: Combat, s: StatusVal, def: CardDef | null) => number;
   /** A card of the hero's just left the belt unplayed. */
   onExpire?: (c: Combat, side: Side, s: StatusVal) => void;
   /** While active on the enemy, a rust spot lands on the belt every `every` seconds, and the belt's speed drops along an ease-in-out sine of their share of `max` (`max` spots stop it dead: little at first, most of it in the middle, then it creeps to a halt; from the `warn` share of `max` on, the mop shakes and blinks). The hero scrubs them off with the mop. */
@@ -581,7 +583,7 @@ export type CombatEvent =
   | { type: 'status'; target: Side; id: string; amount: number }
   | { type: 'text'; target: Side; key: TKey; tone: 'good' | 'bad' | 'neutral' }
   | { type: 'cardSpawn'; card: CombatCard }
-  | { type: 'cardPlayed'; card: CombatCard; from: 'belt' | 'sleeve' }
+  | { type: 'cardPlayed'; card: CombatCard; from: 'belt' | 'sleeve' | 'exhaust' }
   /** An Echo card was played and stays where it is. */
   | { type: 'cardEchoed'; card: CombatCard }
   | { type: 'cardExpired'; card: CombatCard }

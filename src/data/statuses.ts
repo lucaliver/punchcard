@@ -169,6 +169,15 @@ const defs: StatusDef[] = [
       if (def.type === 'attack') c.rushBelt(c.stacks(side, 'blueCollarBlues'));
     },
   },
+  // Open Casket (a Necromancer power): every card the hero uses up poisons the enemy for `v`.
+  {
+    id: 'openCasket',
+    tone: 'toxic',
+    kind: 'stacks',
+    good: true,
+    icon: 'poisonBottle',
+    onExhaust: (c, _side, s) => c.applyStatus('enemy', 'poison', s.v),
+  },
   // Shredder (a power): every card the hero uses up gives `v` Block.
   { id: 'shredder', tone: 'teal', kind: 'stacks', good: true, icon: 'burntPaper', onExhaust: (c, side, s) => c.gainBlock(side, s.v) },
   // Buy Now, Pay Later (on the enemy): it counts the HP the enemy loses meanwhile (`e`), and when time is up bills it `v`% of that again (raw, Block can't stop it).
@@ -356,6 +365,15 @@ const defs: StatusDef[] = [
       s.e = (s.e ?? 0) + 1;
       if (s.e % CLEAN_GETAWAY_EVERY === 0) c.gainBlock('hero', s.v);
     },
+  },
+  // Offshore Account (a Rogue power): the hero's attacks deal `v` more damage for every whole mana above the max (Sticky Fingers lets mana pile up there).
+  {
+    id: 'offshoreAccount',
+    tone: 'blue',
+    kind: 'stacks',
+    good: true,
+    icon: 'coin',
+    bonusDamage: (c, s, def) => (def?.type === 'attack' ? s.v * Math.max(0, Math.floor(c.hero.mana - c.hero.maxMana)) : 0),
   },
   // Light Fingers: a card falling into a full sleeve cuts `v` more mana off every card in it.
   { id: 'lightFingers', tone: 'amber', kind: 'stacks', good: true, icon: 'priceTag', catchBonus: true },

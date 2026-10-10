@@ -622,6 +622,62 @@ export const necromancerCards: CardDef[] = [
     },
   },
   {
+    id: 'openCasket',
+    face: '{*exhaust}{poison:0}',
+    cls: 'necromancer',
+    type: 'power',
+    rarity: 'rare',
+    cost: 2,
+    vals: [2],
+    upVals: [3],
+    art: 'openCasket',
+    play: (c, v) => c.applyStatus('hero', 'openCasket', v[0]),
+  },
+  {
+    id: 'exhumation',
+    face: '{exhaust}{copy}',
+    cls: 'necromancer',
+    type: 'skill',
+    rarity: 'rare',
+    cost: 2,
+    upCost: 1,
+    vals: [],
+    art: 'exhumation',
+    // It is used up again, so it can be dug up once more (and every use-up still counts for Open Casket and Shredder).
+    play: (c) => void c.exhume(),
+  },
+  {
+    id: 'massGrave',
+    face: '{dmg:0}|{exhaust}',
+    cls: 'necromancer',
+    type: 'attack',
+    rarity: 'epic',
+    cost: 3,
+    vals: [3],
+    upVals: [4],
+    art: 'massGrave',
+    // Damage for every card in the exhaust pile (what the pile counts: used-up cards and played powers): the face shows the total as it stands.
+    shown: (c, v) => [v[0] * c.exhaust.length],
+    play: (c, v) => void c.hit(v[0] * c.exhaust.length),
+  },
+  {
+    id: 'signHere',
+    face: '{mana:0}{block:1}|{addCard}{curse}',
+    cls: 'necromancer',
+    type: 'skill',
+    rarity: 'rare',
+    cost: 0,
+    vals: [2, 6],
+    upVals: [3, 9],
+    art: 'signHere',
+    // The fine print: a common curse joins the draw pile (paid off, it is a card used up; let fall, it bites).
+    play: (c, v) => {
+      c.gainMana(v[0]);
+      c.gainBlock('hero', v[1]);
+      c.addRandomCurse('common');
+    },
+  },
+  {
     id: 'ccTheBoss',
     face: '{debuff}{pass}',
     cls: 'necromancer',

@@ -85,6 +85,9 @@ describe('the Rogue', () => {
     for (const x of c.sleeve) if (x) x.disc = 1;
     c.sleeve[0]!.disc = 3;
     const uid = onBelt(c, 'fireSale');
+    // Pending: it has to have ridden the belt once.
+    c.belt.find((b) => b.card.uid === uid)!.card.passed = true;
+    c.hero.maxMana = c.hero.mana = CARDS.fireSale.cost;
     const worth = 3 + 3 + 2;
     expect(CARDS.fireSale.shown?.(c, CARDS.fireSale.vals, c.belt.find((b) => b.card.uid === uid)!.card)[0]).toBe(CARDS.fireSale.vals[0] * worth);
     const hp = c.enemy.hp;
@@ -254,6 +257,59 @@ describe('the Rogue', () => {
     expect(hp - c.enemy.hp).toBe(7);
     expect(c.hero.block).toBe(4);
     expect(c.enemy.move.id).not.toBe('smash');
+  });
+
+  it('Cut the Wire drops the two oldest belt cards and deals their cost, discounts ignored', () => {
+    const c = rogueFight();
+    c.enemy.block = 0;
+    const hp = c.enemy.hp;
+    onBelt(c, 'borrowedStapler');
+    onBelt(c, 'shoplifting');
+    onBelt(c, 'hideTheEvidence');
+    inSleeve(c, 'plausibleDeniability');
+    // The face shows what the two at the front are worth.
+    const wire = onBelt(c, 'cutTheWire');
+    const [stapler, shop] = c.belt.map((b) => b.card);
+    expect(c.shownVals(c.belt.find((b) => b.card.uid === wire)!.card)[0]).toBe(CARDS.borrowedStapler.cost + CARDS.shoplifting.cost);
+    expect(c.playCard(wire)).toBe(true);
+    expect(hp - c.enemy.hp).toBe(CARDS.borrowedStapler.cost + CARDS.shoplifting.cost);
+    expect(c.discard).toEqual(expect.arrayContaining([stapler, shop]));
+    expect(c.belt.map((b) => b.card.id)).toEqual(['hideTheEvidence']);
+    // The two falls cut the sleeve's card (Sticky Fingers): the damage ignores that.
+    expect(c.cardCost(c.sleeve[0]!)).toBe(CARDS.plausibleDeniability.cost - 2);
+  });
+
+  it('Offshore Account adds damage to attacks for every whole mana above the max, counted after the card is paid', () => {
+    const c = rogueFight();
+    c.enemy.block = 0;
+    c.applyStatus('hero', 'offshoreAccount', 2);
+    const stapler = CARDS.borrowedStapler;
+    // 8 mana with a max of 3: after paying for the Stapler 5 are left, 2 of them above the max.
+    c.hero.mana = c.hero.maxMana + 5;
+    let hp = c.enemy.hp;
+    expect(c.playCard(onBelt(c, 'borrowedStapler'))).toBe(true);
+    expect(hp - c.enemy.hp).toBe(stapler.vals[0] + 2 * (c.hero.maxMana + 5 - stapler.cost - c.hero.maxMana));
+    // No mana above the max, no bonus; and only attacks get it.
+    c.hero.mana = c.hero.maxMana;
+    hp = c.enemy.hp;
+    expect(c.playCard(onBelt(c, 'borrowedStapler'))).toBe(true);
+    expect(hp - c.enemy.hp).toBe(stapler.vals[0]);
+    c.hero.mana = c.hero.maxMana + 6;
+    c.hero.block = 0;
+    expect(c.playCard(onBelt(c, 'hideTheEvidence'))).toBe(true);
+    expect(c.hero.block).toBe(CARDS.hideTheEvidence.vals[0]);
+  });
+
+  it('Written Off deals damage for every card that has fallen this fight', () => {
+    const c = rogueFight();
+    c.enemy.block = 0;
+    for (let i = 0; i < 4; i++) onBelt(c, 'hideTheEvidence');
+    c.dropBelt();
+    c.hero.maxMana = c.hero.mana = 5;
+    const hp = c.enemy.hp;
+    expect(c.playCard(onBelt(c, 'writtenOff'))).toBe(true);
+    expect(hp - c.enemy.hp).toBe(4 * CARDS.writtenOff.vals[0]);
+    expect(c.exhaust.map((x) => x.id)).toContain('writtenOff');
   });
 
   it('Case File deals damage for each different card played this fight (by id), itself included', () => {

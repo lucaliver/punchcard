@@ -993,6 +993,79 @@ describe('cards that fill the classes out', () => {
   });
 });
 
+describe('Necromancer: the exhaust pile', () => {
+  const quiet = (): Combat => {
+    const c = setup({ hero: HEROES.necromancer, deck: deckOf(Array(6).fill('skeletonCrew')) });
+    c.enemy.move = { id: 'wait', intent: 'defend', windup: 999 };
+    c.enemy.hp = c.enemy.maxHp = 999;
+    run(c, CONFIG.introTime + 0.01);
+    c.hero.mana = c.hero.maxMana = 10;
+    c.enemy.block = 0;
+    c.enemy.statuses = {};
+    return c;
+  };
+  const cast = (c: Combat, id: string, up = false): void => {
+    c.addTempCard(id, 'belt', up);
+    expect(c.playCard(c.belt[c.belt.length - 1].card.uid, 'auto')).toBe(true);
+  };
+  const exhausted = (c: Combat, id: string, uid: number): void => void c.exhaust.push({ uid, id, up: false, bonus: 0, temp: false });
+
+  it('Open Casket poisons the enemy for every card used up, falls of fleeting cards included', () => {
+    const c = quiet();
+    cast(c, 'openCasket');
+    expect(c.stacks('enemy', 'poison')).toBe(0);
+    cast(c, 'coffee');
+    expect(c.stacks('enemy', 'poison')).toBe(CARDS.openCasket.vals[0]);
+    c.addTempCard('loompa', 'belt');
+    c.dropBelt();
+    expect(c.exhaust.some((x) => x.id === 'loompa')).toBe(true);
+    expect(c.stacks('enemy', 'poison')).toBe(2 * CARDS.openCasket.vals[0]);
+  });
+
+  it('Exhumation plays an exhausted card for free and it is exhausted again, never a power or a consumed card', () => {
+    const c = quiet();
+    exhausted(c, 'punch', 901);
+    exhausted(c, 'picketDrums', 902);
+    exhausted(c, 'molotov', 903);
+    c.consumed.push(903);
+    c.hero.mana = 5;
+    const hp = c.enemy.hp;
+    cast(c, 'exhumation');
+    expect(hp - c.enemy.hp).toBe(CARDS.punch.vals[0]);
+    expect(c.hero.mana).toBe(5);
+    expect(c.exhaust.map((x) => x.uid)).toEqual(expect.arrayContaining([901, 902, 903]));
+    expect(c.discard.some((x) => x.uid === 901)).toBe(false);
+    // Nothing left to dig up: it does nothing.
+    c.exhaust.splice(
+      c.exhaust.findIndex((x) => x.uid === 901),
+      1,
+    );
+    expect(c.exhume()).toBeNull();
+  });
+
+  it('Mass Grave deals damage for every card in the exhaust pile', () => {
+    const c = quiet();
+    for (let i = 0; i < 4; i++) exhausted(c, 'punch', 910 + i);
+    const hp = c.enemy.hp;
+    const before = c.exhaust.length;
+    cast(c, 'massGrave');
+    expect(hp - c.enemy.hp).toBe(before * CARDS.massGrave.vals[0]);
+  });
+
+  it('Sign Here gives mana and Block and shuffles a common curse into the draw pile', () => {
+    const c = quiet();
+    c.hero.mana = 2;
+    const drawn = c.draw.length;
+    cast(c, 'signHere');
+    expect(c.hero.mana).toBe(2 + CARDS.signHere.vals[0]);
+    expect(c.hero.block).toBe(CARDS.signHere.vals[1]);
+    const added = c.draw.filter((x) => CARDS[x.id].type === 'curse');
+    expect(c.draw.length).toBe(drawn + 1);
+    expect(added).toHaveLength(1);
+    expect(CARDS[added[0].id].rarity).toBe('common');
+  });
+});
+
 describe('Complaint Box', () => {
   it('grows by 1 for every second of overflowing mana, even in the draw pile', () => {
     const c = setup({ deck: deckOf(['punch', 'punch', 'complaintBox']) });

@@ -137,6 +137,35 @@ export const rogueCards: CardDef[] = [
     play: (c, v) => c.applyStatus('hero', 'cleanGetaway', v[0]),
   },
   {
+    id: 'cutTheWire',
+    face: '{dmg:0}|{exit}×{1}',
+    cls: 'rogue',
+    type: 'attack',
+    rarity: 'rare',
+    cost: 1,
+    vals: [1, 2],
+    upVals: [1, 3],
+    art: 'cutTheWire',
+    // The face shows the damage the cards at the front are worth right now (their cost without the sleeve's discount, times `v[0]`).
+    shown: (c, v) => [v[0] * c.frontWorth(v[1])],
+    play: (c, v) => {
+      const worth = c.dropFront(v[1]);
+      if (!c.result && worth > 0) c.hit(v[0] * worth);
+    },
+  },
+  {
+    id: 'offshoreAccount',
+    face: '{*mana}{dmg:0}',
+    cls: 'rogue',
+    type: 'power',
+    rarity: 'rare',
+    cost: 3,
+    vals: [1],
+    upVals: [2],
+    art: 'offshoreAccount',
+    play: (c, v) => c.applyStatus('hero', 'offshoreAccount', v[0]),
+  },
+  {
     id: 'fenceIt',
     face: '{sleeve}{mana}',
     cls: 'rogue',
@@ -382,6 +411,21 @@ export const rogueCards: CardDef[] = [
   },
 
   // Legendary
+  {
+    id: 'writtenOff',
+    face: '{dmg:0}|{exit}',
+    cls: 'rogue',
+    type: 'attack',
+    rarity: 'legendary',
+    cost: 5,
+    vals: [3],
+    upVals: [5],
+    keywords: ['exhaust'],
+    art: 'writtenOff',
+    // Damage for every card lost this fight (fallen off the belt or swept off it): the face shows the total as it stands.
+    shown: (c, v) => [v[0] * c.stats.cardsLost],
+    play: (c, v) => void c.hit(v[0] * c.stats.cardsLost),
+  },
   {
     id: 'inventoryShrinkage',
     face: '{dmg:0}',

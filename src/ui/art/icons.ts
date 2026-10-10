@@ -1458,6 +1458,34 @@ export const ICONS: Record<string, { el: Element; svg: string; wide?: boolean }>
     el: 'necro',
     svg: `<path d="M2 58L62 38" ${S} stroke-width="6"/><circle cx="46" cy="22" r="17" stroke="#16121f" stroke-width="4"/><circle cx="46" cy="22" r="17"/><path d="M38 14l6 4-2 6M52 28l4 5M40 32l6-3" stroke="#16121f" stroke-width="3" fill="none"/><g ${S} stroke-width="6"><path d="M17 27l2 15M18 31l11-1M19 42L9 52M19 42l8 7"/></g><circle cx="16" cy="19" r="6.5"/>`,
   },
+  openCasket: {
+    el: 'necro',
+    svg: `<path d="M16 4h18l10 14-8 42H14L6 18z"/><path fill="#16121f" d="M20 12h10l7 8-5 32H17l-5-32z"/><path d="M23 22h4v6h6v4h-6v14h-4V32h-6v-4h6z"/><path d="M50 14l12 4-8 40-6-2z"/>`,
+  },
+  exhumation: {
+    el: 'necro',
+    svg: `<path d="M12 56V42a6 6 0 0 1 6-6h27a6 6 0 0 1 6 6v14z"/><g ${S} stroke-width="6"><path d="M18 36V18M27 34V8M36 34V10M45 36V20M13 42L6 32"/></g><path d="M2 54h60v10H2z"/><path fill="#16121f" d="M8 57h10v3H8zM30 58h12v3H30zM48 56h9v3h-9z"/>`,
+  },
+  massGrave: {
+    el: 'necro',
+    svg: `<path d="M3 58V30a8 8 0 0 1 16 0v28z"/><path d="M24 58V20a8 8 0 0 1 16 0v38z"/><path d="M45 58V30a8 8 0 0 1 16 0v28z"/><path fill="#16121f" d="M10 33h2v12h-2zM6 37h10v2H6zM31 25h2v14h-2zM26 30h12v2H26zM52 33h2v12h-2zM48 37h10v2H48z"/><path d="M0 56h64v8H0z"/><path fill="#16121f" opacity=".5" d="M6 59h10v2H6zM28 60h12v2H28zM48 59h10v2H48z"/>`,
+  },
+  signHere: {
+    el: 'steel',
+    svg: `<path d="M4 4h36v50H4z"/><path fill="#16121f" d="M10 11h24v3H10zM10 18h24v3H10zM10 25h14v3H10z"/><g fill="none" stroke="#16121f" stroke-linecap="round" stroke-linejoin="round" stroke-width="3"><path d="M10 33l7 7M17 33l-7 7"/><path d="M22 44c4-6 6 4 10-2"/></g><path d="M38 62l-2-8 16-22 7 5-17 22z"/><path fill="#16121f" d="M38 62l-2-8 5 3z"/>`,
+  },
+  offshoreAccount: {
+    el: 'holy',
+    svg: `<path d="M4 56c6-8 16-12 28-12s22 4 28 12z"/><path d="M29 48c0-10 2-18 8-28l5 2c-5 8-7 16-7 26z"/><path d="M40 20C34 10 22 10 12 18c9-2 16 0 22 6zM40 20c8-10 18-8 24 0-9-3-15-1-21 5zM40 20c-3-8 0-14 6-18 0 7-1 12-3 19z"/><circle cx="12" cy="36" r="9"/><path fill="#16121f" d="M10 31h4v10h-4z"/>`,
+  },
+  writtenOff: {
+    el: 'blood',
+    svg: `<path d="M10 4h30l14 14v42H10z"/><path fill="#16121f" opacity=".25" d="M40 4v14h14z"/><path fill="#16121f" opacity=".4" d="M16 22h22v3H16zM16 30h30v3H16zM16 38h30v3H16z"/><path d="M14 52L50 20" fill="none" stroke="#16121f" stroke-width="9" stroke-linecap="round"/><path d="M14 52L50 20" fill="none" stroke="currentColor" stroke-width="4" stroke-linecap="round"/>`,
+  },
+  cutTheWire: {
+    el: 'steel',
+    svg: `<path d="M0 20h14M50 20h14" fill="none" stroke="currentColor" stroke-width="5" stroke-linecap="round"/><path d="M8 4l4-2 22 30-5 4z"/><path d="M56 4l-4-2-22 30 5 4z"/><path d="M27 34l-5 10M37 34l5 10" fill="none" stroke="currentColor" stroke-width="5" stroke-linecap="round"/><circle cx="19" cy="52" r="9"/><circle cx="45" cy="52" r="9"/><circle cx="19" cy="52" r="4" fill="#16121f"/><circle cx="45" cy="52" r="4" fill="#16121f"/>`,
+  },
   // Rooms and statuses
   shredder: {
     el: 'steel',

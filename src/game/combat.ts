@@ -1024,7 +1024,7 @@ export class Combat {
       for (const [id, s] of Object.entries(this.fighter(side).statuses)) if (this.has(side, id)) STATUSES[id].onExpire?.(this, side, s);
     }
     delete card.disc;
-    if (this.keywords(card).includes('fleeting')) this.exhaust.push(card);
+    if (this.keywords(card).includes('fleeting')) this.exhaustCard(card);
     else this.discard.push(card);
   }
 
@@ -1125,7 +1125,7 @@ export class Combat {
   }
 
   /** Pays for a card and plays it from wherever it is (belt or sleeve): the checks are already done. */
-  private resolvePlay(card: CombatCard, free: boolean): void {
+  private resolvePlay(card: CombatCard, free: boolean, exhumed = false): void {
     const def = CARDS[card.id];
     const beltIdx = this.beltIndex(card.uid);
     const sleeveIdx = this.sleeveIndex(card.uid);
@@ -1143,13 +1143,13 @@ export class Combat {
     if (echoes) this.events.emit({ type: 'cardEchoed', card });
     else {
       if (beltIdx >= 0) this.belt.splice(beltIdx, 1);
-      else this.sleeve[sleeveIdx] = null;
+      else if (sleeveIdx >= 0) this.sleeve[sleeveIdx] = null;
     }
 
     this.cardsPlayed++;
     this.fightPlayed.add(card.id);
     this.runPlayed.add(card.id);
-    if (!echoes) this.events.emit({ type: 'cardPlayed', card, from: beltIdx >= 0 ? 'belt' : 'sleeve' });
+    if (!echoes) this.events.emit({ type: 'cardPlayed', card, from: beltIdx >= 0 ? 'belt' : sleeveIdx >= 0 ? 'sleeve' : 'exhaust' });
     const vals = this.cardVals(card);
     if (cost < 0) vals.push(spent);
     // Statuses react to cards played after them: one this card applies doesn't see the card itself.
@@ -1188,7 +1188,7 @@ export class Combat {
     if (kw.includes('consume')) {
       if (!card.temp) this.consumed.push(card.uid);
       this.exhaustCard(card);
-    } else if (kw.includes('exhaust')) {
+    } else if (kw.includes('exhaust') || exhumed) {
       this.exhaustCard(card);
     } else if (def.type === 'power') {
       this.exhaust.push(card);
@@ -1281,14 +1281,34 @@ export class Combat {
     return n;
   }
 
-  /** The belt card nearest the exit (the oldest) slips off as if it had fallen. Returns false when the belt is empty. */
-  dropOldest(): boolean {
+  /** The belt card nearest the exit (the oldest) slips off as if it had fallen. Returns it, or null when the belt is empty. */
+  dropOldest(): CombatCard | null {
     let oldest: BeltCard | undefined;
     for (const b of this.belt) if (!oldest || b.pos > oldest.pos) oldest = b;
-    if (!oldest) return false;
+    if (!oldest) return null;
     this.belt.splice(this.belt.indexOf(oldest), 1);
     this.expire(oldest.card);
-    return true;
+    return oldest.card;
+  }
+
+  /** The `n` belt cards nearest the exit, the oldest first. */
+  private front(n: number): CombatCard[] {
+    return [...this.belt]
+      .sort((a, b) => b.pos - a.pos)
+      .slice(0, n)
+      .map((b) => b.card);
+  }
+
+  /** What the `n` belt cards nearest the exit are worth: their costs without the sleeve's discount (Cut the Wire's face shows it). */
+  frontWorth(n: number): number {
+    return this.front(n).reduce((sum, card) => sum + Math.max(0, fullCostOf(card)), 0);
+  }
+
+  /** The `n` belt cards nearest the exit fall one after the other. Returns what they were worth (see `frontWorth`), counted before they fell. */
+  dropFront(n: number): number {
+    const worth = this.frontWorth(n);
+    for (let i = 0; i < n && !this.result; i++) this.dropOldest();
+    return worth;
   }
 
   /** Uses up these sleeve cards (they leave the fight). Returns what they were worth: their costs without the sleeve's discount. */
@@ -1464,6 +1484,7 @@ export class Combat {
     if (from === 'hero') {
       if (def?.type === 'attack') dmg += this.strengthOf('hero');
       dmg += this.heroDef.hooks.bonusDamage?.(this, def) ?? 0;
+      for (const [id, st] of Object.entries(this.hero.statuses)) if (this.has('hero', id)) dmg += STATUSES[id].bonusDamage?.(this, st, def) ?? 0;
       for (const [held, hd] of this.held()) dmg += hd.inSleeve?.bonusDamage?.(this, this.cardVals(held), def) ?? 0;
       dmg *= this.heroDef.hooks.damageMult?.(this, def) ?? 1;
       for (const id of this.relics) dmg *= RELICS[id]?.hooks?.damageMult?.(this, def) ?? 1;
@@ -1881,6 +1902,23 @@ export class Combat {
   private exhaustCard(card: CombatCard): void {
     this.exhaust.push(card);
     for (const [id, s] of Object.entries(this.hero.statuses)) if (this.has('hero', id)) STATUSES[id].onExhaust?.(this, 'hero', s, card);
+  }
+
+  /** Plays, for free, a random card used up this fight (never a power, a consumed card or one a rule bars now); it is used up again. Returns it, or null when none can be played (Exhumation). */
+  exhume(): CombatCard | null {
+    const pool = this.exhaust.filter(
+      (c) => !this.consumed.includes(c.uid) && CARDS[c.id].type !== 'power' && !CARDS[c.id].sushi && this.isPlayable(c) && !this.ruleBlock(c, true),
+    );
+    if (!pool.length) return null;
+    const card = this.rng.pick(pool);
+    this.exhaust.splice(this.exhaust.indexOf(card), 1);
+    this.resolvePlay(card, true, true);
+    return card;
+  }
+
+  /** Shuffles a random curse of this rarity into the draw pile (Sign Here). */
+  addRandomCurse(rarity: Rarity): CombatCard {
+    return this.addTempCard(this.rng.pick(CARD_LIST.filter((d) => d.cls === 'curse' && d.rarity === rarity)).id, 'draw');
   }
 
   /** Shuffles up to `n` random cards exhausted this fight back into the draw pile (never consumed or temporary ones). Returns how many. */
