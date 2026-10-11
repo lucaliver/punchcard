@@ -1374,7 +1374,7 @@ export class Combat {
     return this.scrap(this.sleeveCards(except));
   }
 
-  /** Uses up one random card of the sleeve. Returns what it was worth, or -1 when the sleeve is empty (Fence It). */
+  /** Uses up one random card of the sleeve. Returns what it was worth, or -1 when the sleeve is empty (Expense It). */
   scrapOne(except?: number): number {
     const cards = this.sleeveCards(except);
     return cards.length ? this.scrap([this.rng.pick(cards)]) : -1;
@@ -2095,7 +2095,7 @@ export class Combat {
     for (const [id, s] of Object.entries(this.hero.statuses)) if (this.has('hero', id)) STATUSES[id].onExhaust?.(this, 'hero', s, card);
   }
 
-  /** Plays, for free, a random card used up this fight (never a power, a consumed card or one a rule bars now); it is used up again. Returns it, or null when none can be played (Exhumation). */
+  /** Plays, for free, a random card used up this fight (never a power, a consumed card or one a rule bars now); it is used up again. Returns it, or null when none can be played (Reopen Closed Tab). */
   exhume(): CombatCard | null {
     const pool = this.exhaust.filter(
       (c) => !this.consumed.includes(c.uid) && CARDS[c.id].type !== 'power' && !CARDS[c.id].sushi && this.isPlayable(c) && !this.ruleBlock(c, true),

@@ -141,7 +141,7 @@ describe('combat engine', () => {
   });
 
   it('expires cards off the left edge and reshuffles the discard pile', () => {
-    const c = setup({ deck: deckOf(['punch', 'bobTheBuilder', 'wrenchWhack']) });
+    const c = setup({ deck: deckOf(['punch', 'bobTheBuilder', 'wealthRedistribution']) });
     let reshuffled = false;
     c.events.on((e) => {
       if (e.type === 'reshuffle') reshuffled = true;

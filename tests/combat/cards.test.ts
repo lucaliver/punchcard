@@ -714,7 +714,7 @@ describe('cards that fill the classes out', () => {
     expect(c.has('hero', 'rush')).toBe(false);
   });
 
-  it('Leg Day adds Block per Strength, Pump Iron and Flesh Wound hit by what the hero has, Cactus on the Desk gives Block and Thorns', () => {
+  it('Leg Day adds Block per Strength, Pump Iron and Zombie Company hit by what the hero has, Cactus on the Desk gives Block and Thorns', () => {
     const c = quiet();
     c.applyStatus('hero', 'strength', 2);
     cast(c, 'legDay');
@@ -727,10 +727,10 @@ describe('cards that fill the classes out', () => {
     expect(d.stacks('hero', 'strength')).toBe(CARDS.pumpIron.vals[1]);
 
     const e = quiet();
-    e.hero.hp = e.hero.maxHp - 2 * CARDS.fleshWound.vals[1];
+    e.hero.hp = e.hero.maxHp - 2 * CARDS.zombieCompany.vals[1];
     const hp = e.enemy.hp;
-    cast(e, 'fleshWound');
-    expect(hp - e.enemy.hp).toBe(CARDS.fleshWound.vals[0] + 2);
+    cast(e, 'zombieCompany');
+    expect(hp - e.enemy.hp).toBe(CARDS.zombieCompany.vals[0] + 2);
   });
 
   it('Whistleblower doubles the Vulnerable time the enemy has left, Kick Him When He is Down needs a stunned enemy', () => {
@@ -778,15 +778,15 @@ describe('cards that fill the classes out', () => {
     expect(hp - c.enemy.hp).toBe(Math.floor((lost * share) / 100));
   });
 
-  it('Does It Spark Joy? makes every card cost the same for a while, but not an X card', () => {
+  it('Low-Hanging Fruit makes every card cost the same for a while, but not an X card', () => {
     const c = quiet();
     const card = (id: string) => ({ uid: 999, id, up: false });
-    cast(c, 'sparkJoy');
-    const price = CARDS.sparkJoy.vals[1];
+    cast(c, 'lowHangingFruit');
+    const price = CARDS.lowHangingFruit.vals[1];
     expect(c.costOf(card('wallStreet'))).toBe(price);
     expect(c.costOf(card('staticShock'))).toBe(price);
     expect(c.costOf(card('declareBankruptcy'))).toBeLessThan(0);
-    run(c, CARDS.sparkJoy.vals[0] + 1);
+    run(c, CARDS.lowHangingFruit.vals[0] + 1);
     expect(c.costOf(card('wallStreet'))).toBe(CARDS.wallStreet.cost);
   });
 
@@ -1021,19 +1021,19 @@ describe('Necromancer: the exhaust pile', () => {
   };
   const exhausted = (c: Combat, id: string, uid: number): void => void c.exhaust.push({ uid, id, up: false, bonus: 0, temp: false });
 
-  it('Open Casket poisons the enemy for every card used up, falls of fleeting cards included', () => {
+  it('Grief Counseling poisons the enemy for every card used up, falls of fleeting cards included', () => {
     const c = quiet();
-    cast(c, 'openCasket');
+    cast(c, 'griefCounseling');
     expect(c.stacks('enemy', 'poison')).toBe(0);
     cast(c, 'coffee');
-    expect(c.stacks('enemy', 'poison')).toBe(CARDS.openCasket.vals[0]);
+    expect(c.stacks('enemy', 'poison')).toBe(CARDS.griefCounseling.vals[0]);
     c.addTempCard('loompa', 'belt');
     c.dropBelt();
     expect(c.exhaust.some((x) => x.id === 'loompa')).toBe(true);
-    expect(c.stacks('enemy', 'poison')).toBe(2 * CARDS.openCasket.vals[0]);
+    expect(c.stacks('enemy', 'poison')).toBe(2 * CARDS.griefCounseling.vals[0]);
   });
 
-  it('Exhumation plays an exhausted card for free and it is exhausted again, never a power or a consumed card', () => {
+  it('Reopen Closed Tab plays an exhausted card for free and it is exhausted again, never a power or a consumed card', () => {
     const c = quiet();
     exhausted(c, 'punch', 901);
     exhausted(c, 'picketDrums', 902);
@@ -1041,7 +1041,7 @@ describe('Necromancer: the exhaust pile', () => {
     c.consumed.push(903);
     c.hero.mana = 5;
     const hp = c.enemy.hp;
-    cast(c, 'exhumation');
+    cast(c, 'reopenClosedTab');
     expect(hp - c.enemy.hp).toBe(CARDS.punch.vals[0]);
     expect(c.hero.mana).toBe(5);
     expect(c.exhaust.map((x) => x.uid)).toEqual(expect.arrayContaining([901, 902, 903]));
@@ -1054,13 +1054,13 @@ describe('Necromancer: the exhaust pile', () => {
     expect(c.exhume()).toBeNull();
   });
 
-  it('Mass Grave deals damage for every card in the exhaust pile', () => {
+  it('Layoffs deals damage for every card in the exhaust pile', () => {
     const c = quiet();
     for (let i = 0; i < 4; i++) exhausted(c, 'punch', 910 + i);
     const hp = c.enemy.hp;
     const before = c.exhaust.length;
-    cast(c, 'massGrave');
-    expect(hp - c.enemy.hp).toBe(before * CARDS.massGrave.vals[0]);
+    cast(c, 'layoffs');
+    expect(hp - c.enemy.hp).toBe(before * CARDS.layoffs.vals[0]);
   });
 
   it('Temp Agency and Open Plan Office deal unplayable temps into the draw pile; each pays when it rides off the belt and is used up', () => {
@@ -1467,7 +1467,7 @@ describe("Doctor's Note and Performance Review", () => {
   });
 });
 
-describe('Performance Plan, Slow Leak, Batch Processing, Pain in the Neck', () => {
+describe('Performance Plan, Red Tape, Batch Processing, Pain in the Neck', () => {
   const still = (hero: keyof typeof HEROES, deck: string[] = ['punch']): Combat => {
     const c = setup({ hero: HEROES[hero], deck: deckOf(deck) });
     c.enemy.move = { id: 'wait', intent: 'defend', windup: 999 };
@@ -1502,15 +1502,15 @@ describe('Performance Plan, Slow Leak, Batch Processing, Pain in the Neck', () =
     expect(d.has('enemy', 'vulnerable')).toBe(false);
   });
 
-  it('Slow Leak poisons, and the Poison does not wear off for its seconds', () => {
+  it('Red Tape poisons, and the Poison does not wear off for its seconds', () => {
     const c = still('necromancer');
     c.enemy.hp = c.enemy.maxHp = 9999;
-    expect(play(c, 'slowLeak')).toBe(true);
+    expect(play(c, 'redTape')).toBe(true);
     const poison = c.enemy.statuses.poison;
     const start = poison.v;
     run(c, CONFIG.dotInterval * 3 + 0.05);
     expect(poison.v).toBe(start);
-    run(c, CARDS.slowLeak.vals[1] + 1);
+    run(c, CARDS.redTape.vals[1] + 1);
     run(c, CONFIG.dotInterval + 0.05);
     expect(c.enemy.statuses.poison?.v ?? 0).toBeLessThan(start);
   });

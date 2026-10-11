@@ -54,10 +54,10 @@ describe('the Rogue', () => {
     expect(cardCostOf(first)).toBe(3);
   });
 
-  it('Light Fingers makes the cut deeper', () => {
+  it('Failing Upwards makes the cut deeper', () => {
     const c = rogueFight();
     inSleeve(c, 'borrowedStapler');
-    c.applyStatus('hero', 'lightFingers', 1);
+    c.applyStatus('hero', 'failingUpwards', 1);
     onBelt(c, 'punch');
     c.dropBelt();
     expect(c.cardCost(c.sleeve[0]!)).toBe(1);
@@ -91,7 +91,7 @@ describe('the Rogue', () => {
     const c = rogueFight(['borrowedStapler']);
     inSleeve(c, 'borrowedStapler');
     inSleeve(c, 'hideTheEvidence');
-    inSleeve(c, 'fenceIt');
+    inSleeve(c, 'expenseIt');
     onBelt(c, 'punch');
     for (const x of c.sleeve) if (x) x.disc = 1;
     c.sleeve[0]!.disc = 3;
@@ -106,19 +106,19 @@ describe('the Rogue', () => {
     expect(c.playCard(uid)).toBe(true);
     expect(hp - c.enemy.hp).toBe(CARDS.fireSale.vals[0] * worth);
     expect(c.sleeve.every((x) => x === null)).toBe(true);
-    expect(c.exhaust.map((x) => x.id)).toEqual(expect.arrayContaining(['borrowedStapler', 'hideTheEvidence', 'fenceIt', 'fireSale']));
+    expect(c.exhaust.map((x) => x.id)).toEqual(expect.arrayContaining(['borrowedStapler', 'hideTheEvidence', 'expenseIt', 'fireSale']));
   });
 
-  it('Fence It sells a random card of the sleeve for its original cost', () => {
+  it('Expense It sells a random card of the sleeve for its original cost', () => {
     const c = rogueFight(['borrowedStapler']);
     inSleeve(c, 'hideTheEvidence');
     c.sleeve[0]!.disc = 2;
     c.hero.maxMana = 6;
     c.hero.mana = 2;
-    const uid = onBelt(c, 'fenceIt');
+    const uid = onBelt(c, 'expenseIt');
     expect(c.playCard(uid)).toBe(true);
     expect(c.sleeve.every((x) => x === null)).toBe(true);
-    // Paid 2 for Fence It, got 3 for the card.
+    // Paid 2 for Expense It, got 3 for the card.
     expect(c.hero.mana).toBe(3);
   });
 
@@ -158,7 +158,7 @@ describe('the Rogue', () => {
 
   it('Restructuring shuffles the draw pile and sorts it so the dearest cards are drawn first', () => {
     const c = rogueFight();
-    c.draw = ['borrowedStapler', 'hideTheEvidence', 'fenceIt', 'coffee', 'inventoryShrinkage', 'shoplifting', 'lostProperty'].map((id, i) => ({
+    c.draw = ['borrowedStapler', 'hideTheEvidence', 'expenseIt', 'coffee', 'inventoryShrinkage', 'shoplifting', 'lostProperty'].map((id, i) => ({
       uid: 900 + i,
       id,
       up: false,
@@ -225,7 +225,7 @@ describe('the Rogue', () => {
   it('Shoplifting and Plausible Deniability count the other cards of the sleeve', () => {
     const c = rogueFight();
     inSleeve(c, 'hideTheEvidence');
-    inSleeve(c, 'fenceIt');
+    inSleeve(c, 'expenseIt');
     c.enemy.block = 0;
     const hp = c.enemy.hp;
     expect(c.playCard(onBelt(c, 'shoplifting'))).toBe(true);
@@ -386,11 +386,11 @@ describe('the Rogue', () => {
     expect(c.uniquePlayed('fight')).toBe(1);
   });
 
-  it("Grand Larceny takes the enemy's Block and buffs", () => {
+  it("Taking Credit takes the enemy's Block and buffs", () => {
     const c = rogueFight();
     c.enemy.block = 12;
     c.applyStatus('enemy', 'strength', 3);
-    expect(c.playCard(onBelt(c, 'grandLarceny'))).toBe(true);
+    expect(c.playCard(onBelt(c, 'takingCredit'))).toBe(true);
     expect(c.enemy.block).toBe(0);
     expect(c.hero.block).toBe(12);
     expect(c.stacks('enemy', 'strength')).toBe(0);

@@ -53,7 +53,7 @@ export function cardCostOf(card: CardLike): number {
   );
 }
 
-/** The cost a card copy has without the sleeve's temporary discount: what it is "worth" (Fire Sale, Fence It). */
+/** The cost a card copy has without the sleeve's temporary discount: what it is "worth" (Fire Sale, Expense It). */
 export const fullCostOf = (card: CardLike): number => cardCostOf({ ...card, disc: 0, welcome: 0 });
 
 /** Values of a card copy (upgrade, per-fight bonus, tenure and time on the belt included). */

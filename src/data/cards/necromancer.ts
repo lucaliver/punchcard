@@ -367,7 +367,7 @@ export const necromancerCards: CardDef[] = [
     play: (c, v) => c.applyStatus('enemy', 'poison', v[0]),
   },
   {
-    id: 'slowLeak',
+    id: 'redTape',
     face: '{poison:0}|{timer:1}',
     cls: 'necromancer',
     type: 'attack',
@@ -375,10 +375,10 @@ export const necromancerCards: CardDef[] = [
     cost: 1,
     vals: [2, 5],
     upVals: [3, 7],
-    art: 'slowLeak',
+    art: 'redTape',
     play: (c, v) => {
       c.applyStatus('enemy', 'poison', v[0]);
-      c.applyStatus('enemy', 'slowLeak', 1, v[1]);
+      c.applyStatus('enemy', 'redTape', 1, v[1]);
     },
   },
   {
@@ -605,7 +605,7 @@ export const necromancerCards: CardDef[] = [
     },
   },
   {
-    id: 'openCasket',
+    id: 'griefCounseling',
     face: '{*exhaust}{poison:0}',
     cls: 'necromancer',
     type: 'power',
@@ -613,11 +613,11 @@ export const necromancerCards: CardDef[] = [
     cost: 2,
     vals: [2],
     upVals: [3],
-    art: 'openCasket',
-    play: (c, v) => c.applyStatus('hero', 'openCasket', v[0]),
+    art: 'griefCounseling',
+    play: (c, v) => c.applyStatus('hero', 'griefCounseling', v[0]),
   },
   {
-    id: 'exhumation',
+    id: 'reopenClosedTab',
     face: '{exhaust}{copy}',
     cls: 'necromancer',
     type: 'skill',
@@ -625,12 +625,12 @@ export const necromancerCards: CardDef[] = [
     cost: 2,
     upCost: 1,
     vals: [],
-    art: 'exhumation',
-    // It is used up again, so it can be dug up once more (and every use-up still counts for Open Casket and Shredder).
+    art: 'reopenClosedTab',
+    // It is used up again, so it can be dug up once more (and every use-up still counts for Grief Counseling and Shredder).
     play: (c) => void c.exhume(),
   },
   {
-    id: 'massGrave',
+    id: 'layoffs',
     face: '{dmg:0}|{exhaust}',
     cls: 'necromancer',
     type: 'attack',
@@ -638,7 +638,7 @@ export const necromancerCards: CardDef[] = [
     cost: 3,
     vals: [3],
     upVals: [4],
-    art: 'massGrave',
+    art: 'layoffs',
     // Damage for every card in the exhaust pile (what the pile counts: used-up cards and played powers): the face shows the total as it stands.
     shown: (c, v) => [v[0] * c.exhaust.length],
     play: (c, v) => void c.hit(v[0] * c.exhaust.length),

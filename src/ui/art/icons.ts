@@ -95,7 +95,7 @@ export const ICONS: Record<string, { el: Element; svg: string; wide?: boolean }>
     svg: `<path d="M19.2 0h25.6v3.2h-25.6zM12.8 3.2h38.4v3.2h-38.4zM6.4 6.4h22.4v3.2h-22.4zM35.2 6.4h22.4v3.2h-22.4zM6.4 9.6h6.4v3.2h-6.4zM51.2 9.6h6.4v3.2h-6.4zM6.4 12.8h6.4v3.2h-6.4zM16 12.8h9.6v3.2h-9.6zM38.4 12.8h9.6v3.2h-9.6zM51.2 12.8h6.4v3.2h-6.4zM6.4 16h6.4v3.2h-6.4zM16 16h9.6v3.2h-9.6zM38.4 16h9.6v3.2h-9.6zM51.2 16h6.4v3.2h-6.4zM6.4 19.2h6.4v3.2h-6.4zM16 19.2h3.2v3.2h-3.2zM22.4 19.2h3.2v3.2h-3.2zM38.4 19.2h3.2v3.2h-3.2zM44.8 19.2h3.2v3.2h-3.2zM51.2 19.2h6.4v3.2h-6.4zM6.4 22.4h6.4v3.2h-6.4zM16 22.4h9.6v3.2h-9.6zM38.4 22.4h9.6v3.2h-9.6zM51.2 22.4h6.4v3.2h-6.4zM6.4 25.6h6.4v3.2h-6.4zM51.2 25.6h6.4v3.2h-6.4zM6.4 28.8h6.4v3.2h-6.4zM51.2 28.8h6.4v3.2h-6.4zM6.4 32h6.4v3.2h-6.4zM19.2 32h25.6v3.2h-25.6zM51.2 32h6.4v3.2h-6.4zM6.4 35.2h6.4v3.2h-6.4zM19.2 35.2h6.4v3.2h-6.4zM38.4 35.2h6.4v3.2h-6.4zM51.2 35.2h6.4v3.2h-6.4zM6.4 38.4h6.4v3.2h-6.4zM19.2 38.4h6.4v3.2h-6.4zM38.4 38.4h6.4v3.2h-6.4zM51.2 38.4h6.4v3.2h-6.4zM6.4 41.6h6.4v3.2h-6.4zM19.2 41.6h6.4v3.2h-6.4zM38.4 41.6h6.4v3.2h-6.4zM51.2 41.6h6.4v3.2h-6.4zM6.4 44.8h6.4v3.2h-6.4zM19.2 44.8h6.4v3.2h-6.4zM38.4 44.8h6.4v3.2h-6.4zM6.4 48h6.4v3.2h-6.4zM38.4 48h6.4v3.2h-6.4zM6.4 51.2h6.4v3.2h-6.4zM38.4 51.2h6.4v3.2h-6.4zM6.4 54.4h6.4v3.2h-6.4zM38.4 54.4h6.4v3.2h-6.4zM6.4 57.6h38.4v3.2h-38.4zM12.8 60.8h25.6v3.2h-25.6z"/>`,
   },
   /** A fire door seen square on: steel frame, the leaf with a flame sign and a push bar. */
-  fireDoor: {
+  spamFilter: {
     el: 'arcane',
     svg: `<path d="M12.8 3.2h38.4v57.6H12.8z"/><path fill="#16121f" d="M16 6.4h32v54.4H16z"/><path d="M19.2 9.6h25.6v51.2H19.2z"/><path fill="#16121f" d="M35.2 12.8h3.2v3.2h-3.2zM32 16h6.4v3.2h-6.4zM28.8 19.2h9.6v3.2h-9.6zM22.4 22.4h3.2v3.2h-3.2zM28.8 22.4h9.6v3.2h-9.6zM22.4 25.6h3.2v3.2h-3.2zM28.8 25.6h12.8v3.2h-12.8zM22.4 28.8h19.2v3.2h-19.2zM22.4 32h19.2v3.2h-19.2zM22.4 35.2h19.2v3.2h-19.2zM25.6 38.4h12.8v3.2h-12.8zM28.8 41.6h6.4v3.2h-6.4zM22.4 51.2h19.2v3.2H22.4z"/>`,
   },
@@ -323,7 +323,7 @@ export const ICONS: Record<string, { el: Element; svg: string; wide?: boolean }>
     el: 'blood',
     svg: `<path d="M6 28c0-9 11-14 26-14s26 5 26 14v14c0 8-11 12-26 12S6 50 6 42z"/><ellipse cx="32" cy="30" rx="13" ry="8" fill="#16121f"/><path d="M6 36h52" fill="none" stroke="#16121f" stroke-width="3"/><path ${HI} d="M10 26c4-4 10-6 16-6-6 2-10 5-12 10z"/>`,
   },
-  slowLeak: {
+  redTape: {
     el: 'necro',
     svg: `<path d="M32 2C22 16 12 28 12 40a20 20 0 0 0 40 0C52 28 42 16 32 2z"/><path ${HI} d="M20 38c0-6 4-12 8-16-2 6-2 10-1 16z"/><path fill="#16121f" d="M30 24l-6 10 8 4-6 12 14-14-8-4 6-8z"/><circle cx="32" cy="60" r="3"/>`,
   },
@@ -1026,7 +1026,7 @@ export const ICONS: Record<string, { el: Element; svg: string; wide?: boolean }>
     el: 'holy',
     svg: `<rect x="2" y="10" width="54" height="38" rx="4"/><rect x="2" y="18" width="54" height="8" fill="#16121f"/><rect x="8" y="34" width="14" height="8" fill="#16121f"/><circle cx="46" cy="44" r="16"/><circle cx="46" cy="44" r="11" fill="#16121f"/><path d="M46 36v9h7" fill="none" stroke="currentColor" stroke-width="3.5" stroke-linecap="round"/>`,
   },
-  sparkJoy: {
+  lowHangingFruit: {
     el: 'holy',
     svg: `${star4(30, 30, 28)}${star4(54, 54, 9)}${star4(10, 54, 7)}${star4(52, 10, 7)}`,
   },
@@ -1046,7 +1046,7 @@ export const ICONS: Record<string, { el: Element; svg: string; wide?: boolean }>
     el: 'nature',
     svg: `<rect x="6" y="8" width="52" height="8"/><rect x="24" y="2" width="16" height="7"/><path d="M12 18h40l-4 42H16z"/><path d="M32 28a9 9 0 1 0 9 8" fill="none" stroke="#16121f" stroke-width="4"/><path d="M42 26v11h-11" fill="none" stroke="#16121f" stroke-width="4" stroke-linejoin="round"/>`,
   },
-  fleshWound: {
+  zombieCompany: {
     el: 'blood',
     svg: `<g transform="rotate(-35 32 32)"><rect x="0" y="18" width="64" height="28" rx="14"/><rect x="21" y="18" width="22" height="28" fill="#16121f" opacity=".4"/><g fill="#16121f"><circle cx="9" cy="28" r="2"/><circle cx="9" cy="36" r="2"/><circle cx="55" cy="28" r="2"/><circle cx="55" cy="36" r="2"/><circle cx="16" cy="32" r="2"/><circle cx="48" cy="32" r="2"/></g></g>`,
   },
@@ -1156,7 +1156,7 @@ export const ICONS: Record<string, { el: Element; svg: string; wide?: boolean }>
     svg: `<path d="M32 6a26 26 0 1 0 26 26H32z"/><path d="M32 32V16M32 32H20" stroke="#16121f" stroke-width="5"/><path d="M38 2l24 24H38z"/>`,
   },
   wrench: { el: 'steel', svg: `<path d="M50 4a12 12 0 0 0-15 16L6 49l9 9 29-29A12 12 0 0 0 60 14l-8 8-7-7z"/>` },
-  wrenchWhack: {
+  wealthRedistribution: {
     el: 'steel',
     svg: `<path d="M48 0h3.2v3.2h-3.2zM57.6 0h3.2v3.2h-3.2zM54.4 3.2h3.2v3.2h-3.2zM25.6 6.4h16v3.2h-16zM25.6 9.6h16v3.2h-16zM25.6 12.8h16v3.2h-16zM48 12.8h9.6v3.2h-9.6zM25.6 16h16v3.2h-16zM48 16h9.6v3.2h-9.6zM25.6 19.2h32v3.2h-32zM22.4 22.4h35.2v3.2h-35.2zM22.4 25.6h32v3.2h-32zM22.4 28.8h25.6v3.2h-25.6zM22.4 32h12.8v3.2h-12.8zM19.2 35.2h12.8v3.2h-12.8zM16 38.4h12.8v3.2h-12.8zM12.8 41.6h12.8v3.2h-12.8zM9.6 44.8h12.8v3.2h-12.8zM6.4 48h12.8v3.2h-12.8zM3.2 51.2h12.8v3.2h-12.8zM3.2 54.4h9.6v3.2h-9.6z"/>`,
   },
@@ -1662,15 +1662,15 @@ export const ICONS: Record<string, { el: Element; svg: string; wide?: boolean }>
     el: 'necro',
     svg: `<path d="M2 58L62 38" ${S} stroke-width="6"/><circle cx="46" cy="22" r="17" stroke="#16121f" stroke-width="4"/><circle cx="46" cy="22" r="17"/><path d="M38 14l6 4-2 6M52 28l4 5M40 32l6-3" stroke="#16121f" stroke-width="3" fill="none"/><g ${S} stroke-width="6"><path d="M17 27l2 15M18 31l11-1M19 42L9 52M19 42l8 7"/></g><circle cx="16" cy="19" r="6.5"/>`,
   },
-  openCasket: {
+  griefCounseling: {
     el: 'necro',
     svg: `<path d="M16 4h18l10 14-8 42H14L6 18z"/><path fill="#16121f" d="M20 12h10l7 8-5 32H17l-5-32z"/><path d="M23 22h4v6h6v4h-6v14h-4V32h-6v-4h6z"/><path d="M50 14l12 4-8 40-6-2z"/>`,
   },
-  exhumation: {
+  reopenClosedTab: {
     el: 'necro',
     svg: `<path d="M12 56V42a6 6 0 0 1 6-6h27a6 6 0 0 1 6 6v14z"/><g ${S} stroke-width="6"><path d="M18 36V18M27 34V8M36 34V10M45 36V20M13 42L6 32"/></g><path d="M2 54h60v10H2z"/><path fill="#16121f" d="M8 57h10v3H8zM30 58h12v3H30zM48 56h9v3h-9z"/>`,
   },
-  massGrave: {
+  layoffs: {
     el: 'necro',
     svg: `<path d="M3 58V30a8 8 0 0 1 16 0v28z"/><path d="M24 58V20a8 8 0 0 1 16 0v38z"/><path d="M45 58V30a8 8 0 0 1 16 0v28z"/><path fill="#16121f" d="M10 33h2v12h-2zM6 37h10v2H6zM31 25h2v14h-2zM26 30h12v2H26zM52 33h2v12h-2zM48 37h10v2H48z"/><path d="M0 56h64v8H0z"/><path fill="#16121f" opacity=".5" d="M6 59h10v2H6zM28 60h12v2H28zM48 59h10v2H48z"/>`,
   },
@@ -2010,7 +2010,7 @@ export const ICONS: Record<string, { el: Element; svg: string; wide?: boolean }>
     el: 'steel',
     svg: `<path d="M4 24h34l14 14h8v14H4z"/><path ${HI} d="M10 28h22l10 10H10z"/><path fill="#16121f" d="M14 29h10v8H14zM28 29h8l6 8H28z"/><circle cx="18" cy="53" r="7"/><circle cx="46" cy="53" r="7"/><circle cx="18" cy="53" r="3" fill="#16121f"/><circle cx="46" cy="53" r="3" fill="#16121f"/><path d="M0 18h14v3H0zM2 12h10v3H2z"/>`,
   },
-  fenceIt: {
+  expenseIt: {
     el: 'steel',
     svg: `<path d="M6 16l6-6 6 6v42H6zM22 16l6-6 6 6v42H22zM38 16l6-6 6 6v42H38z"/><path fill="#16121f" opacity=".6" d="M2 28h60v6H2zM2 44h60v6H2z"/><path d="M50 2h12v12L50 14z" fill="#fff" opacity=".0"/>`,
   },
@@ -2038,11 +2038,11 @@ export const ICONS: Record<string, { el: Element; svg: string; wide?: boolean }>
     el: 'steel',
     svg: `<path d="M10 4h44v56H10z"/><path fill="#16121f" d="M16 10h32v26H16z"/><path d="M19 13h26v20H19z"/><circle cx="32" cy="21" r="5.5" fill="#16121f"/><path fill="#16121f" d="M21 33c0-8 22-8 22 0z"/><path fill="#16121f" d="M16 42h32v3H16zM16 49h32v3H16zM16 56h20v2H16z"/><path ${HI} d="M12 6h4v52h-4z"/>`,
   },
-  grandLarceny: {
+  takingCredit: {
     el: 'shadow',
     svg: `<path d="M4 22c8-6 16-6 28-2 12-4 20-4 28 2-2 14-8 22-18 20-6-2-8-6-10-6s-4 4-10 6C12 44 6 36 4 22z"/><ellipse cx="20" cy="30" rx="6" ry="4" fill="#16121f"/><ellipse cx="44" cy="30" rx="6" ry="4" fill="#16121f"/><path ${HI} d="M10 24c6-3 12-3 18-1-6 0-12 2-17 6z"/>`,
   },
-  lightFingers: {
+  failingUpwards: {
     el: 'holy',
     svg: `<path d="M14 58V34l-6-6 4-4 8 8V10h6v18V6h6v22V10h6v20V16h6v32c0 8-6 12-14 12z"/><path ${HI} d="M18 34l-4-4v8z"/><path d="M52 6l2 5 5 2-5 2-2 5-2-5-5-2 5-2z"/>`,
   },

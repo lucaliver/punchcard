@@ -23,7 +23,7 @@ export const mageCards: CardDef[] = [
     play: (c, v) => void c.hit(v[0]),
   },
   {
-    id: 'fireDoor',
+    id: 'spamFilter',
     face: '{block:0}',
     cls: 'mage',
     type: 'defense',
@@ -32,7 +32,7 @@ export const mageCards: CardDef[] = [
     cost: 2,
     vals: [8],
     upVals: [11],
-    art: 'fireDoor',
+    art: 'spamFilter',
     play: (c, v) => c.gainBlock('hero', v[0]),
   },
   {

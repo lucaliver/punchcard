@@ -248,9 +248,9 @@ export interface StatusDef {
   dotFloor?: string;
   /** A damage-over-time status that ticks for half its amount, rounded up (Poison), then loses 1 as usual. */
   halves?: true;
-  /** While active on the hero, its amount (`v`) adds to the discount a falling card gives (Light Fingers). */
+  /** While active on the hero, its amount (`v`) adds to the discount a falling card gives (Failing Upwards). */
   catchBonus?: true;
-  /** While active on the hero, every card with a mana cost costs its amount (`v`) instead, X cards keep theirs (Does It Spark Joy?). */
+  /** While active on the hero, every card with a mana cost costs its amount (`v`) instead, X cards keep theirs (Low-Hanging Fruit). */
   flatCost?: true;
   /** While active on the hero, its amount (`v`) comes off a card's cost the first time that card (by id) is played in a fight (Introductory Offer). */
   firstPlayCut?: true;

@@ -42,7 +42,7 @@ const DT = 1 / 30;
 const CRYSTALS = ['coffee', 'italianEspresso'];
 const BLOCKISH = [
   'bobTheBuilder',
-  'fireDoor',
+  'spamFilter',
   'karlMarx',
   'pingPongTable',
   'wallStreet',

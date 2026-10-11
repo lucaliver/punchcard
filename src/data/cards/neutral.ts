@@ -768,7 +768,7 @@ export const neutralCards: CardDef[] = [
     },
   },
   {
-    id: 'sparkJoy',
+    id: 'lowHangingFruit',
     face: '{timer:0}|{price:1}',
     cls: 'neutral',
     type: 'skill',
@@ -776,8 +776,8 @@ export const neutralCards: CardDef[] = [
     cost: 1,
     vals: [8, 2],
     upVals: [12, 2],
-    art: 'sparkJoy',
-    play: (c, v) => c.applyStatus('hero', 'sparkJoy', v[1], v[0]),
+    art: 'lowHangingFruit',
+    play: (c, v) => c.applyStatus('hero', 'lowHangingFruit', v[1], v[0]),
   },
   {
     id: 'recyclingDay',

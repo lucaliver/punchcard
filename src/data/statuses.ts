@@ -185,8 +185,8 @@ const defs: StatusDef[] = [
         vuln.t = Math.max(vuln.t, Math.min(PLAN_CAP, vuln.t + c.stacks(side, 'performancePlan')));
     },
   },
-  // Slow Leak (on the enemy): its Poison does not wear off while this lasts.
-  { id: 'slowLeak', tone: 'toxic', kind: 'timed', good: false, icon: 'poisonBottle', keeps: 'poison' },
+  // Red Tape (on the enemy): its Poison does not wear off while this lasts.
+  { id: 'redTape', tone: 'toxic', kind: 'timed', good: false, icon: 'poisonBottle', keeps: 'poison' },
   // Batch Processing: the sleeve is out of reach for a while (the price of playing it all at once).
   { id: 'batchProcessing', tone: 'amber', kind: 'timed', good: false, icon: 'hand', barsSleeve: true },
   // Paper Trail (a power): every attack the hero plays also makes the enemy Vulnerable for `v` seconds.
@@ -226,9 +226,9 @@ const defs: StatusDef[] = [
       s.e = type;
     },
   },
-  // Open Casket (a Necromancer power): every card the hero uses up poisons the enemy for `v`.
+  // Grief Counseling (a Necromancer power): every card the hero uses up poisons the enemy for `v`.
   {
-    id: 'openCasket',
+    id: 'griefCounseling',
     tone: 'toxic',
     kind: 'stacks',
     good: true,
@@ -254,8 +254,8 @@ const defs: StatusDef[] = [
   },
   // Direct Deposit: `v` Block lands on the hero when the time is up.
   { id: 'directDeposit', tone: 'teal', kind: 'timed', good: true, icon: 'coin', onEnd: (c, side, s) => c.gainBlock(side, s.v) },
-  // Does It Spark Joy?: for a while every card costs `v` mana.
-  { id: 'sparkJoy', tone: 'blue', kind: 'timed', good: true, icon: 'priceTag', flatCost: true },
+  // Low-Hanging Fruit: for a while every card costs `v` mana.
+  { id: 'lowHangingFruit', tone: 'blue', kind: 'timed', good: true, icon: 'priceTag', flatCost: true },
   // Matador: the next hit the hero dodges stuns the enemy for `v` seconds.
   {
     id: 'matador',
@@ -451,8 +451,8 @@ const defs: StatusDef[] = [
     icon: 'coin',
     bonusDamage: (c, s, def) => (def?.type === 'attack' ? s.v * Math.max(0, Math.floor(c.hero.mana - c.hero.maxMana)) : 0),
   },
-  // Light Fingers: a card falling into a full sleeve cuts `v` more mana off every card in it.
-  { id: 'lightFingers', tone: 'amber', kind: 'stacks', good: true, icon: 'priceTag', catchBonus: true },
+  // Failing Upwards: a card falling into a full sleeve cuts `v` more mana off every card in it.
+  { id: 'failingUpwards', tone: 'amber', kind: 'stacks', good: true, icon: 'priceTag', catchBonus: true },
   // Lost Badge: the next card that costs mana is free (a stack each).
   { id: 'lostBadge', tone: 'blue', kind: 'stacks', good: true, icon: 'priceTag', freeNext: true },
   // Days Without an Accident (a power): `v` Strength every few seconds without losing HP (`e` is the clock, `Combat.mem.daysGained` what it has given); any HP lost takes it all back.

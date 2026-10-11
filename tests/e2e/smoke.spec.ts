@@ -928,7 +928,7 @@ test('debug: Unlock all hires every hero and reveals every card and enemy in the
   await freshGame(page, { locked: true });
   await page.getByRole('button', { name: /debug/i }).click();
   await page.getByRole('button', { name: /unlock all/i }).click();
-  await page.getByRole('button', { name: 'Close' }).click();
+  await page.getByRole('button', { name: 'Close', exact: true }).click();
   await page
     .locator('.menu')
     .getByRole('button', { name: /handbook/i })

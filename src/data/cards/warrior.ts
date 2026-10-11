@@ -35,7 +35,7 @@ export const warriorCards: CardDef[] = [
     play: (c, v) => c.gainBlock('hero', v[0]),
   },
   {
-    id: 'wrenchWhack',
+    id: 'wealthRedistribution',
     face: '{breakBlock}|{dmg:0}',
     cls: 'warrior',
     type: 'attack',
@@ -43,7 +43,7 @@ export const warriorCards: CardDef[] = [
     cost: 4,
     vals: [14],
     upVals: [20],
-    art: 'wrenchWhack',
+    art: 'wealthRedistribution',
     // The wrench goes through the armour first: the whole hit lands.
     play: (c, v) => {
       c.breakBlock('enemy');
@@ -616,7 +616,7 @@ export const warriorCards: CardDef[] = [
     },
   },
   {
-    id: 'fleshWound',
+    id: 'zombieCompany',
     face: '{dmg:0}|+{1}/{hp}',
     cls: 'warrior',
     type: 'attack',
@@ -625,7 +625,7 @@ export const warriorCards: CardDef[] = [
     vals: [4, 4],
     upVals: [6, 3],
     dmg: [0],
-    art: 'fleshWound',
+    art: 'zombieCompany',
     // The more it hurts, the harder it hits: +1 damage per v[1] HP missing.
     shown: (c, v) => [v[0] + Math.floor((c.hero.maxHp - c.hero.hp) / v[1]), v[1]],
     play: (c, v) => void c.hit(v[0] + Math.floor((c.hero.maxHp - c.hero.hp) / v[1])),

@@ -215,7 +215,7 @@ export const rogueCards: CardDef[] = [
     play: (c, v) => c.applyStatus('hero', 'offshoreAccount', v[0]),
   },
   {
-    id: 'fenceIt',
+    id: 'expenseIt',
     face: '{sleeve}{mana}',
     cls: 'rogue',
     type: 'skill',
@@ -224,7 +224,7 @@ export const rogueCards: CardDef[] = [
     upCost: 1,
     vals: [],
     keywords: ['exhaust'],
-    art: 'fenceIt',
+    art: 'expenseIt',
     // A random card of the sleeve is sold for what it is worth: its cost, not the discount it has now.
     play: (c, _v, card) => c.gainMana(Math.max(0, c.scrapOne(card.uid))),
   },
@@ -409,7 +409,7 @@ export const rogueCards: CardDef[] = [
     },
   },
   {
-    id: 'grandLarceny',
+    id: 'takingCredit',
     face: '{snatch}{buff}',
     cls: 'rogue',
     type: 'skill',
@@ -417,13 +417,13 @@ export const rogueCards: CardDef[] = [
     cost: 3,
     upCost: 2,
     vals: [],
-    art: 'grandLarceny',
+    art: 'takingCredit',
     play: (c) => void c.stealBuffs(),
   },
 
   // Epics
   {
-    id: 'lightFingers',
+    id: 'failingUpwards',
     face: '{*exit}{cheaper:0}',
     cls: 'rogue',
     type: 'power',
@@ -431,8 +431,8 @@ export const rogueCards: CardDef[] = [
     cost: 4,
     upCost: 3,
     vals: [1],
-    art: 'lightFingers',
-    play: (c, v) => c.applyStatus('hero', 'lightFingers', v[0]),
+    art: 'failingUpwards',
+    play: (c, v) => c.applyStatus('hero', 'failingUpwards', v[0]),
   },
   {
     id: 'lostAndFound',
