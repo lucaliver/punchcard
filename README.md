@@ -86,6 +86,36 @@ mosse. Tra uno scontro e l'altro migliori il mazzo.
 Ognuno ha una passiva, un'abilità a mana e un numero diverso di slot sleeve. I mazzi iniziali hanno solo carte base e
 cristalli; il resto arriva come ricompensa.
 
+### Archetipi per classe
+
+Ogni classe si gioca in più modi: i mazzi si costruiscono attorno a uno o due di questi filoni (le carte neutrali
+completano il resto).
+
+- **Guerriero**
+  - *Fortezza*: il Blocco diventa danno, e le difese durano più a lungo.
+  - *Forza e colpi multipli*: accumulare Forza e darle tanti colpi su cui agire.
+  - *Vulnerabile*: rendere il bersaglio fragile e colpirlo mentre lo è.
+  - *Dolore e spine*: farsi male o farsi colpire per rendere indietro.
+  - *Crescita lenta*: carte che migliorano durante lo scontro, e catene di carte che pagano alla fine.
+- **Mago**
+  - *Fuoco e gelo*: bruciatura e raffreddamento, con combo tra i due stati.
+  - *Multitasking*: catene di attacchi veloci che si potenziano a vicenda.
+  - *Ritmo del nastro*: accelerare il nastro e premiare chi gioca in fretta.
+  - *Schivata*: evitare i colpi per periodi brevi e trarne vantaggio.
+  - *Mana e sleeve*: motore di mana e carte tenute da parte da giocare tutte insieme.
+- **Negromante**
+  - *Veleno*: danno nel tempo, da accumulare, moltiplicare e sfruttare con le altre carte.
+  - *Debolezza e controllo*: indebolire il nemico e usare quella finestra.
+  - *Vita come risorsa*: spendere o rubare punti vita, tra cura e rischio.
+  - *Cimitero*: carte esaurite che si contano, si recuperano e si rigiocano.
+  - *Maledizioni e collaboratori temporanei*: carte ingiocabili che pagano solo quando cadono dal nastro.
+- **Ladro**
+  - *Sleeve*: tenere carte da parte, ridurne il costo e giocarle in blocco.
+  - *Cadute*: far cadere le carte dal nastro di proposito e trarne vantaggio.
+  - *Furti*: carte rubate agli altri eroi e mosse rubate ai nemici.
+  - *Varietà*: premiare il giocare carte diverse tra loro.
+  - *Mana oltre il massimo*: accumulare mana oltre il limite e spenderlo in un colpo.
+
 ## 4. Contenuti
 
 - **Carte:** un set per eroe, **neutrali** per tutti, **maledizioni** date dai nemici (durano lo scontro). Cinque rarità; ogni
@@ -94,6 +124,12 @@ cristalli; il resto arriva come ricompensa.
 - **Nemici:** normali, élite e boss per atto, ognuno con una trovata (passiva, maledizione o meccanica del nastro).
   La difficoltà cresce scendendo di piano.
 - **Handbook:** carte e nemici si scoprono giocando; contiene anche i record di carriera.
+
+### Nota di bilanciamento
+
+In generale **le cure e gli stordimenti sono di base molto forti**: per questo sono sempre limitati o controbilanciati nelle
+carte (un costo alto, un prezzo in vita o in tempo, un effetto che si paga altrove, pochi usi per scontro). Nuove carte
+con cura o stordimento vanno pensate con un freno incluso.
 
 ---
 

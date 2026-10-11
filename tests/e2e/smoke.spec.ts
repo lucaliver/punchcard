@@ -1471,7 +1471,8 @@ test("the Punch Clock's badge swipe: the badge is dragged through the reader, wh
   await expect(win).toBeVisible();
   await combat(page, 'c.chore.min = 0.01; c.chore.max = 1e9;');
   const swipe = async (): Promise<void> => {
-    // Hovering waits for the window to stop moving (it stamps itself in).
+    // Hovering waits for the window to stop moving (it stamps itself in); a refused badge slides back in steps, which look still between two of them.
+    await page.waitForTimeout(400);
     await page.locator('.bd-badge').hover();
     const track = (await page.locator('.bd-track').boundingBox())!;
     const badge = (await page.locator('.bd-badge').boundingBox())!;
