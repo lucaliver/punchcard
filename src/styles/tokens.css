@@ -62,6 +62,8 @@
   --tone-mint-hi: #8ae8d0;
   --tone-magenta: var(--magenta);
   --tone-magenta-hi: #ff7be0;
+  --tone-pink: var(--p);
+  --tone-pink-hi: #ffa6d0;
   --tone-toxic: #7f9414;
   --tone-toxic-hi: #d6ec4c;
   /* What a bar or a chip shows when nothing is said (an idle move) */
@@ -189,6 +191,7 @@
 [data-tone='amber'] { --tone: var(--tone-amber); --tone-hi: var(--tone-amber-hi); }
 [data-tone='mint'] { --tone: var(--tone-mint); --tone-hi: var(--tone-mint-hi); }
 [data-tone='magenta'] { --tone: var(--tone-magenta); --tone-hi: var(--tone-magenta-hi); }
+[data-tone='pink'] { --tone: var(--tone-pink); --tone-hi: var(--tone-pink-hi); }
 [data-tone='toxic'] { --tone: var(--tone-toxic); --tone-hi: var(--tone-toxic-hi); }
 
 [hidden] {

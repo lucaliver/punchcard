@@ -308,7 +308,7 @@ describe('colours', () => {
   });
 
   it('every status has a tone, and every tone has its two inks and its data-tone rule in tokens.css', () => {
-    const tones = ['red', 'green', 'purple', 'blue', 'teal', 'amber', 'mint', 'toxic', 'magenta'];
+    const tones = ['red', 'green', 'purple', 'blue', 'teal', 'amber', 'mint', 'toxic', 'magenta', 'pink'];
     for (const id of STATUS_ORDER) expect(tones, id).toContain(STATUSES[id].tone);
     for (const tone of tones) {
       expect(tokens, tone).toContain(`--tone-${tone}:`);

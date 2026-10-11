@@ -248,7 +248,7 @@ export function openCardDetail(card: CardInst, onClose?: () => void): ModalHandl
   const render = (): void => {
     const shown = { ...card, up: showUp };
     const gloss = cardKeywords(shown).map((k) =>
-      h('div', { html: `${keywordIconHtml(k)}<b class="kw">${t(`kw.${k}`)}</b> — ${keywordHtml(t(`kw.${k}.d`))}` }),
+      h('div', { html: `${keywordIconHtml(k)}${keywordHtml(`[${k}]`)} — ${keywordHtml(t(`kw.${k}.d`))}` }),
     );
     wrap.replaceChildren(
       cardView(shown),
