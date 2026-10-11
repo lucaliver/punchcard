@@ -1330,6 +1330,8 @@ test('losing the first fight offers to beg to stay, once, and the fight goes on'
   // The second time is final.
   await combat(page, "delete c.hero.statuses.dodge; c.damage('enemy', 'hero', 9999, { raw: true, ignoreBlock: true }, 'enemy');");
   await expect(page.locator('.end')).toBeVisible({ timeout: 8000 });
+  // The handbook's three bars (cards, personnel, stationery) show under the payslip.
+  await expect(page.locator('.end .coll-row')).toHaveCount(3);
 });
 
 test('a stun covers the belt with one veil, not a badge on every card', async ({ page }) => {

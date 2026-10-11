@@ -280,7 +280,7 @@
   position: relative;
   width: 132px;
   height: 132px;
-  margin: 8px auto;
+  margin: 6px auto;
   display: grid;
   place-items: center;
 }
@@ -354,6 +354,52 @@
   animation: stamp-in 0.12s steps(2) backwards;
   animation-delay: calc(var(--i) * 0.09s + 0.5s);
 }
+/* the handbook's pages: a bar each, climbing from where the run found it (after the payslip has printed) */
+.collect {
+  --coll-wait: calc(0.8s + var(--rows) * 0.09s);
+  flex: none;
+  width: min(100%, 340px);
+  margin: 0 0 6px;
+  padding: 6px 12px;
+  /* one column set for the three rows, so the bars all start and end at the same place */
+  display: grid;
+  grid-template-columns: auto 1fr auto;
+  align-items: center;
+  gap: 6px 8px;
+  color: var(--k);
+  background: var(--paper);
+  border: var(--line) solid var(--k);
+  box-shadow: var(--off) var(--off) 0 var(--shadow);
+  font-family: var(--font-ui);
+  font-size: 18px;
+  line-height: 1;
+  animation: slip-line 0.1s steps(1) var(--coll-wait) both;
+}
+.coll-row { display: contents; }
+.coll-label { display: flex; align-items: center; gap: 6px; min-width: 0; text-align: left; }
+.coll-label .pico { flex: none; font-size: 1.1em; --ink2: var(--p); }
+.coll-row b { font-weight: 400; font-variant-numeric: tabular-nums; }
+.coll-track {
+  height: 16px;
+  overflow: hidden;
+  background: var(--paper2);
+  border: var(--line) solid var(--k);
+}
+.coll-fill {
+  display: block;
+  height: 100%;
+  background: var(--p);
+  transform-origin: left;
+  transform: scaleX(var(--to));
+  animation: coll-fill 0.9s steps(12) calc(var(--coll-wait) + 0.3s + var(--i) * 0.35s) backwards;
+}
+.coll-foes .coll-fill { background: var(--b); }
+.coll-relics .coll-fill { background: var(--y); }
+@keyframes coll-fill {
+  from { transform: scaleX(var(--from)); }
+}
+/* the bar's gain lands as a small stamp once it has filled */
+.coll-gain { order: 0; animation-delay: calc(var(--coll-wait) + 1.2s + var(--i) * 0.35s); }
 .end .act-btn { display: flex; align-items: center; justify-content: center; gap: 10px; }
 .end .act-btn .pico { font-size: 1.2em; --ink2: var(--p); }
 .slip-row.slip-net {

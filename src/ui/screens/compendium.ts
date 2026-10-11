@@ -6,7 +6,7 @@ import { ENEMY_LIST } from '../../data/enemies';
 import type { EnemyDef, RelicDef } from '../../game/types';
 import { HERO_LIST } from '../../data/heroes';
 import { RELIC_LIST } from '../../data/relics';
-import { cardHidden, enemyMet, hasStamp, heroHidden, isDiscovered, records, relicSeen, runHistory } from '../../game/meta';
+import { cardHidden, collection, enemyMet, hasStamp, heroHidden, isDiscovered, records, relicSeen, runHistory } from '../../game/meta';
 import type { CardClass, RunLog } from '../../game/types';
 import type { Screen } from '../app';
 import { h, onPress, stagger } from '../dom';
@@ -158,10 +158,7 @@ export function compendiumScreen(onBack: () => void): Screen {
   let tab: CardClass = classes[0];
   let act = 1;
   let section: Section = 'cards';
-  const total = cardList.length;
-  const found = cardList.filter((c) => isDiscovered(c.id)).length;
-  const met = ENEMY_LIST.filter((e) => enemyMet(e.id)).length;
-  const relicsSeen = RELIC_LIST.filter((r) => relicSeen(r.id)).length;
+  const filled = collection();
 
   const tabs = h('div', { class: 'tabs', role: 'tablist' });
   const grid = h('div', { class: 'deck-grid comp-grid print' });
@@ -207,11 +204,11 @@ export function compendiumScreen(onBack: () => void): Screen {
     );
     sub.textContent =
       section === 'cards'
-        ? t('compendium.progress', { n: found, total })
+        ? t('compendium.progress', { n: filled.cards.n, total: filled.cards.total })
         : section === 'enemies'
-          ? t('compendium.foes', { n: met, total: ENEMY_LIST.length })
+          ? t('compendium.foes', { n: filled.foes.n, total: filled.foes.total })
           : section === 'relics'
-            ? t('compendium.relicsFound', { n: relicsSeen, total: RELIC_LIST.length })
+            ? t('compendium.relicsFound', { n: filled.relics.n, total: filled.relics.total })
             : '';
     sub.hidden = section === 'records' || section === 'history' || section === 'keywords';
     cardsWrap.hidden = section !== 'cards';

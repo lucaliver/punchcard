@@ -4,7 +4,20 @@ import { ENEMIES, enemiesFor } from '../../src/data/enemies';
 import { HEROES } from '../../src/data/heroes';
 import { CARD_LIST, CARDS, RARITY_ORDER, cardCostOf } from '../../src/data/cards';
 import { RELICS } from '../../src/data/relics';
-import { hasStamp, markRated, memosOpen, ratingDue, runHistory, stampAct, unlockAll } from '../../src/game/meta';
+import {
+  cardHidden,
+  collection,
+  discover,
+  hasStamp,
+  isDiscovered,
+  markRated,
+  memosOpen,
+  ratingDue,
+  runHistory,
+  stampAct,
+  startingFirstRun,
+  unlockAll,
+} from '../../src/game/meta';
 import { ACT_DEFS } from '../../src/data/acts';
 import {
   applyCombat,
@@ -40,6 +53,21 @@ import {
   vendingCost,
 } from '../../src/game/run';
 import { setup } from './helpers';
+
+describe('the handbook bars at the end of a run', () => {
+  it('start from how full the handbook was when the run started, and climb with what the run finds', () => {
+    startingFirstRun();
+    const before = collection();
+    for (const k of ['cards', 'foes', 'relics'] as const) expect(before[k].from).toBe(before[k].n);
+    const card = CARD_LIST.find((c) => !isDiscovered(c.id) && !cardHidden(c.id));
+    expect(card).toBeDefined();
+    if (card) discover([card.id]);
+    const after = collection();
+    expect(after.cards.n).toBe(before.cards.n + 1);
+    expect(after.cards.from).toBe(before.cards.n);
+    expect(after.cards.total).toBe(before.cards.total);
+  });
+});
 
 describe('run pay and rewards', () => {
   it('pays a base by tier plus a bonus for every second under par', () => {

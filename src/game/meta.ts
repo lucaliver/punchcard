@@ -1,12 +1,16 @@
 import { load, store } from '../core/save';
 import { ACT_DEFS } from '../data/acts';
-import { CARDS } from '../data/cards';
-import { ENEMIES } from '../data/enemies';
+import { CARD_LIST, CARDS } from '../data/cards';
+import { ENEMIES, ENEMY_LIST } from '../data/enemies';
 import { HERO_LIST, HEROES } from '../data/heroes';
 import { MODIFIERS } from '../data/modifiers';
-import { RELICS } from '../data/relics';
+import { RELIC_LIST, RELICS } from '../data/relics';
 import { CONFIG } from '../data/config';
 import type { EnemyDef, HeroId, HeroUnlock, Records, RunLog } from './types';
+
+/** What the handbook collects, as `collection()` counts it. */
+export type CollectionKind = 'cards' | 'foes' | 'relics';
+type Tally = Record<CollectionKind, number>;
 
 /** Progress kept across runs. */
 interface Meta {
@@ -39,6 +43,8 @@ interface Meta {
   rated: boolean;
   /** The handbook has been opened (or the home's hint about it dismissed). */
   handbookSeen: boolean;
+  /** How much of the handbook was filled when the last run started: the end of the run shows the bars climbing from there. */
+  base: Tally | null;
 }
 
 const NO_RECORDS: Records = {
@@ -72,6 +78,7 @@ const meta: Meta = load('meta', {
   history: [],
   rated: false,
   handbookSeen: false,
+  base: null,
 });
 // Saved data is untrusted: keep only known hero ids.
 for (const k of ['heroes', 'fresh'] as const) meta[k] = Array.isArray(meta[k]) ? meta[k].filter((id) => id in HEROES) : [];
@@ -82,6 +89,10 @@ if (typeof meta.runs !== 'number') meta.runs = 0;
 meta.signed = meta.signed === true;
 meta.rated = meta.rated === true;
 meta.handbookSeen = meta.handbookSeen === true;
+meta.base =
+  typeof meta.base === 'object' && meta.base && (['cards', 'foes', 'relics'] as const).every((k) => Number.isFinite(meta.base?.[k]))
+    ? meta.base
+    : null;
 {
   const valid = (s: unknown): s is string => {
     if (typeof s !== 'string') return false;
@@ -164,10 +175,33 @@ export function markHandbookSeen(): void {
 /** No run has ever been started (the title then points at the time card). */
 export const neverPlayed = (): boolean => meta.runs === 0;
 
-/** True for the very first run ever; counts the run as started. */
+/** The handbook's pages, as found and as many as there are (a hero still in the works hides its cards). */
+const tally = (): { found: Tally; total: Tally } => {
+  const cards = CARD_LIST.filter((c) => !cardHidden(c.id));
+  return {
+    found: {
+      cards: cards.filter((c) => discovered.has(c.id)).length,
+      foes: ENEMY_LIST.filter((e) => meta.met.includes(e.id)).length,
+      relics: RELIC_LIST.filter((r) => meta.relics.includes(r.id)).length,
+    },
+    total: { cards: cards.length, foes: ENEMY_LIST.length, relics: RELIC_LIST.length },
+  };
+};
+
+/** How much of each page of the handbook is filled now (`n` of `total`), and how much was when the last run started (`from`). */
+export function collection(): Record<CollectionKind, { from: number; n: number; total: number }> {
+  const { found, total } = tally();
+  const kinds = ['cards', 'foes', 'relics'] as const;
+  return Object.fromEntries(
+    kinds.map((k) => [k, { from: Math.min(meta.base?.[k] ?? found[k], found[k]), n: found[k], total: total[k] }]),
+  ) as ReturnType<typeof collection>;
+}
+
+/** True for the very first run ever; counts the run as started (and notes how full the handbook is, before the run fills it). */
 export function startingFirstRun(): boolean {
   const first = meta.runs === 0;
   meta.runs++;
+  meta.base = tally().found;
   store('meta', meta);
   return first;
 }

@@ -2,7 +2,7 @@ import { type TKey, t } from '../../core/i18n';
 import { BEG_FLAG } from '../../data/config';
 import { sfx } from '../../audio/sfx';
 import type { HeroId } from '../../game/types';
-import type { RunRecord } from '../../game/meta';
+import { type CollectionKind, collection, type RunRecord } from '../../game/meta';
 import { ACTS, currentNode, type RunEnd, type RunState } from '../../game/run';
 import type { Screen } from '../app';
 import { h } from '../dom';
@@ -21,6 +21,13 @@ const ROW_RECORD: Partial<Record<TKey, RunRecord>> = {
   'end.slip.cards': 'bestCards',
   'end.slip.gross': 'bestPay',
 };
+
+/** The handbook's pages that fill up, in the order the bars print: their icon and word (the same as the handbook's tabs). */
+const COLLECTION_PAGES: [CollectionKind, string, TKey][] = [
+  ['cards', 'cards', 'compendium.cards'],
+  ['foes', 'clipboard', 'compendium.enemies'],
+  ['relics', 'stapler', 'compendium.relics'],
+];
 
 /** The end of a run: the heroes it unlocked (shown as the next hire, so the end is a step forward), the payslip with the records it beat, and a shareable copy. */
 export function endScreen(run: RunState, won: boolean, end: RunEnd, onAgain: (hero: HeroId) => void, onMenu: () => void): Screen {
@@ -64,6 +71,7 @@ export function endScreen(run: RunState, won: boolean, end: RunEnd, onAgain: (he
     e.style.setProperty('--i', String(line++));
     return e;
   };
+  const filled = collection();
   const el = h(
     'div',
     { class: `screen end ${won ? 'win' : 'lose'}` },
@@ -114,6 +122,27 @@ export function endScreen(run: RunState, won: boolean, end: RunEnd, onAgain: (he
           ),
         ),
         staggered(h('div', { class: 'slip-stamp' }, slip.stamp)),
+      ),
+      // What the run added to the handbook: each bar climbs from where it stood when the run started.
+      h(
+        'div',
+        { class: 'collect', style: { '--rows': String(line) } },
+        ...COLLECTION_PAGES.map(([kind, ico, label], i) => {
+          const { from, n, total } = filled[kind];
+          return h(
+            'div',
+            { class: `coll-row coll-${kind}`, style: { '--i': String(i), '--from': String(from / total), '--to': String(n / total) } },
+            h(
+              'span',
+              { class: 'coll-label' },
+              h('i', { html: icon(ico) }),
+              t(label),
+              n > from ? h('i', { class: 'slip-record coll-gain' }, `+${n - from}`) : null,
+            ),
+            h('div', { class: 'coll-track' }, h('i', { class: 'coll-fill' })),
+            h('b', null, `${n}/${total}`),
+          );
+        }),
       ),
     ),
     h(

@@ -16,11 +16,15 @@
   /* end of the run: a one-line title and a tighter payslip (no section headers) so the hero stays big */
   .end.win .end-title { font-size: clamp(30px, 9vw, 44px); }
   .end .h1 { margin-top: 0; }
-  .end .portrait-lg { width: 136px; height: 136px; margin: 0 auto; }
-  .end .portrait-lg .riso { width: 132px; height: 132px; }
+  .end .portrait-lg { width: 80px; height: 80px; margin: 0 auto; }
+  .end .portrait-lg .riso { width: 76px; height: 76px; }
+  .end .end-actions { gap: 8px; padding-top: 6px; }
   .end.lose .portrait-lg .riso { transform: rotate(90deg); }
   .end .sub { margin: 0; font-size: 15px; }
   .payslip { padding-top: 6px; padding-bottom: 8px; font-size: 15px; line-height: 1.1; }
+  .payslip { margin: 2px 0 6px; }
+  .collect { margin-bottom: 2px; padding: 4px 10px; gap: 3px 8px; font-size: 16px; }
+  .coll-track { height: 12px; }
   /* the belt is short here: the update window tightens its bar, message and margins so the bigger icon and the buttons still fit */
   .update-popup { inset: 3px 8px 3px; }
   .up-bar { padding: 2px 8px; font-size: 13px; }
