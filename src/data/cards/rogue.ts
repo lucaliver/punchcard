@@ -495,6 +495,7 @@ export const rogueCards: CardDef[] = [
     cost: 5,
     vals: [1, 2],
     upVals: [2, 2],
+    keywords: ['pending'],
     art: 'rapSheet',
     // Damage for every `v[1]` different cards (by id) played in the whole run so far, this fight included.
     shown: (c, v) => [v[0] * Math.floor(c.uniquePlayed('run') / v[1])],

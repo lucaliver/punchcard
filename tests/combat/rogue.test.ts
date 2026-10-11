@@ -377,6 +377,9 @@ describe('the Rogue', () => {
     c.enemy.block = 0;
     const hp = c.enemy.hp;
     c.addTempCard('rapSheet', 'belt');
+    // Pending: it plays only after riding the belt once.
+    expect(c.playCard(c.belt[c.belt.length - 1].card.uid)).toBe(false);
+    c.belt[c.belt.length - 1].card.passed = true;
     expect(c.playCard(c.belt[c.belt.length - 1].card.uid)).toBe(true);
     expect(c.uniquePlayed('run')).toBe(5);
     expect(hp - c.enemy.hp).toBe(2);
