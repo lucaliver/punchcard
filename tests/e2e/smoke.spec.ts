@@ -354,6 +354,19 @@ test('the first run points at the sleeve once, when the player has ignored it fo
   expect(await page.evaluate('window.__game.run.sleeveIdle')).toBe(2);
 });
 
+test('a mouse pressed on the very corner of a button still clicks it, though the button sinks under it', async ({ page }) => {
+  await freshGame(page);
+  await page.getByRole('button', { name: /new run/i }).click();
+  const button = page.getByRole('button', { name: /start shift/i });
+  // The screen slides in first: the button must stand still.
+  await page.waitForTimeout(800);
+  const box = (await button.boundingBox())!;
+  await page.mouse.move(box.x + 1, box.y + 1);
+  await page.mouse.down();
+  await page.mouse.up();
+  await expect(page.locator('.journey')).toBeVisible();
+});
+
 test('a tap on the way into a fight skips the door', async ({ page }) => {
   await freshGame(page);
   await page.getByRole('button', { name: /new run/i }).click();

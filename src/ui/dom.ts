@@ -107,6 +107,36 @@ export function onTapOrHold(el: HTMLElement, onTap: () => void, onHold: () => vo
   el.addEventListener('contextmenu', (e) => e.preventDefault());
 }
 
+/** How far (px) a pressed button may have sunk under the mouse (`--off` and the like), with room to spare. */
+const SINK = 8;
+
+/**
+ * A pressed button sinks a pixel or two (`:active`), so a mouse pressed on its top-left corner is no longer over it when released and the
+ * click is lost. A release just outside the button, where it sank from, clicks it (its box, read at the press, is already the sunk one).
+ */
+export function keepPressedClicks(): void {
+  let pressed: { el: HTMLButtonElement; rect: DOMRect } | null = null;
+  addEventListener(
+    'pointerdown',
+    (e) => {
+      const el = e.pointerType === 'mouse' && e.button === 0 && e.target instanceof Element ? e.target.closest('button') : null;
+      pressed = el && !el.disabled ? { el, rect: el.getBoundingClientRect() } : null;
+    },
+    true,
+  );
+  addEventListener(
+    'pointerup',
+    (e) => {
+      const p = pressed;
+      pressed = null;
+      if (!p || !p.el.isConnected || (e.target instanceof Node && p.el.contains(e.target))) return;
+      const { left, right, top, bottom } = p.rect;
+      if (e.clientX >= left - SINK && e.clientX <= right + SINK && e.clientY >= top - SINK && e.clientY <= bottom + SINK) p.el.click();
+    },
+    true,
+  );
+}
+
 /**
  * Restarts a one-shot CSS animation class on an element (even if it's already running), and drops the class when its
  * own animation ends, so an idle animation it replaced (the enemy's bob) comes back.
