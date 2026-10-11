@@ -249,10 +249,13 @@
 .rules .card-ref {
   /* another card named in the text: tap it to read that card */
   font-weight: 700;
-  color: var(--p);
+  color: var(--ref-ink, var(--p));
   text-decoration: underline;
   cursor: pointer;
 }
+/* the ink of a hero's class comes from the hero's data (`--ref-ink`); the cards without a hero have their own */
+.rules .card-ref[data-cls='neutral'] { --ref-ink: var(--tone-amber); }
+.rules .card-ref[data-cls='curse'] { --ref-ink: var(--purple); }
 
 .deck-grid {
   display: grid;

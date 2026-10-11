@@ -8,7 +8,7 @@ import zhStrings from '../src/i18n/zh';
 
 /** Indexed as a plain dictionary: these tests check keys that are built at runtime. */
 const en: Record<string, string> = enStrings;
-import { CARD_LIST } from '../src/data/cards';
+import { CARD_LIST, CARDS } from '../src/data/cards';
 import { cardHidden, heroHidden, heroUnlocked, progress, stampAct } from '../src/game/meta';
 import type { HeroId } from '../src/game/types';
 import { KEYWORD_LIST } from '../src/ui/components/cardView';
@@ -19,7 +19,7 @@ import { HERO_LIST, HEROES, starterCards } from '../src/data/heroes';
 import { VALUES } from '../src/data/values';
 import { PERK_LIST } from '../src/data/perks';
 import { STATUS_ORDER, STATUSES } from '../src/data/statuses';
-import { GLYPHS, TAG_ICON } from '../src/ui/components/cardView';
+import { cardText, GLYPHS, TAG_ICON } from '../src/ui/components/cardView';
 import { RULES, moveTone } from '../src/ui/components/moveText';
 import { ICONS, INTENT_ICON } from '../src/ui/art/icons';
 import { CARD_ART } from '../src/ui/art/cardArt';
@@ -431,5 +431,22 @@ describe('the Rogue', () => {
         own.some((c) => c.rarity === rarity),
         rarity,
       ).toBe(true);
+  });
+});
+
+describe('cards named in a text', () => {
+  it('wear the ink of their class: a hero its own, the rest by class', () => {
+    const text = (id: string): string => cardText({ uid: 1, id, up: false });
+    // A curse in the text (the Office Christmas Party's Gossip) and a hero's card (the Customer Always Right's Pain in the Neck is neutral).
+    expect(text('officeChristmasParty')).toContain('data-cls="curse"');
+    expect(text('customerAlwaysRight')).toContain('data-cls="neutral"');
+    // Every named card: its class on the link, and a hero's class brings the hero's ink.
+    for (const c of CARD_LIST) {
+      for (const m of en[`card.${c.id}.desc`].matchAll(/\[@(\w+)\]/g)) {
+        const html = text(c.id);
+        expect(html, `${c.id} names ${m[1]}`).toContain(`data-card="${m[1]}" data-cls="${CARDS[m[1]].cls}"`);
+        if (HERO_LIST.some((hd) => hd.id === CARDS[m[1]].cls)) expect(html, `${c.id} names ${m[1]}`).toContain('--ref-ink');
+      }
+    }
   });
 });

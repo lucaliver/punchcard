@@ -1,5 +1,6 @@
 import { t } from '../../core/i18n';
 import { CARDS, cardCostOf, cardKeywordsOf, cardValsOf } from '../../data/cards';
+import { HERO_LIST } from '../../data/heroes';
 import { PERKS } from '../../data/perks';
 import { STATUSES } from '../../data/statuses';
 import type { Combat } from '../../game/combat';
@@ -306,11 +307,12 @@ export function cardText(card: CardLike): string {
     const upgraded = card.up && def.upVals && def.upVals[idx] !== def.vals[idx];
     return `<span class="num ${upgraded ? 'upg' : ''}">${vals[idx]}</span>`;
   });
-  // `[@id]` names another card: bold, coloured and tappable in the detail view (`openCardDetail` listens for `data-card`).
-  s = keywordHtml(s).replace(
-    /\[@(\w+)\]/g,
-    (_, id: string) => `<b class="card-ref" role="button" tabindex="0" data-card="${id}">${t(`card.${id}.name`)}</b>`,
-  );
+  // `[@id]` names another card: bold, in the ink of its class, and tappable in the detail view (`openCardDetail` listens for `data-card`).
+  s = keywordHtml(s).replace(/\[@(\w+)\]/g, (_, id: string) => {
+    const cls = CARDS[id].cls;
+    const ink = HERO_LIST.find((hd) => hd.id === cls)?.ink;
+    return `<b class="card-ref" role="button" tabindex="0" data-card="${id}" data-cls="${cls}"${ink ? ` style="--ref-ink:${ink}"` : ''}>${t(`card.${id}.name`)}</b>`;
+  });
   const kws = cardKeywordsOf(card).filter((k) => KEYWORD_LINE.includes(k));
   const extra = kws.map((k) => `<b class="kw">${t(`kw.${k}`)}</b>`);
   if (def.type === 'power') extra.unshift(`<b class="kw">${t('kw.power')}</b>`);
