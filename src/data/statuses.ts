@@ -48,6 +48,8 @@ export const UPDATE_POSTPONE: [number, number] = [1, 3];
 export const UPDATE_POSTPONE_MUL = 2;
 export const UPDATE_TIME = 6;
 export const UPDATE_PATCH = 1;
+/** Performance Plan: how long its window lasts, and the most its Vulnerable can be stretched to (s). */
+export const PLAN_CAP = 12;
 /** Spending Freeze: the hero's max mana. */
 export const SPENDING_FREEZE_CAP = 3;
 
@@ -153,6 +155,23 @@ const defs: StatusDef[] = [
       if (def.type === 'attack') c.applyStatus('enemy', 'chill', 1, c.stacks(side, 'coldOpen'));
     },
   },
+  // Performance Plan: for a while, every attack the hero plays adds `v` seconds to the enemy's Vulnerable (up to `PLAN_CAP`).
+  {
+    id: 'performancePlan',
+    tone: 'red',
+    kind: 'timed',
+    good: true,
+    icon: 'crack',
+    onCardPlayed: (c, side, def) => {
+      const vuln = c.enemy.statuses.vulnerable;
+      if (def.type === 'attack' && vuln && c.has('enemy', 'vulnerable'))
+        vuln.t = Math.max(vuln.t, Math.min(PLAN_CAP, vuln.t + c.stacks(side, 'performancePlan')));
+    },
+  },
+  // Slow Leak (on the enemy): its Poison does not wear off while this lasts.
+  { id: 'slowLeak', tone: 'toxic', kind: 'timed', good: false, icon: 'poisonBottle', keeps: 'poison' },
+  // Batch Processing: the sleeve is out of reach for a while (the price of playing it all at once).
+  { id: 'batchProcessing', tone: 'amber', kind: 'timed', good: false, icon: 'hand', barsSleeve: true },
   // Paper Trail (a power): every attack the hero plays also makes the enemy Vulnerable for `v` seconds.
   {
     id: 'paperTrail',

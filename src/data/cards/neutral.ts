@@ -101,6 +101,38 @@ export const neutralCards: CardDef[] = [
     play: (c, v) => c.applyStatus('hero', 'dodge', 1, v[0]),
   },
   {
+    id: 'customerAlwaysRight',
+    face: '{addCard:0}',
+    cls: 'neutral',
+    type: 'skill',
+    rarity: 'legendary',
+    cost: 0,
+    vals: [3],
+    upVals: [4],
+    keywords: ['exhaust'],
+    art: 'customerAlwaysRight',
+    play: (c, v) => {
+      for (let i = 0; i < v[0]; i++) c.addTempCard('painInTheNeck', 'draw');
+    },
+  },
+  {
+    id: 'painInTheNeck',
+    face: '{dmg:0}',
+    cls: 'neutral',
+    type: 'attack',
+    rarity: 'special',
+    cost: 1,
+    vals: [1, 1],
+    upVals: [2, 1],
+    art: 'painInTheNeck',
+    // Every one played this fight makes the next ones hit harder (`mem` counts them; the face shows the damage as it stands).
+    shown: (c, v) => [v[0] + v[1] * (c.mem.painInTheNeck ?? 0), v[1]],
+    play: (c, v) => {
+      c.hit(v[0] + v[1] * (c.mem.painInTheNeck ?? 0));
+      c.mem.painInTheNeck = (c.mem.painInTheNeck ?? 0) + 1;
+    },
+  },
+  {
     id: 'molotov',
     face: '{dmg:0}',
     cls: 'neutral',

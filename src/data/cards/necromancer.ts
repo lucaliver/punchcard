@@ -367,6 +367,21 @@ export const necromancerCards: CardDef[] = [
     play: (c, v) => c.applyStatus('enemy', 'poison', v[0]),
   },
   {
+    id: 'slowLeak',
+    face: '{poison:0}|{timer:1}',
+    cls: 'necromancer',
+    type: 'attack',
+    rarity: 'common',
+    cost: 1,
+    vals: [2, 5],
+    upVals: [3, 7],
+    art: 'slowLeak',
+    play: (c, v) => {
+      c.applyStatus('enemy', 'poison', v[0]);
+      c.applyStatus('enemy', 'slowLeak', 1, v[1]);
+    },
+  },
+  {
     id: 'rugPull',
     face: '{dmg:0}|{?weak}{dmg:1}',
     cls: 'necromancer',

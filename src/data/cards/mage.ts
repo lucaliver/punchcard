@@ -649,6 +649,22 @@ export const mageCards: CardDef[] = [
     play: (c) => c.playSleeve(),
   },
   {
+    id: 'batchProcessing',
+    face: '{sleeve}|{stop:0}',
+    cls: 'mage',
+    type: 'skill',
+    rarity: 'legendary',
+    cost: 3,
+    vals: [8],
+    upVals: [5],
+    art: 'batchProcessing',
+    // Every card in the sleeve is played for free, then the sleeve is out of reach (can't be played or filled) for a while.
+    play: (c, v) => {
+      c.playSleeve();
+      c.applyStatus('hero', 'batchProcessing', 1, v[0]);
+    },
+  },
+  {
     id: 'hotDesking',
     face: '{chill}|{burn}',
     cls: 'mage',

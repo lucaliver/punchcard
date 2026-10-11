@@ -135,6 +135,26 @@ export const ICONS: Record<string, { el: Element; svg: string; wide?: boolean }>
     svg: `<path d="M19.2 6.4h25.6v3.2h-25.6zM19.2 9.6h6.4v3.2h-6.4zM38.4 9.6h6.4v3.2h-6.4zM19.2 12.8h6.4v3.2h-6.4zM38.4 12.8h6.4v3.2h-6.4zM6.4 16h51.2v3.2h-51.2zM3.2 19.2h57.6v3.2h-57.6zM3.2 22.4h22.4v3.2h-22.4zM38.4 22.4h22.4v3.2h-22.4zM3.2 25.6h22.4v3.2h-22.4zM38.4 25.6h22.4v3.2h-22.4zM3.2 28.8h22.4v3.2h-22.4zM38.4 28.8h22.4v3.2h-22.4zM3.2 32h12.8v3.2h-12.8zM48 32h12.8v3.2h-12.8zM3.2 35.2h12.8v3.2h-12.8zM48 35.2h12.8v3.2h-12.8zM3.2 38.4h12.8v3.2h-12.8zM48 38.4h12.8v3.2h-12.8zM3.2 41.6h12.8v3.2h-12.8zM48 41.6h12.8v3.2h-12.8zM3.2 44.8h22.4v3.2h-22.4zM38.4 44.8h22.4v3.2h-22.4zM3.2 48h22.4v3.2h-22.4zM38.4 48h22.4v3.2h-22.4zM3.2 51.2h22.4v3.2h-22.4zM38.4 51.2h22.4v3.2h-22.4zM3.2 54.4h57.6v3.2h-57.6zM6.4 57.6h51.2v3.2h-51.2z"/>`,
   },
   potionOrange: { el: 'fire', svg: potion('#ff8a1f') },
+  customerAlwaysRight: {
+    el: 'holy',
+    svg: `<path d="M6 8h52v34H34L22 56V42H6z"/><path fill="#16121f" d="M29 14h6v16h-6zM29 34h6v6h-6z"/><path ${HI} d="M8 10h6v28H8z"/>`,
+  },
+  painInTheNeck: {
+    el: 'blood',
+    svg: `<path d="M6 28c0-9 11-14 26-14s26 5 26 14v14c0 8-11 12-26 12S6 50 6 42z"/><ellipse cx="32" cy="30" rx="13" ry="8" fill="#16121f"/><path d="M6 36h52" fill="none" stroke="#16121f" stroke-width="3"/><path ${HI} d="M10 26c4-4 10-6 16-6-6 2-10 5-12 10z"/>`,
+  },
+  slowLeak: {
+    el: 'necro',
+    svg: `<path d="M32 2C22 16 12 28 12 40a20 20 0 0 0 40 0C52 28 42 16 32 2z"/><path ${HI} d="M20 38c0-6 4-12 8-16-2 6-2 10-1 16z"/><path fill="#16121f" d="M30 24l-6 10 8 4-6 12 14-14-8-4 6-8z"/><circle cx="32" cy="60" r="3"/>`,
+  },
+  batchProcessing: {
+    el: 'arcane',
+    svg: `<path d="M4 8h36v22H4zM14 18h36v22H14zM24 28h36v22H24z"/><path fill="#16121f" d="M30 34h24v3H30zM30 41h16v3H30z"/><path fill="none" stroke="#16121f" stroke-width="3" d="M4 58h56"/><path ${HI} d="M6 10h4v18H6z"/>`,
+  },
+  performancePlan: {
+    el: 'blood',
+    svg: `<rect x="10" y="8" width="44" height="52" rx="3"/><rect x="22" y="2" width="20" height="10" rx="2"/><path d="M18 24h28M18 34h28M18 44h16" stroke="#16121f" stroke-width="3"/><path d="M38 40l10 10M48 40L38 50" fill="none" stroke="#16121f" stroke-width="4" stroke-linecap="round"/><path ${HI} d="M12 10h4v48h-4z"/>`,
+  },
   doctorsNote: {
     el: 'nature',
     svg: `<path d="M12 4h40v56H12z"/><path fill="#16121f" d="M28 14h8v10h10v8H36v10h-8V32H18v-8h10z"/><path d="M18 48h28M18 54h18" stroke="#16121f" stroke-width="3"/><path ${HI} d="M14 6h4v52h-4z"/>`,
@@ -1983,6 +2003,14 @@ export const ICONS: Record<string, { el: Element; svg: string; wide?: boolean }>
   'relic.rolodex': {
     el: 'steel',
     svg: `<path d="M6 46h52l3 14H3z"/><path d="M12 46C10 24 20 8 32 8s22 16 20 38z"/><circle cx="32" cy="3" r="3"/><path fill="#16121f" d="M18 40c-1-12 4-20 14-20s15 8 14 20z"/><rect x="22" y="30" width="20" height="14" rx="2"/>`,
+  },
+  'relic.wellnessVoucher': {
+    el: 'steel',
+    svg: `<path d="M4 12h56v14a6 6 0 0 0 0 12v14H4V38a6 6 0 0 0 0-12z"/><path fill="#16121f" d="M36 14h3v36h-3zM16 24h14v4H16zM16 34h10v4H16zM44 26c0-4 8-4 8 0 0 3-4 5-4 8 0-3-4-5-4-8z"/>`,
+  },
+  'relic.correctionFluid': {
+    el: 'steel',
+    svg: `<rect x="26" y="4" width="12" height="14" fill="#16121f"/><path d="M14 16h36c3 0 5 2 5 5v36c0 3-2 5-5 5H14c-3 0-5-2-5-5V21c0-3 2-5 5-5z"/><path fill="#16121f" d="M9 28h46v14H9z"/>`,
   },
   'relic.companyCard': {
     el: 'steel',

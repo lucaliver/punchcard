@@ -452,9 +452,14 @@ export class Combat {
     return !card.passed && this.keywords(card).includes('pending');
   }
 
-  /** The sleeve is out of reach: sunk (`EnemyDef.deepBelt`) or under the chore window or the minigame's. */
+  /** The sleeve is out of reach: sunk (`EnemyDef.deepBelt`), under the chore window or the minigame's, or barred by a status. */
   private get lowerBarred(): boolean {
-    return this.lowerHidden || !!this.chore?.covers || this.minigameOpen;
+    return (
+      this.lowerHidden ||
+      !!this.chore?.covers ||
+      this.minigameOpen ||
+      Object.entries(this.hero.statuses).some(([id]) => STATUSES[id].barsSleeve && this.has('hero', id))
+    );
   }
 
   /**
@@ -682,7 +687,7 @@ export class Combat {
         const bonus = side === 'enemy' ? this.dotBonus(id) : 0;
         this.damage(side === 'hero' ? 'enemy' : 'hero', side, amount + bonus, { raw: true, ignoreBlock: true, kind: id }, 'dot');
       }
-      s.v--;
+      if (!this.isKept(side, id)) s.v--;
       if (s.v <= 0) delete f.statuses[id];
       if (this.result) return;
     }

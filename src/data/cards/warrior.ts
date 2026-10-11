@@ -1,5 +1,6 @@
 import type { Combat } from '../../game/combat';
 import type { CardDef } from '../../game/types';
+import { PLAN_CAP } from '../statuses';
 import { WHEN } from './conditions';
 
 /** Dress Code's Block: it shrinks by `v[1]` for every other card on the belt. */
@@ -416,6 +417,21 @@ export const warriorCards: CardDef[] = [
     art: 'hiVisVest',
     when: WHEN.block,
     play: (c, v) => c.gainBlock('hero', WHEN.block(c) ? v[1] : v[0]),
+  },
+  {
+    id: 'performancePlan',
+    face: '{vuln:0}|{tickUp:1}',
+    cls: 'warrior',
+    type: 'skill',
+    rarity: 'rare',
+    cost: 2,
+    vals: [6, 1],
+    upVals: [8, 2],
+    art: 'performancePlan',
+    play: (c, v) => {
+      c.applyStatus('enemy', 'vulnerable', 1, v[0]);
+      c.applyStatus('hero', 'performancePlan', v[1], PLAN_CAP);
+    },
   },
   {
     id: 'step1',

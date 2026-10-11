@@ -212,6 +212,8 @@ export interface StatusDef {
   cutsHits?: true;
   /** While active on the enemy, no hit of the hero's cards deals more than its amount (`v`); Poison, Burn and thorns slip through (Rate Limit). */
   capsHits?: true;
+  /** While active on the hero, the sleeve is out of reach: no card can be played from it or put into it (Batch Processing). */
+  barsSleeve?: true;
   /** While active on the hero, multiplies its mana regeneration (a chill slows it, Brown Nosing speeds it up). */
   regenMul?: number;
   /** While active on the enemy, multiplies the speed of its clock (0 stops it). */

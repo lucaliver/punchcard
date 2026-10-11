@@ -3,7 +3,7 @@ import { Combat, type CombatSetup } from '../../src/game/combat';
 import { CONFIG, EXPIRE_POS } from '../../src/data/config';
 import { ENEMIES } from '../../src/data/enemies';
 import { HEROES } from '../../src/data/heroes';
-import { COFFEE_EVERY, FORKLIFT_BLOCK, HIRING_EVERY, LUNCH_EVERY, STATUSES, TABS_EVERY } from '../../src/data/statuses';
+import { PLAN_CAP, COFFEE_EVERY, FORKLIFT_BLOCK, HIRING_EVERY, LUNCH_EVERY, STATUSES, TABS_EVERY } from '../../src/data/statuses';
 import { CARDS, cardValsOf } from '../../src/data/cards';
 import { applyCombat, combatSetup, newRun } from '../../src/game/run';
 import type { CardInst } from '../../src/game/types';
@@ -1448,5 +1448,88 @@ describe("Doctor's Note and Performance Review", () => {
     const hp = c.enemy.hp;
     expect(c.playCard(card.uid)).toBe(true);
     expect(hp - c.enemy.hp).toBeGreaterThanOrEqual(3 * CARDS.performanceReview.vals[0]);
+  });
+});
+
+describe('Performance Plan, Slow Leak, Batch Processing, Pain in the Neck', () => {
+  const still = (hero: keyof typeof HEROES, deck: string[] = ['punch']): Combat => {
+    const c = setup({ hero: HEROES[hero], deck: deckOf(deck) });
+    c.enemy.move = { id: 'wait', intent: 'defend', windup: 999 };
+    run(c, CONFIG.introTime + 0.01);
+    c.hero.mana = c.hero.maxMana;
+    c.belt.length = 0;
+    return c;
+  };
+  const play = (c: Combat, id: string): boolean => {
+    c.hero.mana = c.hero.maxMana;
+    c.belt.length = 0;
+    c.addTempCard(id, 'belt');
+    return c.playCard(c.belt[0].card.uid);
+  };
+
+  it('Performance Plan makes the enemy Vulnerable, and every attack played after it stretches that, up to the cap', () => {
+    const c = still('warrior');
+    const [time, per] = CARDS.performancePlan.vals;
+    expect(play(c, 'performancePlan')).toBe(true);
+    const vuln = c.enemy.statuses.vulnerable;
+    expect(vuln.t).toBeCloseTo(time, 1);
+    expect(play(c, 'punch')).toBe(true);
+    expect(vuln.t).toBeCloseTo(time + per, 1);
+    for (let i = 0; i < 20; i++) play(c, 'punch');
+    expect(vuln.t).toBeLessThanOrEqual(PLAN_CAP);
+    expect(vuln.t).toBeGreaterThan(PLAN_CAP - 1);
+    // A skill adds nothing; without the Vulnerable the plan does nothing.
+    const d = still('warrior');
+    play(d, 'performancePlan');
+    d.removeStatus('enemy', 'vulnerable');
+    play(d, 'punch');
+    expect(d.has('enemy', 'vulnerable')).toBe(false);
+  });
+
+  it('Slow Leak poisons, and the Poison does not wear off for its seconds', () => {
+    const c = still('necromancer');
+    c.enemy.hp = c.enemy.maxHp = 9999;
+    expect(play(c, 'slowLeak')).toBe(true);
+    const poison = c.enemy.statuses.poison;
+    const start = poison.v;
+    run(c, CONFIG.dotInterval * 3 + 0.05);
+    expect(poison.v).toBe(start);
+    run(c, CARDS.slowLeak.vals[1] + 1);
+    run(c, CONFIG.dotInterval + 0.05);
+    expect(c.enemy.statuses.poison?.v ?? 0).toBeLessThan(start);
+  });
+
+  it('Batch Processing plays the whole sleeve for free, then bars the sleeve for its seconds', () => {
+    const c = still('mage');
+    c.sleeve[0] = { uid: -100, id: 'punch', up: false, bonus: 0, temp: true };
+    c.sleeve[1] = { uid: -101, id: 'punch', up: false, bonus: 0, temp: true };
+    const hp = c.enemy.hp;
+    expect(play(c, 'batchProcessing')).toBe(true);
+    expect(c.sleeve.every((x) => x === null)).toBe(true);
+    expect(c.enemy.hp).toBeLessThan(hp);
+    c.addTempCard('punch', 'belt');
+    expect(c.stash(c.belt[0].card.uid)).toBe(false);
+    run(c, CARDS.batchProcessing.vals[0] + 0.5);
+    expect(c.stash(c.belt[0].card.uid)).toBe(true);
+  });
+
+  it('The Customer Is Always Right shuffles Pains in the Neck into the draw pile, and each one played hits harder', () => {
+    const c = still('warrior');
+    const drawn = c.draw.length + c.discard.length;
+    expect(play(c, 'customerAlwaysRight')).toBe(true);
+    expect(c.draw.filter((x) => x.id === 'painInTheNeck')).toHaveLength(CARDS.customerAlwaysRight.vals[0]);
+    expect(c.draw.length + c.discard.length).toBeGreaterThanOrEqual(drawn + CARDS.customerAlwaysRight.vals[0]);
+    c.enemy.block = 0;
+    const [base, step] = CARDS.painInTheNeck.vals;
+    c.addTempCard('painInTheNeck', 'belt');
+    expect(c.shownVals(c.belt[0].card)[0]).toBe(base);
+    let hp = c.enemy.hp;
+    expect(play(c, 'painInTheNeck')).toBe(true);
+    expect(hp - c.enemy.hp).toBe(base);
+    c.addTempCard('painInTheNeck', 'belt');
+    expect(c.shownVals(c.belt[0].card)[0]).toBe(base + step);
+    hp = c.enemy.hp;
+    expect(play(c, 'painInTheNeck')).toBe(true);
+    expect(hp - c.enemy.hp).toBe(base + step);
   });
 });

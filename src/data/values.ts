@@ -5,6 +5,7 @@ import { HARDSHIP_HP, JUST_CAUSE_HP } from './cards/conditions';
 import { STICKY_FINGERS, THICK_SKIN, TIME_THEFT, VIRULENCE_START, PICKET_BLOCK, PICKET_TIME } from './heroes';
 import { COPIER_LINE, MATCH_LINE, STAMP_LINE } from '../game/match3';
 import { PERKS } from './perks';
+import { PLAN_CAP } from './statuses';
 import { BELL_STUN, CLOCK_BLOCK, MUG_MANA, NAME_TAG_TIME, PLANT_HEAL, PUNCH_DAMAGE, SHREDDER_BLOCK, STAPLER_DAMAGE } from './relics';
 import {
   ASLEEP,
@@ -120,6 +121,7 @@ export const VALUES = {
   clockBlock: CLOCK_BLOCK,
   staplerDamage: STAPLER_DAMAGE,
   shredderBlock: SHREDDER_BLOCK,
+  performancePlanCap: PLAN_CAP,
   plantHeal: PLANT_HEAL,
   punchDamage: PUNCH_DAMAGE,
   nameTagTime: NAME_TAG_TIME,
