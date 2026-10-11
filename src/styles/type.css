@@ -25,7 +25,7 @@
 }
 .kw {
   font-weight: 700;
-  color: var(--b);
+  color: var(--grey-d);
 }
-/* keywords keep the colour of what they are (`tone` in statuses.ts); the rest are blue */
+/* keywords keep the colour of what they are (`tone` in statuses.ts); the card modifiers have none and stay dark grey */
 .kw[data-tone] { color: var(--tone); }

@@ -95,6 +95,8 @@
   --band-neutral: var(--y);
   --band-curse: #b9a9e0;
   --muted: #6d6680;
+  /* the ink of card modifiers (Exhaust, Consume, Innate…) in rules text: no colour of their own */
+  --grey-d: #4a455c;
   /* Night: the dark print the paper pieces sit on */
   --bg: #241b3b;
   --bg2: #1a1330;

@@ -205,8 +205,16 @@ export const statusName = (id: string, side: Side): string => t(STATUSES[id].sel
 export const statusDesc = (id: string, side: Side, v: number): string =>
   keywordHtml(t(STATUSES[id].selfName && side === 'hero' ? `status.${id}.self.d` : `status.${id}.d`, { v }));
 
-/** Keywords that are not statuses but still have a colour: Block is teal, mana blue, Asleep (the hero's stun) purple. */
-const KEYWORD_TONE: Record<string, Tone> = { block: 'teal', mana: 'blue', crystal: 'blue', asleep: 'purple' };
+/** Keywords that are not statuses but still have a colour: Block is teal, mana blue, Asleep (the hero's stun) and the hexes purple, Heal green. The card modifiers have none (dark grey). */
+const KEYWORD_TONE: Record<string, Tone> = {
+  block: 'teal',
+  mana: 'blue',
+  crystal: 'blue',
+  asleep: 'purple',
+  heal: 'green',
+  petrify: 'purple',
+  crumple: 'purple',
+};
 
 /** Icons of keywords that have none of their own as a card tag, status or glyph. */
 const KEYWORD_ICON: Record<string, string> = {
@@ -263,6 +271,11 @@ export const KEYWORD_LIST = [
   'asleep',
   'weak',
   'vulnerable',
+  'crit',
+  'blackout',
+  'heal',
+  'petrify',
+  'crumple',
   'buff',
 ];
 
