@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { CONFIG, relicGuarantee, rewardUpgradeChance } from '../../src/data/config';
+import { CONFIG, relicGuarantee, rewardOdds, rewardUpgradeChance } from '../../src/data/config';
 import { ENEMIES, enemiesFor } from '../../src/data/enemies';
 import { HEROES } from '../../src/data/heroes';
 import { CARD_LIST, CARDS, RARITY_ORDER, cardCostOf } from '../../src/data/cards';
@@ -446,13 +446,14 @@ describe('the Copy Room', () => {
       expect(r.deck).toContain(after);
     }
     expect(r.deck).toHaveLength(size);
-    // Any rarity can come out.
+    // The rarity follows the elite's reward odds of the act.
     const rarities = new Set<string>();
     for (let seed = 1; seed <= 60; seed++) {
       const run = newRun('warrior', seed);
       for (const { after } of restructure(run, [run.deck[0].uid])) rarities.add(CARDS[after.id].rarity);
     }
     expect(rarities.size).toBeGreaterThan(1);
+    for (const r of rarities) expect(rewardOdds('elite', 1).some(([x]) => x === r)).toBe(true);
   });
 
   it('the Restructuring leaves curses alone, and gives a stationery the run does not hold', () => {

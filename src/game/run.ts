@@ -738,16 +738,23 @@ const restructurePool = (run: RunState, card: CardInst): CardDef[] =>
 export const canRestructure = (run: RunState, card: CardInst): boolean => !fixed(card) && restructurePool(run, card).length > 0;
 
 /**
- * Each deck card of `uids` turns into a random other card of any rarity (the hero's class weighs `classCardWeight` against neutral, as in a reward),
- * starting from scratch: no upgrade, no perks. Returns each card as it was and as it is now.
+ * Each deck card of `uids` turns into a random other card, starting from scratch: no upgrade, no perks. The rarity follows the odds of an elite's
+ * reward for the act (the hero's class weighs `classCardWeight` against neutral, as in a reward). Returns each card as it was and as it is now.
  */
 export function restructure(run: RunState, uids: number[]): { before: CardInst; after: CardInst }[] {
   const rng = rngOf(run);
+  const odds = rewardOdds('elite', currentNode(run).act);
   const moved: { before: CardInst; after: CardInst }[] = [];
   for (const uid of uids) {
     const before = run.deck.find((c) => c.uid === uid);
     if (!before || !canRestructure(run, before)) continue;
-    const def = pickReward(rng, run, restructurePool(run, before));
+    // A rarity with nothing else to give (every card of it is this one) is dealt again.
+    let pool: CardDef[] = [];
+    for (let tries = 0; !pool.length && tries < 80; tries++) {
+      const rarity = rng.weighted(odds, ([, w]) => w)[0];
+      pool = poolOf(run, rarity).filter((c) => c.id !== before.id);
+    }
+    const def = pickReward(rng, run, pool.length ? pool : restructurePool(run, before));
     discover([def.id]);
     const after = swapCard(run, uid, def.id);
     if (after) moved.push({ before: { ...before }, after });
