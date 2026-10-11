@@ -240,6 +240,22 @@ export const rogueCards: CardDef[] = [
     play: (c, v) => c.gainBlock('hero', v[0]),
   },
   {
+    id: 'fallGuy',
+    face: '{block:0}×{cards}|{exit}',
+    cls: 'rogue',
+    type: 'defense',
+    rarity: 'rare',
+    cost: 2,
+    vals: [4],
+    upVals: [6],
+    art: 'fallGuy',
+    // The card itself is on the belt when it is played from there: it counts for nothing. The fall comes after the count.
+    play: (c, v, card) => {
+      c.gainBlock('hero', v[0] * c.belt.filter((b) => b.card.uid !== card.uid).length);
+      c.dropOldest();
+    },
+  },
+  {
     id: 'bathroomBreak',
     face: '{dodge:0}|{vuln:1}',
     cls: 'rogue',
@@ -253,6 +269,19 @@ export const rogueCards: CardDef[] = [
       c.applyStatus('hero', 'dodge', 1, v[0]);
       c.applyStatus('enemy', 'vulnerable', 1, v[1]);
     },
+  },
+  {
+    id: 'loophole',
+    face: '{sleeve}{drain}',
+    cls: 'rogue',
+    type: 'skill',
+    rarity: 'epic',
+    cost: 1,
+    upCost: 0,
+    vals: [],
+    art: 'loophole',
+    // A random card of the sleeve costs nothing until it is played (the discount is capped at its cost).
+    play: (c) => c.cheapenRandom(Infinity),
   },
   {
     id: 'companyProperty',

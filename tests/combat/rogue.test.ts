@@ -396,4 +396,25 @@ describe('the Rogue', () => {
     expect(c.stacks('enemy', 'strength')).toBe(0);
     expect(c.stacks('hero', 'strength')).toBe(3);
   });
+
+  it('Fall Guy gives Block for every other card on the belt, then the oldest falls', () => {
+    const c = rogueFight();
+    const old = onBelt(c, 'borrowedStapler');
+    onBelt(c, 'hideTheEvidence');
+    const guy = onBelt(c, 'fallGuy');
+    expect(c.playCard(guy)).toBe(true);
+    expect(c.hero.block).toBe(CARDS.fallGuy.vals[0] * 2);
+    expect(c.belt.some((b) => b.card.uid === old)).toBe(false);
+    expect(c.belt).toHaveLength(1);
+  });
+
+  it('Loophole makes one card of the sleeve free until it is played', () => {
+    const c = rogueFight();
+    inSleeve(c, 'oceansEleven');
+    expect(c.playCard(onBelt(c, 'loophole'))).toBe(true);
+    expect(c.cardCost(c.sleeve[0]!)).toBe(0);
+    // Nothing to free: no error.
+    const d = rogueFight();
+    expect(d.playCard(onBelt(d, 'loophole'))).toBe(true);
+  });
 });

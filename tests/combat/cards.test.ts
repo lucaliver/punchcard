@@ -1378,3 +1378,35 @@ describe('Rise and Grind, Seniority, Tenure, Life Insurance, Nervous Breakdown',
     expect(new Combat(combatSetup(r)).sleeve.length).toBe(HEROES.warrior.sleeve);
   });
 });
+
+describe('Fire Extinguisher and Hi-Vis Vest', () => {
+  const still = (deck: string[]): Combat => {
+    const c = setup({ hero: HEROES.warrior, deck: deckOf(deck) });
+    c.enemy.move = { id: 'wait', intent: 'defend', windup: 999 };
+    run(c, CONFIG.introTime + 0.01);
+    c.hero.mana = c.hero.maxMana;
+    c.hero.block = 0;
+    return c;
+  };
+  const onBelt = (c: Combat, id: string): number => {
+    c.belt.length = 0;
+    c.addTempCard(id, 'belt');
+    return c.belt[0].card.uid;
+  };
+
+  it('the Fire Extinguisher is a consumable that gives a lot of Block', () => {
+    const c = still(['punch']);
+    expect(CARDS.fireExtinguisher.keywords).toEqual(expect.arrayContaining(['consume', 'anchor']));
+    expect(c.playCard(onBelt(c, 'fireExtinguisher'))).toBe(true);
+    expect(c.hero.block).toBe(CARDS.fireExtinguisher.vals[0]);
+  });
+
+  it('the Hi-Vis Vest gives more Block when the Warrior already has some', () => {
+    const c = still(['punch']);
+    expect(c.playCard(onBelt(c, 'hiVisVest'))).toBe(true);
+    expect(c.hero.block).toBe(CARDS.hiVisVest.vals[0]);
+    const before = c.hero.block;
+    expect(c.playCard(onBelt(c, 'hiVisVest'))).toBe(true);
+    expect(c.hero.block - before).toBe(CARDS.hiVisVest.vals[1]);
+  });
+});

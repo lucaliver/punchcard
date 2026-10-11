@@ -135,6 +135,10 @@ export const ICONS: Record<string, { el: Element; svg: string; wide?: boolean }>
     svg: `<path d="M19.2 6.4h25.6v3.2h-25.6zM19.2 9.6h6.4v3.2h-6.4zM38.4 9.6h6.4v3.2h-6.4zM19.2 12.8h6.4v3.2h-6.4zM38.4 12.8h6.4v3.2h-6.4zM6.4 16h51.2v3.2h-51.2zM3.2 19.2h57.6v3.2h-57.6zM3.2 22.4h22.4v3.2h-22.4zM38.4 22.4h22.4v3.2h-22.4zM3.2 25.6h22.4v3.2h-22.4zM38.4 25.6h22.4v3.2h-22.4zM3.2 28.8h22.4v3.2h-22.4zM38.4 28.8h22.4v3.2h-22.4zM3.2 32h12.8v3.2h-12.8zM48 32h12.8v3.2h-12.8zM3.2 35.2h12.8v3.2h-12.8zM48 35.2h12.8v3.2h-12.8zM3.2 38.4h12.8v3.2h-12.8zM48 38.4h12.8v3.2h-12.8zM3.2 41.6h12.8v3.2h-12.8zM48 41.6h12.8v3.2h-12.8zM3.2 44.8h22.4v3.2h-22.4zM38.4 44.8h22.4v3.2h-22.4zM3.2 48h22.4v3.2h-22.4zM38.4 48h22.4v3.2h-22.4zM3.2 51.2h22.4v3.2h-22.4zM38.4 51.2h22.4v3.2h-22.4zM3.2 54.4h57.6v3.2h-57.6zM6.4 57.6h51.2v3.2h-51.2z"/>`,
   },
   potionOrange: { el: 'fire', svg: potion('#ff8a1f') },
+  extinguisher: {
+    el: 'blood',
+    svg: `<rect x="18" y="24" width="26" height="36" rx="7"/><rect x="26" y="14" width="10" height="10"/><path d="M20 10h22v6H20z"/><path d="M36 13c10 0 16 4 16 12" fill="none" stroke="#16121f" stroke-width="4"/><path d="M48 24l10 4-10 6z"/><path fill="#16121f" d="M18 36h26v10H18z"/><path ${HI} d="M22 28h4v28h-4z"/>`,
+  },
   energyCan: {
     el: 'arcane',
     svg: `<path d="M32 0h9.6v3.2h-9.6zM19.2 3.2h25.6v3.2h-25.6zM16 6.4h32v3.2h-32zM19.2 9.6h25.6v3.2h-25.6zM19.2 12.8h25.6v3.2h-25.6zM19.2 16h12.8v3.2h-12.8zM41.6 16h3.2v3.2h-3.2zM19.2 19.2h9.6v3.2h-9.6zM38.4 19.2h6.4v3.2h-6.4zM19.2 22.4h6.4v3.2h-6.4zM35.2 22.4h9.6v3.2h-9.6zM19.2 25.6h3.2v3.2h-3.2zM41.6 25.6h3.2v3.2h-3.2zM19.2 28.8h12.8v3.2h-12.8zM38.4 28.8h6.4v3.2h-6.4zM19.2 32h9.6v3.2h-9.6zM35.2 32h9.6v3.2h-9.6zM19.2 35.2h6.4v3.2h-6.4zM32 35.2h12.8v3.2h-12.8zM19.2 38.4h6.4v3.2h-6.4zM28.8 38.4h16v3.2h-16zM19.2 41.6h3.2v3.2h-3.2zM25.6 41.6h19.2v3.2h-19.2zM19.2 44.8h25.6v3.2h-25.6zM19.2 48h25.6v3.2h-25.6zM16 51.2h32v3.2h-32zM19.2 54.4h25.6v3.2h-25.6z"/>`,
@@ -911,6 +915,10 @@ export const ICONS: Record<string, { el: Element; svg: string; wide?: boolean }>
   dressCode: {
     el: 'steel',
     svg: `<path d="M20 4h24l-4 12H24z"/><path d="M26 16h12l-2 6 6 28-10 12-10-12 6-28z"/><path d="M26 30h12M25 40h14" stroke="#16121f" stroke-width="3"/><path d="M12 4l12 12-6 6-12-12zM52 4L40 16l6 6 12-12z" fill="#16121f" opacity=".5"/>`,
+  },
+  hiVisVest: {
+    el: 'fire',
+    svg: `<path d="M14 6h12l6 12 6-12h12l8 10-4 42H10l-4-42z"/><path fill="#16121f" d="M28 22h8v38h-8z"/><path d="M10 36h44M10 46h44" fill="none" stroke="#fff" stroke-width="5"/><path ${HI} d="M16 10h6l-4 10z"/>`,
   },
   skillIssue: {
     el: 'steel',
@@ -1801,6 +1809,14 @@ export const ICONS: Record<string, { el: Element; svg: string; wide?: boolean }>
   hushMoney: {
     el: 'holy',
     svg: `<path d="M24 6h16l-4 10c12 6 20 16 20 28 0 10-8 14-24 14S8 54 8 44c0-12 8-22 20-28z"/><path ${HI} d="M16 42c0-8 4-14 10-18-4 6-6 12-5 20z"/><path fill="#16121f" d="M22 38h20v5H22z"/><path fill="none" stroke="#16121f" stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M26 38v5M32 38v5M38 38v5"/>`,
+  },
+  fallGuy: {
+    el: 'shadow',
+    svg: `<path d="M2 14h26v8H2z"/><path d="M6 22h6v36H6z"/><circle cx="40" cy="26" r="8"/><path d="M34 36l18 8-6 14-8-4-8 8-8-6 10-10z"/><path fill="none" stroke="#16121f" stroke-width="3" stroke-linecap="round" d="M52 12l6-6M56 24l6-2"/>`,
+  },
+  loophole: {
+    el: 'holy',
+    svg: `<path d="M4 8h56v48H4z"/><path fill="#16121f" d="M32 16a16 16 0 1 0 0 32 16 16 0 0 0 0-32z"/><path d="M4 28h24v8H4zM36 28h28v8H36z" fill="#16121f" opacity=".0"/><circle cx="32" cy="32" r="7"/><path fill="none" stroke="#16121f" stroke-width="3" d="M4 22h10M50 22h10M4 42h14M46 42h14"/>`,
   },
   employeeDiscount: {
     el: 'holy',
