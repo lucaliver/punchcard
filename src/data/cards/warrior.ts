@@ -444,7 +444,7 @@ export const warriorCards: CardDef[] = [
     art: 'step1',
     play: (c, _v, card) => c.addTempCard('step2', 'draw', card.up),
   },
-  // A pair that passes the blame back and forth: each one is used up and brings the other back into the draw pile.
+  // A pair: each one is used up and brings the other back into the draw pile.
   {
     id: 'hotPotato',
     face: '{dmg:0}|{addCard}',

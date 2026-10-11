@@ -744,7 +744,7 @@ const defs: StatusDef[] = [
       return me.pos < ASSEMBLY_FROM ? 'combat.assemblyLine' : null;
     },
   },
-  // VIP treatment: the client wants to be served in person, so an attack dragged onto the stage is critical (`Combat.playCard`).
+  // VIP treatment: an attack dragged onto the stage is critical (`Combat.playCard`).
   { id: 'vipTreatment', tone: 'red', kind: 'stacks', good: true, passive: true, icon: 'vipRope', critOnDrag: true },
   // Overtime creep: a little stronger every so often, whatever you do.
   {

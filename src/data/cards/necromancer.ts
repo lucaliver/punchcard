@@ -560,7 +560,7 @@ export const necromancerCards: CardDef[] = [
     upVals: [3, 4],
     keywords: ['exhaust'],
     art: 'companyRetreat',
-    // Team building: everyone sits in the circle, nobody works, and you get some rest out of it.
+    // Stuns both sides and regenerates the hero.
     play: (c, v) => {
       c.applyStatus('enemy', 'stun', 1, v[0]);
       c.applyStatus('hero', 'stun', 1, v[0]);

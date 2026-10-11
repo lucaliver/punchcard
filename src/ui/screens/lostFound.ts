@@ -10,7 +10,7 @@ import { openInfo } from '../components/modals';
 import { closeRoom, roomScene } from '../components/room';
 import { runHud } from './journey';
 
-/** Lost & Found: three relics nobody came back for; the player keeps one. */
+/** Lost & Found: three relics; the player keeps one. */
 export function lostFoundScreen(run: RunState, onDone: () => void): Screen {
   const el = h(
     'div',

@@ -106,7 +106,7 @@ export function endScreen(
         }),
       ),
       h('p', { class: 'sub' }, won ? t('end.victoryDesc') : t('end.defeatDesc', { n: node.floor })),
-      // Management's reply to a full day: tapping it opens the hire screen on this hero, where the memos are pinned up.
+      // Shown after a full day: tapping it opens the hire screen on this hero, where the memos are pinned up.
       won && node.act === ACTS
         ? h('button', {
             class: 'new-hire memo-note',

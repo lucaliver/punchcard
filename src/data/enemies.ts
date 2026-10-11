@@ -34,8 +34,7 @@ export const HALF = { securityBlock: 30, slavesStall: 8, complianceSlow: 20 } as
  */
 const defs: EnemyDef[] = [
   {
-    // The very first fight of the very first run: an orientation video on a haunted TV. One belt row to start with;
-    // at half HP it assigns you the second one, and the friendly face on the screen turns out to be a mask.
+    // The very first fight of the very first run. One belt row to start with; at half HP it opens the second one.
     id: 'hrOrientationVideo',
     act: 1,
     tier: 'normal',
@@ -62,7 +61,7 @@ const defs: EnemyDef[] = [
     main: atk('snitchesGetStitches', 6, 5),
     every: 2,
     specials: [atk('ratOut', 14, 10, { intent: 'charge' })],
-    // Tells the boss: from half HP on, your belt is rushed for the rest of the fight.
+    // From half HP on, your belt is rushed for the rest of the fight.
     halfSpeech: true,
     halfArt: 'snitchAngry',
     onHalf: (c) => c.applyStatus('hero', 'hurry', 1, 9999),
@@ -167,7 +166,7 @@ const defs: EnemyDef[] = [
     startHex: { id: 'crumple', share: 0.5 },
   },
   {
-    // Nepotism hire: a target shows on him now and then; tap it in time and your next attack is critical.
+    // A target shows on him now and then; tap it in time and your next attack is critical.
     id: 'bossSon',
     act: 1,
     tier: 'normal',
@@ -179,7 +178,7 @@ const defs: EnemyDef[] = [
     start: [{ id: 'weakSpot' }],
   },
   {
-    // Came in anyway: his sneezes put a virus on your cards, which then spreads along the belt on its own.
+    // His sneezes put a virus on your cards, which then spreads along the belt on its own.
     id: 'sickCoworker',
     act: 1,
     tier: 'normal',
@@ -193,7 +192,7 @@ const defs: EnemyDef[] = [
     ],
   },
   {
-    // Moves in with you: her boxes fill your sleeve from the start, and only get cheaper to unpack with time.
+    // Her boxes fill your sleeve from the start, and only get cheaper to unpack with time.
     id: 'workWife',
     act: 1,
     tier: 'normal',
@@ -224,7 +223,7 @@ const defs: EnemyDef[] = [
     onHalf: (c) => c.gainBlock('enemy', HALF.securityBlock),
   },
   {
-    // Leaving with a golden parachute: the first time he would fall, he retires instead and comes back for more.
+    // The first time he would fall, he retires instead and comes back for more.
     id: 'outgoingVp',
     act: 1,
     tier: 'elite',
@@ -249,12 +248,12 @@ const defs: EnemyDef[] = [
     main: atk('taylorsStopwatch', 10, 8, ramp),
     every: 2,
     specials: [
-      // The Boss wants his coffee now: a window covers your belt and sleeve with the machine's coin slot, keypad and cup bay. Do the chore before the move lands, and the move is off.
+      // A window covers your belt and sleeve with the machine's coin slot, keypad and cup bay. Do the chore before the move lands, and the move is off.
       { id: 'getBossCoffee', intent: 'charge', windup: GET_COFFEE, dmg: 16, task: 'coffee' },
       { id: 'crunchTime', intent: 'debuff', windup: 5, status: [{ id: 'crunch', t: 10, target: 'hero' }] },
     ],
     halfSpeech: true,
-    // The emergency button: at half HP everything stops for a moment.
+    // At half HP everything stops for a moment.
     halfArt: 'slavesCeoAngry',
     onHalf: (c) => c.applyStatus('hero', 'stalled', 1, HALF.slavesStall),
   },
@@ -351,7 +350,7 @@ const defs: EnemyDef[] = [
     start: [{ id: 'spendingFreeze' }],
   },
   {
-    // The Snitch's opposite number: from half HP on, everything slows to a crawl.
+    // From half HP on, everything slows to a crawl.
     id: 'complianceOfficer',
     act: 2,
     tier: 'normal',
@@ -367,7 +366,7 @@ const defs: EnemyDef[] = [
     onHalf: (c) => c.applyStatus('hero', 'slowdown', 1, HALF.complianceSlow),
   },
   {
-    // Bills by the second: every hit of your cards is docked, so only Poison and Burn go through whole. Shuts you up with a gag order.
+    // Every hit of your cards is docked, so only Poison and Burn go through whole. Shuts you up with a gag order.
     id: 'contractLawyer',
     act: 2,
     tier: 'normal',
@@ -383,7 +382,7 @@ const defs: EnemyDef[] = [
     start: [{ id: 'finePrint', v: 2 }],
   },
   {
-    // Never fixes anything: rust builds up on the belt until it crawls, and then stops. The mop beside him scrubs it off.
+    // Rust builds up on the belt until it crawls, and then stops. The mop beside him scrubs it off.
     id: 'nightJanitor',
     act: 2,
     tier: 'elite',
@@ -397,7 +396,6 @@ const defs: EnemyDef[] = [
     ruleBreaker: true,
   },
   {
-    // The office chair nobody claims: spins, sinks, and swears the RGB strip adds performance.
     id: 'officeChair',
     act: 2,
     tier: 'normal',
@@ -407,7 +405,7 @@ const defs: EnemyDef[] = [
     every: 2,
     specials: [
       atk('beybladeChair', 3, 9, { hits: 6, intent: 'charge' }),
-      // The seat sinks under you while he sits up straight.
+      // Slows your belt and strengthens him.
       {
         id: 'adjustSeat',
         intent: 'debuff',
@@ -420,7 +418,7 @@ const defs: EnemyDef[] = [
     ],
   },
   {
-    // Walks in like it's a runway: the whole office stops. After a few seconds your sleeves and ability slip out of sight and a third belt row opens: more cards, nowhere to stash them.
+    // After a few seconds your sleeves and ability slip out of sight and a third belt row opens: more cards, nowhere to stash them.
     id: 'exaggeratedGirl',
     act: 2,
     tier: 'normal',
@@ -436,7 +434,7 @@ const defs: EnemyDef[] = [
     ruleBreaker: true,
   },
   {
-    // A wall socket with a temper: ten seconds in, the belt goes dead. Any card that gets moving does it by your hand.
+    // Ten seconds in, the belt goes dead. Any card that gets moving does it by your hand.
     id: 'powerSocket',
     act: 1,
     tier: 'elite',
@@ -453,7 +451,7 @@ const defs: EnemyDef[] = [
     ruleBreaker: true,
   },
   {
-    // An agile archmage who streamlines your workflow: at half HP one belt row is let go, with the cards on it.
+    // At half HP one belt row is let go, with the cards on it.
     id: 'changeManager',
     act: 2,
     tier: 'normal',
@@ -479,7 +477,7 @@ const defs: EnemyDef[] = [
     start: [{ id: 'secondThoughts', v: 1 }],
   },
   {
-    // Last day on the job, nothing to lose: hands you a bomb nobody can afford to defuse. Keep it in your sleeve.
+    // Hands you a bomb nobody can afford to defuse. Keep it in your sleeve.
     id: 'leaver',
     act: 2,
     tier: 'normal',
@@ -505,7 +503,7 @@ const defs: EnemyDef[] = [
     specials: [atk('printOut', 5, 8, { intent: 'charge', release: true, ...ramp })],
   },
   {
-    // The IT guy: every so often an UPDATE NEEDED window covers your belt. Postponing it only buys a few seconds; sitting through the update costs a long one.
+    // Every so often an UPDATE NEEDED window covers your belt. Postponing it only buys a few seconds; sitting through the update costs a long one.
     id: 'theNerd',
     act: 2,
     tier: 'elite',
@@ -569,7 +567,7 @@ const defs: EnemyDef[] = [
 
   // ------------------------------------------------------------- Act 3
   {
-    // Nobody told him he could go home: every so often he nods off on his feet, and then he's easy prey.
+    // Every so often he nods off on his feet, and then he is stunned and vulnerable for a while.
     id: 'graveyardIntern',
     act: 3,
     tier: 'normal',
@@ -579,7 +577,7 @@ const defs: EnemyDef[] = [
     every: 2,
     specials: [
       { id: 'energyDrink', intent: 'buff', windup: 5, status: [{ id: 'strength', v: 2, target: 'enemy' }] },
-      // Seen but not heard: he fades out of the conversation, and your cards go right through him.
+      // He fades out of the conversation, and your cards go right through him.
       { id: 'ghosting', intent: 'buff', windup: 5, status: [{ id: 'dodge', t: 5, target: 'enemy' }] },
     ],
     start: [{ id: 'microsleep' }],
@@ -615,7 +613,7 @@ const defs: EnemyDef[] = [
     start: [{ id: 'assemblyLine' }],
   },
   {
-    // Wants to be served in person: attacks dragged onto the stage are critical, and there is a lot of him to serve.
+    // Attacks dragged onto the stage are critical, and there is a lot of him to serve.
     id: 'vipClient',
     act: 3,
     tier: 'normal',
@@ -654,7 +652,7 @@ const defs: EnemyDef[] = [
     start: [{ id: 'machineLearning' }],
   },
   {
-    // Stronger every few seconds whatever you do: the longer the fight, the more overtime it demands.
+    // Stronger every few seconds whatever you do.
     id: 'punchClock',
     act: 3,
     tier: 'normal',
@@ -670,7 +668,7 @@ const defs: EnemyDef[] = [
     start: [{ id: 'overtimeCreep' }],
   },
   {
-    // Chirps at 3 a.m., and every chirp takes a mana.
+    // Every chirp takes a mana.
     id: 'smokeDetector',
     act: 3,
     tier: 'normal',
@@ -690,13 +688,12 @@ const defs: EnemyDef[] = [
     tier: 'normal',
     hp: 120,
     art: 'microwave',
-    // Five quick dings, then the smell.
     main: atk('beepBeepBeep', 5, 3),
     every: 5,
     specials: [{ id: 'leftoverFish', intent: 'debuff', windup: 6, status: [gainStrength, { id: 'poison', v: 3, target: 'hero' }] }],
   },
   {
-    // Nobody watered it since spring: every attack you land with a card stings back.
+    // Every attack you land with a card stings back.
     id: 'witheredFicus',
     act: 3,
     tier: 'normal',
@@ -708,7 +705,7 @@ const defs: EnemyDef[] = [
     start: [{ id: 'thorns', v: 1 }],
   },
   {
-    // The omakase: the Chef calls out an order and the belt serves nothing but sushi. Eat the pieces in the order of the slip before it lands, and the move is off.
+    // The Chef calls out an order and the belt serves nothing but sushi. Eat the pieces in the order of the slip before it lands, and the move is off.
     id: 'sushiChef',
     act: 1,
     tier: 'elite',
@@ -740,7 +737,7 @@ const defs: EnemyDef[] = [
     ],
   },
   {
-    // Lost on the wrong floor, he hands out his luggage: helpful cards, but shut in suitcases big enough to clog the belt.
+    // He hands out luggage: helpful cards, but shut in suitcases big enough to clog the belt.
     id: 'tourist',
     act: 3,
     tier: 'elite',
@@ -768,7 +765,7 @@ const defs: EnemyDef[] = [
     onHalf: (c) => c.applyStatus('enemy', 'haste', 1, 9999),
   },
   {
-    // The belt's big sister: five seconds in, she shuts off your mana and makes you tap it out by hand.
+    // Five seconds in, she shuts off your mana and makes you tap it out by hand.
     id: 'conveyorSis',
     act: 3,
     tier: 'elite',

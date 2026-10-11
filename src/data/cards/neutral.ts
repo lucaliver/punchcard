@@ -1376,7 +1376,7 @@ export const curseCards: CardDef[] = [
     onExpire: (c, v) => void c.damage('enemy', 'hero', v[0], { raw: true, kind: 'fire' }, 'dot'),
   },
   {
-    // Nobody wants to pay for it, and every time it slips off the belt it bites, harder than the last.
+    // Every time it slips off the belt it bites, harder than the last.
     id: 'debt',
     face: '{?exit}{boom:0}|{grow:1}',
     cls: 'curse',
@@ -1427,14 +1427,13 @@ export const curseCards: CardDef[] = [
     cls: 'curse',
     type: 'curse',
     rarity: 'epic',
-    // A meeting you can't buy your way out of.
     cost: 99,
     vals: [],
     keywords: ['unplayable', 'fleeting'],
     art: 'meeting',
   },
   {
-    // The Nerd's: a link nobody should click. Let it ride off the belt and your laptop catches fire.
+    // The Nerd's: let it ride off the belt and it burns you.
     id: 'phishing',
     face: '{?exit}{burn:0}',
     cls: 'curse',
@@ -1488,7 +1487,7 @@ export const curseCards: CardDef[] = [
     play: () => {},
   },
   {
-    // Gatekeeping over both lanes.
+    // Spans both lanes.
     id: 'lockout',
     face: '{gate}×2',
     cls: 'curse',
@@ -1542,7 +1541,7 @@ export const curseCards: CardDef[] = [
     onExpire: (c, v) => c.drainMana(v[1]),
   },
   {
-    // Instead of a raise: it clogs the belt, and paying for it barely helps.
+    // It clogs the belt, and paying for it barely helps.
     id: 'freePizza',
     face: '{heal:0}',
     cls: 'curse',
