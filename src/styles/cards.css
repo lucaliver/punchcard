@@ -60,6 +60,7 @@
 /* longer names go on two lines, a size down */
 .c-name.long { font-size: 14cqw; }
 .c-name.xlong { font-size: 12cqw; }
+.c-name.xxlong { font-size: 10.5cqw; }
 .card.is-up .c-name::after {
   content: '+';
   margin-left: 1cqw;

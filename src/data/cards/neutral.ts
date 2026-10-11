@@ -183,7 +183,7 @@ export const neutralCards: CardDef[] = [
   },
   {
     id: 'cleanSlate',
-    face: '{debuff}|{block:0}',
+    face: '{cleansed}|{block:0}×{cleansed}',
     cls: 'neutral',
     type: 'defense',
     rarity: 'rare',

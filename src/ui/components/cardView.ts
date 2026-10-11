@@ -103,9 +103,11 @@ export const GLYPHS: Record<string, { icon: string; unit?: string; sign?: string
   /** The enemy's buffs (and its Block). */
   buff: { icon: 'up' },
   /** The debuffs you carry. */
-  debuff: { icon: 'down' },
+  debuff: { icon: 'down', tone: 'purple' },
+  /** The debuffs you carry, struck out: Clean Slate's cleansing (and its Block for each). */
+  cleansed: { icon: 'downOff', tone: 'purple' },
   /** A curse card. */
-  curse: { icon: 'skull' },
+  curse: { icon: 'skull', tone: 'purple' },
   /** An angel: Forklift Certified's comeback below half HP. */
   angel: { icon: 'angel', tone: 'teal' },
   /** Handed over to the enemy. */
@@ -121,7 +123,7 @@ export const GLYPHS: Record<string, { icon: string; unit?: string; sign?: string
 };
 
 /** Long names get a smaller font (and two lines) so they fit the title band instead of being cut. */
-const nameFit = (name: string): string => (name.length > 16 ? 'xlong' : name.length > 7 ? 'long' : '');
+const nameFit = (name: string): string => (name.length > 20 ? 'xxlong' : name.length > 16 ? 'xlong' : name.length > 7 ? 'long' : '');
 
 /** Stands in for the name or text of something not met or unlocked yet (handbook, hero select). */
 export const UNKNOWN = '????';

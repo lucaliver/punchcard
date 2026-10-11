@@ -1198,6 +1198,10 @@ export const ICONS: Record<string, { el: Element; svg: string; wide?: boolean }>
     svg: `<g transform="translate(32 0)"><circle cx="32" cy="26" r="21"/><path fill="#16121f" d="M32 12l3 8 8 1-6 5 2 8-7-4-7 4 2-8-6-5 8-1z"/></g><rect x="10" y="44" width="108" height="16" rx="3"/><path fill="#16121f" d="M16 50h96v3H16z"/><circle cx="14" cy="22" r="3"/><circle cx="26" cy="34" r="2.5"/><circle cx="108" cy="16" r="3"/><circle cx="116" cy="32" r="2.5"/><circle cx="98" cy="36" r="2"/>`,
   },
   down: { el: 'shadow', svg: `<path d="M32 60L8 34h14V4h20v30h14z"/>` },
+  downOff: {
+    el: 'shadow',
+    svg: `<path d="M32 60L8 34h14V4h20v30h14z"/><path d="M4 6l56 54" stroke="#16121f" stroke-width="13" stroke-linecap="round"/><path d="M4 6l56 54" stroke="currentColor" stroke-width="5.5" stroke-linecap="round"/>`,
+  },
   shutdown: {
     el: 'necro',
     svg: `<g ${S} stroke-width="9"><path d="M20 14a24 24 0 1 0 24 0"/></g><rect x="27" y="2" width="10" height="30" rx="3"/>`,

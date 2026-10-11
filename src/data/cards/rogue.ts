@@ -298,7 +298,7 @@ export const rogueCards: CardDef[] = [
   },
   {
     id: 'creativeAccounting',
-    face: '{mana}',
+    face: '{mana}×2',
     cls: 'rogue',
     type: 'skill',
     rarity: 'epic',
@@ -572,7 +572,7 @@ export const rogueCards: CardDef[] = [
   // Office tricks: pulling the alarm, a gift swap, a demo that crashes, a trial you forget to cancel, laundered Block and a cut off the top
   {
     id: 'pullTheFireAlarm',
-    face: '{exit}|{stun:0}',
+    face: '{cards}{exit}|{stun:0}×{cards}',
     cls: 'rogue',
     type: 'skill',
     rarity: 'rare',
