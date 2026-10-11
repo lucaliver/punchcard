@@ -14,6 +14,15 @@ import {
   CHIRP_EVERY,
   CLEAN_GETAWAY_EVERY,
   COFFEE_EVERY,
+  CRON_EVERY,
+  DAYS_EVERY,
+  DEMO_CRASH,
+  MEETING_EVERY,
+  MEETING_SYNC,
+  SCOPE_EVERY,
+  SCOPE_TAX,
+  SKIM_FROM,
+  UNION_HP,
   FORKLIFT_BLOCK,
   HIRING_EVERY,
   CREEP_EVERY,
@@ -38,7 +47,7 @@ import {
 } from './statuses';
 
 const pct = (x: number): number => Math.round(x * 100);
-const mul = (id: string, key: 'dealtMul' | 'takenMul' | 'timeMul' | 'regenMul'): number => STATUSES[id][key] ?? 1;
+const mul = (id: string, key: 'dealtMul' | 'takenMul' | 'timeMul' | 'regenMul' | 'beltMul'): number => STATUSES[id][key] ?? 1;
 
 /**
  * The numbers rules text quotes, as `{$name}` in `i18n/en.ts`. Each one is read from the constant, status or record that makes the rule work
@@ -70,6 +79,16 @@ export const VALUES = {
   coffeeEvery: COFFEE_EVERY,
   cleanGetawayEvery: CLEAN_GETAWAY_EVERY,
   forkliftBlock: FORKLIFT_BLOCK,
+  daysEvery: DAYS_EVERY,
+  meetingEvery: MEETING_EVERY,
+  meetingSync: MEETING_SYNC,
+  scopeEvery: SCOPE_EVERY,
+  scopeTax: SCOPE_TAX,
+  cronEvery: CRON_EVERY,
+  unionHp: UNION_HP,
+  skimFrom: SKIM_FROM,
+  demoCrash: DEMO_CRASH,
+  workToRulePct: pct(1 - mul('workToRule', 'beltMul')),
   lunchEvery: LUNCH_EVERY,
   hiringEvery: HIRING_EVERY,
   learnEvery: LEARN_EVERY,

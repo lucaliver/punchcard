@@ -1,4 +1,5 @@
 import type { CardDef } from '../../game/types';
+import { DEMO_CRASH } from '../statuses';
 import { WHEN } from './conditions';
 
 /** The Rogue turns the cards that fall off the belt into a hoard: the sleeve is the stash, its cost the loot. */
@@ -566,5 +567,87 @@ export const rogueCards: CardDef[] = [
     // Damage for every `v[1]` different cards (by id) played in the whole run so far, this fight included.
     shown: (c, v) => [v[0] * Math.floor(c.uniquePlayed('run') / v[1])],
     play: (c, v) => void c.hit(v[0] * Math.floor(c.uniquePlayed('run') / v[1])),
+  },
+
+  // Office tricks: pulling the alarm, a gift swap, a demo that crashes, a trial you forget to cancel, laundered Block and a cut off the top
+  {
+    id: 'pullTheFireAlarm',
+    face: '{exit}|{stun:0}',
+    cls: 'rogue',
+    type: 'skill',
+    rarity: 'rare',
+    cost: 2,
+    vals: [1],
+    upVals: [2],
+    art: 'pullTheFireAlarm',
+    play: (c, v) => {
+      const n = c.dropBelt();
+      if (!c.result && n > 0) c.applyStatus('enemy', 'stun', 1, n * v[0]);
+    },
+  },
+  {
+    id: 'whiteElephant',
+    face: '{copy}{sleeve}',
+    cls: 'rogue',
+    type: 'skill',
+    rarity: 'epic',
+    cost: 2,
+    upCost: 1,
+    vals: [],
+    art: 'whiteElephant',
+    play: (c) => void c.swapSleeve(),
+  },
+  {
+    id: 'demoDay',
+    face: '{timer:0}|{price:1}|{stop:2}',
+    cls: 'rogue',
+    type: 'skill',
+    rarity: 'epic',
+    cost: 2,
+    vals: [6, 0, DEMO_CRASH],
+    upVals: [8, 0, DEMO_CRASH],
+    art: 'demoDay',
+    play: (c, v) => c.applyStatus('hero', 'demoDay', v[1], v[0]),
+  },
+  {
+    id: 'freeTrial',
+    face: '{cards:0}={cheaper}|{addCard}{curse}',
+    cls: 'rogue',
+    type: 'skill',
+    rarity: 'rare',
+    cost: 1,
+    vals: [3],
+    upVals: [4],
+    art: 'freeTrial',
+    // You forgot to cancel: a Debt joins the draw pile.
+    play: (c, v) => {
+      c.applyStatus('hero', 'lostBadge', v[0]);
+      c.addTempCard('debt', 'draw');
+    },
+  },
+  {
+    id: 'moneyLaundering',
+    face: '{breakBlock}{mana:0}',
+    cls: 'rogue',
+    type: 'skill',
+    rarity: 'rare',
+    cost: 1,
+    vals: [5],
+    upVals: [4],
+    art: 'moneyLaundering',
+    shown: (c, v) => [Math.floor(c.hero.block / v[0])],
+    play: (c, v) => c.gainMana(Math.floor(c.spendBlock() / v[0])),
+  },
+  {
+    id: 'skimOffTheTop',
+    face: '{*cards}{mana:0}',
+    cls: 'rogue',
+    type: 'power',
+    rarity: 'rare',
+    cost: 2,
+    upCost: 1,
+    vals: [1],
+    art: 'skimOffTheTop',
+    play: (c, v) => c.applyStatus('hero', 'skimOffTheTop', v[0]),
   },
 ];

@@ -86,6 +86,23 @@ export const FORKLIFT_BLOCK = 20;
 /** Clean Getaway: every this many cards falling off the belt give the Block. */
 export const CLEAN_GETAWAY_EVERY = 2;
 
+/** Days Without an Accident: seconds without losing HP for each helping of Strength. */
+export const DAYS_EVERY = 5;
+/** Recurring Meeting: seconds between two helpings of Strength, and between two Quick Syncs dealt onto the belt. */
+export const MEETING_EVERY = 10;
+export const MEETING_SYNC = 20;
+/** Scope Creep: seconds between two upgrades. Cron Job: seconds between two free plays. */
+export const SCOPE_EVERY = 6;
+/** Scope Creep: the mana an upgraded card costs more until it is played. */
+export const SCOPE_TAX = 1;
+export const CRON_EVERY = 10;
+/** The Union Remembers: HP lost for each helping of Poison. */
+export const UNION_HP = 4;
+/** Skim Off the Top: a card must cost this much (by its print) to pay the hero back. */
+export const SKIM_FROM = 3;
+/** Demo Day: seconds the belt stays stopped once the demo crashes. */
+export const DEMO_CRASH = 5;
+
 /** The card types, for a status that remembers the last one played. */
 const CARD_TYPES: CardType[] = ['attack', 'defense', 'skill', 'power', 'curse'];
 
@@ -438,6 +455,159 @@ const defs: StatusDef[] = [
   { id: 'lightFingers', tone: 'amber', kind: 'stacks', good: true, icon: 'priceTag', catchBonus: true },
   // Lost Badge: the next card that costs mana is free (a stack each).
   { id: 'lostBadge', tone: 'blue', kind: 'stacks', good: true, icon: 'priceTag', freeNext: true },
+  // Days Without an Accident (a power): `v` Strength every few seconds without losing HP (`e` is the clock, `Combat.mem.daysGained` what it has given); any HP lost takes it all back.
+  {
+    id: 'daysWithoutAccident',
+    tone: 'red',
+    kind: 'stacks',
+    good: true,
+    icon: 'muscle',
+    progress: (_c, _side, s) => (s.e ?? 0) / DAYS_EVERY,
+    tick: (c, side, s, dt) => {
+      s.e = (s.e ?? 0) + dt;
+      if (s.e < DAYS_EVERY) return;
+      s.e -= DAYS_EVERY;
+      c.applyStatus(side, 'strength', s.v);
+      c.mem.daysGained = (c.mem.daysGained ?? 0) + s.v;
+    },
+    onHurt: (c, side, s) => {
+      s.e = 0;
+      const gained = c.mem.daysGained ?? 0;
+      c.mem.daysGained = 0;
+      if (gained > 0) c.applyStatus(side, 'strength', -gained, 0, true);
+    },
+  },
+  // Move Fast and Break Things: for a while every card slipping off the hero's belt deals `v` damage.
+  {
+    id: 'moveFastAndBreakThings',
+    tone: 'amber',
+    kind: 'timed',
+    good: true,
+    icon: 'speedCards',
+    onExpire: (c, side, s) => {
+      if (side === 'hero') c.damage('hero', 'enemy', s.v, { raw: true, kind: 'slash' }, 'hero');
+    },
+  },
+  // Recurring Meeting (a power): `v` Strength every few seconds, and a Quick Sync dealt onto the belt every so often.
+  {
+    id: 'recurringMeeting',
+    tone: 'amber',
+    kind: 'stacks',
+    good: true,
+    icon: 'shiftClock',
+    progress: cycle(MEETING_EVERY),
+    tick: everySecond((c, side, n, s) => {
+      if (n % MEETING_EVERY === 0) c.applyStatus(side, 'strength', s.v);
+      if (n % MEETING_SYNC === 0) c.addTempCard('quickSync', 'belt');
+    }),
+  },
+  // Scope Creep (a power): every few seconds `v` random cards of the deck are upgraded for the fight and cost 1 more until played.
+  {
+    id: 'scopeCreep',
+    tone: 'blue',
+    kind: 'stacks',
+    good: true,
+    icon: 'growth',
+    progress: cycle(SCOPE_EVERY),
+    tick: everySecond((c, _side, n, s) => {
+      if (n % SCOPE_EVERY === 0) c.upgradeRandom(s.v, SCOPE_TAX);
+    }),
+  },
+  // Cron Job (a power): `v` random cards of the discard pile are played for free every few seconds.
+  {
+    id: 'cronJob',
+    tone: 'blue',
+    kind: 'stacks',
+    good: true,
+    icon: 'timer',
+    progress: cycle(CRON_EVERY),
+    tick: everySecond((c, _side, n, s) => {
+      if (n % CRON_EVERY === 0) c.playRandom('discard', s.v);
+    }),
+  },
+  // Two Weeks' Notice: when the time is up the enemy takes `v` damage (raw: Block can't stop a resignation).
+  {
+    id: 'twoWeeksNotice',
+    tone: 'red',
+    kind: 'timed',
+    good: true,
+    icon: 'timer',
+    onEnd: (c, side, s) => {
+      if (side === 'hero') c.damage('hero', 'enemy', s.v, { raw: true, kind: 'blunt' }, 'hero');
+    },
+  },
+  // Fantozzi (a power): every time the hero is hit it gains `v` Strength.
+  { id: 'fantozzi', tone: 'red', kind: 'stacks', good: true, icon: 'muscle', onStruck: (c, side, s) => c.applyStatus(side, 'strength', s.v) },
+  // Four-Day Week (a power): after every `v` cards the hero plays (curses don't count) the next one is free. `e` counts the cards since the last free one.
+  {
+    id: 'fourDayWeek',
+    tone: 'blue',
+    kind: 'stacks',
+    good: true,
+    icon: 'priceTag',
+    progress: (_c, _side, s) => (s.e ?? 0) / s.v,
+    imminent: (s) => (s.e ?? 0) + 1 >= s.v,
+    cue: 'punchClock',
+    onCardPlayed: (c, side, def) => {
+      const s = c.fighter(side).statuses.fourDayWeek;
+      if (def.type === 'curse' || !s) return;
+      s.e = (s.e ?? 0) + 1;
+      if (s.e < s.v) return;
+      s.e = 0;
+      c.cue(side, 'fourDayWeek');
+      c.applyStatus(side, 'lostBadge', 1);
+    },
+  },
+  // Synergy (a power): a card of another type than the one played before it deals `v` damage. `e` is that last type (its place in `CARD_TYPES`, from 1); curses don't count.
+  {
+    id: 'synergy',
+    tone: 'red',
+    kind: 'stacks',
+    good: true,
+    icon: 'copy',
+    onCardPlayed: (c, side, def) => {
+      const s = c.fighter(side).statuses.synergy;
+      if (def.type === 'curse' || !s) return;
+      const type = CARD_TYPES.indexOf(def.type) + 1;
+      if (s.e && s.e !== type) c.damage('hero', 'enemy', s.v, { raw: true, kind: 'slash' }, 'hero');
+      s.e = type;
+    },
+  },
+  // The Union Remembers (a power): every time the hero loses HP the enemy is poisoned `v` for each `UNION_HP` of it.
+  {
+    id: 'theUnionRemembers',
+    tone: 'toxic',
+    kind: 'stacks',
+    good: true,
+    icon: 'poisonBottle',
+    onHurt: (c, side, s, lost) => {
+      const n = Math.floor(lost / UNION_HP) * s.v;
+      if (side === 'hero' && n > 0) c.applyStatus('enemy', 'poison', n);
+    },
+  },
+  // Skim Off the Top (a power): a card that costs `SKIM_FROM` or more gives the hero `v` mana back.
+  {
+    id: 'skimOffTheTop',
+    tone: 'blue',
+    kind: 'stacks',
+    good: true,
+    icon: 'coin',
+    onCardPlayed: (c, side, def, card) => {
+      if (def.type !== 'curse' && c.printedCost(card) >= SKIM_FROM) c.gainMana(c.stacks(side, 'skimOffTheTop'));
+    },
+  },
+  // Work-to-Rule: for a while the belt runs at half speed and the hero's attacks deal `v` more.
+  { id: 'workToRule', tone: 'amber', kind: 'timed', good: true, icon: 'gauge', strength: true, beltMul: 0.5 },
+  // Demo Day: for a while every card costs 0; then the demo crashes and the belt stops.
+  {
+    id: 'demoDay',
+    tone: 'blue',
+    kind: 'timed',
+    good: true,
+    icon: 'priceTag',
+    flatCost: true,
+    onEnd: (c, side) => c.applyStatus(side, 'stalled', 1, DEMO_CRASH),
+  },
   // Root access (sudo): no rule can stop the hero's cards.
   { id: 'rootAccess', tone: 'blue', kind: 'timed', good: true, icon: 'terminal', ignoresRules: true },
   {

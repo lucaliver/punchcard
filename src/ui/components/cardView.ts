@@ -110,6 +110,14 @@ export const GLYPHS: Record<string, { icon: string; unit?: string; sign?: string
   angel: { icon: 'angel', tone: 'teal' },
   /** Handed over to the enemy. */
   pass: { icon: 'share' },
+  /** The card (or the cards it names) cost more mana. */
+  pricier: { icon: 'priceTag', sign: '+' },
+  /** Condition: the hero has more HP than the enemy. */
+  lead: { icon: 'heart' },
+  /** A share of the enemy's HP, in percent. */
+  foeHp: { icon: 'heartbreak', unit: '%' },
+  /** The belt runs slower for a while. */
+  slow: { icon: 'gauge', unit: 's', tone: 'amber' },
 };
 
 /** Long names get a smaller font (and two lines) so they fit the title band instead of being cut. */

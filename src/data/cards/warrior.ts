@@ -734,6 +734,73 @@ export const warriorCards: CardDef[] = [
     },
   },
 
+  // The workday as a streak, a lead and a clock: Strength for going unhurt, a hit for the healthier one, Block that grows with the wait, a slow belt that hits harder, a card taped down
+  {
+    id: 'daysWithoutAccident',
+    face: '{*timer}{str:0}',
+    cls: 'warrior',
+    type: 'power',
+    rarity: 'legendary',
+    cost: 3,
+    upCost: 2,
+    vals: [1],
+    art: 'daysWithoutAccident',
+    play: (c, v) => c.applyStatus('hero', 'daysWithoutAccident', v[0]),
+  },
+  {
+    id: 'punchUp',
+    face: '{dmg:0}|{?lead}{dmg:1}',
+    cls: 'warrior',
+    type: 'attack',
+    rarity: 'rare',
+    cost: 2,
+    vals: [8, 24],
+    upVals: [12, 32],
+    art: 'punchUp',
+    when: WHEN.healthier,
+    play: (c, v) => void c.hit(WHEN.healthier(c) ? v[1] : v[0]),
+  },
+  {
+    id: 'underPressure',
+    face: '{block:0}|{timer}×{block:1}',
+    cls: 'warrior',
+    type: 'defense',
+    rarity: 'rare',
+    cost: 2,
+    upCost: 1,
+    vals: [4, 2],
+    art: 'underPressure',
+    shown: (c, v) => [v[0] + v[1] * c.moveSecondsLeft(), v[1]],
+    play: (c, v) => c.gainBlock('hero', v[0] + v[1] * c.moveSecondsLeft()),
+  },
+  {
+    id: 'workToRule',
+    face: '{slow:0}|{str:1}',
+    cls: 'warrior',
+    type: 'skill',
+    rarity: 'rare',
+    cost: 1,
+    vals: [12, 6],
+    upVals: [16, 8],
+    art: 'workToRule',
+    play: (c, v) => c.applyStatus('hero', 'workToRule', v[1], v[0]),
+  },
+  {
+    id: 'ductTape',
+    face: '{block:0}|{pin}',
+    cls: 'warrior',
+    type: 'defense',
+    rarity: 'common',
+    cost: 1,
+    vals: [8],
+    upVals: [11],
+    art: 'ductTape',
+    play: (c, v) => {
+      c.gainBlock('hero', v[0]);
+      c.pinOldest();
+    },
+  },
+
   // Generated during a fight (never offered as rewards).
   {
     id: 'step2',

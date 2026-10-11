@@ -1,5 +1,7 @@
 import type { Combat } from '../../game/combat';
 import type { CardDef } from '../../game/types';
+import { CONFIG } from '../config';
+import { SCOPE_TAX } from '../statuses';
 import { WHEN } from './conditions';
 
 /** Whole seconds of Rush the belt has left (Any% Speedrun). */
@@ -763,6 +765,128 @@ export const mageCards: CardDef[] = [
       c.gainMana(v[0]);
       card.bonus = 0;
     },
+  },
+
+  // The IT crowd: a burning office, a belt that breaks things, scope that creeps, a Friday deploy, vibes, a fork bomb, an icebreaker and a cron job
+  {
+    id: 'thisIsFine',
+    face: '{burn:0}|{block:2}{regen:1}',
+    cls: 'mage',
+    type: 'skill',
+    rarity: 'epic',
+    cost: 2,
+    vals: [3, 4, 20],
+    upVals: [2, 6, 30],
+    art: 'thisIsFine',
+    play: (c, v) => {
+      c.applyStatus('hero', 'burn', v[0]);
+      c.applyStatus('hero', 'regen', v[1]);
+      c.gainBlock('hero', v[2]);
+    },
+  },
+  {
+    id: 'moveFastAndBreakThings',
+    face: '{rush:0}|{*exit}{dmg:1}',
+    cls: 'mage',
+    type: 'skill',
+    rarity: 'epic',
+    cost: 2,
+    vals: [8, 5],
+    upVals: [10, 7],
+    dmg: [],
+    art: 'moveFastAndBreakThings',
+    play: (c, v) => {
+      c.rushBelt(v[0]);
+      c.applyStatus('hero', 'moveFastAndBreakThings', v[1], v[0]);
+    },
+  },
+  {
+    id: 'scopeCreep',
+    face: '{*timer}{grow:0}{pricier:1}',
+    cls: 'mage',
+    type: 'power',
+    rarity: 'epic',
+    cost: 2,
+    vals: [1, SCOPE_TAX],
+    upVals: [2, SCOPE_TAX],
+    art: 'scopeCreep',
+    play: (c, v) => c.applyStatus('hero', 'scopeCreep', v[0]),
+  },
+  {
+    id: 'fridayDeploy',
+    face: '{dmg:0}|{addCard}{curse}×{1}',
+    cls: 'mage',
+    type: 'attack',
+    rarity: 'legendary',
+    cost: 4,
+    vals: [30, 2],
+    upVals: [40, 2],
+    art: 'fridayDeploy',
+    play: (c, v) => {
+      c.hit(v[0]);
+      for (let i = 0; i < v[1]; i++) c.addTempCard('deadline', 'draw');
+    },
+  },
+  {
+    id: 'vibeCoding',
+    face: '{pile}×{0}|{addCard}{curse}×{0}',
+    cls: 'mage',
+    type: 'skill',
+    rarity: 'rare',
+    cost: 2,
+    vals: [3],
+    upVals: [4],
+    art: 'vibeCoding',
+    // The bugs come after the vibes: one common curse for every card that actually played.
+    play: (c, v) => {
+      for (let n = c.playRandom('draw', v[0]); n > 0; n--) c.addRandomCurse('common');
+    },
+  },
+  {
+    id: 'forkBomb',
+    face: '{dmg:0}|{addCard}{copy}×{1}',
+    cls: 'mage',
+    type: 'attack',
+    rarity: 'legendary',
+    cost: 2,
+    vals: [2, 2],
+    upVals: [3, 2],
+    art: 'forkBomb',
+    // The copies queue up at the entry of the belt (what finds no room goes to the draw pile) and burn out when they ride off it.
+    play: (c, v, card) => {
+      c.hit(v[0]);
+      for (let i = 0; i < v[1]; i++) c.addTempCard('forkBomb', 'belt', card.up, (-i * CONFIG.spacing) / c.rowsOpen, { fleeting: true });
+    },
+  },
+  {
+    id: 'icebreaker',
+    face: '{chill}|{dmg:0}',
+    cls: 'mage',
+    type: 'attack',
+    rarity: 'rare',
+    cost: 1,
+    vals: [3],
+    upVals: [4],
+    art: 'icebreaker',
+    shown: (c, v) => [v[0] * (WHEN.chill(c) ? Math.floor(c.fighter('enemy').statuses.chill.t) : 0)],
+    play: (c, v) => {
+      if (!WHEN.chill(c)) return;
+      const seconds = Math.floor(c.fighter('enemy').statuses.chill.t);
+      c.removeStatus('enemy', 'chill');
+      c.hit(v[0] * seconds);
+    },
+  },
+  {
+    id: 'cronJob',
+    face: '{*timer}{pile:0}',
+    cls: 'mage',
+    type: 'power',
+    rarity: 'epic',
+    cost: 2,
+    vals: [1],
+    upVals: [2],
+    art: 'cronJob',
+    play: (c, v) => c.applyStatus('hero', 'cronJob', v[0]),
   },
 
   // Generated during a fight (never offered as rewards).

@@ -1900,15 +1900,81 @@ export class Combat {
     );
   }
 
-  /** Upgrades up to `n` random cards of the draw and discard piles for this fight (only ones an upgrade changes). Returns how many. */
-  upgradeRandom(n: number): number {
+  /** Upgrades up to `n` random cards of the draw and discard piles for this fight (only ones an upgrade changes), each costing `tax` more until it is next played. Returns how many. */
+  upgradeRandom(n: number, tax = 0): number {
     const fits = (c: CombatCard): boolean => {
       const def = CARDS[c.id];
       return !c.up && !isCurse(c) && def.rarity !== 'special' && (!!def.upVals || def.upCost !== undefined || !!def.upKeywords);
     };
     const picks = this.rng.shuffle([...this.draw, ...this.discard].filter(fits)).slice(0, n);
-    for (const card of picks) card.up = true;
+    for (const card of picks) {
+      card.up = true;
+      if (tax > 0) card.tax = (card.tax ?? 0) + tax;
+    }
     return picks.length;
+  }
+
+  /** The cards the hero's deck holds in this fight, wherever they are (a card made up during the fight doesn't count). */
+  deckSize(): number {
+    return this.allCards().filter((c) => !c.temp).length;
+  }
+
+  /** What a card costs by its own print (upgrade, perks, Inflation), without the sleeve's or a new hire's discount: what a rule that names a price reads. */
+  printedCost(card: CardInst): number {
+    return fullCostOf(card);
+  }
+
+  /** Whole seconds left before the enemy's move lands (0 once it is about to). */
+  moveSecondsLeft(): number {
+    const e = this.enemy;
+    return Math.max(0, Math.floor(Math.min(e.move.windup, e.move.windup - e.timer) + 1e-6));
+  }
+
+  /** Pins the belt card nearest the exit where it is, so it can't fall until it is played (Duct Tape). False when the belt is empty or it already is. */
+  pinOldest(): boolean {
+    const idx = this.stealIndex();
+    if (idx < 0 || this.belt[idx].pinned) return false;
+    this.belt[idx].pinned = true;
+    this.events.emit({ type: 'beltPinned' });
+    return true;
+  }
+
+  /** Plays for free up to `n` random cards of the draw or the discard pile (never a power, a curse or one a rule bars now); they land in the discard pile as usual. Returns how many. */
+  playRandom(from: 'draw' | 'discard', n: number): number {
+    const pile = from === 'draw' ? this.draw : this.discard;
+    const picks = this.rng.shuffle(pile.filter((c) => this.fitsFreePlay(c))).slice(0, n);
+    for (const card of picks) {
+      if (this.result) break;
+      pile.splice(pile.indexOf(card), 1);
+      this.resolvePlay(card, true);
+    }
+    return picks.length;
+  }
+
+  /**
+   * Every card in the sleeve goes to the discard pile and a temporary one of the same rarity from any class takes its slot (never a curse, a plate or a card a hero
+   * still in the works owns; a card of a rarity nothing else shares stays). Returns how many were swapped (White Elephant).
+   */
+  swapSleeve(): number {
+    let n = 0;
+    let first: CombatCard | undefined;
+    const inPlay = (cls: CardDef['cls']): boolean => cls === 'neutral' || (cls !== 'curse' && !('debug' in (HEROES[cls].unlock ?? {})));
+    this.sleeve.forEach((old, i) => {
+      if (!old) return;
+      const pool = CARD_LIST.filter(
+        (d) => d.rarity === CARDS[old.id].rarity && inPlay(d.cls) && !d.starterOnly && !d.sushi && d.play && !d.keywords?.includes('unplayable'),
+      );
+      if (!pool.length) return;
+      delete old.disc;
+      this.discard.push(old);
+      this.events.emit({ type: 'cardDiscarded', card: old });
+      const card: CombatCard = { uid: -++this.tempUid, id: this.rng.pick(pool).id, up: false, bonus: 0, temp: true };
+      this.sleeve[i] = card;
+      first ??= card;
+      n++;
+    });
+    if (first) this.events.emit({ type: 'cardAdded', card: first, to: 'draw' });
+    return n;
   }
 
   /** Speeds the belt up for `t` seconds: cards (and new draws) come faster. A hero status, so it shows with a timer. */

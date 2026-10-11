@@ -800,6 +800,84 @@ export const necromancerCards: CardDef[] = [
     },
   },
 
+  // The cult at work: the dead as a resource, a cup for the true believers, the rich on the menu, a union with a long memory and a vulture
+  {
+    id: 'humanResources',
+    face: '{mana:0}={exhaust}',
+    cls: 'necromancer',
+    type: 'skill',
+    rarity: 'rare',
+    cost: 1,
+    vals: [2, 6],
+    upVals: [2, 8],
+    art: 'humanResources',
+    shown: (c, v) => [Math.min(v[1], Math.floor(c.exhaust.length / v[0])), v[0], v[1]],
+    play: (c, v) => c.gainMana(Math.min(v[1], Math.floor(c.exhaust.length / v[0]))),
+  },
+  {
+    id: 'koolAid',
+    face: '{str:0}{regen:1}|{poison:2}',
+    cls: 'necromancer',
+    type: 'skill',
+    rarity: 'epic',
+    cost: 2,
+    vals: [4, 4, 6],
+    upVals: [5, 5, 6],
+    art: 'koolAid',
+    play: (c, v) => {
+      c.applyStatus('hero', 'strength', v[0]);
+      c.applyStatus('hero', 'regen', v[1]);
+      c.applyStatus('hero', 'poison', v[2]);
+    },
+  },
+  {
+    id: 'eatTheRich',
+    face: '{foeHp:0}|{block:2}',
+    cls: 'necromancer',
+    type: 'attack',
+    rarity: 'rare',
+    cost: 3,
+    vals: [40, 2, 0],
+    upVals: [50, 2, 0],
+    dmg: [],
+    art: 'eatTheRich',
+    // The cut comes straight off its HP (Block can't stop it) and, being rich, it pays back double in Block.
+    shown: (c, v) => [v[0], v[1], Math.floor((c.enemy.hp * v[0]) / 100) * v[1]],
+    play: (c, v) => {
+      const cut = Math.floor((c.enemy.hp * v[0]) / 100);
+      c.damage('hero', 'enemy', cut, { raw: true, ignoreBlock: true, kind: 'slash' }, 'hero');
+      if (!c.result) c.gainBlock('enemy', cut * v[1]);
+    },
+  },
+  {
+    id: 'theUnionRemembers',
+    face: '{*hp}{poison:0}',
+    cls: 'necromancer',
+    type: 'power',
+    rarity: 'epic',
+    cost: 2,
+    upCost: 1,
+    vals: [1],
+    art: 'theUnionRemembers',
+    play: (c, v) => c.applyStatus('hero', 'theUnionRemembers', v[0]),
+  },
+  {
+    id: 'vultureCapital',
+    face: '{dmg:0}|{?weak}{heal:1}',
+    cls: 'necromancer',
+    type: 'attack',
+    rarity: 'rare',
+    cost: 2,
+    vals: [8, 8],
+    upVals: [11, 11],
+    art: 'vultureCapital',
+    when: WHEN.weak,
+    play: (c, v) => {
+      c.hit(v[0]);
+      if (WHEN.weak(c)) c.heal('hero', v[1]);
+    },
+  },
+
   // Generated during a fight (never offered as rewards).
   {
     id: 'loompa',

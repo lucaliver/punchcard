@@ -183,6 +183,138 @@ export const ICONS: Record<string, { el: Element; svg: string; wide?: boolean }>
     el: 'ice',
     svg: `<path d="M10 6h34l10 10v44H10z"/><path d="M44 6v10h10" fill="none" stroke="#16121f" stroke-width="3"/><path d="M18 30h26M18 40h16" stroke="#16121f" stroke-width="3" opacity=".25"/><path d="M44 40l3 7 7 3-7 3-3 7-3-7-7-3 7-3z"/><path ${HI} d="M12 8h4v50h-4z"/>`,
   },
+  daysWithoutAccident: {
+    el: 'steel',
+    svg: `<path d="M6 4h52v36H6z"/><path d="M28 40h8v18h-8z"/><path d="M20 58h24v-4H20z"/><ellipse cx="32" cy="22" rx="8" ry="11" fill="none" stroke="#16121f" stroke-width="5"/><path d="M12 10h40" stroke="#16121f" stroke-width="3"/><path ${HI} d="M8 6h4v32H8z"/>`,
+  },
+  punchUp: {
+    el: 'blood',
+    svg: `<rect x="14" y="14" width="10" height="22" rx="5"/><rect x="25" y="10" width="10" height="26" rx="5"/><rect x="36" y="14" width="10" height="22" rx="5"/><path d="M10 32h46v26H10z"/><path d="M50 34l10-4v18l-10 4z"/><path d="M18 44h26M18 52h18" stroke="#16121f" stroke-width="3"/><path d="M30 2l10 8h-6v6h-8v-6h-6z"/>`,
+  },
+  underPressure: {
+    el: 'steel',
+    svg: `<rect x="26" y="2" width="12" height="9"/><circle cx="32" cy="36" r="24"/><circle cx="32" cy="36" r="17" fill="#16121f" opacity=".25"/><path d="M32 36L46 22" stroke="#16121f" stroke-width="4.5" stroke-linecap="round"/><circle cx="32" cy="36" r="4.5" fill="#16121f"/><path d="M12 36h5M47 36h5M32 16v5" stroke="#16121f" stroke-width="3"/><path ${HI} d="M14 26h5v8h-5z"/>`,
+  },
+  workToRule: {
+    el: 'steel',
+    svg: `<path d="M10 6h40a4 4 0 0 1 4 4v44a4 4 0 0 1-4 4H10z"/><path d="M10 6v52" stroke="#16121f" stroke-width="3"/><path d="M20 18h26M20 28h26M20 38h14" stroke="#16121f" stroke-width="3"/><path d="M38 50l5 5 10-11" fill="none" stroke="#16121f" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/>`,
+  },
+  ductTape: {
+    el: 'steel',
+    svg: `<circle cx="30" cy="32" r="26"/><circle cx="30" cy="32" r="11" fill="#16121f"/><circle cx="30" cy="32" r="6"/><path d="M48 44l14 12-18 2z"/><path ${HI} d="M12 18a22 22 0 0 1 14-10l-2 6a16 16 0 0 0-10 8z"/>`,
+  },
+  thisIsFine: {
+    el: 'fire',
+    svg: `<path d="M10 24h30v22a12 12 0 0 1-12 12h-6a12 12 0 0 1-12-12z"/><path d="M40 30h6a8 8 0 0 1 0 16h-6" fill="none" stroke="currentColor" stroke-width="5"/><path d="M16 22c-5-7 1-11 1-18 7 4 9 11 5 18z"/><path d="M30 22c-5-7 1-11 1-18 7 4 9 11 5 18z"/><circle cx="19" cy="37" r="2.6" fill="#16121f"/><circle cx="31" cy="37" r="2.6" fill="#16121f"/><path d="M17 45q8 6 16 0" stroke="#16121f" stroke-width="2.6" fill="none"/>`,
+  },
+  moveFastAndBreakThings: {
+    el: 'fire',
+    svg: `<rect x="24" y="14" width="34" height="38"/><path d="M42 14l-6 14 9 5-9 19" stroke="#16121f" stroke-width="3.2" fill="none" stroke-linejoin="round"/><path d="M3 22h14M1 33h17M5 44h13" stroke="currentColor" stroke-width="4" stroke-linecap="round"/><path ${HI} d="M26 16h4v32h-4z"/>`,
+  },
+  scopeCreep: {
+    el: 'arcane',
+    svg: `<rect x="20" y="20" width="24" height="24" rx="2"/><path d="M32 2l9 11H23zM32 62l-9-11h18zM2 32l11-9v18zM62 32L51 41V23z"/><path d="M26 32h12" stroke="#16121f" stroke-width="3"/>`,
+  },
+  fridayDeploy: {
+    el: 'arcane',
+    svg: `<path d="M32 2c11 6 15 19 12 32l-5 6H25l-5-6C17 21 21 8 32 2z"/><circle cx="32" cy="24" r="6" fill="#16121f"/><path d="M25 38l-10 14 11-3zM39 38l10 14-11-3z"/><path d="M28 44h8l-4 16z"/><path ${HI} d="M27 10h4v14h-4z"/>`,
+  },
+  vibeCoding: {
+    el: 'arcane',
+    svg: `<rect x="8" y="10" width="48" height="32" rx="3"/><path d="M2 48h60l-5 9H7z"/><path d="M26 20l-8 8 8 8M38 20l8 8-8 8" fill="none" stroke="#16121f" stroke-width="3.6" stroke-linecap="round" stroke-linejoin="round"/><path d="M52 4l2 5 5 2-5 2-2 5-2-5-5-2 5-2z"/>`,
+  },
+  forkBomb: {
+    el: 'fire',
+    svg: `<circle cx="26" cy="40" r="20"/><path d="M38 24l9-9" stroke="currentColor" stroke-width="5" stroke-linecap="round"/><path d="M52 2l3 9 9 3-9 3-3 9-3-9-9-3 9-3z"/><circle cx="19" cy="36" r="3.5" fill="#16121f"/><circle cx="31" cy="36" r="3.5" fill="#16121f"/><path d="M18 46h16" stroke="#16121f" stroke-width="3"/><path ${HI} d="M12 30a14 14 0 0 1 8-8l1 4a10 10 0 0 0-5 5z"/>`,
+  },
+  icebreaker: {
+    el: 'ice',
+    svg: `<path d="M6 20l22-12 30 9v30L38 58 6 46z"/><path d="M30 10l-5 15 11 5-7 20" stroke="#16121f" stroke-width="3.2" fill="none" stroke-linejoin="round"/><path ${HI} d="M10 24l16-8 2 4-16 8z"/>`,
+  },
+  cronJob: {
+    el: 'arcane',
+    svg: `<circle cx="32" cy="34" r="26"/><path d="M32 18v16l11 7" stroke="#16121f" stroke-width="4.5" fill="none" stroke-linecap="round" stroke-linejoin="round"/><circle cx="32" cy="34" r="3.5" fill="#16121f"/><path d="M52 2l2.5 5.5 5.5 2.5-5.5 2.5L52 18l-2.5-5.5L44 10l5.5-2.5z"/>`,
+  },
+  humanResources: {
+    el: 'necro',
+    svg: `<rect x="12" y="4" width="40" height="56" rx="4"/><rect x="26" y="1" width="12" height="8" rx="2" fill="#16121f"/><circle cx="32" cy="27" r="11" fill="#16121f"/><circle cx="28" cy="25" r="2.6"/><circle cx="36" cy="25" r="2.6"/><path d="M28 32h8" stroke="currentColor" stroke-width="2.4"/><path d="M20 46h24M20 53h16" stroke="#16121f" stroke-width="3"/>`,
+  },
+  koolAid: {
+    el: 'necro',
+    svg: `<path d="M12 12h32v10l5 8v26a4 4 0 0 1-4 4H16a4 4 0 0 1-4-4V30z"/><path d="M49 24h5a7 7 0 0 1 0 14h-5" fill="none" stroke="currentColor" stroke-width="5"/><path d="M12 30h37" stroke="#16121f" stroke-width="3"/><circle cx="23" cy="42" r="2.6" fill="#16121f"/><circle cx="35" cy="42" r="2.6" fill="#16121f"/><path d="M20 49q8 7 18 0" stroke="#16121f" stroke-width="3" fill="none"/><path ${HI} d="M15 34h4v18h-4z"/>`,
+  },
+  eatTheRich: {
+    el: 'blood',
+    svg: `<path d="M20 6h24v28H20z"/><rect x="11" y="32" width="42" height="9" rx="2"/><path d="M20 26h24" stroke="#16121f" stroke-width="4"/><ellipse cx="32" cy="54" rx="28" ry="6"/><path d="M6 54c0-4 12-7 26-7s26 3 26 7" fill="none" stroke="#16121f" stroke-width="2"/><path ${HI} d="M23 8h4v16h-4z"/>`,
+  },
+  theUnionRemembers: {
+    el: 'necro',
+    svg: `<path d="M20 60V38c-7-2-9-9-6-15 3-5 10-6 14-3 2-5 9-6 13-2 5-3 11 1 11 7v12c0 9-4 15-11 17v6z"/><path d="M24 44h20" stroke="#16121f" stroke-width="3"/><path d="M30 24v8M38 22v8" stroke="#16121f" stroke-width="2.6"/><path ${HI} d="M22 40h4v16h-4z"/>`,
+  },
+  vultureCapital: {
+    el: 'necro',
+    svg: `<circle cx="30" cy="26" r="16"/><path d="M42 24l18 9-18 9z"/><circle cx="35" cy="22" r="3.5" fill="#16121f"/><path d="M12 38l10 6-4 16H8z"/><path d="M14 42h22l-4 18H10z"/><path d="M10 42c3 4 5 6 8 6" stroke="#16121f" stroke-width="2.4" fill="none"/><circle cx="52" cy="10" r="7" fill="#16121f"/><circle cx="52" cy="10" r="3.4"/>`,
+  },
+  pullTheFireAlarm: {
+    el: 'fire',
+    svg: `<rect x="12" y="4" width="40" height="56" rx="4"/><rect x="20" y="12" width="24" height="14" rx="2" fill="#16121f"/><path d="M26 19h12" stroke="currentColor" stroke-width="3"/><rect x="26" y="32" width="12" height="20" rx="2" fill="#16121f"/><path d="M32 32v-6" stroke="currentColor" stroke-width="3"/><path ${HI} d="M14 6h4v52h-4z"/>`,
+  },
+  whiteElephant: {
+    el: 'holy',
+    svg: `<rect x="8" y="28" width="48" height="30"/><rect x="4" y="18" width="56" height="12" rx="2"/><path d="M32 18v40" stroke="#16121f" stroke-width="5"/><path d="M32 18c-4-12-18-12-14-4s14 4 14 4zM32 18c4-12 18-12 14-4s-14 4-14 4z" fill="none" stroke="#16121f" stroke-width="3.2" stroke-linejoin="round"/><path ${HI} d="M10 30h4v26h-4z"/>`,
+  },
+  demoDay: {
+    el: 'steel',
+    svg: `<rect x="6" y="6" width="52" height="36" rx="2"/><path d="M32 42v14M20 58h24" stroke="currentColor" stroke-width="5" stroke-linecap="round"/><path d="M18 14l28 20M46 14L18 34" stroke="#16121f" stroke-width="4.5" stroke-linecap="round"/><path ${HI} d="M8 8h4v32H8z"/>`,
+  },
+  freeTrial: {
+    el: 'holy',
+    svg: `<path d="M4 12h56v13a6 6 0 0 0 0 14v13H4V39a6 6 0 0 0 0-14z"/><path d="M22 12v40" stroke="#16121f" stroke-width="2.4" stroke-dasharray="3 3"/><path d="M30 26h22M30 36h14" stroke="#16121f" stroke-width="4"/><path ${HI} d="M6 14h10v4H6z"/>`,
+  },
+  moneyLaundering: {
+    el: 'shadow',
+    svg: `<rect x="8" y="3" width="48" height="58" rx="4"/><circle cx="19" cy="12" r="3.2" fill="#16121f"/><circle cx="29" cy="12" r="3.2" fill="#16121f"/><circle cx="32" cy="38" r="17" fill="#16121f"/><circle cx="32" cy="38" r="12"/><circle cx="32" cy="38" r="6" fill="#16121f" opacity=".5"/><path ${HI} d="M10 5h4v54h-4z"/>`,
+  },
+  skimOffTheTop: {
+    el: 'shadow',
+    svg: `<ellipse cx="24" cy="54" rx="20" ry="6"/><path d="M4 54v-8c0 4 9 7 20 7s20-3 20-7v8z"/><ellipse cx="24" cy="44" rx="20" ry="6"/><path d="M4 44v-8c0 4 9 7 20 7s20-3 20-7v8z"/><ellipse cx="24" cy="34" rx="20" ry="6"/><circle cx="48" cy="14" r="11"/><circle cx="48" cy="14" r="6" fill="#16121f" opacity=".5"/><path d="M32 22l8-4" stroke="#16121f" stroke-width="3" stroke-linecap="round"/>`,
+  },
+  swotAnalysis: {
+    el: 'holy',
+    svg: `<path d="M4 4h26v26H4zM34 4h26v26H34zM4 34h26v26H4zM34 34h26v26H34z"/><path d="M10 17h14M17 10v14" stroke="#16121f" stroke-width="3.4"/><path d="M40 17h14" stroke="#16121f" stroke-width="3.4"/><path d="M10 47h14M17 40v14" stroke="#16121f" stroke-width="3.4" transform="rotate(45 17 47)"/><path d="M40 40l14 14M54 40L40 54" stroke="#16121f" stroke-width="3.4"/>`,
+  },
+  officeChristmasParty: {
+    el: 'holy',
+    svg: `<path d="M32 3l14 17h-8l12 16h-9l14 18H9l14-18h-9l12-16h-8z"/><rect x="28" y="52" width="8" height="9"/><circle cx="26" cy="30" r="3" fill="#16121f"/><circle cx="38" cy="42" r="3" fill="#16121f"/><circle cx="24" cy="46" r="3" fill="#16121f"/><path d="M32 0l2 4 4 1-4 2-2 4-2-4-4-2 4-1z"/>`,
+  },
+  promotionWithoutARaise: {
+    el: 'nature',
+    svg: `<rect x="6" y="24" width="52" height="32" rx="3"/><path d="M14 34h22M14 44h14" stroke="#16121f" stroke-width="3.2"/><path d="M46 48V34M40 40l6-8 6 8" stroke="#16121f" stroke-width="4" fill="none" stroke-linecap="round" stroke-linejoin="round"/><path d="M32 3l9 11h-6v6h-6v-6h-6z"/>`,
+  },
+  recurringMeeting: {
+    el: 'steel',
+    svg: `<rect x="6" y="8" width="52" height="50" rx="3"/><rect x="6" y="8" width="52" height="13" fill="#16121f"/><circle cx="18" cy="8" r="3"/><circle cx="46" cy="8" r="3"/><path d="M23 41a10 10 0 1 1 3 9" fill="none" stroke="#16121f" stroke-width="4"/><path d="M19 50l9 2-4-9z" fill="#16121f"/>`,
+  },
+  twoWeeksNotice: {
+    el: 'steel',
+    svg: `<path d="M12 4h34l8 8v48H12z"/><path d="M46 4v8h8" fill="none" stroke="#16121f" stroke-width="2.4"/><path d="M20 24h26M20 32h26M20 40h14" stroke="#16121f" stroke-width="3"/><path d="M22 52c5-8 7 3 12-3s7 3 12-1" stroke="#16121f" stroke-width="3" fill="none" stroke-linecap="round"/>`,
+  },
+  fantozzi: {
+    el: 'shadow',
+    svg: `<circle cx="32" cy="17" r="12"/><path d="M10 60c0-15 9-26 22-26s22 11 22 26z"/><path d="M32 34l-5 9 5 15 5-15z" fill="#16121f"/><circle cx="27" cy="17" r="4.2" fill="none" stroke="#16121f" stroke-width="2.2"/><circle cx="37" cy="17" r="4.2" fill="none" stroke="#16121f" stroke-width="2.2"/><path d="M26 25q6-4 12 0" stroke="#16121f" stroke-width="2.4" fill="none"/>`,
+  },
+  fourDayWeek: {
+    el: 'holy',
+    svg: `<rect x="4" y="10" width="56" height="48" rx="3"/><rect x="4" y="10" width="56" height="11" fill="#16121f"/><path fill="#16121f" d="M10 28h8v8h-8zM22 28h8v8h-8zM34 28h8v8h-8zM46 28h8v8h-8z"/><rect x="11" y="42" width="8" height="8" fill="none" stroke="#16121f" stroke-width="2.4"/><path d="M24 46h26" stroke="#16121f" stroke-width="3" stroke-dasharray="3 3"/>`,
+  },
+  pitchDeck: {
+    el: 'holy',
+    svg: `<rect x="4" y="22" width="40" height="30" rx="2" stroke="#16121f" stroke-width="2.4"/><rect x="12" y="14" width="40" height="30" rx="2" stroke="#16121f" stroke-width="2.4"/><rect x="20" y="6" width="40" height="30" rx="2" stroke="#16121f" stroke-width="2.4"/><path d="M28 30V22M36 30V16M44 30V12M52 30V18" stroke="#16121f" stroke-width="5"/>`,
+  },
+  synergy: {
+    el: 'arcane',
+    svg: `<circle cx="23" cy="32" r="19"/><circle cx="41" cy="32" r="19"/><path d="M32 16a19 19 0 0 1 0 32 19 19 0 0 1 0-32z" fill="#16121f"/><path d="M32 24v16M24 32h16" stroke="currentColor" stroke-width="3.6" stroke-linecap="round"/>`,
+  },
   customerAlwaysRight: {
     el: 'holy',
     svg: `<path d="M6 8h52v34H34L22 56V42H6z"/><path fill="#16121f" d="M29 14h6v16h-6zM29 34h6v6h-6z"/><path ${HI} d="M8 10h6v28H8z"/>`,

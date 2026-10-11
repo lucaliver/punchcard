@@ -1139,6 +1139,139 @@ export const neutralCards: CardDef[] = [
     },
   },
 
+  // Corporate speak: a four-way analysis, a party with a morning after, a promotion that costs you, a meeting that never ends, a notice, a clerk who suffers, a short week, a deck and a synergy
+  {
+    id: 'swotAnalysis',
+    face: '{str:0}{weak:1}|{mana:2}{thorns:3}',
+    cls: 'neutral',
+    type: 'skill',
+    rarity: 'epic',
+    cost: 2,
+    vals: [1, 4, 1, 2],
+    upVals: [2, 5, 1, 3],
+    art: 'swotAnalysis',
+    play: (c, v) => {
+      c.applyStatus('hero', 'strength', v[0]);
+      c.applyStatus('enemy', 'weak', 1, v[1]);
+      c.gainMana(v[2]);
+      c.applyStatus('hero', 'thorns', v[3]);
+    },
+  },
+  {
+    id: 'officeChristmasParty',
+    face: '{heal:0}{str:1}|{addCard}{curse}',
+    cls: 'neutral',
+    type: 'skill',
+    rarity: 'epic',
+    cost: 3,
+    vals: [15, 3],
+    upVals: [20, 4],
+    keywords: ['exhaust'],
+    art: 'officeChristmasParty',
+    // The morning after: the gossip about who did what at the party.
+    play: (c, v) => {
+      c.heal('hero', v[0]);
+      c.applyStatus('hero', 'strength', v[1]);
+      c.addTempCard('gossip', 'draw');
+    },
+  },
+  {
+    id: 'promotionWithoutARaise',
+    face: '{grow:0}{pricier:1}',
+    cls: 'neutral',
+    type: 'skill',
+    rarity: 'rare',
+    cost: 2,
+    vals: [3, 1],
+    upVals: [4, 1],
+    keywords: ['exhaust'],
+    art: 'promotionWithoutARaise',
+    play: (c, v) => void c.upgradeRandom(v[0], v[1]),
+  },
+  {
+    id: 'recurringMeeting',
+    face: '{*timer}{str:0}|{*timer}{curse}',
+    cls: 'neutral',
+    type: 'power',
+    rarity: 'epic',
+    cost: 2,
+    vals: [1],
+    upVals: [2],
+    art: 'recurringMeeting',
+    play: (c, v) => c.applyStatus('hero', 'recurringMeeting', v[0]),
+  },
+  {
+    id: 'twoWeeksNotice',
+    face: '{dmg:0}|{timer:2}{dmg:1}',
+    cls: 'neutral',
+    type: 'attack',
+    rarity: 'epic',
+    cost: 2,
+    vals: [4, 40, 14],
+    upVals: [6, 50, 14],
+    dmg: [0],
+    art: 'twoWeeksNotice',
+    play: (c, v) => {
+      c.hit(v[0]);
+      c.applyStatus('hero', 'twoWeeksNotice', v[1], v[2]);
+    },
+  },
+  {
+    id: 'fantozzi',
+    face: '{*parry}{str:0}',
+    cls: 'neutral',
+    type: 'power',
+    rarity: 'rare',
+    cost: 2,
+    upCost: 1,
+    vals: [1],
+    art: 'fantozzi',
+    play: (c, v) => c.applyStatus('hero', 'fantozzi', v[0]),
+  },
+  {
+    id: 'fourDayWeek',
+    face: '{cards:0}={cheaper}',
+    cls: 'neutral',
+    type: 'power',
+    rarity: 'legendary',
+    cost: 3,
+    vals: [4],
+    upVals: [3],
+    art: 'fourDayWeek',
+    // A new one replaces the old count, so the upgrade can shorten the week.
+    play: (c, v) => {
+      c.removeStatus('hero', 'fourDayWeek');
+      c.applyStatus('hero', 'fourDayWeek', v[0]);
+    },
+  },
+  {
+    id: 'pitchDeck',
+    face: '{dmg:0}={cards}',
+    cls: 'neutral',
+    type: 'attack',
+    rarity: 'rare',
+    cost: 2,
+    upCost: 1,
+    vals: [1],
+    dmg: [0],
+    art: 'pitchDeck',
+    shown: (c, v) => [v[0] * c.deckSize()],
+    play: (c, v) => void c.hit(v[0] * c.deckSize()),
+  },
+  {
+    id: 'synergy',
+    face: '{*copy}{dmg:0}',
+    cls: 'neutral',
+    type: 'power',
+    rarity: 'rare',
+    cost: 2,
+    vals: [3],
+    upVals: [5],
+    dmg: [],
+    art: 'synergy',
+    play: (c, v) => c.applyStatus('hero', 'synergy', v[0]),
+  },
+
   // Generated during a fight (never offered as rewards).
   // The pieces on the Sushi Chef's belt (his Omakase order): eaten in the order the slip says, never played.
   {

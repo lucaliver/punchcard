@@ -3,10 +3,26 @@ import { Combat, type CombatSetup } from '../../src/game/combat';
 import { CONFIG, EXPIRE_POS } from '../../src/data/config';
 import { ENEMIES } from '../../src/data/enemies';
 import { HEROES } from '../../src/data/heroes';
-import { PLAN_CAP, COFFEE_EVERY, FORKLIFT_BLOCK, HIRING_EVERY, LUNCH_EVERY, STATUSES, TABS_EVERY } from '../../src/data/statuses';
+import {
+  PLAN_CAP,
+  COFFEE_EVERY,
+  CRON_EVERY,
+  DAYS_EVERY,
+  DEMO_CRASH,
+  FORKLIFT_BLOCK,
+  HIRING_EVERY,
+  LUNCH_EVERY,
+  MEETING_EVERY,
+  MEETING_SYNC,
+  SCOPE_EVERY,
+  SCOPE_TAX,
+  STATUSES,
+  TABS_EVERY,
+  UNION_HP,
+} from '../../src/data/statuses';
 import { CARDS, cardValsOf } from '../../src/data/cards';
 import { applyCombat, combatSetup, newRun } from '../../src/game/run';
-import type { CardInst } from '../../src/game/types';
+import type { CardInst, CombatCard } from '../../src/game/types';
 import { deckOf, setup, run } from './helpers';
 
 describe('workplace cards', () => {
@@ -1701,5 +1717,416 @@ describe('the legendary batch: Claims Adjuster, Return to Sender, Fuck You Money
     expect(c.has('hero', 'weak') || c.has('hero', 'vulnerable') || c.has('hero', 'poison')).toBe(false);
     expect(c.stacks('hero', 'strength')).toBe(2);
     expect(c.hero.block).toBe(3 * CARDS.cleanSlate.vals[0]);
+  });
+});
+
+describe('the office batch: streaks, clocks, piles, curses and corporate speak', () => {
+  const still = (hero: keyof typeof HEROES = 'warrior', deck: string[] = ['punch']): Combat => {
+    const c = setup({ hero: HEROES[hero], deck: deckOf(deck) });
+    c.enemy.move = { id: 'wait', intent: 'attack', windup: 999, dmg: 10 };
+    c.enemy.hp = c.enemy.maxHp = 9999;
+    c.enemy.block = 0;
+    run(c, CONFIG.introTime + 0.01);
+    c.hero.maxMana = 12;
+    c.hero.mana = 12;
+    c.belt.length = 0;
+    return c;
+  };
+  const play = (c: Combat, id: string, up = false): boolean => {
+    c.hero.mana = Math.max(c.hero.mana, 8);
+    c.belt.length = 0;
+    return c.playCard(c.addTempCard(id, 'belt', up).uid);
+  };
+  const pile = (c: Combat, to: 'draw' | 'discard', ids: string[]): void => {
+    c[to] = ids.map((id, i) => ({ uid: 700 + i + (to === 'draw' ? 0 : 50), id, up: false, bonus: 0, temp: false }));
+  };
+  const hit = (c: Combat, n: number): void => void c.damage('enemy', 'hero', n, { raw: true }, 'enemy');
+  const dealt = (c: Combat, fn: () => void): number => {
+    const hp = c.enemy.hp;
+    fn();
+    return hp - c.enemy.hp;
+  };
+
+  it('Days Without an Accident gives Strength for every stretch without losing HP and takes it all back when hurt', () => {
+    const c = still();
+    expect(play(c, 'daysWithoutAccident')).toBe(true);
+    run(c, DAYS_EVERY + 0.1);
+    expect(c.stacks('hero', 'strength')).toBe(1);
+    run(c, DAYS_EVERY);
+    expect(c.stacks('hero', 'strength')).toBe(2);
+    hit(c, 5);
+    expect(c.stacks('hero', 'strength')).toBe(0);
+    run(c, DAYS_EVERY - 1);
+    expect(c.stacks('hero', 'strength')).toBe(0);
+    run(c, 1.2);
+    expect(c.stacks('hero', 'strength')).toBe(1);
+  });
+
+  it('Punch Up hits harder only when the hero has more HP than the enemy', () => {
+    const c = still();
+    const [low, high] = CARDS.punchUp.vals;
+    c.enemy.hp = c.hero.hp + 1;
+    expect(dealt(c, () => play(c, 'punchUp'))).toBe(low);
+    c.enemy.hp = c.hero.hp - 1;
+    expect(dealt(c, () => play(c, 'punchUp'))).toBe(high);
+  });
+
+  it("Under Pressure gives its Block plus a share for every second left before the enemy's move lands", () => {
+    const c = still();
+    c.enemy.move = { id: 'slow', intent: 'attack', windup: 10, dmg: 1 };
+    c.enemy.timer = 4;
+    const [base, per] = CARDS.underPressure.vals;
+    c.hero.block = 0;
+    expect(play(c, 'underPressure')).toBe(true);
+    expect(c.hero.block).toBe(base + per * 6);
+    c.enemy.timer = 9.5;
+    c.hero.block = 0;
+    expect(play(c, 'underPressure')).toBe(true);
+    expect(c.hero.block).toBe(base);
+  });
+
+  it('Work-to-Rule slows the belt and adds Strength for a while', () => {
+    const c = still();
+    const normal = c.beltBoost();
+    expect(play(c, 'workToRule')).toBe(true);
+    expect(c.beltBoost()).toBeCloseTo(normal * STATUSES.workToRule.beltMul!);
+    expect(c.strengthOf('hero')).toBe(CARDS.workToRule.vals[1]);
+    run(c, CARDS.workToRule.vals[0] + 0.1);
+    expect(c.beltBoost()).toBeCloseTo(normal);
+    expect(c.strengthOf('hero')).toBe(0);
+  });
+
+  it('Duct Tape gives Block and pins the oldest card on the belt, so it cannot fall off', () => {
+    const c = still();
+    const old = c.addTempCard('punch', 'belt');
+    const young = c.addTempCard('bobTheBuilder', 'belt');
+    c.belt.find((b) => b.card === old)!.pos = 0.8;
+    c.belt.find((b) => b.card === young)!.pos = 0.3;
+    c.hero.block = 0;
+    c.hero.mana = 8;
+    expect(c.playCard(c.addTempCard('ductTape', 'belt').uid)).toBe(true);
+    expect(c.hero.block).toBe(CARDS.ductTape.vals[0]);
+    expect(c.belt.find((b) => b.card === old)!.pinned).toBe(true);
+    expect(c.belt.find((b) => b.card === young)?.pinned).toBeFalsy();
+    run(c, 30);
+    expect(c.belt.some((b) => b.card === old)).toBe(true);
+  });
+
+  it('This Is Fine sets the hero alight, then heals and shields it', () => {
+    const c = still('mage');
+    expect(play(c, 'thisIsFine')).toBe(true);
+    const [burn, regen, block] = CARDS.thisIsFine.vals;
+    expect(c.stacks('hero', 'burn')).toBe(burn);
+    expect(c.stacks('hero', 'regen')).toBe(regen);
+    expect(c.hero.block).toBe(block);
+  });
+
+  it('Move Fast and Break Things rushes the belt and makes every card that falls off deal damage, for a while', () => {
+    const c = still('mage');
+    const [time, damage] = CARDS.moveFastAndBreakThings.vals;
+    expect(play(c, 'moveFastAndBreakThings')).toBe(true);
+    expect(c.has('hero', 'rush')).toBe(true);
+    c.addTempCard('punch', 'belt');
+    expect(dealt(c, () => void c.dropOldest())).toBe(damage);
+    run(c, time + 0.1);
+    c.addTempCard('punch', 'belt');
+    expect(dealt(c, () => void c.dropOldest())).toBe(0);
+  });
+
+  it('Scope Creep upgrades a card of the deck every few seconds and makes it cost more until it is played', () => {
+    const c = still('mage');
+    pile(
+      c,
+      'draw',
+      Array.from({ length: 60 }, () => 'punch'),
+    );
+    expect(play(c, 'scopeCreep')).toBe(true);
+    const deck = (): CombatCard[] => [...c.draw, ...c.discard, ...c.belt.map((b) => b.card)].filter((x) => x.id === 'punch');
+    run(c, SCOPE_EVERY + 0.1);
+    const upgraded = deck().filter((x) => x.up);
+    expect(upgraded).toHaveLength(1);
+    expect(upgraded[0].tax).toBe(SCOPE_TAX);
+    run(c, SCOPE_EVERY);
+    expect(deck().filter((x) => x.up).length).toBeGreaterThanOrEqual(2);
+  });
+
+  it('Friday Deploy hits hard and leaves Deadlines in the draw pile', () => {
+    const c = still('mage');
+    const [damage, deadlines] = CARDS.fridayDeploy.vals;
+    pile(c, 'draw', []);
+    expect(dealt(c, () => play(c, 'fridayDeploy'))).toBe(damage);
+    expect(c.draw.filter((x) => x.id === 'deadline')).toHaveLength(deadlines);
+  });
+
+  it('Vibe Coding plays random cards of the draw pile for free and shuffles a curse in for each one that played', () => {
+    const c = still('mage');
+    pile(c, 'draw', ['punch', 'bobTheBuilder', 'gatekeeping', 'forklift']);
+    c.discard = [];
+    c.hero.mana = 12;
+    expect(play(c, 'vibeCoding')).toBe(true);
+    // Only the two ordinary cards could be played: the curse and the power stay.
+    expect(
+      c.discard
+        .map((x) => x.id)
+        .filter((id) => id !== 'vibeCoding')
+        .sort(),
+    ).toEqual(['bobTheBuilder', 'punch']);
+    expect(c.draw.filter((x) => CARDS[x.id].type === 'curse')).toHaveLength(3);
+    expect(c.draw.some((x) => x.id === 'forklift')).toBe(true);
+  });
+
+  it('Fork Bomb copies itself onto the belt as Fleeting cards', () => {
+    const c = still('mage');
+    expect(play(c, 'forkBomb')).toBe(true);
+    const copies = c.belt.filter((b) => b.card.id === 'forkBomb');
+    expect(copies).toHaveLength(CARDS.forkBomb.vals[1]);
+    expect(copies.every((b) => b.card.fleeting)).toBe(true);
+  });
+
+  it("Icebreaker removes the enemy's Chill and deals damage for every second of it", () => {
+    const c = still('mage');
+    c.applyStatus('enemy', 'chill', 1, 5);
+    expect(dealt(c, () => play(c, 'icebreaker'))).toBe(5 * CARDS.icebreaker.vals[0]);
+    expect(c.has('enemy', 'chill')).toBe(false);
+    expect(dealt(c, () => play(c, 'icebreaker'))).toBe(0);
+  });
+
+  it('Cron Job plays a random card of the discard pile for free every few seconds', () => {
+    const c = still('mage');
+    pile(c, 'discard', ['punch']);
+    pile(
+      c,
+      'draw',
+      Array.from({ length: 60 }, () => 'bobTheBuilder'),
+    );
+    expect(play(c, 'cronJob')).toBe(true);
+    c.hero.mana = 0;
+    expect(dealt(c, () => run(c, CRON_EVERY + 0.1))).toBeGreaterThanOrEqual(CARDS.punch.vals[0]);
+    expect(c.discard.some((x) => x.id === 'punch')).toBe(true);
+  });
+
+  it('Human Resources turns the exhaust pile into mana, up to a cap', () => {
+    const c = still('necromancer');
+    const [per, cap] = CARDS.humanResources.vals;
+    const dead = (n: number): CombatCard[] => Array.from({ length: n }, (_, i) => ({ uid: 900 + i, id: 'punch', up: false, bonus: 0, temp: false }));
+    c.exhaust = dead(2 * per + 1);
+    c.hero.mana = 8;
+    expect(c.playCard(c.addTempCard('humanResources', 'belt').uid)).toBe(true);
+    expect(c.hero.mana).toBe(8 - CARDS.humanResources.cost + 2);
+    c.exhaust = dead(100);
+    c.hero.mana = 0;
+    c.hero.maxMana = 12;
+    c.hero.mana = CARDS.humanResources.cost;
+    expect(c.playCard(c.addTempCard('humanResources', 'belt').uid)).toBe(true);
+    expect(c.hero.mana).toBe(cap);
+  });
+
+  it('Kool-Aid gives Strength and Regeneration, and poisons the hero', () => {
+    const c = still('necromancer');
+    expect(play(c, 'koolAid')).toBe(true);
+    const [str, regen, poison] = CARDS.koolAid.vals;
+    expect([c.stacks('hero', 'strength'), c.stacks('hero', 'regen'), c.stacks('hero', 'poison')]).toEqual([str, regen, poison]);
+  });
+
+  it("Eat the Rich takes a share of the enemy's current HP, past its Block, and gives it double that in Block", () => {
+    const c = still('necromancer');
+    c.enemy.hp = 1000;
+    c.enemy.block = 50;
+    const [pct, times] = CARDS.eatTheRich.vals;
+    const cut = Math.floor((1000 * pct) / 100);
+    expect(play(c, 'eatTheRich')).toBe(true);
+    expect(c.enemy.hp).toBe(1000 - cut);
+    expect(c.enemy.block).toBe(50 + cut * times);
+    expect(c.shownVals(c.addTempCard('eatTheRich', 'belt'))[2]).toBe(Math.floor(((1000 - cut) * pct) / 100) * times);
+  });
+
+  it('The Union Remembers poisons the enemy for every few HP the hero loses', () => {
+    const c = still('necromancer');
+    expect(play(c, 'theUnionRemembers')).toBe(true);
+    c.hero.block = 0;
+    const start = c.stacks('enemy', 'poison');
+    hit(c, 2 * UNION_HP + 1);
+    expect(c.stacks('enemy', 'poison')).toBe(start + 2);
+    hit(c, UNION_HP - 1);
+    expect(c.stacks('enemy', 'poison')).toBe(start + 2);
+  });
+
+  it('Vulture Capital heals only when the enemy is Weak', () => {
+    const c = still('necromancer');
+    c.hero.hp = 40;
+    expect(play(c, 'vultureCapital')).toBe(true);
+    expect(c.hero.hp).toBe(40);
+    c.applyStatus('enemy', 'weak', 1, 9);
+    expect(play(c, 'vultureCapital')).toBe(true);
+    expect(c.hero.hp).toBe(40 + CARDS.vultureCapital.vals[1]);
+  });
+
+  it('Pull the Fire Alarm drops the whole belt and stuns the enemy for every card that fell', () => {
+    const c = still('rogue');
+    c.hero.mana = 8;
+    const alarm = c.addTempCard('pullTheFireAlarm', 'belt');
+    for (const id of ['punch', 'bobTheBuilder', 'punch']) c.addTempCard(id, 'belt', false, -c.belt.length * 0.3);
+    const others = c.belt.length - 1;
+    expect(c.playCard(alarm.uid)).toBe(true);
+    expect(c.belt).toHaveLength(0);
+    expect(c.fighter('enemy').statuses.stun.t).toBeCloseTo(others * CARDS.pullTheFireAlarm.vals[0], 0);
+  });
+
+  it('White Elephant swaps every card in the sleeve for one of the same rarity, made up for the fight', () => {
+    const c = still('rogue');
+    const first = { uid: 11, id: 'punch', up: false, bonus: 0, temp: false };
+    const second = { uid: 12, id: 'hushMoney', up: false, bonus: 0, temp: false };
+    c.sleeve[0] = first;
+    c.sleeve[1] = second;
+    expect(play(c, 'whiteElephant')).toBe(true);
+    const [a, b] = c.sleeve;
+    expect(a && b).toBeTruthy();
+    expect(a!.temp && b!.temp).toBe(true);
+    expect(CARDS[a!.id].rarity).toBe(CARDS.punch.rarity);
+    expect(CARDS[b!.id].rarity).toBe(CARDS.hushMoney.rarity);
+    expect([a!.id, b!.id].some((id) => CARDS[id].type === 'curse')).toBe(false);
+    expect(c.discard).toEqual(expect.arrayContaining([first, second]));
+  });
+
+  it('Demo Day makes every card free for a while, then stops the belt dead', () => {
+    const c = still('rogue');
+    const probe = { uid: 1, id: 'punch', up: false };
+    expect(c.cardCost(probe)).toBe(CARDS.punch.cost);
+    expect(play(c, 'demoDay')).toBe(true);
+    expect(c.cardCost(probe)).toBe(0);
+    run(c, CARDS.demoDay.vals[0] + 0.1);
+    expect(c.cardCost(probe)).toBe(CARDS.punch.cost);
+    expect(c.has('hero', 'stalled')).toBe(true);
+    run(c, DEMO_CRASH + 0.1);
+    expect(c.has('hero', 'stalled')).toBe(false);
+  });
+
+  it('Free Trial makes the next cards free and leaves a Debt in the draw pile', () => {
+    const c = still('rogue');
+    pile(c, 'draw', []);
+    expect(play(c, 'freeTrial')).toBe(true);
+    expect(c.stacks('hero', 'lostBadge')).toBe(CARDS.freeTrial.vals[0]);
+    expect(c.draw.some((x) => x.id === 'debt')).toBe(true);
+    c.hero.mana = 8;
+    expect(c.playCard(c.addTempCard('punch', 'belt').uid)).toBe(true);
+    expect(c.hero.mana).toBe(8);
+  });
+
+  it('Money Laundering turns Block into mana, even above the maximum', () => {
+    const c = still('rogue');
+    const [per] = CARDS.moneyLaundering.vals;
+    c.hero.maxMana = 4;
+    c.hero.mana = 4;
+    c.hero.block = 5 * per + 2;
+    expect(c.playCard(c.addTempCard('moneyLaundering', 'belt').uid)).toBe(true);
+    expect(c.hero.block).toBe(0);
+    expect(c.hero.mana).toBe(4 - CARDS.moneyLaundering.cost + 5);
+    expect(c.hero.mana).toBeGreaterThan(c.hero.maxMana);
+  });
+
+  it('Skim Off the Top pays mana back only for cards that cost enough', () => {
+    const c = still('rogue');
+    expect(play(c, 'skimOffTheTop')).toBe(true);
+    c.hero.mana = 10;
+    expect(c.playCard(c.addTempCard('punch', 'belt').uid)).toBe(true);
+    expect(c.hero.mana).toBe(10 - CARDS.punch.cost);
+    c.hero.mana = 10;
+    expect(c.playCard(c.addTempCard('heavyLifting', 'belt').uid)).toBe(true);
+    expect(c.hero.mana).toBe(10 - CARDS.heavyLifting.cost + CARDS.skimOffTheTop.vals[0]);
+  });
+
+  it('SWOT Analysis gives Strength, Weak, mana and Thorns at once', () => {
+    const c = still();
+    c.hero.mana = 8;
+    expect(c.playCard(c.addTempCard('swotAnalysis', 'belt').uid)).toBe(true);
+    const [str, weak, mana, thorns] = CARDS.swotAnalysis.vals;
+    expect(c.stacks('hero', 'strength')).toBe(str);
+    expect(c.has('enemy', 'weak')).toBe(true);
+    expect(c.fighter('enemy').statuses.weak.t).toBeCloseTo(weak, 0);
+    expect(c.hero.mana).toBe(8 - CARDS.swotAnalysis.cost + mana);
+    expect(c.stacks('hero', 'thorns')).toBe(thorns);
+  });
+
+  it('Office Christmas Party heals, gives Strength and leaves Gossip in the draw pile', () => {
+    const c = still();
+    c.hero.hp = 40;
+    pile(c, 'draw', []);
+    expect(play(c, 'officeChristmasParty')).toBe(true);
+    expect(c.hero.hp).toBe(40 + CARDS.officeChristmasParty.vals[0]);
+    expect(c.stacks('hero', 'strength')).toBe(CARDS.officeChristmasParty.vals[1]);
+    expect(c.draw.some((x) => x.id === 'gossip')).toBe(true);
+  });
+
+  it('Promotion Without a Raise upgrades cards of the deck and makes them cost more until played', () => {
+    const c = still();
+    pile(c, 'draw', ['punch', 'punch', 'punch', 'punch']);
+    expect(play(c, 'promotionWithoutARaise')).toBe(true);
+    const up = c.draw.filter((x) => x.up);
+    expect(up).toHaveLength(CARDS.promotionWithoutARaise.vals[0]);
+    expect(up.every((x) => x.tax === CARDS.promotionWithoutARaise.vals[1])).toBe(true);
+  });
+
+  it('Recurring Meeting gives Strength every so often and puts a Quick Sync on the belt', () => {
+    const c = still();
+    expect(play(c, 'recurringMeeting')).toBe(true);
+    run(c, MEETING_EVERY + 0.1);
+    expect(c.stacks('hero', 'strength')).toBe(1);
+    expect(c.belt.some((b) => b.card.id === 'quickSync')).toBe(false);
+    run(c, MEETING_SYNC - MEETING_EVERY);
+    expect(c.stacks('hero', 'strength')).toBe(2);
+    expect([...c.belt.map((b) => b.card.id), ...c.draw.map((x) => x.id)]).toContain('quickSync');
+  });
+
+  it("Two Weeks' Notice hits now and again when the notice is up", () => {
+    const c = still();
+    const [now, later, wait] = CARDS.twoWeeksNotice.vals;
+    expect(dealt(c, () => play(c, 'twoWeeksNotice'))).toBe(now);
+    expect(dealt(c, () => run(c, wait - 1))).toBe(0);
+    expect(dealt(c, () => run(c, 1.2))).toBe(later);
+  });
+
+  it('Fantozzi gives Strength every time the hero is hit, even when Block takes it all', () => {
+    const c = still();
+    expect(play(c, 'fantozzi')).toBe(true);
+    c.hero.block = 50;
+    hit(c, 5);
+    hit(c, 5);
+    expect(c.stacks('hero', 'strength')).toBe(2 * CARDS.fantozzi.vals[0]);
+  });
+
+  it('Four-Day Week makes the card after every few played free', () => {
+    const c = still();
+    const [week] = CARDS.fourDayWeek.vals;
+    expect(play(c, 'fourDayWeek')).toBe(true);
+    for (let i = 0; i < week - 1; i++) expect(play(c, 'coffee')).toBe(true);
+    expect(c.has('hero', 'lostBadge')).toBe(false);
+    expect(play(c, 'coffee')).toBe(true);
+    expect(c.stacks('hero', 'lostBadge')).toBe(1);
+    c.hero.mana = 8;
+    expect(c.playCard(c.addTempCard('punch', 'belt').uid)).toBe(true);
+    expect(c.hero.mana).toBe(8);
+    expect(c.has('hero', 'lostBadge')).toBe(false);
+  });
+
+  it('Pitch Deck deals damage for every card in the deck, but not for the ones made up in the fight', () => {
+    const c = still(
+      'warrior',
+      Array.from({ length: 12 }, () => 'punch'),
+    );
+    c.addTempCard('bobTheBuilder', 'discard');
+    const size = c.deckSize();
+    expect(size).toBeGreaterThan(0);
+    expect(c.shownVals(c.addTempCard('pitchDeck', 'discard'))[0]).toBe(size * CARDS.pitchDeck.vals[0]);
+    expect(dealt(c, () => play(c, 'pitchDeck'))).toBe(size * CARDS.pitchDeck.vals[0]);
+  });
+
+  it('Synergy deals damage when a card is of a different type than the one before it', () => {
+    const c = still();
+    expect(play(c, 'synergy')).toBe(true);
+    const extra = CARDS.synergy.vals[0];
+    expect(dealt(c, () => play(c, 'punch'))).toBe(CARDS.punch.vals[0]);
+    expect(dealt(c, () => play(c, 'bobTheBuilder'))).toBe(extra);
+    expect(dealt(c, () => play(c, 'bobTheBuilder'))).toBe(0);
+    expect(dealt(c, () => play(c, 'punch'))).toBe(CARDS.punch.vals[0] + extra);
   });
 });
