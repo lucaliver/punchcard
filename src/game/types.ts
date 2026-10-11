@@ -123,8 +123,6 @@ export interface CardDef {
    * `|` starts a new line. The full rules text lives in i18n (`card.<id>.desc`).
    */
   face: string;
-  /** Unlock pack id; cards without a pack are always available. */
-  pack?: string;
   /** Card widths it covers on the belt (default 1): wider cards ride over the ones ahead of them. A `large` card instead has its extra widths as its own body, behind it, and the belt leaves room for all of it before dealing the next card. */
   span?: number;
   /** A wide card that covers both belt rows ahead of it, not just its own. */
@@ -557,7 +555,6 @@ export interface RelicDef {
   id: string;
   rarity: Rarity;
   cls?: HeroId;
-  pack?: string;
   /** The number its text shows (`{n}`). */
   n: number;
   /** Card rewards (and the other card offers) draw from every class, each class and the neutral cards equally likely. */

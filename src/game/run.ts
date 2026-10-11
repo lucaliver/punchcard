@@ -674,7 +674,7 @@ export function rollCrossTraining(run: RunState): CardDef[] {
     const own: CardDef[] = [];
     for (let tries = 0; own.length < CONFIG.crossTrainPerClass && tries < 80; tries++) {
       const rarity = rng.weighted(odds, ([, w]) => w)[0];
-      const pool = CARD_LIST.filter((c) => c.cls === hero.id && c.rarity === rarity && !c.pack && !c.starterOnly && !own.includes(c));
+      const pool = CARD_LIST.filter((c) => c.cls === hero.id && c.rarity === rarity && !c.starterOnly && !own.includes(c));
       if (pool.length) own.push(rng.pick(pool));
     }
     offer.push(...own);
@@ -718,7 +718,7 @@ export function photocopyCard(run: RunState, uid: number): void {
   run.cleared = true;
 }
 
-/** The cards a restructuring can turn a deck card into: the others of its rarity (as for a reward: no basic card, no pack). */
+/** The cards a restructuring can turn a deck card into: the others of its rarity (as for a reward: no basic card). */
 const restructurePool = (run: RunState, card: CardInst): CardDef[] => poolOf(run, CARDS[card.id].rarity).filter((c) => c.id !== card.id);
 
 /** Restructuring moves a deck card unless it is a curse or a card a fight deals, or nothing else has its rarity to turn it into. */

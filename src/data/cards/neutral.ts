@@ -206,7 +206,7 @@ export const neutralCards: CardDef[] = [
     },
   },
 
-  // Workplace survival: generic cards any hero could use; handbook-only until the Workplace pack can be unlocked.
+  // Workplace survival: generic cards any hero could use.
   {
     id: 'quietQuitting',
     face: '{dmg:0}×{cards}',
@@ -217,7 +217,6 @@ export const neutralCards: CardDef[] = [
     vals: [8],
     upVals: [12],
     keywords: ['exhaust', 'pending'],
-    pack: 'workplace',
     art: 'resignation',
     play: (c, v) => void c.hit(v[0], { hits: c.exhaustBelt() }),
   },
@@ -230,7 +229,6 @@ export const neutralCards: CardDef[] = [
     cost: 3,
     vals: [1, 7],
     upVals: [2, 9],
-    pack: 'workplace',
     art: 'hammock',
     play: (c, v) => c.applyStatus('hero', 'bareMinimum', v[0], v[1]),
   },
@@ -244,7 +242,6 @@ export const neutralCards: CardDef[] = [
     vals: [1, 10],
     upVals: [2, 10],
     keywords: ['exhaust', 'pending'],
-    pack: 'workplace',
     art: 'palm',
     play: (c, v) => c.applyStatus('hero', 'outOfOffice', v[0], v[1]),
   },
@@ -257,7 +254,6 @@ export const neutralCards: CardDef[] = [
     cost: 3,
     vals: [3, 12],
     upVals: [4, 12],
-    pack: 'workplace',
     art: 'grind',
     play: (c, v) => c.applyStatus('hero', 'grindset', v[0], v[1]),
   },
@@ -271,7 +267,6 @@ export const neutralCards: CardDef[] = [
     upCost: 2,
     vals: [],
     keywords: ['exhaust'],
-    pack: 'workplace',
     art: 'shrug',
     play: (c) => c.skipEnemyMove(),
   },
@@ -284,7 +279,6 @@ export const neutralCards: CardDef[] = [
     cost: 2,
     upCost: 1,
     vals: [],
-    pack: 'workplace',
     art: 'forward',
     play: (c) => c.replayLast(),
   },
@@ -297,7 +291,6 @@ export const neutralCards: CardDef[] = [
     cost: 3,
     vals: [3],
     upVals: [4],
-    pack: 'workplace',
     art: 'followUp',
     play: (c, v) => {
       for (let i = 0; i < v[0]; i++) c.addTempCard('alreadyDone', 'draw');
@@ -313,7 +306,6 @@ export const neutralCards: CardDef[] = [
     upCost: 0,
     vals: [],
     keywords: ['exhaust'],
-    pack: 'workplace',
     art: 'q1',
     play: (c) => c.addTempCard('q2', 'draw'),
   },
@@ -327,7 +319,6 @@ export const neutralCards: CardDef[] = [
     upCost: 2,
     vals: [],
     keywords: ['exhaust', 'pending'],
-    pack: 'workplace',
     art: 'clipboardCopy',
     play: (c) => c.copyLastOntoBelt(),
   },

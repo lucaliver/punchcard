@@ -19,9 +19,9 @@ export const RARITY_ORDER: Rarity[] = ['common', 'rare', 'epic', 'legendary', 's
 
 export const CARD_LIST: readonly CardDef[] = all;
 
-/** Cards that can appear as rewards for a class (cards from a pack stay out: no pack can be unlocked yet). `anyClass`: every class's cards, not only the class's and the neutral ones. */
+/** Cards that can appear as rewards for a class `anyClass`: every class's cards, not only the class's and the neutral ones. */
 export function rewardPool(cls: CardClass, rarity: Rarity, anyClass = false): CardDef[] {
-  return all.filter((c) => (anyClass ? c.cls !== 'curse' : c.cls === cls || c.cls === 'neutral') && c.rarity === rarity && !c.pack && !c.starterOnly);
+  return all.filter((c) => (anyClass ? c.cls !== 'curse' : c.cls === cls || c.cls === 'neutral') && c.rarity === rarity && !c.starterOnly);
 }
 
 // Card rules shared by the engine and the UI, so what a card shows is what it does.

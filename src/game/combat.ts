@@ -1373,7 +1373,7 @@ export class Combat {
     const theirs = (cls: CardDef['cls']): boolean =>
       cls !== 'neutral' && cls !== 'curse' && cls !== this.heroDef.id && !('debug' in (HEROES[cls].unlock ?? {}));
     const pool = CARD_LIST.filter(
-      (d) => d.rarity === rarity && theirs(d.cls) && !d.starterOnly && !d.pack && !d.sushi && d.play && !d.keywords?.includes('unplayable'),
+      (d) => d.rarity === rarity && theirs(d.cls) && !d.starterOnly && !d.sushi && d.play && !d.keywords?.includes('unplayable'),
     );
     const picks = this.rng.shuffle(pool).slice(0, n);
     for (const def of picks) {
