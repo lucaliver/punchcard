@@ -134,6 +134,8 @@ const it: Record<EnKey, string> = {
   'debug.bigHp': 'Parti con {n} HP',
   'debug.allCards': 'Aggiungi 1 di ogni carta',
   'debug.cardArt': 'Art delle carte',
+  'debug.regen': 'Rigenerazione mana 1s',
+  'debug.belt': "Belt all'85% di velocità",
   'debug.unlockAll': 'Sblocca tutto',
   'debug.menu': 'Menu di debug',
   'debug.fightMenu': 'Debug: scontro',

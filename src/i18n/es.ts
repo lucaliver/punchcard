@@ -134,6 +134,8 @@ const es: Record<EnKey, string> = {
   'debug.bigHp': 'Empezar con {n} PV',
   'debug.allCards': 'Añadir 1 de cada carta',
   'debug.cardArt': 'Arte de las cartas',
+  'debug.regen': 'Regeneración de maná 1s',
+  'debug.belt': 'Cinta al 85% de velocidad',
   'debug.unlockAll': 'Desbloquear todo',
   'debug.menu': 'Menú de depuración',
   'debug.fightMenu': 'Depuración: combate',

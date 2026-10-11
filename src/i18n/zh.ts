@@ -132,6 +132,8 @@ const zh: Record<EnKey, string> = {
   'debug.bigHp': '以 {n} 点生命开局',
   'debug.allCards': '每种卡牌各加 1 张',
   'debug.cardArt': '卡牌插画',
+  'debug.regen': '法力恢复 1 秒',
+  'debug.belt': '传送带 85% 速度',
   'debug.unlockAll': '全部解锁',
   'debug.menu': '调试菜单',
   'debug.fightMenu': '调试：战斗',

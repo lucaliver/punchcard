@@ -36,6 +36,8 @@ export const CONFIG = {
   historyMax: 30,
   /** Debug fight option: the hero's HP. */
   debugHp: 500,
+  debugRegen: 1,
+  debugBeltMul: 0.85,
   /** Runs finished (won, lost or abandoned) before the home asks for a rating. */
   ratingAfterRuns: 2,
   /** Stars from which a rating counts as a good one (the review asks what was liked, not what was not). */

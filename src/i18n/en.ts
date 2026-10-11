@@ -133,6 +133,8 @@ const en = {
   'debug.bigHp': 'Start with {n} HP',
   'debug.allCards': 'Add 1 of every card',
   'debug.cardArt': 'Card art',
+  'debug.regen': 'Mana regen 1s',
+  'debug.belt': 'Belt at 85% speed',
   'debug.unlockAll': 'Unlock all',
   'debug.menu': 'Debug menu',
   'debug.fightMenu': 'Debug: fight',
