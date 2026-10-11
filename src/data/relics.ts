@@ -308,6 +308,21 @@ const defs: RelicDef[] = [
     },
   },
   { id: 'rolodex', rarity: 'legendary', n: 0, openPool: true },
+  { id: 'wellnessVoucher', rarity: 'epic', n: 0, restBoth: true },
+  {
+    id: 'correctionFluid',
+    rarity: 'rare',
+    n: 1,
+    armed: (c) => !c.mem.fluid,
+    hooks: {
+      // Once per fight: the first curse card an enemy deals never reaches the deck.
+      wipeCurse: (c) => {
+        if (c.mem.fluid) return false;
+        c.mem.fluid = 1;
+        return true;
+      },
+    },
+  },
   // The Tailor's: not found in the Lost & Found.
   { id: 'cargoPants', rarity: 'special', n: 1, mods: { sleeve: 1 } },
 ];

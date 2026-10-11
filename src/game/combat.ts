@@ -882,6 +882,7 @@ export class Combat {
       // Curses arriving on the belt together come in one after the other, spread over the rows (one row's spacing is shared by all).
       const gap = (CONFIG.spacing * (CARDS[cu.id].span ?? 1)) / this.rowsOpen;
       for (let i = 0; i < cu.n; i++) {
+        if (this.wipesCurse()) continue;
         const hex = cu.hex ? { id: cu.hex, left: HEXES[cu.hex].taps, t: HEXES[cu.hex].thaw } : undefined;
         const card = this.addTempCard(cu.id, cu.to, false, cu.to === 'belt' ? -queued++ * gap : 0, hex ? { hex } : {});
         if (hex) this.events.emit({ type: 'hexed', card });
@@ -894,6 +895,13 @@ export class Combat {
     if (m.infect) this.infectCards(m.infect);
     if (m.swap) this.swapCards(m.swap);
     m.fx?.(this);
+  }
+
+  /** A relic wipes the curse an enemy move was about to deal (Correction Fluid). */
+  private wipesCurse(): boolean {
+    const id = this.relics.find((r) => RELICS[r]?.hooks?.wipeCurse?.(this));
+    if (id) this.events.emit({ type: 'relic', id });
+    return !!id;
   }
 
   private tickBelt(dt: number): void {

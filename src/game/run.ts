@@ -766,6 +766,9 @@ export const restHeal = (run: RunState): number => {
   return Math.round(missing * CONFIG.restHeal * resolveMods(run.mods).restHeal);
 };
 
+/** Whether a Break Room gives both the nap and the training (the Wellness Voucher). */
+export const restsBoth = (run: RunState): boolean => run.relics.some((id) => RELICS[id]?.restBoth);
+
 export function rest(run: RunState): number {
   const amount = restHeal(run);
   run.hp += amount;

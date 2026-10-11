@@ -275,6 +275,24 @@ test('campfire upgrade: tapping selects, the Upgrade button confirms', async ({ 
   expect(upgraded).toBe(3); // the starter's upgraded attack and defense, plus the new one
 });
 
+test('break room with a Wellness Voucher: the nap does not close the room, the training follows', async ({ page }) => {
+  await freshGame(page);
+  await page.getByRole('button', { name: /new run/i }).click();
+  await page.getByRole('button', { name: /start shift/i }).click();
+  const floor = await page.evaluate(
+    '(() => { const g = window.__game; g.run.relics.push("wellnessVoucher"); g.run.hp = 10; const n = g.run.nodes.find((x) => x.type === "rest"); g.run.current = n.id; g.run.cleared = false; g.goJourney(); return n.floor; })()',
+  );
+  await page.getByRole('button', { name: new RegExp(`enter floor ${floor}`, 'i') }).click();
+  await page.getByRole('button', { name: /nap/i }).click();
+  await expect(page.getByRole('button', { name: /nap/i })).toBeDisabled();
+  await page.getByRole('button', { name: /training/i }).click();
+  await page.locator('.deck-grid .card').first().click();
+  await page.getByRole('button', { name: 'Upgrade', exact: true }).click();
+  await expect(page.locator('.node.open').first()).toBeVisible();
+  expect(((await page.evaluate('window.__game.run.hp')) as number) > 10).toBe(true);
+  expect((await page.evaluate('window.__game.run.deck.filter((c) => c.up).length')) as number).toBe(3);
+});
+
 /** Turns the run's first fight past the opening into a room of this type (rooms are dealt at random) and returns its floor. */
 const roomFloor = (page: Page, type: string): Promise<number> =>
   page.evaluate(

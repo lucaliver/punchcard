@@ -553,6 +553,8 @@ export interface RelicHooks {
   damageMult?: (c: Combat, def: CardDef | null) => number;
   /** An enemy hit of `dmg` is about to land: return true to cancel it (the relic flags itself, the engine shows its name). */
   cancelHit?: (c: Combat, dmg: number) => boolean;
+  /** An enemy move is about to put a curse card in the deck: return true to wipe it (the relic flags itself, the engine shows its name). */
+  wipeCurse?: (c: Combat) => boolean;
 }
 
 export interface RelicDef {
@@ -563,6 +565,8 @@ export interface RelicDef {
   n: number;
   /** Card rewards (and the other card offers) draw from every class, each class and the neutral cards equally likely. */
   openPool?: boolean;
+  /** A Break Room gives both the nap and the training, not one of them. */
+  restBoth?: boolean;
   /** Static modifiers applied to combat setup. */
   mods?: Partial<{
     maxMana: number;

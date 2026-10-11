@@ -148,6 +148,24 @@ describe('relics', () => {
     expect(c.hero.hp).toBe(155);
   });
 
+  it('the Correction Fluid wipes the first curse an enemy deals in a fight, and only that one', () => {
+    const curses = (c: Combat): number => [...c.belt.map((b) => b.card), ...c.draw, ...c.discard].filter((x) => CARDS[x.id].type === 'curse').length;
+    const move = { id: 'gossip', intent: 'curse' as const, windup: 5, curse: [{ id: 'gatekeeping', n: 2, to: 'draw' as const }] };
+    const plain = setup();
+    plain['resolveMove'](move);
+    expect(curses(plain)).toBe(2);
+    const c = setup({ relics: ['correctionFluid'] });
+    const chimes: string[] = [];
+    c.events.on((e) => {
+      if (e.type === 'relic') chimes.push(e.id);
+    });
+    c['resolveMove'](move);
+    expect(curses(c)).toBe(1);
+    expect(chimes).toEqual(['correctionFluid']);
+    c['resolveMove'](move);
+    expect(curses(c)).toBe(3);
+  });
+
   it('the Desk Plant heals now and then', () => {
     const c = setup({ relics: ['deskPlant'] });
     c.enemy.move = { id: 'wait', intent: 'defend', windup: 999 };

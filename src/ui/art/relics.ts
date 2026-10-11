@@ -234,6 +234,23 @@ const rolodex = `
 ${face(100, 122, 14, 4.5)}
 <circle cx="100" cy="40" r="12" fill="#ff3d9a" ${OUT}/><path d="M96 36h8" stroke="#ffd0e6" stroke-width="4" stroke-linecap="round"/>`;
 
+const correctionFluid = `
+<path d="M92 16h16v36H92z" fill="#3a3450" ${OUT}/>
+<path d="M98 4h4v14h-4z" fill="${INK}" ${OUT}/>
+<path d="M62 52h76c8 0 14 6 14 14v102c0 8-6 14-14 14H62c-8 0-14-6-14-14V66c0-8 6-14 14-14z" fill="${PAPER}" ${OUT}/>
+<path d="M48 84h104v52H48z" fill="#ff3d9a" ${OUT}/>
+<path d="M60 64c0-6 4-8 10-8" stroke="#fff" stroke-width="6" fill="none" stroke-linecap="round"/>
+<path d="M126 150c4 8 4 12 0 16" stroke="#9aa3b5" stroke-width="5" fill="none" stroke-linecap="round"/>
+${face(100, 110, 20, 5)}`;
+
+const wellnessVoucher = `
+<path d="M26 40h148c8 0 12 4 12 12v22a14 14 0 0 0 0 28v22c0 8-4 12-12 12H26c-8 0-12-4-12-12v-22a14 14 0 0 0 0-28V52c0-8 4-12 12-12z" fill="#7fd6a8" ${OUT}/>
+<path d="M136 46v108" stroke="${INK}" stroke-width="4" stroke-dasharray="7 7"/>
+<path d="M30 56h92" stroke="#fff" stroke-width="6" stroke-linecap="round" opacity=".7"/>
+<path d="M150 82c0-10 18-10 18 0 0 8-9 12-9 20 0-8-9-12-9-20z" fill="#ff3d9a" ${OUT} transform="translate(-1 6)"/>
+${face(76, 98, 18, 5)}
+<path d="M44 140h66" stroke="${PAPER}" stroke-width="6" stroke-linecap="round"/>`;
+
 const statuette = `
 <path d="M34 164h132l8 20H26z" fill="#6c6880" ${OUT}/>
 <path d="M44 140h112v26H44z" fill="#8a8798" ${OUT}/>
@@ -292,6 +309,8 @@ export const RELIC_SPRITES: Record<string, string> = Object.fromEntries(
     fireDrillBell,
     outOfOffice,
     rolodex,
+    wellnessVoucher,
+    correctionFluid,
   }).map(([id, svg]) => [`relic.${id}`, svg]),
 );
 

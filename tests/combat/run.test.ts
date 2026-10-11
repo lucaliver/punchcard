@@ -28,6 +28,7 @@ import {
   restructureCard,
   rollRelics,
   rollRestructure,
+  restsBoth,
   shredCard,
   skipPay,
   skipReward,
@@ -126,6 +127,13 @@ describe('run maps', () => {
         const boss = nodes.find((n) => n.act === act && n.type === 'boss')!;
         for (const n of nodes.filter((m) => m.next.includes(boss.id))) expect(n.type).toBe('rest');
       }
+  });
+
+  it('a Wellness Voucher makes the Break Room give both the nap and the training', () => {
+    const r = newRun('warrior', 7);
+    expect(restsBoth(r)).toBe(false);
+    r.relics.push('wellnessVoucher');
+    expect(restsBoth(r)).toBe(true);
   });
 
   it('deal the Restructuring room at most once per run, and in some runs', () => {

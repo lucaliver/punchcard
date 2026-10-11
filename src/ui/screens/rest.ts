@@ -1,6 +1,6 @@
 import { t } from '../../core/i18n';
 import { sfx } from '../../audio/sfx';
-import { canUpgrade, rest, restHeal, upgradeCard, type RunState } from '../../game/run';
+import { canUpgrade, rest, restHeal, restsBoth, upgradeCard, type RunState } from '../../game/run';
 import type { Screen } from '../app';
 import { h } from '../dom';
 import { haptic } from '../fx/fx';
@@ -34,7 +34,36 @@ export function playHealing(screen: HTMLElement, amount: number, note?: string, 
 
 export function restScreen(run: RunState, onDone: () => void): Screen {
   const heal = restHeal(run);
-  const upgradable = run.deck.filter(canUpgrade);
+  const both = restsBoth(run);
+
+  /** One choice made: with a Wellness Voucher the room stays open for the other one, unless it is spent or has nothing to do (it is disabled). */
+  const chosen = (button: HTMLButtonElement, other: HTMLButtonElement, ms: number): void => {
+    button.disabled = true;
+    if (!both || other.disabled) closeRoom(el, onDone, ms);
+  };
+
+  const healOption = roomOption(icon('heart'), t('rest.heal'), heal > 0 ? t('rest.healDesc', { n: heal }) : t('rest.full'), heal <= 0, () => {
+    const healed = rest(run);
+    playHealing(el, healed);
+    chosen(healOption, smithOption, HEAL_ANIM_MS);
+  });
+  const smithOption = roomOption(icon('hammer'), t('rest.smith'), t('rest.smithDesc'), !run.deck.some(canUpgrade), () => {
+    sfx('tap');
+    openDeck(run.deck, {
+      title: t('rest.smithHint'),
+      confirmLabel: t('rest.upgrade'),
+      filter: canUpgrade,
+      previewSelected: (c) => ({ ...c, up: true }),
+      onPick: (c) => {
+        // The picked card is the deck's own, so the "before" face is kept ahead of the change.
+        const before = { ...c };
+        upgradeCard(run, c.uid);
+        run.cleared = true;
+        playCardChange(el, before, { ...c }, t('rest.upgraded'), { start: 'anvil', end: 'levelUp' });
+        chosen(smithOption, healOption, CARD_SHOW_MS);
+      },
+    });
+  });
 
   const el = h(
     'div',
@@ -43,32 +72,7 @@ export function restScreen(run: RunState, onDone: () => void): Screen {
     h('h1', { class: 'h1', style: { marginTop: '12px' } }, t('rest.title')),
     h('p', { class: 'sub' }, t('rest.desc')),
     roomScene('rest'),
-    h(
-      'div',
-      { class: 'rest-options' },
-      roomOption(icon('heart'), t('rest.heal'), heal > 0 ? t('rest.healDesc', { n: heal }) : t('rest.full'), heal <= 0, () => {
-        const healed = rest(run);
-        playHealing(el, healed);
-        closeRoom(el, onDone, HEAL_ANIM_MS);
-      }),
-      roomOption(icon('hammer'), t('rest.smith'), t('rest.smithDesc'), upgradable.length === 0, () => {
-        sfx('tap');
-        openDeck(run.deck, {
-          title: t('rest.smithHint'),
-          confirmLabel: t('rest.upgrade'),
-          filter: canUpgrade,
-          previewSelected: (c) => ({ ...c, up: true }),
-          onPick: (c) => {
-            // The picked card is the deck's own, so the "before" face is kept ahead of the change.
-            const before = { ...c };
-            upgradeCard(run, c.uid);
-            run.cleared = true;
-            playCardChange(el, before, { ...c }, t('rest.upgraded'), { start: 'anvil', end: 'levelUp' });
-            closeRoom(el, onDone, CARD_SHOW_MS);
-          },
-        });
-      }),
-    ),
+    h('div', { class: 'rest-options' }, healOption, smithOption),
   );
   return { el };
 }
