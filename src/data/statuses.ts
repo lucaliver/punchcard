@@ -866,7 +866,7 @@ const defs: StatusDef[] = [
   },
   // Fine print: every hit of your cards deals `v` less damage (Poison, Burn and thorns don't count as hits).
   { id: 'finePrint', tone: 'teal', kind: 'stacks', good: true, passive: true, icon: 'magnifier', cutsHits: true },
-  // Golden parachute: the first time it would fall, it takes the severance package instead and gets back up.
+  // Golden parachute: the first time it would die, it takes the severance package instead and gets back up.
   {
     id: 'goldenParachute',
     tone: 'amber',
