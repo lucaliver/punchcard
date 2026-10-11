@@ -310,6 +310,7 @@ export function createHud(v: CombatView, onPassive: () => void): { render(): voi
       setText(r.count, String(secs));
       v.retrigger(r.count, 'pop');
       sfx('countTick');
+      haptic('count');
     }
     // A sound cue just before each hit: knocks if it will hurt, a soft tick if Block covers it.
     if (hostile && combat.intentDamage(m) > 0 && left < 1 && warned !== e.moveCount) {
