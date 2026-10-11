@@ -110,7 +110,7 @@ export const warriorCards: CardDef[] = [
     type: 'skill',
     rarity: 'common',
     cost: 0,
-    vals: [1, 3],
+    vals: [2, 3],
     upVals: [1, 4],
     art: 'doubleClock',
     play: (c, v) => {

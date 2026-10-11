@@ -18,6 +18,18 @@ export const neutralCards: CardDef[] = [
     play: (c, v) => c.addManaCrystals(v[0]),
   },
   {
+    id: 'caffeineJolt',
+    face: '{mana:0}',
+    cls: 'neutral',
+    type: 'skill',
+    rarity: 'common',
+    cost: 0,
+    vals: [2],
+    upVals: [3],
+    art: 'coffeePot',
+    play: (c, v) => c.gainMana(v[0]),
+  },
+  {
     id: 'italianEspresso',
     face: '{crystal:0}',
     cls: 'neutral',

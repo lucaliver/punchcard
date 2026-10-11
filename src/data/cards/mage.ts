@@ -79,18 +79,6 @@ export const mageCards: CardDef[] = [
     play: (c, v) => void c.hit(WHEN.chill(c) ? v[1] : v[0], { kind: 'ice' }),
   },
   {
-    id: 'caffeineJolt',
-    face: '{mana:0}',
-    cls: 'mage',
-    type: 'skill',
-    rarity: 'common',
-    cost: 0,
-    vals: [2],
-    upVals: [3],
-    art: 'coffeePot',
-    play: (c, v) => c.gainMana(v[0]),
-  },
-  {
     id: 'staticShock',
     face: '{dmg:0}×{1}',
     cls: 'mage',

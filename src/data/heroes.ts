@@ -36,7 +36,7 @@ const warrior: HeroDef = {
   blockDecay: CONFIG.heroBlockDecay,
   slowBlock: THICK_SKIN,
   // Starter decks: only basic cards (plus mana crystals); everything else comes from rewards.
-  startDeck: [...rep('punch', 8), ...rep('bobTheBuilder', 7), 'bellaCiao', 'coffee', 'coffee', 'skillIssue', 'heavyLifting'],
+  startDeck: [...rep('punch', 8), ...rep('bobTheBuilder', 7), 'caffeineJolt', 'coffee', 'coffee', 'skillIssue', 'heavyLifting'],
   startUpgraded: ['punch', 'bobTheBuilder'],
   // The simplest class: no once-per-run special. One arm left: a single sleeve slot.
   sleeve: 1,
@@ -92,7 +92,7 @@ const necromancer: HeroDef = {
   startDeck: [
     ...rep('skeletonCrew', 6),
     ...rep('karlMarx', 5),
-    'graveyardBrew',
+    'caffeineJolt',
     ...rep('toxicMemo', 4),
     'coffee',
     'italianEspresso',
@@ -124,7 +124,7 @@ const rogue: HeroDef = {
   startDeck: [
     ...rep('borrowedStapler', 7),
     ...rep('hideTheEvidence', 7),
-    'slushFund',
+    'caffeineJolt',
     'coffee',
     'coffee',
     'italianEspresso',
