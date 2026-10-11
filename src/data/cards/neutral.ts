@@ -23,6 +23,7 @@ export const neutralCards: CardDef[] = [
     cls: 'neutral',
     type: 'skill',
     rarity: 'common',
+    starterOnly: true,
     cost: 0,
     vals: [2],
     upVals: [3],
