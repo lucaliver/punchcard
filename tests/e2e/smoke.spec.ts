@@ -337,6 +337,23 @@ test('tailor: cargo pants add a sleeve slot to the hero sheet and the fight', as
   await expect(page.locator('.hero-sheet')).toContainText('Cargo Pants');
 });
 
+test('the first run points at the sleeve once, when the player has ignored it for two fights', async ({ page }) => {
+  await freshGame(page);
+  await startFight(page);
+  await combat(page, 'c.damage("hero", "enemy", 9999, { raw: true }, "hero");');
+  await expect(page.getByRole('button', { name: /^swap$/i })).toBeVisible({ timeout: 8000 });
+  await page.locator('.skip-btn').click();
+  await expect(page.locator('.node.open').first()).toBeVisible();
+  // The map's own hint about the Handbook comes first.
+  if (await page.locator('.coach').count()) await page.locator('.coach .btn').click();
+  await page.evaluate('window.__game.run.sleeveIdle = 2');
+  await page.locator('.node.open').first().click();
+  await expect(page.locator('.coach')).toContainText('sleeve', { timeout: 8000 });
+  await page.locator('.coach .btn').click();
+  await expect(page.locator('.coach')).toHaveCount(0);
+  expect(await page.evaluate('window.__game.run.sleeveIdle')).toBe(2);
+});
+
 test('a tap on the way into a fight skips the door', async ({ page }) => {
   await freshGame(page);
   await page.getByRole('button', { name: /new run/i }).click();

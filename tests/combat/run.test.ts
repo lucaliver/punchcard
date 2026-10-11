@@ -21,6 +21,7 @@ import {
 import { ACT_DEFS } from '../../src/data/acts';
 import {
   applyCombat,
+  isFirstRun,
   canCopy,
   canPullStrings,
   canRestructure,
@@ -52,7 +53,7 @@ import {
   vend,
   vendingCost,
 } from '../../src/game/run';
-import { setup } from './helpers';
+import { run, setup } from './helpers';
 
 describe('the handbook bars at the end of a run', () => {
   it('start from how full the handbook was when the run started, and climb with what the run finds', () => {
@@ -526,6 +527,24 @@ describe('act stamps', () => {
     expect(hasStamp('mage', 1)).toBe(true);
     expect(hasStamp('mage', 2)).toBe(false);
     expect(hasStamp('warrior', 1)).toBe(false);
+  });
+});
+
+describe('the first run nudges to the sleeve', () => {
+  it('counts the fights in a row that never touched the sleeve, and only the scripted first run is nudged', () => {
+    const r = newRun('warrior', 7, [1]);
+    expect(isFirstRun(r)).toBe(true);
+    expect(isFirstRun(newRun('warrior', 7))).toBe(false);
+    r.current = r.nodes.find((n) => n.type === 'fight')?.id ?? 0;
+    applyCombat(r, setup());
+    applyCombat(r, setup());
+    expect(r.sleeveIdle).toBe(2);
+    const c = setup();
+    run(c, 4);
+    expect(c.stash(c.belt[0].card.uid)).toBe(true);
+    expect(c.sleeveUses).toBe(1);
+    applyCombat(r, c);
+    expect(r.sleeveIdle).toBe(0);
   });
 });
 

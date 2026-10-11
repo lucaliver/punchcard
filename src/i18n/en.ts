@@ -219,6 +219,8 @@ const en = {
   'coach.hero': 'Your **HP** and **statuses**.\nThe shield is **Block**: it soaks hits.',
   'coach.belt': 'Your deck rides this **belt**.\n**Tap** a card to play it.',
   'coach.sleeve': 'Your **mana** refills **over time**.\n**Drag** a card into your **sleeve** to save it; here is your big **ability**.',
+  'coach.sleeveHint':
+    'You have not used your **sleeve** yet.\n**Drag** a card from the belt into it to save it for later, then **tap** it there when you need it.',
   'coach.start': '**Hold** anything to read it.\nReady? **Clock in**.',
 
   // ------------------------------------------------------------- heroes

@@ -6,7 +6,7 @@ import { actDef } from '../../data/acts';
 import { CONFIG, halfAtOf } from '../../data/config';
 import type { Combat } from '../../game/combat';
 import type { MoveDef } from '../../game/types';
-import { clockAt, currentNode, type RunState, totalFloors } from '../../game/run';
+import { clockAt, currentNode, isFirstRun, type RunState, totalFloors } from '../../game/run';
 import { meetEnemy } from '../../game/meta';
 import { saveSettings, settings } from '../../game/settings';
 import { type ModalHandle, openModal, type Screen } from '../app';
@@ -509,6 +509,15 @@ export function combatScreen(run: RunState, combat: Combat, cb: CombatCallbacks)
     haptic('alarm');
   };
 
+  /** The first run, after a few fights that never used the sleeve: once, an overlay points at it. */
+  const sleeveHint = (): void => {
+    if (!isFirstRun(run) || run.sleeveIdle < CONFIG.sleeveHintAfter || settings.seenTips.includes('sleeve')) return;
+    settings.seenTips.push('sleeve');
+    saveSettings();
+    coach(el, [{ target: [r.sleeve], text: t('coach.sleeveHint') }], () => syncPause());
+    syncPause();
+  };
+
   /** The very first fight: before Start, a tour of the board, one part at a time. */
   const firstFightTour = (): void => {
     // Clock in only comes up as the tour's last step.
@@ -623,6 +632,7 @@ export function combatScreen(run: RunState, combat: Combat, cb: CombatCallbacks)
         door.remove();
         if (combat.enemy.def.tier === 'boss') bossIntro();
         else if (!settings.seenTutorial) firstFightTour();
+        else sleeveHint();
       };
       door.addEventListener('animationend', (e) => {
         if (e.target === door) doorDone();

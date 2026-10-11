@@ -178,6 +178,8 @@ export class Combat {
   /** Sleeve slots lost for good this fight: they leave the sleeve from the next fight on (Life Insurance). */
   sleeveLost = 0;
   cardsPlayed = 0;
+  /** Cards stashed into the sleeve or played from it this fight (the first run nudges a player who never does). */
+  sleeveUses = 0;
   /** Ids of the cards played this fight, and in the whole run so far (this fight included): each id once. */
   readonly fightPlayed = new Set<string>();
   readonly runPlayed: Set<string>;
@@ -1189,6 +1191,7 @@ export class Combat {
     }
 
     this.cardsPlayed++;
+    if (sleeveIdx >= 0) this.sleeveUses++;
     this.fightPlayed.add(card.id);
     this.runPlayed.add(card.id);
     if (!echoes) this.events.emit({ type: 'cardPlayed', card, from: beltIdx >= 0 ? 'belt' : sleeveIdx >= 0 ? 'sleeve' : 'exhaust' });
@@ -1282,6 +1285,7 @@ export class Combat {
     if (old && CARDS[old.id].inSleeve) old.bonus = 0;
     if (old) this.belt[beltIdx] = { card: old, pos: b.pos, row: b.row };
     else this.belt.splice(beltIdx, 1);
+    this.sleeveUses++;
     this.events.emit({ type: 'cardStashed', card: b.card, slot: target });
     return true;
   }

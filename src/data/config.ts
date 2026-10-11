@@ -237,6 +237,8 @@ export const CONFIG = {
   classCardWeight: 2,
   /** Cross-Training: how many cards of each of the other classes are on offer. */
   crossTrainPerClass: 2,
+  /** The first run nudges a player to use the sleeve after this many fights in a row that never touched it. */
+  sleeveHintAfter: 2,
   /** Vending Machine: the HP a card of each rarity costs (the machine takes blood). */
   vendingHp: { rare: 6, epic: 12 },
   /** Vending Machine: how many cards of that rarity drop for the price. */

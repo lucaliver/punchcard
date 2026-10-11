@@ -222,6 +222,8 @@ const it: Record<EnKey, string> = {
   'coach.belt': 'Il tuo mazzo arriva su questo **nastro**.\n**Tocca** una carta per giocarla.',
   'coach.sleeve':
     "Il tuo **mana** si ricarica **col tempo**.\n**Trascina** una carta nella **manica** per tenerla da parte; qui c'è la tua grande **abilità**.",
+  'coach.sleeveHint':
+    'Non hai ancora usato la tua **manica**.\n**Trascina** una carta dal nastro per tenerla da parte, poi **tocca** la carta nella manica quando serve.',
   'coach.start': '**Tieni premuto** su tutto per leggerlo.\nPronto? **Timbra**.',
 
   // ------------------------------------------------------------- heroes

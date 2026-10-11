@@ -221,6 +221,8 @@ const es: Record<EnKey, string> = {
   'coach.hero': 'Tus **PV** y tus **estados**.\nEl escudo es el **Bloqueo**: absorbe golpes.',
   'coach.belt': 'Tu mazo llega por esta **cinta**.\n**Toca** una carta para jugarla.',
   'coach.sleeve': 'Tu **maná** se rellena **con el tiempo**.\n**Arrastra** una carta a la **manga** para guardarla; aquí está tu gran **habilidad**.',
+  'coach.sleeveHint':
+    'Aún no has usado tu **manga**.\n**Arrastra** una carta de la cinta hasta ella para guardarla y **toca** la carta en la manga cuando la necesites.',
   'coach.start': '**Mantén pulsado** cualquier cosa para leerla.\n¿Listo? **Ficha**.',
 
   // ------------------------------------------------------------- heroes

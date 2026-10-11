@@ -77,6 +77,8 @@ export interface RunState {
   sleeveLost: number;
   /** Ids of the cards played in the run so far, each once (`Combat.uniquePlayed`). */
   playedIds: string[];
+  /** Fights in a row (so far) that never touched the sleeve. */
+  sleeveIdle: number;
   /** True once the current node has been completed. */
   cleared: boolean;
   stats: RunStats;
@@ -220,6 +222,7 @@ export function newRun(hero: HeroId, seed: number, scripted: readonly number[] =
     mods,
     crystals: 0,
     sleeveLost: 0,
+    sleeveIdle: 0,
     playedIds: [],
   };
 }
@@ -438,6 +441,9 @@ export function fightPay(tier: EnemyDef['tier'], seconds: number): number {
   return p[tier] + Math.max(0, Math.round(p.par - seconds)) * p.perSecond;
 }
 
+/** Whether this is the run with the scripted first fight (the one that teaches the game). */
+export const isFirstRun = (run: RunState): boolean => run.nodes.some((n) => !!n.enemy && !!ENEMIES[n.enemy]?.firstRunOnly);
+
 /** Copies the combat outcome back into the run. */
 export function applyCombat(run: RunState, combat: Combat): void {
   // Max HP gained in the fight (It's-a Me) is only for the fight: HP never stays above the run's max.
@@ -445,6 +451,7 @@ export function applyCombat(run: RunState, combat: Combat): void {
   run.stats.damageTaken += Math.max(0, run.hp - hp);
   run.hp = hp;
   run.stats.cardsPlayed += combat.cardsPlayed;
+  run.sleeveIdle = combat.sleeveUses ? 0 : run.sleeveIdle + 1;
   run.stats.time += combat.time;
   const node = currentNode(run);
   recordFight({
@@ -894,6 +901,7 @@ function parseRun(raw: unknown): RunState | null {
     mods,
     crystals,
     sleeveLost,
+    sleeveIdle,
     playedIds,
     reward,
   } = raw;
@@ -929,6 +937,7 @@ function parseRun(raw: unknown): RunState | null {
     mods: isStrings(mods) ? mods.filter((id) => id in MODIFIERS) : [],
     crystals: isNum(crystals) ? Math.max(0, crystals) : 0,
     sleeveLost: isNum(sleeveLost) ? Math.max(0, sleeveLost) : 0,
+    sleeveIdle: isNum(sleeveIdle) ? Math.max(0, sleeveIdle) : 0,
     playedIds: isStrings(playedIds) ? playedIds.filter((id) => !!CARDS[id]) : [],
     reward: cleared && offers.length ? offers.map(({ id, up }) => ({ id, up })) : undefined,
   };
