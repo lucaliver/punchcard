@@ -1128,7 +1128,7 @@ const en = {
   'card.patience.name': 'Patience',
   'card.patience.desc': 'Gain {0} [block]. -{1} for every second it rides the belt (never below {2}). Frozen in your sleeve.',
   'card.severance.name': 'Severance',
-  'card.severance.desc': 'Gain {0} [strength]. For {1}s, cards slipping off the belt play themselves for free.',
+  'card.severance.desc': 'Gain {0} [strength]. For {1}s, cards slipping off the belt play themselves for free. But you fall [asleep] for {2}s.',
   'card.riseAndGrind.name': 'Rise and Grind',
   'card.riseAndGrind.desc': 'Lose {0} HP. Gain {1} [strength].',
   'card.seniority.name': 'Seniority',

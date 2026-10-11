@@ -363,19 +363,20 @@ export const neutralCards: CardDef[] = [
   // Pop culture
   {
     id: 'severance',
-    face: '{str:0}|{auto:1}',
+    face: '{str:0}|{auto:1}|{selfStun:2}',
     cls: 'neutral',
     type: 'skill',
     rarity: 'legendary',
     cost: 3,
-    vals: [3, 10],
-    upVals: [5, 15],
+    vals: [3, 10, 10],
+    upVals: [5, 15, 10],
     keywords: ['exhaust'],
     art: 'scissors',
-    // Work and self, severed: the work part carries on by itself for a while.
+    // Work and self, severed: the work part carries on by itself for a while, and you sleep through it (autopilot still plays).
     play: (c, v) => {
       c.applyStatus('hero', 'strength', v[0]);
       c.applyStatus('hero', 'autopilot', 1, v[1]);
+      c.applyStatus('hero', 'stun', 1, v[2]);
     },
   },
   // Tenure: the longer a copy has served (in any fight of the run), the more it is worth.
@@ -530,9 +531,9 @@ export const neutralCards: CardDef[] = [
     cls: 'neutral',
     type: 'skill',
     rarity: 'rare',
-    cost: 1,
-    vals: [3, 10],
-    upVals: [4, 12],
+    cost: 2,
+    vals: [3, 12],
+    upVals: [4, 18],
     art: 'stakhanov',
     play: (c, v) => c.applyStatus('hero', 'workaholic', v[0], v[1]),
   },

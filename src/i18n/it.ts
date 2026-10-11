@@ -1133,7 +1133,8 @@ const it: Record<EnKey, string> = {
   'card.patience.name': 'Pazienza',
   'card.patience.desc': 'Ottieni {0} di [block]. -{1} per ogni secondo che passa sul nastro (mai sotto {2}). Congelata nella manica.',
   'card.severance.name': 'Liquidazione',
-  'card.severance.desc': 'Ottieni {0} di [strength]. Per {1}s le carte che scivolano giù dal nastro si giocano da sole, gratis.',
+  'card.severance.desc':
+    'Ottieni {0} di [strength]. Per {1}s le carte che scivolano giù dal nastro si giocano da sole, gratis. Ma sei [asleep] per {2}s.',
   'card.riseAndGrind.name': 'Rise and Grind',
   'card.riseAndGrind.desc': 'Perdi {0} HP. Ottieni {1} di [strength].',
   'card.seniority.name': 'Anzianità',

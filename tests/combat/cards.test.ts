@@ -338,6 +338,7 @@ describe('pop culture cards', () => {
     const { c, uid } = ready('severance');
     c.playCard(uid);
     expect(c.stacks('hero', 'strength')).toBe(3);
+    expect(c.stacks('hero', 'stun')).toBe(1);
     const hp = c.enemy.hp;
     const played = c.cardsPlayed;
     c.hero.mana = c.hero.maxMana = 0;

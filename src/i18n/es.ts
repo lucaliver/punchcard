@@ -1133,7 +1133,8 @@ const es: Record<EnKey, string> = {
   'card.patience.name': 'Paciencia',
   'card.patience.desc': 'Gana {0} de [block]. -{1} por cada segundo que viaja por la cinta (nunca por debajo de {2}). Congelada en tu manga.',
   'card.severance.name': 'Indemnización',
-  'card.severance.desc': 'Gana {0} de [strength]. Durante {1}s, las cartas que se caen de la cinta se juegan solas, gratis.',
+  'card.severance.desc':
+    'Gana {0} de [strength]. Durante {1}s, las cartas que se caen de la cinta se juegan solas, gratis. Pero te quedas [asleep] durante {2}s.',
   'card.riseAndGrind.name': 'Rise and Grind',
   'card.riseAndGrind.desc': 'Pierdes {0} PV. Ganas {1} de [strength].',
   'card.seniority.name': 'Antigüedad',

@@ -1121,7 +1121,7 @@ const zh: Record<EnKey, string> = {
   'card.patience.name': '耐心',
   'card.patience.desc': '获得 {0} 点[block]。在传送带上每走一秒 -{1}（最低 {2}）。在袖口中会被冻结。',
   'card.severance.name': '遣散费',
-  'card.severance.desc': '获得 {0} 点[strength]。{1} 秒内，从传送带滑落的卡牌会自动免费打出。',
+  'card.severance.desc': '获得 {0} 点[strength]。{1} 秒内，从传送带滑落的卡牌会自动免费打出。但你会[asleep] {2} 秒。',
   'card.riseAndGrind.name': '早起打拼',
   'card.riseAndGrind.desc': '失去 {0} 点生命。获得 {1} 点[strength]。',
   'card.seniority.name': '资历',
