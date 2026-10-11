@@ -1946,10 +1946,10 @@ export const ICONS: Record<string, { el: Element; svg: string; wide?: boolean }>
     el: 'holy',
     svg: `<rect x="6" y="10" width="52" height="48"/><rect x="6" y="10" width="52" height="12" fill="#16121f"/><rect x="16" y="4" width="6" height="12"/><rect x="42" y="4" width="6" height="12"/><path d="M28 28h8v24h-8z" fill="#16121f"/><path d="M22 34l6-6v6z" fill="#16121f"/><rect x="22" y="50" width="20" height="4" fill="#16121f"/>`,
   },
-  // Echo keyword: a card and its fading copies, side by side
+  // Echo keyword: radio waves, a source with arcs spreading out on both sides
   echoKw: {
     el: 'arcane',
-    svg: `<rect x="4" y="14" width="26" height="36"/><rect x="34" y="14" width="14" height="36" opacity=".6"/><rect x="52" y="14" width="8" height="36" opacity=".3"/><rect x="10" y="22" width="14" height="6" fill="#16121f"/><rect x="10" y="34" width="10" height="4" fill="#16121f"/>`,
+    svg: `<circle cx="32" cy="32" r="6"/><g ${S} stroke-width="4"><path d="M43 24c5 5 5 11 0 16M21 24c-5 5-5 11 0 16M53 14c10 10 10 26 0 36M11 14c-10 10-10 26 0 36"/></g>`,
   },
   // Echo waves: three sound arcs, drawn at the edges of an Echo card's effect (mirrored for the left edge)
   echoWave: {
