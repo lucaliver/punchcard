@@ -367,6 +367,36 @@ test('a mouse pressed on the very corner of a button still clicks it, though the
   await expect(page.locator('.journey')).toBeVisible();
 });
 
+test('no glyph of a card face touches the sides of the card', async ({ page }) => {
+  await freshGame(page);
+  await page
+    .getByRole('button', { name: /handbook/i })
+    .first()
+    .click();
+  const tabs = page.locator('.tabs').first().getByRole('tab');
+  for (let i = 0; i < (await tabs.count()); i++) {
+    await tabs.nth(i).click();
+    await page.waitForTimeout(700);
+    const touching = await page.evaluate(() => {
+      const out: string[] = [];
+      document.querySelectorAll('.comp-grid .card').forEach((c, n) => {
+        const face = c.querySelector('.c-face');
+        if (!face) return;
+        const fr = face.getBoundingClientRect();
+        face.querySelectorAll('.gl').forEach((g) => {
+          const r = g.getBoundingClientRect();
+          if (!r.width) return;
+          const left = r.left - fr.left;
+          const right = fr.right - r.right;
+          if (Math.min(left, right) < fr.width * 0.04) out.push(`card ${n}: ${Math.min(left, right).toFixed(1)}px of ${fr.width.toFixed(0)}`);
+        });
+      });
+      return out;
+    });
+    expect(touching, `tab ${i}`).toEqual([]);
+  }
+});
+
 test('a tap on the way into a fight skips the door', async ({ page }) => {
   await freshGame(page);
   await page.getByRole('button', { name: /new run/i }).click();

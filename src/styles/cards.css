@@ -123,7 +123,8 @@
   align-items: center;
   justify-content: center;
   gap: 1.5cqw;
-  padding: 1cqw 2cqw 3cqw;
+  /* a thin margin at the sides: no glyph touches the card's edge (a wider row shrinks, see fitFace.ts) */
+  padding: 1cqw 5cqw 3cqw;
 }
 /* the face's text, apart from the Echo waves: the combat layer rewrites it as the numbers move */
 .c-body { display: contents; }
@@ -133,11 +134,11 @@
   justify-content: center;
   gap: 1.5cqw;
   font-family: var(--font-ui);
-  font-size: 27cqw;
+  font-size: calc(27cqw * var(--fit, 1));
   line-height: 1;
   white-space: nowrap;
 }
-.c-face.two .gl { font-size: 20cqw; }
+.c-face.two .gl { font-size: calc(20cqw * var(--fit, 1)); }
 .gl .pico { font-size: 1.05em; }
 .gl .unit { font-size: 0.6em; margin-left: -0.5cqw; }
 .gl .buff,
