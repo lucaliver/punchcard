@@ -1420,3 +1420,33 @@ describe('Fire Extinguisher and Hi-Vis Vest', () => {
     expect(c.hero.block - before).toBe(CARDS.hiVisVest.vals[1]);
   });
 });
+
+describe("Doctor's Note and Performance Review", () => {
+  it("Doctor's Note is a consumable that makes the hero dodge for its seconds", () => {
+    const c = setup({ deck: deckOf(['punch']) });
+    c.enemy.move = { id: 'wait', intent: 'defend', windup: 999 };
+    run(c, CONFIG.introTime + 0.01);
+    c.hero.mana = c.hero.maxMana;
+    c.belt.length = 0;
+    c.addTempCard('doctorsNote', 'belt');
+    expect(CARDS.doctorsNote.keywords).toEqual(expect.arrayContaining(['consume', 'anchor']));
+    expect(c.playCard(c.belt[0].card.uid)).toBe(true);
+    expect(c.has('hero', 'dodge')).toBe(true);
+    expect(c.stacks('hero', 'dodge')).toBeGreaterThan(0);
+  });
+
+  it('Performance Review deals damage for every card in the exhaust pile, and the face shows it', () => {
+    const c = setup({ hero: HEROES.necromancer, deck: deckOf(['punch']) });
+    c.enemy.move = { id: 'wait', intent: 'defend', windup: 999 };
+    run(c, CONFIG.introTime + 0.01);
+    c.hero.mana = c.hero.maxMana;
+    c.belt.length = 0;
+    c.addTempCard('performanceReview', 'belt');
+    const card = c.belt[0].card;
+    c.exhaust.push(card, card, card);
+    expect(c.shownVals(card)[0]).toBe(3 * CARDS.performanceReview.vals[0]);
+    const hp = c.enemy.hp;
+    expect(c.playCard(card.uid)).toBe(true);
+    expect(hp - c.enemy.hp).toBeGreaterThanOrEqual(3 * CARDS.performanceReview.vals[0]);
+  });
+});

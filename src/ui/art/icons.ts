@@ -135,6 +135,10 @@ export const ICONS: Record<string, { el: Element; svg: string; wide?: boolean }>
     svg: `<path d="M19.2 6.4h25.6v3.2h-25.6zM19.2 9.6h6.4v3.2h-6.4zM38.4 9.6h6.4v3.2h-6.4zM19.2 12.8h6.4v3.2h-6.4zM38.4 12.8h6.4v3.2h-6.4zM6.4 16h51.2v3.2h-51.2zM3.2 19.2h57.6v3.2h-57.6zM3.2 22.4h22.4v3.2h-22.4zM38.4 22.4h22.4v3.2h-22.4zM3.2 25.6h22.4v3.2h-22.4zM38.4 25.6h22.4v3.2h-22.4zM3.2 28.8h22.4v3.2h-22.4zM38.4 28.8h22.4v3.2h-22.4zM3.2 32h12.8v3.2h-12.8zM48 32h12.8v3.2h-12.8zM3.2 35.2h12.8v3.2h-12.8zM48 35.2h12.8v3.2h-12.8zM3.2 38.4h12.8v3.2h-12.8zM48 38.4h12.8v3.2h-12.8zM3.2 41.6h12.8v3.2h-12.8zM48 41.6h12.8v3.2h-12.8zM3.2 44.8h22.4v3.2h-22.4zM38.4 44.8h22.4v3.2h-22.4zM3.2 48h22.4v3.2h-22.4zM38.4 48h22.4v3.2h-22.4zM3.2 51.2h22.4v3.2h-22.4zM38.4 51.2h22.4v3.2h-22.4zM3.2 54.4h57.6v3.2h-57.6zM6.4 57.6h51.2v3.2h-51.2z"/>`,
   },
   potionOrange: { el: 'fire', svg: potion('#ff8a1f') },
+  doctorsNote: {
+    el: 'nature',
+    svg: `<path d="M12 4h40v56H12z"/><path fill="#16121f" d="M28 14h8v10h10v8H36v10h-8V32H18v-8h10z"/><path d="M18 48h28M18 54h18" stroke="#16121f" stroke-width="3"/><path ${HI} d="M14 6h4v52h-4z"/>`,
+  },
   extinguisher: {
     el: 'blood',
     svg: `<rect x="18" y="24" width="26" height="36" rx="7"/><rect x="26" y="14" width="10" height="10"/><path d="M20 10h22v6H20z"/><path d="M36 13c10 0 16 4 16 12" fill="none" stroke="#16121f" stroke-width="4"/><path d="M48 24l10 4-10 6z"/><path fill="#16121f" d="M18 36h26v10H18z"/><path ${HI} d="M22 28h4v28h-4z"/>`,
@@ -1469,6 +1473,10 @@ export const ICONS: Record<string, { el: Element; svg: string; wide?: boolean }>
   massGrave: {
     el: 'necro',
     svg: `<path d="M3 58V30a8 8 0 0 1 16 0v28z"/><path d="M24 58V20a8 8 0 0 1 16 0v38z"/><path d="M45 58V30a8 8 0 0 1 16 0v28z"/><path fill="#16121f" d="M10 33h2v12h-2zM6 37h10v2H6zM31 25h2v14h-2zM26 30h12v2H26zM52 33h2v12h-2zM48 37h10v2H48z"/><path d="M0 56h64v8H0z"/><path fill="#16121f" opacity=".5" d="M6 59h10v2H6zM28 60h12v2H28zM48 59h10v2H48z"/>`,
+  },
+  performanceReview: {
+    el: 'necro',
+    svg: `<path d="M10 4h44v56H10z"/><path fill="#16121f" d="M16 10h32v4H16z"/><path d="M16 22h20M16 30h16M16 38h20" stroke="#16121f" stroke-width="3"/><path d="M40 28l16 16M56 28L40 44" stroke="#16121f" stroke-width="5" stroke-linecap="round"/><path ${HI} d="M12 6h4v52h-4z"/>`,
   },
   signHere: {
     el: 'steel',
