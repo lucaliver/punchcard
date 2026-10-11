@@ -135,6 +135,10 @@ export const ICONS: Record<string, { el: Element; svg: string; wide?: boolean }>
     svg: `<path d="M19.2 6.4h25.6v3.2h-25.6zM19.2 9.6h6.4v3.2h-6.4zM38.4 9.6h6.4v3.2h-6.4zM19.2 12.8h6.4v3.2h-6.4zM38.4 12.8h6.4v3.2h-6.4zM6.4 16h51.2v3.2h-51.2zM3.2 19.2h57.6v3.2h-57.6zM3.2 22.4h22.4v3.2h-22.4zM38.4 22.4h22.4v3.2h-22.4zM3.2 25.6h22.4v3.2h-22.4zM38.4 25.6h22.4v3.2h-22.4zM3.2 28.8h22.4v3.2h-22.4zM38.4 28.8h22.4v3.2h-22.4zM3.2 32h12.8v3.2h-12.8zM48 32h12.8v3.2h-12.8zM3.2 35.2h12.8v3.2h-12.8zM48 35.2h12.8v3.2h-12.8zM3.2 38.4h12.8v3.2h-12.8zM48 38.4h12.8v3.2h-12.8zM3.2 41.6h12.8v3.2h-12.8zM48 41.6h12.8v3.2h-12.8zM3.2 44.8h22.4v3.2h-22.4zM38.4 44.8h22.4v3.2h-22.4zM3.2 48h22.4v3.2h-22.4zM38.4 48h22.4v3.2h-22.4zM3.2 51.2h22.4v3.2h-22.4zM38.4 51.2h22.4v3.2h-22.4zM3.2 54.4h57.6v3.2h-57.6zM6.4 57.6h51.2v3.2h-51.2z"/>`,
   },
   potionOrange: { el: 'fire', svg: potion('#ff8a1f') },
+  foeAttack: {
+    el: 'blood',
+    svg: `<circle cx="32" cy="5" r="4"/><path d="M30 9h4v9h-4z"/><path d="M12 18h40v6H12z"/><path d="M26 24h12v26l-6 12-6-12z"/><path ${HI} d="M28 26h3v22h-3z"/>`,
+  },
   claimsAdjuster: {
     el: 'steel',
     svg: `<path d="M10 6h44v52H10z"/><path d="M18 16h28M18 24h28M18 32h16" stroke="#16121f" stroke-width="3"/><circle cx="44" cy="44" r="10" fill="#16121f"/><path d="M39 44l4 4 8-8" fill="none" stroke="currentColor" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"/><path ${HI} d="M12 8h4v48h-4z"/>`,

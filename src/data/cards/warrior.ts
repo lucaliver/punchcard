@@ -433,7 +433,7 @@ export const warriorCards: CardDef[] = [
   },
   {
     id: 'voluntaryRedundancy',
-    face: '{drain:0}|{str:1}',
+    face: '{loseCrystal:0}|{str:1}',
     cls: 'warrior',
     type: 'skill',
     rarity: 'epic',

@@ -1212,7 +1212,7 @@ const zh: Record<EnKey, string> = {
   'card.performancePlan.desc':
     '敌人[vulnerable] {0} 秒。接下来的 {$performancePlanCap} 秒内，你每打出一张攻击牌，就为其延长 {1} 秒，最多 {$performancePlanCap} 秒。',
   'card.voluntaryRedundancy.name': '自愿离职',
-  'card.voluntaryRedundancy.desc': '本场战斗剩余时间内失去 {0} {0|个|个}法力水晶。获得 {1} 点[strength]。',
+  'card.voluntaryRedundancy.desc': '本场战斗剩余时间内，你的[mana]上限降低 {0} 点。获得 {1} 点[strength]。',
   'card.hotPotato.name': '烫手山芋',
   'card.hotPotato.desc': '造成 {0} 点伤害。把一张[@passTheBuck]洗入你的抽牌堆。',
   'card.passTheBuck.name': '甩锅',

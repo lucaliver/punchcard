@@ -88,6 +88,10 @@ export const GLYPHS: Record<string, { icon: string; unit?: string; sign?: string
   bare: { icon: 'shieldOff' },
   /** The card's own cost goes down. */
   cheaper: { icon: 'priceTag', sign: '-' },
+  /** The enemy's current attack: added to what a card gives or deals (Claims Adjuster, Return to Sender). */
+  foe: { icon: 'foeAttack' },
+  /** An empty mana crystal is lost for the fight. */
+  loseCrystal: { icon: 'crystalSlot', sign: '-', tone: 'blue' },
   /** The hero's next attacks are critical. */
   crit: { icon: 'target', tone: 'red' },
   /** A price every card is set to. */

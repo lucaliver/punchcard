@@ -1227,7 +1227,7 @@ const it: Record<EnKey, string> = {
   'card.performancePlan.desc':
     'Il nemico è [vulnerable] per {0}s. Per i prossimi {$performancePlanCap}s, ogni attacco che giochi ne aggiunge {1}s, fino a {$performancePlanCap}s.',
   'card.voluntaryRedundancy.name': 'Dimissioni Volontarie',
-  'card.voluntaryRedundancy.desc': 'Perdi {0} {0|cristallo|cristalli} di mana per il resto dello scontro. Ottieni {1} di [strength].',
+  'card.voluntaryRedundancy.desc': 'Il tuo [mana] massimo cala di {0} per il resto dello scontro. Ottieni {1} di [strength].',
   'card.hotPotato.name': 'Patata Bollente',
   'card.hotPotato.desc': 'Infliggi {0} danni. Mescola un [@passTheBuck] nel tuo mazzo di pesca.',
   'card.passTheBuck.name': 'Scarica la Colpa',

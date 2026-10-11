@@ -1220,7 +1220,7 @@ const en = {
   'card.performancePlan.desc':
     'The enemy is [vulnerable] for {0}s. For the next {$performancePlanCap}s, every attack you play adds {1}s to it, up to {$performancePlanCap}s.',
   'card.voluntaryRedundancy.name': 'Voluntary Redundancy',
-  'card.voluntaryRedundancy.desc': 'Lose {0} mana {0|crystal|crystals} for the rest of the fight. Gain {1} [strength].',
+  'card.voluntaryRedundancy.desc': 'Your max [mana] drops by {0} for the rest of the fight. Gain {1} [strength].',
   'card.hotPotato.name': 'Hot Potato',
   'card.hotPotato.desc': 'Deal {0} damage. Shuffle a [@passTheBuck] into your draw pile.',
   'card.passTheBuck.name': 'Pass the Buck',

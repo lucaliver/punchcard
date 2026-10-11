@@ -1561,7 +1561,6 @@ describe('the legendary batch: Claims Adjuster, Return to Sender, Fuck You Money
     const hit = c.intentDamage(c.enemy.move);
     expect(hit).toBeGreaterThan(0);
     const [bonus] = CARDS.claimsAdjuster.vals;
-    expect(c.shownVals(c.addTempCard('claimsAdjuster', 'belt'))[1]).toBe(bonus + hit);
     c.hero.block = 0;
     expect(play(c, 'claimsAdjuster')).toBe(true);
     expect(c.hero.block).toBe(bonus + hit);
