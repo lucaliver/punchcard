@@ -56,7 +56,7 @@ export function rewardScreen(run: RunState, picks: RewardOffer[], adds: boolean,
         skipBtn.disabled = true;
         (e.currentTarget as HTMLElement).blur();
         playHealing(el, pay, t('reward.maxHp'), true);
-        if (bonus) playCardGain(el, { ...bonus }, t('reward.bonus'), { start: 'ding', end: 'deckAdd' });
+        if (bonus) playCardGain(el, [{ ...bonus }], t('reward.bonus'), { start: 'ding', end: 'deckAdd' });
         setTimeout(onDone, bonus ? CARD_SHOW_MS + cssMs('--dur-show-extra') : HEAL_FAST_MS);
       },
     },

@@ -154,7 +154,8 @@ describe('content integrity', () => {
       expect(rewardOdds('elite', act).some(([r]) => r === 'legendary')).toBe(true);
       expect(rewardOdds('boss', act).every(([r]) => r === 'legendary')).toBe(true);
       if (act > 1) {
-        expect(rewardUpgradeChance(act)).toBeGreaterThan(rewardUpgradeChance(act - 1));
+        for (const r of ['common', 'rare', 'epic', 'legendary'] as const)
+          expect(rewardUpgradeChance(r, act)).toBeGreaterThan(rewardUpgradeChance(r, act - 1));
         expect(share('fight', act)).toBeGreaterThan(share('fight', act - 1));
         expect(share('elite', act)).toBeGreaterThan(share('elite', act - 1));
       }

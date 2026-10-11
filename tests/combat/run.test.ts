@@ -136,13 +136,16 @@ describe('run pay and rewards', () => {
     expect(restsBoth(r)).toBe(true);
   });
 
-  it('at most one offered card comes upgraded, and a swap keeps it so', () => {
+  it('an offered card comes upgraded by its rarity and the act, and a swap keeps it so', () => {
     const run = newRun('warrior', 7);
     for (const act of [1, 3]) {
       run.current = run.nodes.find((n) => n.act === act)!.id;
-      const rolls = Array.from({ length: 300 }, () => rollRewards(run, 'fight'));
-      expect(rolls.every((offer) => offer.filter((o) => o.up).length <= 1)).toBe(true);
-      expect(rolls.filter((offer) => offer.some((o) => o.up)).length / rolls.length).toBeCloseTo(rewardUpgradeChance(act), 1);
+      const offers = Array.from({ length: 300 }, () => rollRewards(run, 'fight')).flat();
+      for (const rarity of ['common', 'rare'] as const) {
+        const of = offers.filter((o) => o.def.rarity === rarity);
+        expect(of.length).toBeGreaterThan(100);
+        expect(of.filter((o) => o.up).length / of.length).toBeCloseTo(rewardUpgradeChance(rarity, act), 1);
+      }
     }
     const [first] = rollRewards(run, 'elite');
     swapCard(run, run.deck[0].uid, first.def.id, true);
@@ -414,10 +417,15 @@ describe('the Copy Room', () => {
   it('the Vending Machine drops a card of the rarity paid for, and never takes the last HP', () => {
     const r = newRun('warrior', 5);
     const deck = r.deck.length;
-    const card = vend(r, 'epic');
+    const [card] = vend(r, 'epic');
     expect(CARDS[card.id].rarity).toBe('epic');
     expect(r.deck).toHaveLength(deck + 1);
     expect(r.hp).toBe(r.maxHp - vendingCost('epic'));
+    r.hp = r.maxHp;
+    const snack = vend(r, 'rare');
+    expect(snack).toHaveLength(2);
+    expect(new Set(snack.map((c) => c.id)).size).toBe(2);
+    expect(snack.every((c) => CARDS[c.id].rarity === 'rare')).toBe(true);
     r.hp = vendingCost('rare');
     expect(canVend(r, 'rare')).toBe(false);
   });

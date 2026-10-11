@@ -298,7 +298,7 @@ const es: Record<EnKey, string> = {
   'journey.info.copy': 'Tritura una carta de tu mazo para siempre o fotocopia una a cambio de algunos PV.',
   'journey.info.tailor': 'Pantalones cargo para otro hueco de manga, o el uniforme ensanchado para más PV máximos.',
   'journey.info.lostFound': 'Una caja de cosas que nadie vino a buscar: llévate una pieza de papelería.',
-  'journey.info.vending': 'Una máquina expendedora que acepta sangre: paga PV por una carta rara o épica al azar.',
+  'journey.info.vending': 'Una máquina expendedora que acepta sangre: paga PV por cartas raras o épicas al azar.',
   'journey.info.crossTraining': 'Un seminario de otros departamentos: elige una carta de otra clase.',
   'journey.info.restructuring':
     'La empresa te reubica: cartas de tu mazo se convierten en otras de la misma rareza, al azar o, a cambio de PV, a tu elección.',
@@ -499,7 +499,7 @@ const es: Record<EnKey, string> = {
   'vending.desc': 'Solo importe exacto.\nTambién acepta sangre.',
   'vending.rare': 'Aperitivo',
   'vending.epic': 'Menú combinado',
-  'vending.rareDesc': 'Una carta rara al azar. Pierdes {n} PV',
+  'vending.rareDesc': '{c} {c|carta rara|cartas raras} al azar. Pierdes {n} PV',
   'vending.epicDesc': 'Una carta épica al azar. Pierdes {n} PV',
   'vending.weak': 'PV insuficientes',
   'vending.dropped': '¡Dispensado!',

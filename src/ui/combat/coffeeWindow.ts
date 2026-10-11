@@ -1,6 +1,6 @@
 import { getLocale, t } from '../../core/i18n';
 import { sfx } from '../../audio/sfx';
-import { COFFEE_ITEMS, type CoffeeItem } from '../../data/coffee';
+import type { CoffeeItem } from '../../data/coffee';
 import { CONFIG } from '../../data/config';
 import { CoffeeTask, type CoffeeAction, type CoffeePhase, type CoffeeResult } from '../../game/coffee';
 import { icon } from '../art/icons';
@@ -175,11 +175,11 @@ export function createTaskWindow(v: CombatView): { render(): void } {
     return h('div', { class: 'tk-niche' }, h('i', { class: 'tk-spout' }), spot);
   };
 
-  const buildPlace = (): void => {
+  const buildPlace = (task: CoffeeTask): void => {
     const niche = buildNiche();
     itemEls.clear();
     const tray = h('div', { class: 'tk-tray' });
-    for (const item of COFFEE_ITEMS) {
+    for (const item of task.tray) {
       const b = h('button', { class: 'tk-item', 'data-item': item, 'aria-label': t(`task.coffee.${item}`), html: icon(ITEM_ICON[item]) });
       bindDrag(
         b,
@@ -244,7 +244,7 @@ export function createTaskWindow(v: CombatView): { render(): void } {
     built = task.phase;
     if (task.phase === 'coins') buildCoins(task);
     else if (task.phase === 'code') buildCode();
-    else if (task.phase === 'place') buildPlace();
+    else if (task.phase === 'place') buildPlace(task);
     else if (task.phase === 'sugar') buildSugar(task);
     else if (task.phase === 'brew') buildBrew();
     else if (task.phase === 'done' && was !== 'brew') buildBrew();

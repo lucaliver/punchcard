@@ -12,6 +12,12 @@ import { setup, run, coffeeOf, shellsOf, sushiOf, badgeOf } from './helpers';
 const COFFEE_MOVE = ENEMIES.slavesCeo.specials.find((m) => m.task === 'coffee')!;
 
 describe("the Boss's coffee", () => {
+  it('lays the cup, the spoon and the fork on the tray in a different order from one order to the next', () => {
+    const trays = Array.from({ length: 20 }, (_, seed) => new CoffeeTask(new Rng(seed)).tray);
+    for (const tray of trays) expect([...tray].sort()).toEqual(['cup', 'fork', 'spoon']);
+    expect(new Set(trays.map((tr) => tr.join())).size).toBeGreaterThan(1);
+  });
+
   /** The machine's coffee move is up first, then it idles for good. */
   const coffeeFight = (): Combat => {
     const idle = { id: 'wait', intent: 'idle', windup: 9999 } as const;

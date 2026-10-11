@@ -296,7 +296,7 @@ const en = {
   'journey.info.copy': 'Shred a card from your deck for good, or photocopy one at the cost of some HP.',
   'journey.info.tailor': 'Cargo pants for another sleeve slot, or the uniform let out for more max HP.',
   'journey.info.lostFound': 'A box of things nobody came back for: take one piece of stationery.',
-  'journey.info.vending': 'A vending machine that takes blood: pay HP for a random rare or epic card.',
+  'journey.info.vending': 'A vending machine that takes blood: pay HP for random rare or epic cards.',
   'journey.info.crossTraining': 'A seminar run by the other departments: pick one card from another class.',
   'journey.info.restructuring':
     'Management is repositioning you: cards of your deck turn into other cards of the same rarity, at random or, for HP, of your pick.',
@@ -497,7 +497,7 @@ const en = {
   'vending.desc': 'Exact change only.\nIt takes blood too.',
   'vending.rare': 'Snack',
   'vending.epic': 'Combo Meal',
-  'vending.rareDesc': 'A random rare card. Lose {n} HP',
+  'vending.rareDesc': '{c} random rare {c|card|cards}. Lose {n} HP',
   'vending.epicDesc': 'A random epic card. Lose {n} HP',
   'vending.weak': 'Not enough HP',
   'vending.dropped': 'Dispensed!',

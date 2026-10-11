@@ -235,6 +235,8 @@ export const CONFIG = {
   crossTrainPerClass: 2,
   /** Vending Machine: the HP a card of each rarity costs (the machine takes blood). */
   vendingHp: { rare: 6, epic: 12 },
+  /** Vending Machine: how many cards of that rarity drop for the price. */
+  vendingCards: { rare: 2, epic: 1 },
 } as const;
 
 export type RewardKind = 'fight' | 'elite' | 'boss';
@@ -286,10 +288,19 @@ const REWARD_ODDS: Record<RewardKind, [Rarity, number][][]> = {
 
 export const rewardOdds = (kind: RewardKind, act: number): [Rarity, number][] => REWARD_ODDS[kind][Math.min(act, REWARD_ODDS[kind].length) - 1];
 
-/** Chance, per act (later acts use the last), that one card of a reward offer comes already upgraded. */
-const REWARD_UPGRADE_CHANCE = [0.3, 0.5, 0.8];
+/** Chance, per rarity and act (later acts use the last), that a card of a reward offer comes already upgraded: the rarer, the less often. */
+const REWARD_UPGRADE_CHANCE: Record<Rarity, number[]> = {
+  common: [0.25, 0.4, 0.6],
+  rare: [0.2, 0.3, 0.5],
+  epic: [0.15, 0.25, 0.4],
+  legendary: [0.1, 0.15, 0.25],
+  special: [0, 0, 0],
+};
 
-export const rewardUpgradeChance = (act: number): number => REWARD_UPGRADE_CHANCE[Math.min(act, REWARD_UPGRADE_CHANCE.length) - 1];
+export const rewardUpgradeChance = (rarity: Rarity, act: number): number => {
+  const row = REWARD_UPGRADE_CHANCE[rarity];
+  return row[Math.min(act, row.length) - 1];
+};
 
 /** Cards an offer always holds of at least a rarity, per act (later acts use the last); the rest of it follows `rewardOdds`. */
 const REWARD_GUARANTEE: Record<RewardKind, { rarity: Rarity; count: number }[]> = {

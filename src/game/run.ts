@@ -472,7 +472,7 @@ export const REWARD_CHOICES = 4;
 export const rewardChoices = (run: RunState): number =>
   Math.max(1, REWARD_CHOICES + resolveMods(run.mods).rewardCards + relicSum(run.relics, 'rewardCards'));
 
-/** A card on offer: one of the offered cards may come already upgraded. */
+/** A card on offer: any of the offered cards may come already upgraded (`rewardUpgradeChance`). */
 export interface RewardOffer {
   def: CardDef;
   up: boolean;
@@ -508,10 +508,9 @@ export function rollRewards(run: RunState, kind: RewardKind): RewardOffer[] {
     const pool = poolOf(run, rarity).filter((c) => !picks.includes(c));
     if (pool.length) picks.push(pickReward(rng, run, pool));
   }
-  const upgraded = picks.length && rng.next() < rewardUpgradeChance(currentNode(run).act) ? rng.int(0, picks.length - 1) : -1;
   run.rng = rng.state;
   discover(picks.map((p) => p.id));
-  return byRarity(picks.map((def, i) => ({ def, up: i === upgraded })));
+  return byRarity(picks.map((def) => ({ def, up: rng.next() < rewardUpgradeChance(def.rarity, act) })));
 }
 
 /** Offers always come in rising rarity, then rising cost (a stable sort: the dealt order breaks ties). */
@@ -651,17 +650,21 @@ export function rollRelics(run: RunState): string[] {
 export const vendingCost = (rarity: keyof typeof CONFIG.vendingHp): number => CONFIG.vendingHp[rarity];
 export const canVend = (run: RunState, rarity: keyof typeof CONFIG.vendingHp): boolean => run.hp > vendingCost(rarity);
 
-/** A random card of this rarity drops into the deck, for HP. Returns it. */
-export function vend(run: RunState, rarity: keyof typeof CONFIG.vendingHp): CardInst {
+/** Random cards of this rarity (`CONFIG.vendingCards`, no card twice) drop into the deck, for HP. Returns them. */
+export function vend(run: RunState, rarity: keyof typeof CONFIG.vendingHp): CardInst[] {
   const rng = rngOf(run);
-  const def = pickReward(rng, run, poolOf(run, rarity));
+  const defs: CardDef[] = [];
+  for (let i = 0; i < CONFIG.vendingCards[rarity]; i++) {
+    const pool = poolOf(run, rarity).filter((c) => !defs.includes(c));
+    if (pool.length) defs.push(pickReward(rng, run, pool));
+  }
   run.rng = rng.state;
   run.hp -= vendingCost(rarity);
-  discover([def.id]);
-  const card = newCard(run, def.id);
-  run.deck.push(card);
+  discover(defs.map((d) => d.id));
+  const cards = defs.map((d) => newCard(run, d.id));
+  run.deck.push(...cards);
   run.cleared = true;
-  return card;
+  return cards;
 }
 
 /** Cross-Training: `crossTrainPerClass` cards from each class but the hero's own (and not a hero still to be hired), to take one of (rarities as after a normal fight of the act). */

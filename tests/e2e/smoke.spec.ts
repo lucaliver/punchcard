@@ -1186,7 +1186,7 @@ test('cross-training: four cards of the hired classes (not the Rogue yet), takin
   expect(await page.evaluate('window.__game.run.deck.length')).toBe(deck + 1);
 });
 
-test('vending machine: a card drops into the deck and costs HP', async ({ page }) => {
+test('vending machine: two rare cards drop into the deck and cost HP', async ({ page }) => {
   await freshGame(page, { veteran: true });
   await page.getByRole('button', { name: /new run/i }).click();
   await page.getByRole('button', { name: /start shift/i }).click();
@@ -1195,7 +1195,7 @@ test('vending machine: a card drops into the deck and costs HP', async ({ page }
   const deck = (await page.evaluate('window.__game.run.deck.length')) as number;
   await page.getByRole('button', { name: /snack/i }).click();
   await expect(page.locator('.node.open').first()).toBeVisible();
-  expect(await page.evaluate('window.__game.run.deck.length')).toBe(deck + 1);
+  expect(await page.evaluate('window.__game.run.deck.length')).toBe(deck + 2);
   expect(await page.evaluate('window.__game.run.hp < window.__game.run.maxHp')).toBe(true);
 });
 

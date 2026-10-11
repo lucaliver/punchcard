@@ -149,7 +149,7 @@ describe('act 2 enemies', () => {
     run(c, 3 * 4 + 0.5);
     expect(acts).toEqual(['scrolling', 'scrolling', 'scrolling']);
     expect(c.hero.hp).toBe(hp);
-    run(c, 3);
+    run(c, ENEMIES.dave.specials.find((m) => m.id === 'lastMinute')!.windup);
     expect(acts[3]).toBe('lastMinute');
     expect(c.hero.hp).toBeLessThan(hp);
     const everywhere = [...c.draw, ...c.discard, ...c.belt.map((b) => b.card)];

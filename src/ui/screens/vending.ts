@@ -1,4 +1,5 @@
 import { t } from '../../core/i18n';
+import { CONFIG } from '../../data/config';
 import { sfx } from '../../audio/sfx';
 import { canVend, vend, vendingCost, type RunState } from '../../game/run';
 import type { Screen } from '../app';
@@ -10,7 +11,7 @@ import { runHud } from './journey';
 
 const RARITIES = ['rare', 'epic'] as const;
 
-/** Vending Machine: a random rare or epic card drops into the deck, paid in HP. */
+/** Vending Machine: random rare or epic cards drop into the deck, paid in HP. */
 export function vendingScreen(run: RunState, onDone: () => void): Screen {
   const el = h(
     'div',
@@ -26,11 +27,16 @@ export function vendingScreen(run: RunState, onDone: () => void): Screen {
         roomOption(
           icon(rarity === 'rare' ? 'sandwich' : 'pizza'),
           t(`vending.${rarity}`),
-          canVend(run, rarity) ? t(`vending.${rarity}Desc`, { n: vendingCost(rarity) }) : t('vending.weak'),
+          canVend(run, rarity) ? t(`vending.${rarity}Desc`, { n: vendingCost(rarity), c: CONFIG.vendingCards[rarity] }) : t('vending.weak'),
           !canVend(run, rarity),
           () => {
             sfx('tap');
-            playCardGain(el, { ...vend(run, rarity) }, t('vending.dropped'), { start: 'bloodDrip', end: 'thunk' });
+            playCardGain(
+              el,
+              vend(run, rarity).map((c) => ({ ...c })),
+              t('vending.dropped'),
+              { start: 'bloodDrip', end: 'thunk' },
+            );
             closeRoom(el, onDone, CARD_SHOW_MS);
           },
         ),

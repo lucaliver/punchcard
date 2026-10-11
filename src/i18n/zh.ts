@@ -494,7 +494,7 @@ const zh: Record<EnKey, string> = {
   'vending.desc': '只收零钱。\n也收血。',
   'vending.rare': '零食',
   'vending.epic': '套餐',
-  'vending.rareDesc': '一张随机的稀有卡牌。失去 {n} 点生命',
+  'vending.rareDesc': '{c} {c|张|张}随机的稀有卡牌。失去 {n} 点生命',
   'vending.epicDesc': '一张随机的史诗卡牌。失去 {n} 点生命',
   'vending.weak': '生命不足',
   'vending.dropped': '已出货！',

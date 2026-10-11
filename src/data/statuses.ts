@@ -597,7 +597,7 @@ const defs: StatusDef[] = [
     },
   },
   // Work-to-Rule: for a while the belt runs at half speed and the hero's attacks deal `v` more.
-  { id: 'workToRule', tone: 'amber', kind: 'timed', good: true, icon: 'gauge', strength: true, beltMul: 0.5 },
+  { id: 'workToRule', tone: 'amber', kind: 'timed', good: true, icon: 'gaugeSlow', strength: true, beltMul: 0.5 },
   // Demo Day: for a while every card costs 0; then the demo crashes and the belt stops.
   {
     id: 'demoDay',

@@ -299,7 +299,7 @@ const it: Record<EnKey, string> = {
   'journey.info.copy': "Distruggi per sempre una carta del mazzo, o fotocopiane una al costo di un po' di HP.",
   'journey.info.tailor': 'Pantaloni cargo per un altro posto nella manica, o la divisa allargata per più HP massimi.',
   'journey.info.lostFound': 'Una scatola di cose che nessuno è tornato a prendere: prendi un pezzo di cancelleria.',
-  'journey.info.vending': 'Un distributore che accetta sangue: paga HP per una carta rara o epica a caso.',
+  'journey.info.vending': 'Un distributore che accetta sangue: paga HP per carte rare o epiche a caso.',
   'journey.info.crossTraining': "Un seminario tenuto dagli altri reparti: scegli una carta di un'altra classe.",
   'journey.info.restructuring':
     "L'azienda ti riposiziona: carte del mazzo diventano altre carte della stessa rarità, a caso o, pagando HP, a tua scelta.",
@@ -500,7 +500,7 @@ const it: Record<EnKey, string> = {
   'vending.desc': 'Solo monete e contati.\nSi blocca sempre.',
   'vending.rare': 'Merendina',
   'vending.epic': 'Gran tramezzino',
-  'vending.rareDesc': 'Una carta rara a caso. Perdi {n} HP',
+  'vending.rareDesc': '{c} {c|carta rara|carte rare} a caso. Perdi {n} HP',
   'vending.epicDesc': 'Una carta epica a caso. Perdi {n} HP',
   'vending.weak': 'HP insufficienti',
   'vending.dropped': 'Erogato!',

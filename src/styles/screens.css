@@ -200,14 +200,18 @@
   -webkit-line-clamp: 5;
   overflow: hidden;
 }
-/* Cross-Training: the four cards of the other classes, two by two; they shrink with the screen's height */
+/* Cross-Training: the cards of the other classes, two by two; they shrink with the screen's height and scroll when there are more rows than fit */
 .cross-area {
   flex: 1;
-  display: grid;
-  place-items: center;
+  display: flex;
   min-height: 0;
+  overflow-y: auto;
+  overscroll-behavior: contain;
 }
 .cross-offer {
+  /* auto margins centre it while it fits and let it scroll from the top when it doesn't */
+  margin: auto;
+  padding: 10px 6px;
   --cross-cw: clamp(92px, calc((100svh - 340px) / 2.9), 150px);
   display: grid;
   grid-template-columns: repeat(2, var(--cross-cw));
@@ -375,6 +379,8 @@
   line-height: 1;
   animation: slip-line 0.1s steps(1) var(--coll-wait) both;
 }
+.collect.still { width: 100%; margin: 0 0 12px; animation: none; }
+.collect.still .coll-fill { animation: none; }
 .coll-row {
   display: grid;
   grid-template-columns: subgrid;
@@ -517,6 +523,9 @@
 .reward .card-show { animation-delay: calc(1.5s + var(--dur-show-extra)); }
 .show-stage { position: relative; width: min(46vw, 190px); aspect-ratio: 1 / 1.4; }
 .show-stage .card { --cw: min(46vw, 190px); position: absolute; inset: 0; }
+/* several cards side by side */
+.show-stage.row { display: flex; gap: 10px; width: auto; aspect-ratio: auto; }
+.show-stage.row .card { --cw: min(40vw, 160px); position: relative; inset: auto; }
 .show-stamp {
   font-family: var(--font-display);
   font-size: 28px;

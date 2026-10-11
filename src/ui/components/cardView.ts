@@ -131,7 +131,7 @@ export const GLYPHS: Record<string, { icon: string; unit?: string; sign?: string
   /** A card that costs at least this much (Skim Off the Top). */
   pricey: { icon: 'priceTag', unit: '+' },
   /** The belt runs slower for a while. */
-  slow: { icon: 'gauge', unit: 's', tone: 'amber' },
+  slow: { icon: 'gaugeSlow', unit: 's', tone: 'amber' },
 };
 
 /** Long names get a smaller font (and two lines) so they fit the title band instead of being cut. */

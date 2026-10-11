@@ -1248,6 +1248,11 @@ export const ICONS: Record<string, { el: Element; svg: string; wide?: boolean }>
     el: 'steel',
     svg: `<path d="M4 46a28 28 0 0 1 56 0z"/><path d="M32 46l16-20" stroke="#16121f" stroke-width="5"/><circle cx="32" cy="46" r="5" fill="#16121f"/><rect x="4" y="48" width="56" height="7"/>`,
   },
+  // The gauge with its needle low on the left: the belt runs slow
+  gaugeSlow: {
+    el: 'steel',
+    svg: `<path d="M4 46a28 28 0 0 1 56 0z"/><path d="M32 46L12 38" stroke="#16121f" stroke-width="5"/><circle cx="32" cy="46" r="5" fill="#16121f"/><rect x="4" y="48" width="56" height="7"/>`,
+  },
   // A card tipping over the end of the belt and falling
   exitSlot: {
     el: 'shadow',

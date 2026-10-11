@@ -283,7 +283,8 @@
   inset: 0;
   z-index: var(--z-overlay);
   overflow: hidden;
-  pointer-events: none;
+  /* the fight behind it is not touchable while it plays */
+  pointer-events: auto;
   animation: bi-life var(--dur-boss-intro) steps(1) forwards;
 }
 @keyframes bi-life {
@@ -340,7 +341,7 @@
   inset: 0;
   z-index: var(--z-door);
   overflow: hidden;
-  pointer-events: none;
+  pointer-events: auto;
   /* the corridor wall */
   background-color: var(--bg2);
   background-image: radial-gradient(circle, var(--bg-dot) 30%, transparent 34%);

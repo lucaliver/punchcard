@@ -2,11 +2,12 @@ import { type TKey, t } from '../../core/i18n';
 import { BEG_FLAG } from '../../data/config';
 import { sfx } from '../../audio/sfx';
 import type { HeroId } from '../../game/types';
-import { type CollectionKind, collection, type RunRecord } from '../../game/meta';
+import { collection, type RunRecord } from '../../game/meta';
 import { ACTS, currentNode, type RunEnd, type RunState } from '../../game/run';
 import type { Screen } from '../app';
 import type { Section } from './compendium';
-import { cssMs, h } from '../dom';
+import { collectionBars } from '../components/collectionBars';
+import { h } from '../dom';
 import { creature } from '../art/creatures';
 import { icon } from '../art/icons';
 import { groupCopies, sortCards } from '../components/modals';
@@ -23,16 +24,6 @@ const ROW_RECORD: Partial<Record<TKey, RunRecord>> = {
   'end.slip.gross': 'bestPay',
 };
 
-/** The handbook's pages that fill up, in the order the bars print: their icon and word (the same as the handbook's tabs). */
-const COLLECTION_PAGES: [CollectionKind, string, TKey, Section][] = [
-  ['cards', 'cards', 'compendium.cards', 'cards'],
-  ['foes', 'clipboard', 'compendium.enemies', 'enemies'],
-  ['relics', 'stapler', 'compendium.relics', 'relics'],
-];
-
-/** The steps of a filling bar (the same as its CSS animation), each one a tick. */
-const COLL_STEPS = 12;
-
 /** The end of a run: the heroes it unlocked (shown as the next hire, so the end is a step forward), the payslip with the records it beat, and a shareable copy. */
 export function endScreen(
   run: RunState,
@@ -46,7 +37,7 @@ export function endScreen(
   const title = won ? t('end.victory') : t('end.defeat');
   let confetti = 0;
   /** The ticks of the bars filling and the stamps landing. */
-  let ticks: number[] = [];
+  const ticks: number[] = [];
   const rows = slipRows(
     {
       floor: node.floor,
@@ -137,47 +128,7 @@ export function endScreen(
         staggered(h('div', { class: 'slip-stamp' }, slip.stamp)),
       ),
       // What the run added to the handbook: each bar climbs from where it stood when the run started.
-      h(
-        'div',
-        { class: 'collect', style: { '--rows': String(line) } },
-        ...COLLECTION_PAGES.map(([kind, ico, label, section], i) => {
-          const { from, n, total } = filled[kind];
-          return h(
-            'button',
-            {
-              class: `coll-row coll-${kind}`,
-              style: { '--i': String(i), '--to': String(n / total) },
-              onclick: () => {
-                sfx('button');
-                haptic('tap');
-                onHandbook(section);
-              },
-            },
-            h(
-              'span',
-              { class: 'coll-label' },
-              h('i', { html: icon(ico) }),
-              t(label),
-              n > from ? h('i', { class: 'slip-record coll-gain' }, `+${n - from}`) : null,
-            ),
-            h(
-              'div',
-              { class: 'coll-track' },
-              h('i', {
-                class: 'coll-fill',
-                // Once its delay is over the bar fills: one tick per step, and the stamp lands as it ends.
-                onanimationstart: () => {
-                  if (!n) return;
-                  const dur = cssMs('--dur-coll-fill');
-                  for (let s = 1; s <= COLL_STEPS; s++) ticks.push(window.setTimeout(() => sfx('tally'), (dur * s) / COLL_STEPS));
-                  if (n > from) ticks.push(window.setTimeout(() => sfx('stamp'), dur));
-                },
-              }),
-            ),
-            h('b', null, `${n}/${total}`),
-          );
-        }),
-      ),
+      collectionBars(filled, onHandbook, { rows: line, ticks }),
     ),
     h(
       'div',
@@ -220,7 +171,7 @@ export function endScreen(
     leave() {
       clearTimeout(confetti);
       for (const id of ticks) clearTimeout(id);
-      ticks = [];
+      ticks.length = 0;
     },
   };
 }

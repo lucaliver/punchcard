@@ -14,6 +14,7 @@ import { creature } from '../art/creatures';
 import { icon } from '../art/icons';
 import { relicArt } from '../art/relics';
 import { cardView, KEYWORD_LIST, keywordHtml, keywordIconHtml, UNKNOWN } from '../components/cardView';
+import { collectionBars } from '../components/collectionBars';
 import { foeView } from '../components/moveText';
 import { openCardAnatomy, openCardDetail, sortCards, sortControl } from '../components/modals';
 import { openRunDetail } from '../components/runDetail';
@@ -184,7 +185,16 @@ export function compendiumScreen(onBack: () => void, open: Section = 'cards'): S
   );
   const cardsWrap = h('div', null);
   const sub = h('p', { class: 'sub' });
-  const slip = recordSlip();
+  const slip = h(
+    'div',
+    null,
+    collectionBars(filled, (sct) => {
+      section = sct;
+      render();
+      scroller.scrollTop = 0;
+    }),
+    recordSlip(),
+  );
   const history = h('div', null);
 
   const render = (): void => {

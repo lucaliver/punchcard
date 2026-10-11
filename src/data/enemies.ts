@@ -1,6 +1,15 @@
 import type { EnemyDef, MoveDef } from '../game/types';
 
-const atk = (id: string, dmg: number, windup: number, extra: Partial<MoveDef> = {}): MoveDef => ({ id, intent: 'attack', dmg, windup, ...extra });
+/** What every attack gets on top of the numbers written in its record (the first fight's attack is spelled out and skips it). */
+const ATTACK_DMG = 5;
+const ATTACK_WINDUP = 5;
+const atk = (id: string, dmg: number, windup: number, extra: Partial<MoveDef> = {}): MoveDef => ({
+  id,
+  intent: 'attack',
+  dmg: dmg + ATTACK_DMG,
+  windup: windup + ATTACK_WINDUP,
+  ...extra,
+});
 /** +1 Strength for the enemy: elites and some bosses get it with every attack (`ramp`), so a long fight costs more. */
 const gainStrength = { id: 'strength', v: 1, target: 'enemy' } as const;
 const ramp: Partial<MoveDef> = { status: [gainStrength] };
@@ -40,7 +49,7 @@ const defs: EnemyDef[] = [
     tier: 'normal',
     hp: 50,
     art: 'hrOrientationVideo',
-    main: atk('safetyThird', 6, 6),
+    main: { id: 'safetyThird', intent: 'attack', dmg: 6, windup: 6 },
     every: 2,
     specials: [{ id: 'coreValues', intent: 'defend', windup: 5, block: 3 }],
     startRows: 1,

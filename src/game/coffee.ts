@@ -1,5 +1,5 @@
 import type { Rng } from '../core/rng';
-import { COFFEE_COINS, COFFEE_DRINKS, COFFEE_SERVICE, type CoffeeDrink, type CoffeeItem } from '../data/coffee';
+import { COFFEE_COINS, COFFEE_DRINKS, COFFEE_ITEMS, COFFEE_SERVICE, type CoffeeDrink, type CoffeeItem } from '../data/coffee';
 import { CONFIG } from '../data/config';
 
 /** The four steps (pay, key in the code, put the cup and the spoon under the spout, dial the sugar and start), then the machine pours (`brew`) and the cup is served (`done`). */
@@ -45,6 +45,8 @@ export class CoffeeTask {
   readonly price: number;
   readonly code: number[];
   readonly coins: CoffeeCoin[];
+  /** The order the cup, the spoon and the fork lie on the tray (shuffled, so the keys are never in the same place). */
+  readonly tray: CoffeeItem[];
   paid = 0;
   /** Keys of the code pressed right so far. */
   keysDone = 0;
@@ -77,6 +79,7 @@ export class CoffeeTask {
     this.drink = rng.pick(COFFEE_DRINKS);
     this.sugar = rng.int(c.sugar[0], c.sugar[1]);
     this.code = Array.from({ length: c.codeLength }, () => rng.int(1, c.keys));
+    this.tray = rng.shuffle([...COFFEE_ITEMS]);
   }
 
   act(a: CoffeeAction): CoffeeResult {
