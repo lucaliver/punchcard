@@ -31,7 +31,7 @@ export const GLYPHS: Record<string, { icon: string; unit?: string; sign?: string
   breakBlock: { icon: 'shield', sign: '-', tone: 'teal' },
   heal: { icon: 'heart', sign: '+', tone: 'green' },
   mana: { icon: 'crystal', sign: '+', tone: 'blue' },
-  stun: { icon: 'stars', unit: 's', tone: 'purple' },
+  stun: { icon: 'stars', unit: 's', tone: 'magenta' },
   /** You are stunned (not the enemy). */
   selfStun: { icon: 'asleep', unit: 's', tone: 'purple' },
   chill: { icon: 'snow', unit: 's', tone: 'blue' },
@@ -55,7 +55,7 @@ export const GLYPHS: Record<string, { icon: string; unit?: string; sign?: string
   thorns: { icon: 'thorns', sign: '+', tone: 'red' },
   regen: { icon: 'redCross', sign: '+', tone: 'green' },
   vuln: { icon: 'crack', unit: 's', tone: 'red' },
-  weak: { icon: 'broken', unit: 's', tone: 'purple' },
+  weak: { icon: 'broken', unit: 's', tone: 'magenta' },
   fort: { icon: 'fortress', unit: 's', tone: 'teal' },
   cards: { icon: 'cards' },
   timer: { icon: 'timer', unit: 's' },

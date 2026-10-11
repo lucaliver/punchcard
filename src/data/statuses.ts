@@ -684,7 +684,7 @@ const defs: StatusDef[] = [
     onAttack: (c, side, s) => void c.damage(side === 'enemy' ? 'hero' : 'enemy', side, s.v, { raw: true, ignoreBlock: true, kind: 'burn' }, 'dot'),
   },
   { id: 'poison', tone: 'toxic', kind: 'dot', good: false, passable: true, halves: true, icon: 'poisonBottle', look: 'poisoned' },
-  { id: 'weak', tone: 'purple', kind: 'timed', good: false, passable: true, icon: 'broken', dealtMul: 0.75, look: 'weakened' },
+  { id: 'weak', tone: 'magenta', kind: 'timed', good: false, passable: true, icon: 'broken', dealtMul: 0.75, look: 'weakened' },
   { id: 'vulnerable', tone: 'red', kind: 'timed', good: false, passable: true, icon: 'crack', takenMul: 1.5, look: 'exposed' },
   {
     id: 'chill',
@@ -701,7 +701,7 @@ const defs: StatusDef[] = [
   // A stunned enemy's timer stops (see enemyTimeRate); a stunned hero can't play cards.
   {
     id: 'stun',
-    tone: 'purple',
+    tone: 'magenta',
     kind: 'timed',
     good: false,
     passable: true,

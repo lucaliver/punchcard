@@ -26,6 +26,7 @@
   --blood-hi: #ff7a7a;
   --green: #2a8a4a;
   --purple: #4a2aa0;
+  --magenta: #b8139b;
   /* Meanings: Block is teal, mana is bright blue, the scanner and the copy flash are mint, ice is pale blue */
   --shield: #17a398;
   --shield-hi: #8fe3d8;
@@ -59,6 +60,8 @@
   --tone-amber-hi: var(--y);
   --tone-mint: #1a9a80;
   --tone-mint-hi: #8ae8d0;
+  --tone-magenta: var(--magenta);
+  --tone-magenta-hi: #ff7be0;
   --tone-toxic: #7f9414;
   --tone-toxic-hi: #d6ec4c;
   /* What a bar or a chip shows when nothing is said (an idle move) */
@@ -185,6 +188,7 @@
 [data-tone='teal'] { --tone: var(--tone-teal); --tone-hi: var(--tone-teal-hi); }
 [data-tone='amber'] { --tone: var(--tone-amber); --tone-hi: var(--tone-amber-hi); }
 [data-tone='mint'] { --tone: var(--tone-mint); --tone-hi: var(--tone-mint-hi); }
+[data-tone='magenta'] { --tone: var(--tone-magenta); --tone-hi: var(--tone-magenta-hi); }
 [data-tone='toxic'] { --tone: var(--tone-toxic); --tone-hi: var(--tone-toxic-hi); }
 
 [hidden] {
