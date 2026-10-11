@@ -1324,7 +1324,7 @@ const it: Record<EnKey, string> = {
   'card.kamikaze.tip': 'Kamikaze! Se scivola giù dal nastro, esplode facendo {$kamikazeDamage} danni. Trascinala giù nella manica: lì è al sicuro.',
   'card.dunderMifflinBox.name': 'Dunder Mifflin box',
   'card.dunderMifflinBox.desc':
-    'Le sue cose, nella tua [sleeve]. [bulky]. Costa {0} di [mana] in meno ogni secondo. Quando la giochi, [rush] al tuo nastro per {1}s.',
+    'Le sue cose, nella tua [sleeve]. [bulky]. Costa {0} di [mana] in meno ogni secondo. Quando la giochi, sei [asleep] per {1}s.',
   'card.drama.name': 'Dramma',
   'card.drama.desc': 'Intasa il tuo nastro. Paga per toglierlo. Se lascia il nastro, un altro Dramma viene mescolato nel tuo mazzo.',
   'card.boilerplate.name': 'Clausole Standard',

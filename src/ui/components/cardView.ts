@@ -29,7 +29,7 @@ export const GLYPHS: Record<string, { icon: string; unit?: string; sign?: string
   dmg: { icon: 'sword' },
   block: { icon: 'shield', tone: 'teal' },
   /** Strips the enemy's Block. */
-  breakBlock: { icon: 'shield', sign: '-', tone: 'teal' },
+  breakBlock: { icon: 'shieldOff', tone: 'teal' },
   heal: { icon: 'heart', sign: '+', tone: 'green' },
   mana: { icon: 'crystal', sign: '+', tone: 'blue' },
   stun: { icon: 'stars', unit: 's', tone: 'magenta' },

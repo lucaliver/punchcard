@@ -1306,7 +1306,7 @@ const zh: Record<EnKey, string> = {
   'card.kamikaze.desc': '造成 {0} 点[damage]，前提是你付得起。如果它离开传送带，会爆炸：你受到 {1} 点[damage]。',
   'card.kamikaze.tip': '神风！如果它从传送带滑落，会爆炸并造成 {$kamikazeDamage} 点伤害。把它向下拖进你的袖口：那里是安全的。',
   'card.dunderMifflinBox.name': '邓德·米夫林纸箱',
-  'card.dunderMifflinBox.desc': '她的东西，在你的[sleeve]里。[bulky]。每秒费用减少 {0} 点[mana]。打出时，让你的传送带[rush] {1} 秒。',
+  'card.dunderMifflinBox.desc': '她的东西，在你的[sleeve]里。[bulky]。每秒费用减少 {0} 点[mana]。打出时，你会[asleep] {1} 秒。',
   'card.drama.name': '职场八卦剧',
   'card.drama.desc': '堵塞你的传送带。付费清除。如果它离开传送带，另一张职场八卦剧会被洗入你的牌组。',
   'card.boilerplate.name': '格式条款',

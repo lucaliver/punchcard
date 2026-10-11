@@ -1317,7 +1317,7 @@ const en = {
   'card.kamikaze.tip':
     'Kamikaze! If it slips off the belt, it blows up for {$kamikazeDamage} damage. Drag it down into your sleeve: it is safe there.',
   'card.dunderMifflinBox.name': 'Dunder Mifflin Box',
-  'card.dunderMifflinBox.desc': 'Her stuff, in your [sleeve]. [bulky]. Costs {0} less [mana] every second. When played, [rush] your belt for {1}s.',
+  'card.dunderMifflinBox.desc': 'Her stuff, in your [sleeve]. [bulky]. Costs {0} less [mana] every second. When played, you fall [asleep] for {1}s.',
   'card.drama.name': 'Drama',
   'card.drama.desc': 'Clogs your belt. Pay to clear it. If it leaves the belt, another Drama is shuffled into your deck.',
   'card.boilerplate.name': 'Boilerplate',

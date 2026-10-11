@@ -1504,16 +1504,16 @@ export const curseCards: CardDef[] = [
   {
     // The Work Wife's: fills the sleeve at the start of the fight and gets cheaper every second.
     id: 'dunderMifflinBox',
-    face: '{cheaper:0}/s|{rush:1}',
+    face: '{cheaper:0}/s|{selfStun:1}',
     cls: 'curse',
     type: 'curse',
     rarity: 'rare',
     cost: 20,
-    vals: [1, 5],
+    vals: [1, 3],
     keywords: ['exhaust', 'bulky'],
     costDrop: 0,
     art: 'dunderMifflinBox',
-    play: (c, v) => c.rushBelt(v[1]),
+    play: (c, v) => c.applyStatus('hero', 'stun', 1, v[1]),
   },
   {
     // The Leaver's: nobody can pay for it, and it blows up if it slips off the belt. The sleeve keeps it safe.

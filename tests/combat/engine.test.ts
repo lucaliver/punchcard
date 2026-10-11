@@ -207,9 +207,9 @@ describe('combat engine', () => {
     expect(c.cardCost(box)).toBe(0);
     expect(c.playCard(box.uid)).toBe(true);
     expect(c.sleeve[0]).toBe(null);
-    // Unpacking it speeds the belt up.
-    expect(c.has('hero', 'rush')).toBe(true);
-    expect(c.hero.statuses.rush.t).toBeCloseTo(CARDS.dunderMifflinBox.vals[1], 1);
+    // Unpacking it puts you to sleep.
+    expect(c.has('hero', 'stun')).toBe(true);
+    expect(c.hero.statuses.stun.t).toBeCloseTo(CARDS.dunderMifflinBox.vals[1], 1);
   });
 
   it('Kamikaze blows up in your face if it slips off the belt, but is safe in the sleeve', () => {
