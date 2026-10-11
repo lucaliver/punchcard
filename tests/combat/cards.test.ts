@@ -474,11 +474,15 @@ describe('cards that fill the classes out', () => {
     expect(c.hero.block).toBe(100 + cap);
   });
 
-  it('Good Vibes Only gives Thorns every time the hero loses HP', () => {
+  it('Good Vibes Only gives Thorns every time the hero is hit, even when Block takes it all, but not for poison', () => {
     const c = quiet();
     cast(c, 'goodVibesOnly');
     c.damage('enemy', 'hero', 5, { raw: true }, 'enemy');
+    c.hero.block = 50;
     c.damage('enemy', 'hero', 5, { raw: true }, 'enemy');
+    expect(c.hero.hp).toBe(c.hero.maxHp - 5);
+    expect(c.stacks('hero', 'thorns')).toBe(2 * CARDS.goodVibesOnly.vals[0]);
+    c.damage('enemy', 'hero', 5, { raw: true }, 'dot');
     expect(c.stacks('hero', 'thorns')).toBe(2 * CARDS.goodVibesOnly.vals[0]);
   });
 
@@ -587,7 +591,7 @@ describe('cards that fill the classes out', () => {
     expect(c.hero.mana).toBeLessThan(5);
   });
 
-  it('Dress Code shrinks with the belt, Skill Issue makes the enemy Vulnerable, Grudge Ledger chills when the hero is hurt', () => {
+  it('Dress Code shrinks with the belt, Skill Issue makes the enemy Vulnerable, Grudge Ledger chills when the hero is hit', () => {
     const c = quiet();
     c.belt.length = 0;
     const [base, per] = CARDS.dressCode.vals;
@@ -606,6 +610,11 @@ describe('cards that fill the classes out', () => {
     cast(c, 'grudgeLedger');
     expect(c.has('enemy', 'chill')).toBe(false);
     c.hero.block = 0;
+    c.damage('enemy', 'hero', 5, { raw: true }, 'enemy');
+    expect(c.has('enemy', 'chill')).toBe(true);
+    // A hit that Block takes in full chills too.
+    c.enemy.statuses = {};
+    c.hero.block = 50;
     c.damage('enemy', 'hero', 5, { raw: true }, 'enemy');
     expect(c.has('enemy', 'chill')).toBe(true);
   });
@@ -1406,6 +1415,7 @@ describe('Fire Extinguisher and Hi-Vis Vest', () => {
     expect(c.playCard(onBelt(c, 'hiVisVest'))).toBe(true);
     expect(c.hero.block).toBe(CARDS.hiVisVest.vals[0]);
     const before = c.hero.block;
+    c.hero.mana = c.hero.maxMana;
     expect(c.playCard(onBelt(c, 'hiVisVest'))).toBe(true);
     expect(c.hero.block - before).toBe(CARDS.hiVisVest.vals[1]);
   });

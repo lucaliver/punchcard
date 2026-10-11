@@ -566,7 +566,7 @@ export const necromancerCards: CardDef[] = [
   },
   {
     id: 'grudgeLedger',
-    face: '{*hp}|{chill:0}',
+    face: '{*parry}|{chill:0}',
     cls: 'necromancer',
     type: 'power',
     rarity: 'epic',

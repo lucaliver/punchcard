@@ -1558,6 +1558,8 @@ export class Combat {
       this.stats.enemyBlocked += blocked;
     } else this.stats.heroBlocked += blocked;
     this.events.emit({ type: 'damage', target: to, amount: dmg - blocked, blocked, source, hitIndex, kind: opts.kind ?? 'hit' });
+    if (dmg > 0 && source !== 'dot')
+      for (const [id, s] of Object.entries(target.statuses)) if (this.has(to, id)) STATUSES[id].onStruck?.(this, to, s);
     if (lost > 0) for (const [id, s] of Object.entries(target.statuses)) if (this.has(to, id)) STATUSES[id].onHurt?.(this, to, s, lost);
     if (lost > 0 && to === 'hero') {
       this.stats.damageTaken += lost;

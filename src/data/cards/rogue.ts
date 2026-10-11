@@ -271,6 +271,18 @@ export const rogueCards: CardDef[] = [
     },
   },
   {
+    id: 'shredder',
+    face: '{*exhaust}{block:0}',
+    cls: 'rogue',
+    type: 'power',
+    rarity: 'rare',
+    cost: 1,
+    vals: [4],
+    upVals: [8],
+    art: 'officeShredder',
+    play: (c, v) => c.applyStatus('hero', 'shredder', v[0]),
+  },
+  {
     id: 'loophole',
     face: '{sleeve}{drain}',
     cls: 'rogue',

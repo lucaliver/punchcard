@@ -260,6 +260,8 @@ export interface StatusDef {
   multiCap?: true;
   /** Reacts to every card the hero plays after the status was applied (`card` = the copy that was played). */
   onCardPlayed?: (c: Combat, side: Side, def: CardDef, card: CombatCard) => void;
+  /** The side carrying it was just hit, even if its Block took all of it (a hit, not damage over time). */
+  onStruck?: (c: Combat, side: Side, s: StatusVal) => void;
   /** The side carrying it just lost HP to a hit (`lost` > 0). */
   onHurt?: (c: Combat, side: Side, s: StatusVal, lost: number) => void;
   /** The side carrying it just attacked: one of its moves dealt damage (Burn). */

@@ -282,10 +282,10 @@ const defs: StatusDef[] = [
     icon: 'redCross',
     onHurt: (c, side, s) => c.gainBlock(side, s.v),
   },
-  // Good Vibes Only (a power): every time the hero loses HP it gains `v` Thorns.
-  { id: 'goodVibesOnly', tone: 'red', kind: 'stacks', good: true, icon: 'thorns', onHurt: (c, side, s) => c.applyStatus(side, 'thorns', s.v) },
-  // Grudge Ledger (a power): every time the hero loses HP the enemy is chilled for `v` seconds.
-  { id: 'grudgeLedger', tone: 'blue', kind: 'stacks', good: true, icon: 'snow', onHurt: (c, _side, s) => c.applyStatus('enemy', 'chill', 1, s.v) },
+  // Good Vibes Only (a power): every time the hero is hit it gains `v` Thorns.
+  { id: 'goodVibesOnly', tone: 'red', kind: 'stacks', good: true, icon: 'thorns', onStruck: (c, side, s) => c.applyStatus(side, 'thorns', s.v) },
+  // Grudge Ledger (a power): every time the hero is hit the enemy is chilled for `v` seconds.
+  { id: 'grudgeLedger', tone: 'blue', kind: 'stacks', good: true, icon: 'snow', onStruck: (c, _side, s) => c.applyStatus('enemy', 'chill', 1, s.v) },
   // Forklift Certified (a power, one use): the first time the hero's HP falls below half it gains Block, `v` Strength and all its mana.
   {
     id: 'forkliftCertified',

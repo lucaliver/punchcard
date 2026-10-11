@@ -671,18 +671,6 @@ export const neutralCards: CardDef[] = [
     play: (c, v) => c.applyStatus('hero', 'sparkJoy', v[1], v[0]),
   },
   {
-    id: 'shredder',
-    face: '{*exhaust}{block:0}',
-    cls: 'neutral',
-    type: 'power',
-    rarity: 'rare',
-    cost: 1,
-    vals: [4],
-    upVals: [8],
-    art: 'officeShredder',
-    play: (c, v) => c.applyStatus('hero', 'shredder', v[0]),
-  },
-  {
     id: 'recyclingDay',
     face: '{pile:0}',
     cls: 'neutral',
