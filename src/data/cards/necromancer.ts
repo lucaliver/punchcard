@@ -405,28 +405,6 @@ export const necromancerCards: CardDef[] = [
     art: 'gasMask',
     play: (c) => c.gainBlock('hero', c.stacks('enemy', 'poison')),
   },
-  // Sleeve card: while it waits there, every attack you play goes in the dish (more Poison on the card)
-  {
-    id: 'petriDish',
-    face: '{poison:0}|{?sleeve}{grow:1}',
-    cls: 'necromancer',
-    type: 'attack',
-    rarity: 'legendary',
-    cost: 5,
-    vals: [2, 1],
-    upVals: [4, 1],
-    art: 'petriDish',
-    bonusIdx: 0,
-    inSleeve: {
-      onCardPlayed: (_c, v, card, played) => {
-        if (played.type === 'attack') card.bonus += v[1];
-      },
-    },
-    play: (c, v, card) => {
-      c.applyStatus('enemy', 'poison', v[0]);
-      card.bonus = 0;
-    },
-  },
   {
     id: 'sisyphus',
     face: '{cards:0}',

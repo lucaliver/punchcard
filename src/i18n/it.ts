@@ -1431,9 +1431,6 @@ const it: Record<EnKey, string> = {
   'card.healthcarePlan.desc': 'Ottieni {0} di [regen].',
   'card.hazmatSuit.name': 'Antiradiazioni',
   'card.hazmatSuit.desc': 'Ottieni [block] pari al [poison] del nemico.',
-  'card.petriDish.name': 'Piastra di Petri',
-  'card.petriDish.desc':
-    'Applica {0} di [poison]. Mentre aspetta nella manica, questa carta ottiene +{1} di [poison] per ogni attacco che giochi (si azzera quando la giochi).',
   'card.sisyphus.name': 'Sisifo',
   'card.sisyphus.desc': 'Rimescola {0} carte esaurite a caso nel tuo mazzo.',
   'card.eightHours.name': 'Otto Ore',

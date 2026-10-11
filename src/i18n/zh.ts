@@ -1411,8 +1411,6 @@ const zh: Record<EnKey, string> = {
   'card.healthcarePlan.desc': '获得 {0} 点[regen]。',
   'card.hazmatSuit.name': '防化服',
   'card.hazmatSuit.desc': '获得等同于敌人[poison]层数的[block]。',
-  'card.petriDish.name': '培养皿',
-  'card.petriDish.desc': '施加 {0} 层[poison]。它在你袖口里等待时，你每打出一次攻击，这张卡牌的[poison] +{1}。',
   'card.sisyphus.name': '西西弗斯',
   'card.sisyphus.desc': '把 {0} 张随机的已耗尽卡牌洗回你的抽牌堆。',
   'card.eightHours.name': '八小时',

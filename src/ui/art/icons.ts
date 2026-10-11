@@ -1438,10 +1438,6 @@ export const ICONS: Record<string, { el: Element; svg: string; wide?: boolean }>
     el: 'blood',
     svg: `<circle cx="36" cy="8" r="7"/><path d="M34 17l-5 14" stroke="currentColor" stroke-width="9" stroke-linecap="round"/><path d="M29 32l20-9M31 34l22 7M33 21L16 20" stroke="currentColor" stroke-width="5" stroke-linecap="round"/><path d="M16 46h44l4 14H20z"/><path d="M32 46l-4 14M46 46l-4 14" stroke="#16121f" stroke-width="3.5"/><circle cx="9" cy="53" r="7"/><circle cx="9" cy="53" r="2.5" fill="#16121f"/>`,
   },
-  petriDish: {
-    el: 'necro',
-    svg: `<ellipse cx="32" cy="36" rx="29" ry="23"/><ellipse cx="32" cy="36" rx="22" ry="16" fill="#16121f"/><circle cx="24" cy="32" r="4"/><circle cx="39" cy="29" r="3"/><circle cx="35" cy="42" r="5"/><circle cx="22" cy="44" r="2.5"/>`,
-  },
   gasMask: {
     el: 'necro',
     svg: `<path d="M12 8h40v22c0 14-8 24-20 24S12 44 12 30z"/><circle cx="22" cy="26" r="8" fill="#16121f"/><circle cx="42" cy="26" r="8" fill="#16121f"/><circle cx="20" cy="23" r="2.5"/><circle cx="40" cy="23" r="2.5"/><rect x="25" y="44" width="14" height="16" rx="3"/><path d="M27 49h10M27 54h10" stroke="#16121f" stroke-width="2"/>`,

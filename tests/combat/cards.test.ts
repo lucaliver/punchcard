@@ -964,21 +964,6 @@ describe('cards that fill the classes out', () => {
     expect(c.draw.filter((x) => x.id === 'step2').some((x) => !x.up)).toBe(true);
   });
 
-  it('Petri Dish: every attack played while it waits in the sleeve grows its Poison, spent when played', () => {
-    const c = quiet({ hero: HEROES.necromancer });
-    delete c.enemy.statuses.poison;
-    c.addTempCard('petriDish', 'belt');
-    c.stash(c.belt[c.belt.length - 1].card.uid, 0);
-    const [base, grow] = CARDS.petriDish.vals;
-    cast(c, 'skeletonCrew');
-    cast(c, 'skeletonCrew');
-    const dish = c.sleeve[0]!;
-    expect(c.cardVals(dish)[0]).toBe(base + 2 * grow);
-    c.playCard(dish.uid);
-    expect(c.stacks('enemy', 'poison')).toBe(base + 2 * grow);
-    expect(dish.bonus).toBe(0);
-  });
-
   it('Rehire: brings exhausted cards back to the draw pile, never consumed ones', () => {
     const c = quiet({ hero: HEROES.necromancer });
     const exhausted = (id: string, uid: number): void => void c.exhaust.push({ uid, id, up: false, bonus: 0, temp: false });

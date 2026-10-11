@@ -1421,8 +1421,6 @@ const en = {
   'card.healthcarePlan.desc': 'Gain {0} [regen].',
   'card.hazmatSuit.name': 'Hazmat Suit',
   'card.hazmatSuit.desc': "Gain [block] equal to the enemy's [poison].",
-  'card.petriDish.name': 'Petri Dish',
-  'card.petriDish.desc': 'Apply {0} [poison]. While it waits in your sleeve, this card gains +{1} [poison] for every attack you play.',
   'card.sisyphus.name': 'Sisyphus',
   'card.sisyphus.desc': 'Shuffle {0} random exhausted cards back into your draw pile.',
   'card.eightHours.name': 'Eight Hours',

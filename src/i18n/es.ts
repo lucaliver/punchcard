@@ -1428,8 +1428,6 @@ const es: Record<EnKey, string> = {
   'card.healthcarePlan.desc': 'Gana {0} de [regen].',
   'card.hazmatSuit.name': 'Traje de protección',
   'card.hazmatSuit.desc': 'Gana [block] igual al [poison] del enemigo.',
-  'card.petriDish.name': 'Placa de Petri',
-  'card.petriDish.desc': 'Aplica {0} de [poison]. Mientras espera en tu manga, esta carta gana +{1} de [poison] por cada ataque que juegues.',
   'card.sisyphus.name': 'Sísifo',
   'card.sisyphus.desc': 'Baraja {0} cartas agotadas al azar de vuelta en tu mazo de robo.',
   'card.eightHours.name': 'Ocho horas',
