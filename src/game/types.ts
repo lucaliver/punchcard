@@ -560,6 +560,8 @@ export interface RelicDef {
   pack?: string;
   /** The number its text shows (`{n}`). */
   n: number;
+  /** Card rewards (and the other card offers) draw from every class, each class and the neutral cards equally likely. */
+  openPool?: boolean;
   /** Static modifiers applied to combat setup. */
   mods?: Partial<{
     maxMana: number;

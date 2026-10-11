@@ -223,6 +223,17 @@ const outOfOffice = `
 <path d="M70 100h60M70 112h42" stroke="${INK}" stroke-width="5" stroke-linecap="round"/>
 ${face(100, 134, 18, 4.5)}`;
 
+const rolodex = `
+<path d="M24 150h152l8 30H16z" fill="#3a3450" ${OUT}/>
+<path d="M34 150c-4-52 24-96 66-96s70 44 66 96z" fill="#1c5fd0" ${OUT}/>
+<path d="M54 140c-2-34 14-60 46-60s48 26 46 60z" fill="#ffd900" ${OUT}/>
+<path d="M62 100l-4-12M80 88l-2-14M100 84V70M120 88l2-14M138 100l4-12" stroke="${INK}" stroke-width="5" stroke-linecap="round"/>
+<path d="M44 128c-2-24 4-40 14-52" stroke="#6a98ea" stroke-width="7" fill="none" stroke-linecap="round"/>
+<rect x="68" y="102" width="64" height="48" rx="5" fill="${PAPER}" ${OUT}/>
+<path d="M76 142h48" stroke="#ff3d9a" stroke-width="5" stroke-linecap="round"/>
+${face(100, 122, 14, 4.5)}
+<circle cx="100" cy="40" r="12" fill="#ff3d9a" ${OUT}/><path d="M96 36h8" stroke="#ffd0e6" stroke-width="4" stroke-linecap="round"/>`;
+
 const statuette = `
 <path d="M34 164h132l8 20H26z" fill="#6c6880" ${OUT}/>
 <path d="M44 140h112v26H44z" fill="#8a8798" ${OUT}/>
@@ -280,6 +291,7 @@ export const RELIC_SPRITES: Record<string, string> = Object.fromEntries(
     nameTag,
     fireDrillBell,
     outOfOffice,
+    rolodex,
   }).map(([id, svg]) => [`relic.${id}`, svg]),
 );
 

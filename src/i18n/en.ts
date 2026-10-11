@@ -583,6 +583,8 @@ const en = {
   'relic.fireDrillBell.d': 'Every time you lose {n} HP, the enemy is stunned for {$bellStun} seconds.',
   'relic.outOfOffice.name': 'Out-of-Office Sign',
   'relic.outOfOffice.d': 'The first hit of {n} damage or more in each fight never lands.',
+  'relic.rolodex.name': 'Rolodex',
+  'relic.rolodex.d': 'Card offers can come from every class, not only yours: each class and the neutral cards are equally likely.',
   'perk.fastTrack': 'Fast Track',
   'perk.fastTrack.d': 'Innate: always among the first cards on the belt.',
   'perk.budgetCut': 'Budget Cut',

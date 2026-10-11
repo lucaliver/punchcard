@@ -89,6 +89,17 @@ describe('run pay and rewards', () => {
     }
   });
 
+  it('the Rolodex opens every class to the offers, each class as likely as the neutral cards', () => {
+    const run = newRun('warrior', 7);
+    run.current = run.nodes.find((n) => n.act === 1)!.id;
+    const classes = (): Set<string> => new Set(Array.from({ length: 200 }, () => rollRewards(run, 'fight')).flatMap((o) => o.map((x) => x.def.cls)));
+    expect(classes().has('mage')).toBe(false);
+    run.relics.push('rolodex');
+    const seen = classes();
+    for (const cls of ['warrior', 'mage', 'necromancer', 'rogue', 'neutral']) expect(seen.has(cls), cls).toBe(true);
+    expect(seen.has('curse')).toBe(false);
+  });
+
   it('at most one offered card comes upgraded, and a swap keeps it so', () => {
     const run = newRun('warrior', 7);
     for (const act of [1, 3]) {

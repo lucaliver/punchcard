@@ -580,6 +580,8 @@ const zh: Record<EnKey, string> = {
   'relic.fireDrillBell.d': '每当你失去 {n} 点生命，敌人会被击晕 {$bellStun} 秒。',
   'relic.outOfOffice.name': '外出公告牌',
   'relic.outOfOffice.d': '每场战斗中第一次 {n} 点或以上的伤害不会命中你。',
+  'relic.rolodex.name': '名片转盘',
+  'relic.rolodex.d': '卡牌选项可以来自任何职业，而不只是你的职业：每个职业和中立卡牌的出现概率相同。',
   'perk.fastTrack': '快速通道',
   'perk.fastTrack.d': '固有：总是出现在传送带上最先的几张牌里。',
   'perk.budgetCut': '削减预算',

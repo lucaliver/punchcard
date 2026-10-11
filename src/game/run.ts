@@ -11,7 +11,7 @@ import { ENEMIES, enemiesFor } from '../data/enemies';
 import { HERO_LIST, HEROES, starterCards } from '../data/heroes';
 import type { Combat, CombatSetup } from './combat';
 import { discover, heroHidden, heroUnlocked, logRun, progress, type RunRecord, recordFight, recordRun, seeRelics, stampAct } from './meta';
-import type { CardDef, CardInst, EnemyDef, HeroId, RelicDef, RunLog } from './types';
+import type { CardDef, CardInst, EnemyDef, HeroId, Rarity, RelicDef, RunLog } from './types';
 
 export const NODE_TYPES = [
   'fight',
@@ -478,8 +478,22 @@ export interface RewardOffer {
   up: boolean;
 }
 
-/** One card of a reward pool: the hero's own class weighs `CONFIG.classCardWeight` against a neutral card. */
-const pickReward = (rng: Rng, hero: HeroId, pool: CardDef[]): CardDef => rng.weighted(pool, (c) => (c.cls === hero ? CONFIG.classCardWeight : 1));
+/** Whether a relic opens every class's cards to the card offers (the Rolodex). */
+const openPool = (run: RunState): boolean => run.relics.some((id) => RELICS[id]?.openPool);
+
+/** The cards a card offer of this rarity draws from. */
+const poolOf = (run: RunState, rarity: Rarity): CardDef[] => rewardPool(run.hero, rarity, openPool(run));
+
+/**
+ * One card of a reward pool: the hero's own class weighs `CONFIG.classCardWeight` against a neutral card. With the Rolodex every class
+ * (and the neutral cards) is as likely as any other, however many cards each has in the pool.
+ */
+const pickReward = (rng: Rng, run: RunState, pool: CardDef[]): CardDef => {
+  if (!openPool(run)) return rng.weighted(pool, (c) => (c.cls === run.hero ? CONFIG.classCardWeight : 1));
+  const perClass = new Map<string, number>();
+  for (const c of pool) perClass.set(c.cls, (perClass.get(c.cls) ?? 0) + 1);
+  return rng.weighted(pool, (c) => 1 / perClass.get(c.cls)!);
+};
 
 export function rollRewards(run: RunState, kind: RewardKind): RewardOffer[] {
   const rng = rngOf(run);
@@ -491,8 +505,8 @@ export function rollRewards(run: RunState, kind: RewardKind): RewardOffer[] {
   const atLeast = odds.filter(([r]) => RARITY_ORDER.indexOf(r) >= RARITY_ORDER.indexOf(floor));
   for (let tries = 0; picks.length < rewardChoices(run) && tries < 80; tries++) {
     const rarity = rng.weighted(picks.length < count ? atLeast : odds, ([, w]) => w)[0];
-    const pool = rewardPool(run.hero, rarity).filter((c) => !picks.includes(c));
-    if (pool.length) picks.push(pickReward(rng, run.hero, pool));
+    const pool = poolOf(run, rarity).filter((c) => !picks.includes(c));
+    if (pool.length) picks.push(pickReward(rng, run, pool));
   }
   const upgraded = picks.length && rng.next() < rewardUpgradeChance(currentNode(run).act) ? rng.int(0, picks.length - 1) : -1;
   run.rng = rng.state;
@@ -543,8 +557,8 @@ export function skipReward(run: RunState, shown: string[]): CardInst | null {
   let def: CardDef | null = null;
   // The rarest shown rarity, or the next one down when every card of it is on offer already.
   for (let i = top; !def && i >= 0; i--) {
-    const pool = rewardPool(run.hero, RARITY_ORDER[i]).filter((c) => !shown.includes(c.id));
-    if (pool.length) def = pickReward(rng, run.hero, pool);
+    const pool = poolOf(run, RARITY_ORDER[i]).filter((c) => !shown.includes(c.id));
+    if (pool.length) def = pickReward(rng, run, pool);
   }
   run.rng = rng.state;
   if (!def) return null;
@@ -640,7 +654,7 @@ export const canVend = (run: RunState, rarity: keyof typeof CONFIG.vendingHp): b
 /** A random card of this rarity drops into the deck, for HP. Returns it. */
 export function vend(run: RunState, rarity: keyof typeof CONFIG.vendingHp): CardInst {
   const rng = rngOf(run);
-  const def = pickReward(rng, run.hero, rewardPool(run.hero, rarity));
+  const def = pickReward(rng, run, poolOf(run, rarity));
   run.rng = rng.state;
   run.hp -= vendingCost(rarity);
   discover([def.id]);
@@ -705,7 +719,7 @@ export function photocopyCard(run: RunState, uid: number): void {
 }
 
 /** The cards a restructuring can turn a deck card into: the others of its rarity (as for a reward: no basic card, no pack). */
-const restructurePool = (run: RunState, card: CardInst): CardDef[] => rewardPool(run.hero, CARDS[card.id].rarity).filter((c) => c.id !== card.id);
+const restructurePool = (run: RunState, card: CardInst): CardDef[] => poolOf(run, CARDS[card.id].rarity).filter((c) => c.id !== card.id);
 
 /** Restructuring moves a deck card unless it is a curse or a card a fight deals, or nothing else has its rarity to turn it into. */
 export const canRestructure = (run: RunState, card: CardInst): boolean => !fixed(card) && restructurePool(run, card).length > 0;
@@ -719,7 +733,7 @@ export function rollRestructure(run: RunState, uid: number, n: number): CardDef[
   let left = restructurePool(run, card);
   const picks: CardDef[] = [];
   while (picks.length < n && left.length) {
-    const def = pickReward(rng, run.hero, left);
+    const def = pickReward(rng, run, left);
     picks.push(def);
     left = left.filter((c) => c !== def);
   }

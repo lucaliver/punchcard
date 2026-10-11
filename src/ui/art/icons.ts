@@ -1956,6 +1956,10 @@ export const ICONS: Record<string, { el: Element; svg: string; wide?: boolean }>
     el: 'steel',
     svg: `<path d="M12 2h40v60H12z"/><circle cx="32" cy="14" r="7" fill="#16121f"/><path fill="#16121f" d="M18 28h28v18H18zM22 52h20v4H22z"/>`,
   },
+  'relic.rolodex': {
+    el: 'steel',
+    svg: `<path d="M6 46h52l3 14H3z"/><path d="M12 46C10 24 20 8 32 8s22 16 20 38z"/><circle cx="32" cy="3" r="3"/><path fill="#16121f" d="M18 40c-1-12 4-20 14-20s15 8 14 20z"/><rect x="22" y="30" width="20" height="14" rx="2"/>`,
+  },
   'relic.companyCard': {
     el: 'steel',
     svg: `<rect x="4" y="12" width="56" height="40" rx="5"/><path fill="#16121f" d="M4 20h56v8H4z"/><rect x="10" y="36" width="14" height="10" rx="2" fill="#16121f"/><path fill="#16121f" d="M30 40h24v3H30z"/>`,

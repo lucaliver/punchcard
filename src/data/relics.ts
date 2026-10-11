@@ -307,6 +307,7 @@ const defs: RelicDef[] = [
       },
     },
   },
+  { id: 'rolodex', rarity: 'legendary', n: 0, openPool: true },
   // The Tailor's: not found in the Lost & Found.
   { id: 'cargoPants', rarity: 'special', n: 1, mods: { sleeve: 1 } },
 ];
