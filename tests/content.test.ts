@@ -58,6 +58,17 @@ describe('content integrity', () => {
     }
   });
 
+  it('every card text in every language is fully filled in by the card view: only {0}-style values and {$name}s, no plural forms', () => {
+    for (const [code, strings] of Object.entries({ en: enStrings, it: itStrings, es: esStrings, zh: zhStrings } as Record<
+      string,
+      Record<string, string>
+    >))
+      for (const c of CARD_LIST) {
+        const left = strings[`card.${c.id}.desc`].replace(/\{\d\}/g, '').replace(/\{\$\w+\}/g, '');
+        expect(left, `${code} ${c.id}: a placeholder the card view does not fill in`).not.toMatch(/[{}]/);
+      }
+  });
+
   it('every enemy and move has a name, every hero deck exists', () => {
     for (const e of ENEMY_LIST) {
       expect(en[`enemy.${e.id}.name`], e.id).toBeTruthy();

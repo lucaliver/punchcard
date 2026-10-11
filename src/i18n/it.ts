@@ -1881,21 +1881,20 @@ const it: Record<EnKey, string> = {
   'status.moveFastAndBreakThings.d': 'Ogni carta che cade dal tuo nastro fa {v} danni.',
   'card.scopeCreep.name': 'Scope Creep',
   'card.scopeCreep.desc':
-    'Ogni {$scopeEvery}s, potenzia {0} {0|carta|carte} a caso nel tuo mazzo per questo scontro. Costano {1} di [mana] in più finché non vengono giocate.',
+    'Ogni {$scopeEvery}s, potenzia una carta a caso nel tuo mazzo per questo scontro. Costa {1} di [mana] in più finché non viene giocata.',
   'status.scopeCreep': 'Scope Creep',
   'status.scopeCreep.d':
     'Ogni {$scopeEvery}s, potenzia {v} {v|carta|carte} a caso nel tuo mazzo per questo scontro. Costano {$scopeTax} di [mana] in più finché non vengono giocate.',
   'card.fridayDeploy.name': 'Rilascio di Venerdì',
   'card.fridayDeploy.desc': 'Fai {0} danni. Mescola {1} [@deadline] nel tuo mazzo di pesca.',
   'card.vibeCoding.name': 'Vibe Coding',
-  'card.vibeCoding.desc':
-    'Gioca gratis {0} {0|carta|carte} a caso dal tuo mazzo di pesca. Rimescola una maledizione comune a caso per ogni carta giocata.',
+  'card.vibeCoding.desc': 'Gioca gratis {0} carte a caso dal tuo mazzo di pesca. Rimescola una maledizione comune a caso per ogni carta giocata.',
   'card.forkBomb.name': 'Fork Bomb',
   'card.forkBomb.desc': 'Fai {0} danni. Aggiungi {1} copie [fleeting] di questa carta al nastro.',
   'card.icebreaker.name': 'Rompighiaccio',
   'card.icebreaker.desc': 'Rimuovi il [chill] dal nemico. Fai {0} danni per ogni secondo rimosso.',
   'card.cronJob.name': 'Cron Job',
-  'card.cronJob.desc': 'Ogni {$cronEvery}s, gioca gratis {0} {0|carta|carte} a caso dal tuo scarto.',
+  'card.cronJob.desc': 'Ogni {$cronEvery}s, gioca gratis una carta a caso dal tuo scarto.',
   'status.cronJob': 'Cron Job',
   'status.cronJob.d': 'Ogni {$cronEvery}s, giochi gratis {v} {v|carta|carte} a caso dal tuo scarto.',
   'card.humanResources.name': 'Risorse Umane',
@@ -1932,7 +1931,7 @@ const it: Record<EnKey, string> = {
   'card.officeChristmasParty.desc': 'Curi {0} HP e ottieni {1} di [strength]. Mescola un [@gossip] nel tuo mazzo di pesca (il giorno dopo).',
   'card.promotionWithoutARaise.name': 'Promozione Senza Aumento',
   'card.promotionWithoutARaise.desc':
-    'Potenzia {0} {0|carta|carte} a caso nel tuo mazzo per questo scontro. Costano {1} di [mana] in più finché non vengono giocate.',
+    'Potenzia {0} carte a caso nel tuo mazzo per questo scontro. Costano {1} di [mana] in più finché non vengono giocate.',
   'card.recurringMeeting.name': 'Riunione Ricorrente',
   'card.recurringMeeting.desc': 'Ogni {$meetingEvery}s, ottieni {0} di [strength]. Ogni {$meetingSync}s, un [@quickSync] si aggiunge al tuo nastro.',
   'status.recurringMeeting': 'Riunione Ricorrente',

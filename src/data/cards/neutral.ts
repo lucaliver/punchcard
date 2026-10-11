@@ -1177,7 +1177,7 @@ export const neutralCards: CardDef[] = [
   },
   {
     id: 'promotionWithoutARaise',
-    face: '{grow:0}{pricier:1}',
+    face: '{grow:0}|{pricier:1}',
     cls: 'neutral',
     type: 'skill',
     rarity: 'rare',
