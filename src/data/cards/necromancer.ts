@@ -671,7 +671,7 @@ export const necromancerCards: CardDef[] = [
   },
   {
     id: 'preExistingCondition',
-    face: '{poison:0}',
+    face: '{poison}{floor:0}',
     cls: 'necromancer',
     type: 'power',
     rarity: 'legendary',
@@ -803,7 +803,7 @@ export const necromancerCards: CardDef[] = [
   // The cult at work: the dead as a resource, a cup for the true believers, the rich on the menu, a union with a long memory and a vulture
   {
     id: 'humanResources',
-    face: '{mana:0}={exhaust}',
+    face: '{exhaust}/{0}={mana}',
     cls: 'necromancer',
     type: 'skill',
     rarity: 'rare',
@@ -811,7 +811,6 @@ export const necromancerCards: CardDef[] = [
     vals: [2, 6],
     upVals: [2, 8],
     art: 'humanResources',
-    shown: (c, v) => [Math.min(v[1], Math.floor(c.exhaust.length / v[0])), v[0], v[1]],
     play: (c, v) => c.gainMana(Math.min(v[1], Math.floor(c.exhaust.length / v[0]))),
   },
   {
@@ -832,7 +831,7 @@ export const necromancerCards: CardDef[] = [
   },
   {
     id: 'eatTheRich',
-    face: '{foeHp:0}|{block:2}',
+    face: '{foeHp:0}|{pass}{block:2}',
     cls: 'necromancer',
     type: 'attack',
     rarity: 'rare',

@@ -74,9 +74,9 @@ export const GLYPHS: Record<string, { icon: string; unit?: string; sign?: string
   snatch: { icon: 'snatch' },
   pin: { icon: 'pushpin' },
   /** Petrifies cards of your deck (the hex's rock). */
-  petrify: { icon: 'stone' },
+  petrify: { icon: 'stone', tone: 'purple' },
   /** Crumples cards of your deck (the hex's paper ball). */
-  crumple: { icon: 'crumple4' },
+  crumple: { icon: 'crumple4', tone: 'purple' },
   sweep: { icon: 'windKey', sign: '+' },
   manaRegen: { icon: 'crystalUp', unit: 's', tone: 'blue' },
   /** Multitasking, for seconds or as charges. */
@@ -117,7 +117,11 @@ export const GLYPHS: Record<string, { icon: string; unit?: string; sign?: string
   /** Condition: the hero has more HP than the enemy. */
   lead: { icon: 'heart' },
   /** A share of the enemy's HP, in percent. */
-  foeHp: { icon: 'heartbreak', unit: '%' },
+  foeHp: { icon: 'heartbreak', sign: '-', unit: '%' },
+  /** The enemy's Chill is taken off it (Icebreaker). */
+  noChill: { icon: 'snowOff', tone: 'blue' },
+  /** A status that can't fall under this much (Pre-Existing Condition's Poison). */
+  floor: { icon: 'lock' },
   /** The belt runs slower for a while. */
   slow: { icon: 'gauge', unit: 's', tone: 'amber' },
 };

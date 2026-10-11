@@ -860,7 +860,7 @@ export const mageCards: CardDef[] = [
   },
   {
     id: 'icebreaker',
-    face: '{chill}|{dmg:0}',
+    face: '{noChill}={dmg:0}',
     cls: 'mage',
     type: 'attack',
     rarity: 'rare',
