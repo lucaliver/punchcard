@@ -404,6 +404,14 @@ export const ICONS: Record<string, { el: Element; svg: string; wide?: boolean }>
     el: 'ice',
     svg: `${snowflake}<path d="M4 6l56 54" stroke="#16121f" stroke-width="13" stroke-linecap="round"/><path d="M4 6l56 54" stroke="currentColor" stroke-width="5.5" stroke-linecap="round"/>`,
   },
+  upgrade: {
+    el: 'nature',
+    svg: `<path d="M10 6h34l10 10v44H10z"/><path d="M44 6v10h10" fill="none" stroke="#16121f" stroke-width="2.4"/><path d="M32 52V28M22 38l10-12 10 12" fill="none" stroke="#16121f" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"/>`,
+  },
+  sortCost: {
+    el: 'steel',
+    svg: `<path d="M6 8h52v10H6zM6 24h38v10H6zM6 40h24v10H6z"/><path d="M52 28v26M44 46l8 10 8-10" fill="none" stroke="currentColor" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"/>`,
+  },
   stars: { el: 'holy', svg: star4(16, 20, 12) + star4(44, 16, 10) + star4(32, 44, 14) },
   skull: { el: 'shadow', svg: skull },
   up: { el: 'holy', svg: `<path d="M32 4l24 26H42v28H22V30H8z"/>` },

@@ -100,7 +100,6 @@ describe('the Rogue', () => {
     c.belt.find((b) => b.card.uid === uid)!.card.passed = true;
     c.hero.maxMana = c.hero.mana = CARDS.fireSale.cost;
     const worth = 3 + 3 + 2;
-    expect(CARDS.fireSale.shown?.(c, CARDS.fireSale.vals, c.belt.find((b) => b.card.uid === uid)!.card)[0]).toBe(CARDS.fireSale.vals[0] * worth);
     const hp = c.enemy.hp;
     c.enemy.block = 0;
     expect(c.playCard(uid)).toBe(true);
@@ -355,7 +354,6 @@ describe('the Rogue', () => {
     c.hero.mana = 10;
     const hp = c.enemy.hp;
     const uid = onBelt(c, 'caseFile');
-    expect(CARDS.caseFile.shown?.(c, [1], c.belt[c.belt.length - 1].card)).toEqual([2]);
     expect(c.playCard(uid)).toBe(true);
     expect(hp - c.enemy.hp).toBe(3);
   });

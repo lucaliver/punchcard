@@ -1460,7 +1460,6 @@ describe("Doctor's Note and Performance Review", () => {
     c.addTempCard('performanceReview', 'belt');
     const card = c.belt[0].card;
     c.exhaust.push(card, card, card);
-    expect(c.shownVals(card)[0]).toBe(3 * CARDS.performanceReview.vals[0]);
     const hp = c.enemy.hp;
     expect(c.playCard(card.uid)).toBe(true);
     expect(hp - c.enemy.hp).toBeGreaterThanOrEqual(3 * CARDS.performanceReview.vals[0]);
@@ -2116,7 +2115,6 @@ describe('the office batch: streaks, clocks, piles, curses and corporate speak',
     c.addTempCard('bobTheBuilder', 'discard');
     const size = c.deckSize();
     expect(size).toBeGreaterThan(0);
-    expect(c.shownVals(c.addTempCard('pitchDeck', 'discard'))[0]).toBe(size * CARDS.pitchDeck.vals[0]);
     expect(dealt(c, () => play(c, 'pitchDeck'))).toBe(size * CARDS.pitchDeck.vals[0]);
   });
 

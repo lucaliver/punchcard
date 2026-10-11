@@ -90,7 +90,7 @@ export const mageCards: CardDef[] = [
     vals: [1, 2],
     upVals: [2, 3],
     art: 'plug',
-    play: (c, v) => void c.hit(v[0], { kind: 'arcane' }),
+    play: (c, v) => void c.hit(v[0], { kind: 'arcane', hits: v[1] }),
   },
   {
     id: 'digitalDetox',
@@ -626,7 +626,7 @@ export const mageCards: CardDef[] = [
   },
   {
     id: 'cloudBackup',
-    face: '{block:0}|{sleeve}{block:1}',
+    face: '{block:0}|+{block:1}×{sleeve}',
     cls: 'mage',
     type: 'defense',
     rarity: 'epic',
@@ -683,7 +683,7 @@ export const mageCards: CardDef[] = [
   },
   {
     id: 'hotDesking',
-    face: '{chill}|{burn}',
+    face: '{chill}/{0}={burn}',
     cls: 'mage',
     type: 'skill',
     rarity: 'rare',
@@ -770,7 +770,7 @@ export const mageCards: CardDef[] = [
   // The IT crowd: a burning office, a belt that breaks things, scope that creeps, a Friday deploy, vibes, a fork bomb, an icebreaker and a cron job
   {
     id: 'thisIsFine',
-    face: '{burn:0}|{block:2}{regen:1}',
+    face: '{!burn:0}|{block:2}{regen:1}',
     cls: 'mage',
     type: 'skill',
     rarity: 'epic',
@@ -802,7 +802,7 @@ export const mageCards: CardDef[] = [
   },
   {
     id: 'scopeCreep',
-    face: '{*timer}{grow:0}|{pricier:1}',
+    face: '{*timer}{upgrade:0}|{pricier:1}',
     cls: 'mage',
     type: 'power',
     rarity: 'epic',

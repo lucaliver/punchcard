@@ -1,5 +1,5 @@
 import type { CardDef } from '../../game/types';
-import { DEMO_CRASH } from '../statuses';
+import { DEMO_CRASH, SKIM_FROM } from '../statuses';
 import { WHEN } from './conditions';
 
 /** The Rogue turns the cards that fall off the belt into a hoard: the sleeve is the stash, its cost the loot. */
@@ -393,7 +393,7 @@ export const rogueCards: CardDef[] = [
   },
   {
     id: 'employeeDiscount',
-    face: '{dmg:0}|{hp:1}{cheaper:2}',
+    face: '{dmg:0}|{!hp:1}{cheaper:2}',
     cls: 'rogue',
     type: 'attack',
     rarity: 'rare',
@@ -450,7 +450,7 @@ export const rogueCards: CardDef[] = [
   },
   {
     id: 'insideJob',
-    face: '{copy}{pile}',
+    face: '{cheaper}|{copy}{pile}',
     cls: 'rogue',
     type: 'skill',
     rarity: 'legendary',
@@ -481,7 +481,7 @@ export const rogueCards: CardDef[] = [
   },
   {
     id: 'fireSale',
-    face: '{dmg:0}|{sleeve}',
+    face: '{dmg:0}×{mana}|{sleeve}',
     cls: 'rogue',
     type: 'skill',
     rarity: 'legendary',
@@ -491,7 +491,6 @@ export const rogueCards: CardDef[] = [
     keywords: ['exhaust', 'pending'],
     art: 'fireSale',
     // Damage per mana the cards in the sleeve are worth (their cost without the discount): the face shows the sum as it is now.
-    shown: (c, v, card) => [v[0] * c.sleeveWorth(card.uid)],
     play: (c, v, card) => {
       const worth = c.scrapSleeve(card.uid);
       if (worth > 0) c.hit(v[0] * worth);
@@ -499,7 +498,7 @@ export const rogueCards: CardDef[] = [
   },
   {
     id: 'restructuring',
-    face: '{pile}{cards}',
+    face: '{pile}{sort}',
     cls: 'rogue',
     type: 'skill',
     rarity: 'epic',
@@ -512,7 +511,7 @@ export const rogueCards: CardDef[] = [
   },
   {
     id: 'caseFile',
-    face: '{dmg:0}|{cards}',
+    face: '{dmg:0}×{cards}',
     cls: 'rogue',
     type: 'attack',
     rarity: 'epic',
@@ -521,14 +520,13 @@ export const rogueCards: CardDef[] = [
     upVals: [2],
     art: 'caseFile',
     // Damage per different card (by id) played this fight, this one included: the face shows the total as it stands.
-    shown: (c, v) => [v[0] * c.uniquePlayed('fight')],
     play: (c, v) => void c.hit(v[0] * c.uniquePlayed('fight')),
   },
 
   // Legendary
   {
     id: 'writtenOff',
-    face: '{dmg:0}|{exit}',
+    face: '{dmg:0}×{exit}',
     cls: 'rogue',
     type: 'attack',
     rarity: 'legendary',
@@ -538,7 +536,6 @@ export const rogueCards: CardDef[] = [
     keywords: ['exhaust'],
     art: 'writtenOff',
     // Damage for every card lost this fight (fallen off the belt or swept off it): the face shows the total as it stands.
-    shown: (c, v) => [v[0] * c.stats.cardsLost],
     play: (c, v) => void c.hit(v[0] * c.stats.cardsLost),
   },
   {
@@ -555,7 +552,7 @@ export const rogueCards: CardDef[] = [
   },
   {
     id: 'rapSheet',
-    face: '{dmg:0}|{cards}',
+    face: '{dmg:0}|×{cards}/{1}',
     cls: 'rogue',
     type: 'attack',
     rarity: 'legendary',
@@ -565,7 +562,6 @@ export const rogueCards: CardDef[] = [
     keywords: ['pending'],
     art: 'rapSheet',
     // Damage for every `v[1]` different cards (by id) played in the whole run so far, this fight included.
-    shown: (c, v) => [v[0] * Math.floor(c.uniquePlayed('run') / v[1])],
     play: (c, v) => void c.hit(v[0] * Math.floor(c.uniquePlayed('run') / v[1])),
   },
 
@@ -640,13 +636,13 @@ export const rogueCards: CardDef[] = [
   },
   {
     id: 'skimOffTheTop',
-    face: '{*cards}{mana:0}',
+    face: '{cards}{pricey:1}|{mana:0}',
     cls: 'rogue',
     type: 'power',
     rarity: 'rare',
     cost: 2,
     upCost: 1,
-    vals: [1],
+    vals: [1, SKIM_FROM],
     art: 'skimOffTheTop',
     play: (c, v) => c.applyStatus('hero', 'skimOffTheTop', v[0]),
   },

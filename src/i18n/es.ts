@@ -971,7 +971,7 @@ const es: Record<EnKey, string> = {
   'card.caffeineJolt.name': 'Subidón de cafeína',
   'card.caffeineJolt.desc': 'Gana {0} de [mana].',
   'card.staticShock.name': 'Descarga estática',
-  'card.staticShock.desc': 'Haz {0} de daño.',
+  'card.staticShock.desc': 'Haz {0} de daño {1} veces.',
   'card.digitalDetox.name': 'Desintoxicación digital',
   'card.digitalDetox.desc': 'Gana {0} de [block]. [chill] durante {1}s.',
   'card.burnout.name': 'Agotamiento',

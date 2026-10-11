@@ -969,7 +969,7 @@ const it: Record<EnKey, string> = {
   'card.caffeineJolt.name': 'Scossa di Caffeina',
   'card.caffeineJolt.desc': 'Ottieni {0} di [mana].',
   'card.staticShock.name': 'Scossa Statica',
-  'card.staticShock.desc': 'Fai {0} danni.',
+  'card.staticShock.desc': 'Fai {0} danni {1} volte.',
   'card.digitalDetox.name': 'Digital Detox',
   'card.digitalDetox.desc': 'Ottieni {0} di [block]. [chill] per {1}s.',
   'card.burnout.name': 'Esaurimento',

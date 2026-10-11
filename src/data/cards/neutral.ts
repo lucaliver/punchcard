@@ -158,7 +158,7 @@ export const neutralCards: CardDef[] = [
   },
   {
     id: 'mentorshipProgram',
-    face: '{grow:0}',
+    face: '{upgrade:0}',
     cls: 'neutral',
     type: 'skill',
     rarity: 'epic',
@@ -224,7 +224,7 @@ export const neutralCards: CardDef[] = [
   },
   {
     id: 'riseAndGrind',
-    face: '{hp:0}|{str:1}',
+    face: '{!hp:0}|{str:1}',
     cls: 'neutral',
     type: 'skill',
     rarity: 'legendary',
@@ -666,7 +666,7 @@ export const neutralCards: CardDef[] = [
 
   {
     id: 'paydayLoan',
-    face: '{dmg:0}|{hp:1}|{addCard}',
+    face: '{dmg:0}|{!hp:1}|{addCard}',
     cls: 'neutral',
     type: 'attack',
     rarity: 'legendary',
@@ -899,7 +899,7 @@ export const neutralCards: CardDef[] = [
   },
   {
     id: 'creditCard',
-    face: '{block:0}|{hp:1}|{addCard}',
+    face: '{block:0}|{!hp:1}|{addCard}{curse}',
     cls: 'neutral',
     type: 'defense',
     rarity: 'epic',
@@ -1031,7 +1031,7 @@ export const neutralCards: CardDef[] = [
   },
   {
     id: 'lostBadge',
-    face: '{hp:0}|{cheaper}',
+    face: '{!hp:0}|{cheaper}',
     cls: 'neutral',
     type: 'skill',
     rarity: 'rare',
@@ -1177,7 +1177,7 @@ export const neutralCards: CardDef[] = [
   },
   {
     id: 'promotionWithoutARaise',
-    face: '{grow:0}|{pricier:1}',
+    face: '{upgrade:0}|{pricier:1}',
     cls: 'neutral',
     type: 'skill',
     rarity: 'rare',
@@ -1246,7 +1246,7 @@ export const neutralCards: CardDef[] = [
   },
   {
     id: 'pitchDeck',
-    face: '{dmg:0}={cards}',
+    face: '{dmg:0}×{cards}',
     cls: 'neutral',
     type: 'attack',
     rarity: 'rare',
@@ -1255,7 +1255,6 @@ export const neutralCards: CardDef[] = [
     vals: [1],
     dmg: [0],
     art: 'pitchDeck',
-    shown: (c, v) => [v[0] * c.deckSize()],
     play: (c, v) => void c.hit(v[0] * c.deckSize()),
   },
   {
@@ -1519,7 +1518,7 @@ export const curseCards: CardDef[] = [
   {
     // The Leaver's: nobody can pay for it, and it blows up if it slips off the belt. The sleeve keeps it safe.
     id: 'kamikaze',
-    face: '{dmg:0}|{?exit}{boom:1}',
+    face: '{dmg:0}|{?exit}{!boom:1}',
     cls: 'curse',
     type: 'curse',
     rarity: 'epic',
@@ -1533,7 +1532,7 @@ export const curseCards: CardDef[] = [
   },
   {
     id: 'drama',
-    face: '{clog}|{?exit}{addCard}',
+    face: '{clog}|{?exit}{addCard}{curse}',
     cls: 'curse',
     type: 'curse',
     rarity: 'rare',
@@ -1547,7 +1546,7 @@ export const curseCards: CardDef[] = [
   },
   {
     id: 'writeUp',
-    face: '{?exit}{hp:0}',
+    face: '{?exit}{!hp:0}',
     cls: 'curse',
     type: 'curse',
     rarity: 'common',
@@ -1560,7 +1559,7 @@ export const curseCards: CardDef[] = [
   },
   {
     id: 'deadline',
-    face: '{?exit}{boom:0}',
+    face: '{?exit}{!boom:0}',
     cls: 'curse',
     type: 'curse',
     rarity: 'rare',
@@ -1575,7 +1574,7 @@ export const curseCards: CardDef[] = [
   {
     // Every time it slips off the belt it bites, harder than the last.
     id: 'debt',
-    face: '{?exit}{boom:0}|{grow:1}',
+    face: '{?exit}{!boom:0}|{grow:1}',
     cls: 'curse',
     type: 'curse',
     rarity: 'rare',
@@ -1592,7 +1591,7 @@ export const curseCards: CardDef[] = [
   },
   {
     id: 'mandatoryFun',
-    face: '{?exit}{drain:0}',
+    face: '{?exit}{!drain:0}',
     cls: 'curse',
     type: 'curse',
     rarity: 'common',
@@ -1605,7 +1604,7 @@ export const curseCards: CardDef[] = [
   },
   {
     id: 'gossip',
-    face: '{?exit}{poison:0}',
+    face: '{?exit}{!poison:0}',
     cls: 'curse',
     type: 'curse',
     rarity: 'common',
@@ -1632,7 +1631,7 @@ export const curseCards: CardDef[] = [
   {
     // The Nerd's: let it ride off the belt and it burns you.
     id: 'phishing',
-    face: '{?exit}{burn:0}',
+    face: '{?exit}{!burn:0}',
     cls: 'curse',
     type: 'curse',
     rarity: 'rare',
@@ -1645,7 +1644,7 @@ export const curseCards: CardDef[] = [
   },
   {
     id: 'tpsReport',
-    face: '{?exit}{weak:0}',
+    face: '{?exit}{!weak:0}',
     cls: 'curse',
     type: 'curse',
     rarity: 'common',
@@ -1658,7 +1657,7 @@ export const curseCards: CardDef[] = [
   },
   {
     id: 'papersPlease',
-    face: '{?exit}{vuln:0}',
+    face: '{?exit}{!vuln:0}',
     cls: 'curse',
     type: 'curse',
     rarity: 'common',
@@ -1700,7 +1699,7 @@ export const curseCards: CardDef[] = [
   },
   {
     id: 'godfathersFavour',
-    face: '{selfStun:0}|{?exit}{boom:1}',
+    face: '{!selfStun:0}|{?exit}{!boom:1}',
     cls: 'curse',
     type: 'curse',
     rarity: 'rare',
@@ -1713,7 +1712,7 @@ export const curseCards: CardDef[] = [
   },
   {
     id: 'pcLoadLetter',
-    face: '{?exit}{selfStun:0}',
+    face: '{?exit}{!selfStun:0}',
     cls: 'curse',
     type: 'curse',
     rarity: 'rare',
@@ -1726,7 +1725,7 @@ export const curseCards: CardDef[] = [
   },
   {
     id: 'officePlant',
-    face: '{hp:0}|{?exit}{drain:1}',
+    face: '{!hp:0}|{?exit}{!drain:1}',
     cls: 'curse',
     type: 'curse',
     rarity: 'common',

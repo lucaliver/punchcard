@@ -959,7 +959,7 @@ const zh: Record<EnKey, string> = {
   'card.caffeineJolt.name': '咖啡因冲击',
   'card.caffeineJolt.desc': '获得 {0} 点[mana]。',
   'card.staticShock.name': '静电',
-  'card.staticShock.desc': '造成 {0} 点伤害。',
+  'card.staticShock.desc': '造成 {0} 点伤害，共 {1} 次。',
   'card.digitalDetox.name': '数字排毒',
   'card.digitalDetox.desc': '获得 {0} 点[block]。[chill] {1} 秒。',
   'card.burnout.name': '职业倦怠',

@@ -966,7 +966,7 @@ const en = {
   'card.caffeineJolt.name': 'Caffeine Jolt',
   'card.caffeineJolt.desc': 'Gain {0} [mana].',
   'card.staticShock.name': 'Static Shock',
-  'card.staticShock.desc': 'Deal {0} damage.',
+  'card.staticShock.desc': 'Deal {0} damage {1} times.',
   'card.digitalDetox.name': 'Digital Detox',
   'card.digitalDetox.desc': 'Gain {0} [block]. [chill] for {1}s.',
   'card.burnout.name': 'Burnout',

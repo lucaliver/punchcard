@@ -122,6 +122,14 @@ export const GLYPHS: Record<string, { icon: string; unit?: string; sign?: string
   noChill: { icon: 'snowOff', tone: 'blue' },
   /** A status that can't fall under this much (Pre-Existing Condition's Poison). */
   floor: { icon: 'lock' },
+  /** The enemy's move comes this many seconds closer (Masochist). */
+  hurry: { icon: 'timer', sign: '-', unit: 's' },
+  /** Upgrades cards for the fight (not a card growing on its own: that is `grow`). */
+  upgrade: { icon: 'upgrade', sign: '+' },
+  /** Sorted by cost (Restructuring). */
+  sort: { icon: 'sortCost' },
+  /** A card that costs at least this much (Skim Off the Top). */
+  pricey: { icon: 'priceTag', unit: '+' },
   /** The belt runs slower for a while. */
   slow: { icon: 'gauge', unit: 's', tone: 'amber' },
 };
@@ -159,17 +167,17 @@ function valueHtml(card: CardLike, idx: number, combat?: Combat | null): string 
 
 /**
  * The language-neutral face: icons + big numbers, one effect per line (`|`).
- * Grammar: `{kind:i}` icon + value i · `{kind}` icon · `{?kind}` condition ("if"), shown as (icon) (`{?a+b}`: both in one pair of brackets) · `{*kind}` trigger ("every time"), shown as a loop icon and the icon (`{*a+b}`: both) · `{i}` bare value · other text as is.
+ * Grammar: `{kind:i}` icon + value i · `{kind}` icon · `{!kind:i}` the same, but a price you pay (drawn purple) · `{?kind}` condition ("if"), shown as (icon) (`{?a+b}`: both in one pair of brackets) · `{*kind}` trigger ("every time"), shown as a loop icon and the icon (`{*a+b}`: both) · `{i}` bare value · other text as is.
  */
 export function cardFace(card: CardLike, combat?: Combat | null): string {
   const def = CARDS[card.id];
   const lines = def.face.split('|').map((line) => {
     const html = line.replace(
-      /\{([?*])?([\w+]+)(?::(\d))?\}|([^{]+)/g,
+      /\{([?*!])?([\w+]+)(?::(\d))?\}|([^{]+)/g,
       (_, mark: string | undefined, k: string | undefined, idx: string | undefined, text: string | undefined) => {
         if (text !== undefined) return `<span class="op">${text}</span>`;
         if (/^\d$/.test(k!)) return valueHtml(card, Number(k), combat);
-        if (mark) {
+        if (mark === '?' || mark === '*') {
           const icons = k!
             .split('+')
             .map((c) => icon(GLYPHS[c].icon))
@@ -182,7 +190,8 @@ export function cardFace(card: CardLike, combat?: Combat | null): string {
         const val =
           idx !== undefined ? `${g.sign ?? ''}${valueHtml(card, Number(idx), combat)}${g.unit ? `<span class="unit">${g.unit}</span>` : ''}` : '';
         // Each glyph carries its own ink (its tone, else `.gk-<kind>`), so a line like {dmg}={block} gets a pink sword and a teal shield.
-        return `<span class="gk gk-${k}"${g.tone ? ` data-tone="${g.tone}"` : ''}>${icon(g.icon)}${val}</span>`;
+        const tone = mark === '!' ? 'purple' : g.tone;
+        return `<span class="gk gk-${k}"${tone ? ` data-tone="${tone}"` : ''}>${icon(g.icon)}${val}</span>`;
       },
     );
     return `<div class="gl">${html}</div>`;

@@ -71,7 +71,7 @@ export const necromancerCards: CardDef[] = [
   // Commons
   {
     id: 'karoshi',
-    face: '{poison:0}|{hp:1}',
+    face: '{poison:0}|{!hp:1}',
     cls: 'necromancer',
     type: 'attack',
     rarity: 'epic',
@@ -302,7 +302,7 @@ export const necromancerCards: CardDef[] = [
   },
   {
     id: 'unionDues',
-    face: '{hp:0}|{mana:1}',
+    face: '{!hp:0}|{mana:1}',
     cls: 'necromancer',
     type: 'skill',
     rarity: 'common',
@@ -631,7 +631,7 @@ export const necromancerCards: CardDef[] = [
   },
   {
     id: 'layoffs',
-    face: '{dmg:0}|{exhaust}',
+    face: '{dmg:0}×{exhaust}',
     cls: 'necromancer',
     type: 'attack',
     rarity: 'epic',
@@ -640,12 +640,11 @@ export const necromancerCards: CardDef[] = [
     upVals: [4],
     art: 'layoffs',
     // Damage for every card in the exhaust pile (what the pile counts: used-up cards and played powers): the face shows the total as it stands.
-    shown: (c, v) => [v[0] * c.exhaust.length],
     play: (c, v) => void c.hit(v[0] * c.exhaust.length),
   },
   {
     id: 'performanceReview',
-    face: '{dmg:0}|{exhaust}',
+    face: '{dmg:0}×{exhaust}',
     cls: 'necromancer',
     type: 'attack',
     rarity: 'rare',
@@ -653,7 +652,6 @@ export const necromancerCards: CardDef[] = [
     vals: [1],
     upVals: [2],
     art: 'performanceReview',
-    shown: (c, v) => [v[0] * c.exhaust.length],
     play: (c, v) => void c.hit(v[0] * c.exhaust.length),
   },
   {
@@ -815,7 +813,7 @@ export const necromancerCards: CardDef[] = [
   },
   {
     id: 'koolAid',
-    face: '{str:0}{regen:1}|{poison:2}',
+    face: '{str:0}{regen:1}|{!poison:2}',
     cls: 'necromancer',
     type: 'skill',
     rarity: 'epic',

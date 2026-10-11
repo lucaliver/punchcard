@@ -248,7 +248,7 @@ export const warriorCards: CardDef[] = [
   },
   {
     id: 'hazardPay',
-    face: '{hp:0}|{str:1}',
+    face: '{!hp:0}|{str:1}',
     cls: 'warrior',
     type: 'skill',
     rarity: 'epic',
@@ -332,7 +332,7 @@ export const warriorCards: CardDef[] = [
   // Pop culture
   {
     id: 'masochist',
-    face: '{thorns:0}|{tickUp:1}',
+    face: '{thorns:0}|{foe}{hurry:1}',
     cls: 'warrior',
     type: 'skill',
     rarity: 'epic',
@@ -418,7 +418,7 @@ export const warriorCards: CardDef[] = [
   },
   {
     id: 'performancePlan',
-    face: '{vuln:0}|{tickUp:1}',
+    face: '{vuln:0}|{*dmg}{tickUp:1}',
     cls: 'warrior',
     type: 'skill',
     rarity: 'rare',
@@ -520,7 +520,7 @@ export const warriorCards: CardDef[] = [
   // More commons and skills: a Block that shrinks as the belt fills, and a Vulnerable skill
   {
     id: 'dressCode',
-    face: '{block:0}|{shrink:1}',
+    face: '{block:0}|{shrink:1}×{cards}',
     cls: 'warrior',
     type: 'defense',
     rarity: 'rare',
