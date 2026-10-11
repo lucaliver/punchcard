@@ -23,23 +23,14 @@ function shrinkToFit(row: HTMLElement): void {
 
 /** Starts watching the page: call once. */
 export function fitFaces(): void {
-  const pending = new Set<HTMLElement>();
-  let queued = false;
-  const flush = (): void => {
-    queued = false;
-    for (const row of pending) if (row.isConnected) shrinkToFit(row);
-    pending.clear();
-  };
+  // Measured in the observer itself (a microtask, before the next paint): a face the fight rewrites every few frames would otherwise
+  // show one frame at full size before it shrinks, which flickers.
   new MutationObserver((mutations) => {
     for (const m of mutations)
       for (const node of m.addedNodes) {
         if (!(node instanceof HTMLElement)) continue;
-        if (node.matches('.gl')) pending.add(node);
-        for (const row of node.querySelectorAll<HTMLElement>('.gl')) pending.add(row);
+        if (node.matches('.gl') && node.isConnected) shrinkToFit(node);
+        for (const row of node.querySelectorAll<HTMLElement>('.gl')) if (row.isConnected) shrinkToFit(row);
       }
-    if (pending.size && !queued) {
-      queued = true;
-      requestAnimationFrame(flush);
-    }
   }).observe(document.documentElement, { childList: true, subtree: true });
 }

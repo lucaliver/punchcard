@@ -109,6 +109,8 @@ export function endScreen(
             },
           })
         : null,
+      // What the run added to the handbook: each bar climbs from where it stood when the run started.
+      collectionBars(filled, onHandbook, { rows: 0, ticks }),
       // The run's stats as a dot-matrix payslip: all that work, and the net pay is still zero.
       h(
         'div',
@@ -127,8 +129,6 @@ export function endScreen(
         ),
         staggered(h('div', { class: 'slip-stamp' }, slip.stamp)),
       ),
-      // What the run added to the handbook: each bar climbs from where it stood when the run started.
-      collectionBars(filled, onHandbook, { rows: line, ticks }),
     ),
     h(
       'div',

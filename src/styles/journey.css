@@ -164,7 +164,7 @@
 }
 .hall-mid.walked { stroke: var(--k); }
 .hall-mid.fog { opacity: 0.45; }
-/* footsteps along the way walked (left, right…); the newest stretch is walked again, one step at a time */
+/* footsteps along the way walked (left, right…) */
 .path .step {
   position: absolute;
   width: 6px;
@@ -176,7 +176,6 @@
 .path .step.odd { translate: calc(-50% + 3px) -50%; }
 .path .step.flat { width: 8px; height: 6px; translate: -50% calc(-50% - 3px); }
 .path .step.flat.odd { translate: -50% calc(-50% + 3px); }
-.path .step.fresh { animation: step-in 0.05s steps(1) backwards; }
 /* the roads that just opened: pink lamps light up one after the other towards the new room */
 .path .step.lamp { background: var(--p); animation: step-in 0.05s steps(1) backwards; }
 @keyframes step-in {

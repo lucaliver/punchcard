@@ -358,7 +358,7 @@
   animation: stamp-in 0.12s steps(2) backwards;
   animation-delay: calc(var(--i) * 0.09s + 0.5s);
 }
-/* the handbook's pages: a bar each, climbing from where the run found it (after the payslip has printed) */
+/* the handbook's pages: a bar each, climbing from where the run found it (after `--rows` payslip lines have printed) */
 .collect {
   --coll-wait: calc(0.8s + var(--rows) * 0.09s);
   flex: none;

@@ -44,7 +44,6 @@ const VISION = 1;
 const STEP_PX = 12;
 const MAP_W = 350;
 /** Delay between the steps of the newest walked stretch (ms), and between the lamps that light up the roads just opened. */
-const STEP_MS = 70;
 const LAMP_MS = 45;
 
 /** A point on the map: x in % of its width, y in px. */
@@ -110,8 +109,7 @@ export function journeyScreen(run: RunState, onEnter: (to?: number) => void, onH
     run.cleared && run.path.length > 1 && cur.act === act && run.nodes[run.path[run.path.length - 2]].act === cur.act
       ? seenFrom(run.path[run.path.length - 2])
       : null;
-  let walkMs = 0;
-  /** When the walk and the roads lighting up are over: the new rooms are stamped then. */
+  /** When the roads lighting up are over: the new rooms are stamped then. */
   let revealMs = 0;
   const foggy = (n: RunNode): boolean => !revealAll && n.type !== 'boss' && !run.path.includes(n.id) && !dist.has(n.id);
 
@@ -208,17 +206,15 @@ export function journeyScreen(run: RunState, onEnter: (to?: number) => void, onH
     }
     return after + n * gap;
   };
-  // The way walked so far, as footsteps along the corridors; back from a job, its last stretch is walked again step by step.
+  // The way walked so far, as footsteps along the corridors.
   run.path.forEach((id, i) => {
     const a = run.nodes[run.path[i - 1]];
     const b = run.nodes[id];
     if (!a || a.act !== act || b.act !== act) return;
-    const fresh = run.cleared && i === run.path.length - 1;
-    const end = trail(a, b, fresh ? 'fresh' : '', 0, STEP_MS);
-    if (fresh) walkMs = end;
+    trail(a, b, '', 0, 0);
   });
-  // Then the roads that just opened light up from this room to each new one, and the rooms are stamped where they end.
-  if (before) for (const id of options) revealMs = Math.max(revealMs, trail(cur, run.nodes[id], 'lamp', walkMs, LAMP_MS));
+  // Back from a job, the roads that just opened light up from the room just done (not from the one before) to each new one, and the rooms are stamped where they end.
+  if (before) for (const id of options) revealMs = Math.max(revealMs, trail(cur, run.nodes[id], 'lamp', 0, LAMP_MS));
   for (const n of nodes) {
     const past = run.path.includes(n.id) && (n.id !== cur.id || run.cleared);
     const open = n.id === cur.id ? !run.cleared : options.includes(n.id);

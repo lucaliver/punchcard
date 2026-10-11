@@ -19,7 +19,7 @@ const COLL_STEPS = 12;
 
 /**
  * The handbook's pages as filling bars; tapping one opens that page. With `animate` each bar climbs from where it stood (after the
- * `rows` lines of the payslip above have printed), ticking into `ticks`, which the screen clears when it leaves; without it they are still.
+ * `rows` lines of the payslip have printed), ticking into `ticks`, which the screen clears when it leaves; without it they are still.
  */
 export function collectionBars(
   filled: ReturnType<typeof collection>,
