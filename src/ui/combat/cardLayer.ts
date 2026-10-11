@@ -397,7 +397,7 @@ export function createCardLayer(v: CombatView): CardLayer {
     setText(ce.cost, cardCostLabel(card, price));
     toggle(ce.cost, 'taxed', !!card.tax || !!card.virus || price > own);
     // The sleeve's discount shows in yellow.
-    toggle(ce.cost, 'sale', !!card.disc || price < own);
+    toggle(ce.cost, 'sale', !!card.disc || !!card.welcome || price < own);
     toggle(ce.el, 'sick', !!card.virus);
     if (!card.virus !== !ce.virusEl) {
       ce.virusEl?.remove();

@@ -665,6 +665,21 @@ export const mageCards: CardDef[] = [
     },
   },
   {
+    id: 'zeroDayExploit',
+    face: '{selfStun:1}|{crit:0}',
+    cls: 'mage',
+    type: 'skill',
+    rarity: 'legendary',
+    cost: 3,
+    vals: [3, 4],
+    upVals: [4, 3],
+    art: 'zeroDayExploit',
+    play: (c, v) => {
+      c.applyStatus('hero', 'stun', 1, v[1]);
+      c.applyStatus('hero', 'crit', v[0]);
+    },
+  },
+  {
     id: 'hotDesking',
     face: '{chill}|{burn}',
     cls: 'mage',

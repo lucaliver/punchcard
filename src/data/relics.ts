@@ -309,6 +309,7 @@ const defs: RelicDef[] = [
   },
   { id: 'rolodex', rarity: 'legendary', n: 0, openPool: true },
   { id: 'wellnessVoucher', rarity: 'epic', n: 0, restBoth: true },
+  { id: 'cheatSheet', rarity: 'rare', n: 1, mods: { abilityCost: -1 } },
   {
     id: 'correctionFluid',
     rarity: 'rare',
@@ -331,5 +332,8 @@ export const RELICS: Record<string, RelicDef> = Object.fromEntries(defs.map((r) 
 export const RELIC_LIST: readonly RelicDef[] = defs;
 
 /** The sum of a numeric modifier over the relics a run holds (the hero sheet shows the stats as the fight will start). */
-export const relicSum = (relics: readonly string[], key: 'sleeve' | 'maxMana' | 'rewardCards'): number =>
+export const relicSum = (relics: readonly string[], key: 'sleeve' | 'maxMana' | 'rewardCards' | 'abilityCost'): number =>
   relics.reduce((s, id) => s + (RELICS[id]?.mods?.[key] ?? 0), 0);
+
+/** What the hero's ability costs with these relics (never under 1). */
+export const abilityCostWith = (cost: number, relics: readonly string[]): number => Math.max(1, cost + relicSum(relics, 'abilityCost'));

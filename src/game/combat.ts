@@ -12,7 +12,7 @@ import { MatchThree, type MoveResult } from './match3';
 import { MINIGAMES, type Minigame } from './minigame';
 import { ShellGame, type ShellResult } from './shells';
 import { SushiOrder } from './sushi';
-import { RELICS } from '../data/relics';
+import { RELICS, abilityCostWith } from '../data/relics';
 import type { TKey } from '../core/i18n';
 import type {
   BeltCard,
@@ -400,7 +400,20 @@ export class Combat {
     const cost = cardCostOf(card);
     if (cost < 0) return cost;
     for (const [id, s] of Object.entries(this.hero.statuses)) if (STATUSES[id].flatCost && this.has('hero', id)) return s.v;
-    return cost;
+    return Math.max(0, cost - this.firstPlayCut(card));
+  }
+
+  /** What a card's first play of the fight takes off its cost (`StatusDef.firstPlayCut`). */
+  private firstPlayCut(card: CardInst): number {
+    if (this.fightPlayed.has(card.id)) return 0;
+    return this.sumHero('firstPlayCut');
+  }
+
+  /** The amounts (`v`) of the hero's active statuses that have this flag. */
+  private sumHero(flag: 'firstPlayCut' | 'hireCut'): number {
+    let n = 0;
+    for (const [id, s] of Object.entries(this.hero.statuses)) if (STATUSES[id][flag] && this.has('hero', id)) n += s.v;
+    return n;
   }
 
   /** The status that makes the next paid card free (`StatusDef.freeNext`), if one is up. */
@@ -687,10 +700,18 @@ export class Combat {
         const bonus = side === 'enemy' ? this.dotBonus(id) : 0;
         this.damage(side === 'hero' ? 'enemy' : 'hero', side, amount + bonus, { raw: true, ignoreBlock: true, kind: id }, 'dot');
       }
-      if (!this.isKept(side, id)) s.v--;
+      if (!this.isKept(side, id)) s.v = Math.max(s.v - 1, Math.min(s.v, this.dotFloor(side, id)));
       if (s.v <= 0) delete f.statuses[id];
       if (this.result) return;
     }
+  }
+
+  /** The stacks the hero's statuses keep a damage-over-time status on the enemy from losing (`StatusDef.dotFloor`). */
+  private dotFloor(side: Side, dot: string): number {
+    if (side !== 'enemy') return 0;
+    let n = 0;
+    for (const [id, s] of Object.entries(this.hero.statuses)) if (STATUSES[id].dotFloor === dot && this.has('hero', id)) n = Math.max(n, s.v);
+    return n;
   }
 
   /** What the hero's statuses add to every tick of a damage-over-time status on the enemy (`StatusDef.dotBonus`). */
@@ -1186,7 +1207,7 @@ export class Combat {
       card.tenure = (card.tenure ?? 0) + 1;
       this.tenured[card.uid] = card.tenure;
     }
-    if (def.type === 'attack') this.removeStatus('hero', 'crit');
+    if (def.type === 'attack' && this.has('hero', 'crit')) this.applyStatus('hero', 'crit', -1, 0, true);
     if (this.result === 'lose') return;
 
     this.lastPlayed = def;
@@ -1202,6 +1223,7 @@ export class Combat {
     delete card.tax;
     delete card.virus;
     delete card.disc;
+    delete card.welcome;
     // Played, a Pending card is back in the approval queue: it must ride the whole belt again before it can be played.
     delete card.passed;
     if (echoes) return;
@@ -1449,7 +1471,7 @@ export class Combat {
   }
 
   abilityCost(): number {
-    return this.heroDef.ability.cost;
+    return abilityCostWith(this.heroDef.ability.cost, this.relics);
   }
 
   abilityReady(): boolean {
@@ -1702,7 +1724,7 @@ export class Combat {
     this.canBeg = false;
     this.relicFlags[BEG_FLAG] = 1;
     this.hero.hp = this.hero.maxHp;
-    for (const id of Object.keys(this.hero.statuses)) if (!STATUSES[id]?.good) this.removeStatus('hero', id);
+    this.cleanse();
     this.addManaCrystals(CONFIG.beg.crystals);
     this.hero.mana = this.hero.maxMana;
     this.applyStatus('hero', 'dodge', 1, CONFIG.beg.dodge);
@@ -1830,6 +1852,65 @@ export class Combat {
     delete this.fighter(side).statuses[id];
   }
 
+  /** Removes every debuff the hero carries. Returns how many. */
+  cleanse(): number {
+    let n = 0;
+    for (const id of Object.keys(this.hero.statuses)) {
+      if (!this.has('hero', id) || STATUSES[id].good) continue;
+      this.removeStatus('hero', id);
+      n++;
+    }
+    return n;
+  }
+
+  /** The hero's max mana drops by `n` for this fight (never under 1); mana above it is lost, unless the hero may overflow. */
+  loseCrystals(n: number): void {
+    const h = this.hero;
+    h.maxMana = Math.max(1, h.maxMana - n);
+    if (!this.heroDef.manaOverflow) h.mana = Math.min(h.mana, h.maxMana);
+  }
+
+  /** Plays for free, then uses up, the `n` cheapest cards of the draw and discard piles (never a power, a curse, a consumable, or one a rule bars now). Returns how many. */
+  playCheapest(n: number): number {
+    const worth = (c: CombatCard): number => (fullCostOf(c) < 0 ? Infinity : fullCostOf(c));
+    const pool = this.rng
+      .shuffle([...this.draw, ...this.discard].filter((c) => this.fitsFreePlay(c)))
+      .sort((a, b) => worth(a) - worth(b))
+      .slice(0, n);
+    for (const card of pool) {
+      if (this.result) break;
+      const pile = this.draw.includes(card) ? this.draw : this.discard;
+      pile.splice(pile.indexOf(card), 1);
+      this.resolvePlay(card, true, true);
+    }
+    return pool.length;
+  }
+
+  private fitsFreePlay(c: CombatCard): boolean {
+    const def = CARDS[c.id];
+    return (
+      !c.hex &&
+      !isCurse(c) &&
+      def.type !== 'power' &&
+      !def.sushi &&
+      !this.keywords(c).includes('consume') &&
+      !this.isPending(c) &&
+      this.isPlayable(c) &&
+      !this.ruleBlock(c, true)
+    );
+  }
+
+  /** Upgrades up to `n` random cards of the draw and discard piles for this fight (only ones an upgrade changes). Returns how many. */
+  upgradeRandom(n: number): number {
+    const fits = (c: CombatCard): boolean => {
+      const def = CARDS[c.id];
+      return !c.up && !isCurse(c) && def.rarity !== 'special' && (!!def.upVals || def.upCost !== undefined || !!def.upKeywords);
+    };
+    const picks = this.rng.shuffle([...this.draw, ...this.discard].filter(fits)).slice(0, n);
+    for (const card of picks) card.up = true;
+    return picks.length;
+  }
+
   /** Speeds the belt up for `t` seconds: cards (and new draws) come faster. A hero status, so it shows with a timer. */
   rushBelt(t: number): void {
     this.applyStatus('hero', 'rush', 1, t);
@@ -1842,6 +1923,8 @@ export class Combat {
   addTempCard(id: string, to: 'belt' | 'draw' | 'discard', up = false, at = 0, extra: Partial<CombatCard> = {}): CombatCard {
     // Temporary cards get negative uids so they never collide with deck cards.
     const card: CombatCard = { uid: -++this.tempUid, id, up, bonus: 0, temp: true, ...extra };
+    const hired = this.sumHero('hireCut');
+    if (hired > 0 && !isCurse(card)) card.welcome = hired;
     if (to === 'belt' && this.spawnCard(at, card)) {
       // already riding
     } else if (to !== 'discard') {

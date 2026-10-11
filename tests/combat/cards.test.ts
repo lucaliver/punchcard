@@ -1533,3 +1533,174 @@ describe('Performance Plan, Slow Leak, Batch Processing, Pain in the Neck', () =
     expect(hp - c.enemy.hp).toBe(base + step);
   });
 });
+
+describe('the legendary batch: Claims Adjuster, Return to Sender, Fuck You Money, Pre-Existing Condition, Zero-Day Exploit and friends', () => {
+  const still = (hero: keyof typeof HEROES, deck: string[] = ['punch']): Combat => {
+    const c = setup({ hero: HEROES[hero], deck: deckOf(deck) });
+    c.enemy.move = { id: 'wait', intent: 'attack', windup: 999, dmg: 10 };
+    c.enemy.hp = c.enemy.maxHp = 9999;
+    run(c, CONFIG.introTime + 0.01);
+    c.hero.maxMana = 12;
+    c.hero.mana = 12;
+    c.belt.length = 0;
+    return c;
+  };
+  const play = (c: Combat, id: string, up = false): boolean => {
+    c.hero.mana = Math.max(c.hero.mana, 8);
+    c.belt.length = 0;
+    const card = c.addTempCard(id, 'belt', up);
+    return c.playCard(card.uid);
+  };
+  const pile = (id: string, uid: number): CardInst => ({ uid, id, up: false });
+  const stuff = (c: Combat, ids: string[], to: 'draw' | 'discard'): void => {
+    c[to] = ids.map((id, i) => ({ ...pile(id, 500 + i + (to === 'draw' ? 0 : 50)), bonus: 0, temp: false }));
+  };
+
+  it('Claims Adjuster gives Block, and Return to Sender damage, of 4 plus the damage of the enemy attack', () => {
+    const c = still('warrior');
+    const hit = c.intentDamage(c.enemy.move);
+    expect(hit).toBeGreaterThan(0);
+    const [bonus] = CARDS.claimsAdjuster.vals;
+    expect(c.shownVals(c.addTempCard('claimsAdjuster', 'belt'))[1]).toBe(bonus + hit);
+    c.hero.block = 0;
+    expect(play(c, 'claimsAdjuster')).toBe(true);
+    expect(c.hero.block).toBe(bonus + hit);
+    c.enemy.block = 0;
+    const hp = c.enemy.hp;
+    expect(play(c, 'returnToSender')).toBe(true);
+    expect(hp - c.enemy.hp).toBe(CARDS.returnToSender.vals[0] + hit);
+    // Against a move that deals no damage, only the 4 are left.
+    c.enemy.move = { id: 'rest', intent: 'defend', windup: 999 };
+    c.hero.block = 0;
+    expect(play(c, 'claimsAdjuster')).toBe(true);
+    expect(c.hero.block).toBe(bonus);
+  });
+
+  it('Fuck You Money plays and exhausts the cheapest cards of the draw and discard piles, leaving curses, powers and the dear ones', () => {
+    const c = still('necromancer');
+    stuff(c, ['heavyLifting', 'punch', 'gatekeeping'], 'draw');
+    stuff(c, ['bellaCiao', 'coffee', 'forklift'], 'discard');
+    expect(play(c, 'fuckYouMoney')).toBe(true);
+    const gone = c.exhaust.map((x) => x.id);
+    expect(gone).toEqual(expect.arrayContaining(['bellaCiao', 'coffee', 'punch']));
+    expect(gone).not.toContain('heavyLifting');
+    expect(c.draw.map((x) => x.id).sort()).toEqual(['gatekeeping', 'heavyLifting']);
+    expect(c.discard.map((x) => x.id)).toEqual(['forklift']);
+    // The upgraded card takes five.
+    const d = still('necromancer');
+    stuff(d, ['punch', 'punch', 'punch', 'punch', 'punch', 'punch'], 'draw');
+    expect(play(d, 'fuckYouMoney', true)).toBe(true);
+    expect(d.exhaust.filter((x) => x.id === 'punch')).toHaveLength(CARDS.fuckYouMoney.upVals![0]);
+  });
+
+  it('Mentorship Program upgrades random cards of the draw and discard piles, only ones an upgrade changes', () => {
+    const c = still('warrior');
+    stuff(c, ['punch', 'bobTheBuilder'], 'draw');
+    stuff(c, ['hostileTakeover', 'gatekeeping'], 'discard');
+    expect(play(c, 'mentorshipProgram')).toBe(true);
+    const all = [...c.draw, ...c.discard];
+    expect(all.filter((x) => x.up)).toHaveLength(CARDS.mentorshipProgram.vals[0]);
+    expect(all.find((x) => x.id === 'gatekeeping')!.up).toBe(false);
+  });
+
+  it('Signing Bonus takes mana off the cards added to the deck, until they are played, but not off curses', () => {
+    const c = still('warrior');
+    expect(play(c, 'signingBonus')).toBe(true);
+    const added = c.addTempCard('punch', 'belt');
+    expect(c.cardCost(added)).toBe(CARDS.punch.cost - 1);
+    const curse = c.addTempCard('gatekeeping', 'draw');
+    expect(curse.welcome).toBeUndefined();
+    c.hero.mana = 12;
+    expect(c.playCard(added.uid)).toBe(true);
+    expect(added.welcome).toBeUndefined();
+    expect(c.cardCost(added)).toBe(CARDS.punch.cost);
+  });
+
+  it('Introductory Offer takes mana off the first play of every different card in a fight', () => {
+    const c = still('rogue', ['borrowedStapler']);
+    const stapler = { uid: 1, id: 'borrowedStapler', up: false };
+    const shop = { uid: 2, id: 'shoplifting', up: false };
+    expect(c.costOf(stapler)).toBe(CARDS.borrowedStapler.cost);
+    expect(play(c, 'introductoryOffer')).toBe(true);
+    expect(c.costOf(stapler)).toBe(CARDS.borrowedStapler.cost - 1);
+    expect(c.costOf(shop)).toBe(CARDS.shoplifting.cost - 1);
+    expect(play(c, 'borrowedStapler')).toBe(true);
+    expect(c.costOf({ uid: 3, id: 'borrowedStapler', up: false })).toBe(CARDS.borrowedStapler.cost);
+    expect(c.costOf(shop)).toBe(CARDS.shoplifting.cost - 1);
+  });
+
+  it('Creative Accounting doubles the mana, even above the maximum for the Rogue', () => {
+    const c = still('rogue');
+    c.hero.maxMana = 4;
+    c.hero.mana = 4;
+    c.belt.length = 0;
+    const card = c.addTempCard('creativeAccounting', 'belt');
+    expect(c.playCard(card.uid)).toBe(true);
+    expect(c.hero.mana).toBe(2 * (4 - CARDS.creativeAccounting.cost));
+    expect(c.hero.mana).toBeGreaterThan(c.hero.maxMana);
+  });
+
+  it("Pre-Existing Condition keeps the enemy's Poison from falling under its floor", () => {
+    const c = still('necromancer');
+    c.applyStatus('enemy', 'poison', 6);
+    const start = c.stacks('enemy', 'poison');
+    run(c, 2 * CONFIG.dotInterval);
+    expect(c.stacks('enemy', 'poison')).toBeLessThan(start);
+    expect(play(c, 'preExistingCondition')).toBe(true);
+    const floor = CARDS.preExistingCondition.vals[0];
+    run(c, 30 * CONFIG.dotInterval);
+    expect(c.stacks('enemy', 'poison')).toBe(floor);
+    c.applyStatus('enemy', 'poison', 10);
+    run(c, 60 * CONFIG.dotInterval);
+    expect(c.stacks('enemy', 'poison')).toBe(floor);
+  });
+
+  it('Zero-Day Exploit puts the hero to sleep now and makes the next attacks critical, one stack each', () => {
+    const base = still('mage');
+    base.enemy.block = 0;
+    const hp = base.enemy.hp;
+    expect(play(base, 'clippy')).toBe(true);
+    const normal = hp - base.enemy.hp;
+
+    const c = still('mage');
+    c.enemy.block = 0;
+    expect(play(c, 'zeroDayExploit')).toBe(true);
+    expect(c.has('hero', 'stun')).toBe(true);
+    expect(c.stacks('hero', 'crit')).toBe(CARDS.zeroDayExploit.vals[0]);
+    c.removeStatus('hero', 'stun');
+    const before = c.enemy.hp;
+    expect(play(c, 'clippy')).toBe(true);
+    expect(before - c.enemy.hp).toBe(normal * CONFIG.critMult);
+    expect(c.stacks('hero', 'crit')).toBe(CARDS.zeroDayExploit.vals[0] - 1);
+    // A skill keeps them.
+    expect(play(c, 'turnItOn')).toBe(true);
+    expect(c.stacks('hero', 'crit')).toBe(CARDS.zeroDayExploit.vals[0] - 1);
+    for (let i = 0; i < 5; i++) play(c, 'clippy');
+    expect(c.has('hero', 'crit')).toBe(false);
+  });
+
+  it('Voluntary Redundancy costs a mana crystal for the fight and gives Strength', () => {
+    const c = still('warrior');
+    c.hero.maxMana = 4;
+    expect(play(c, 'voluntaryRedundancy')).toBe(true);
+    expect(c.hero.maxMana).toBe(3);
+    expect(c.hero.mana).toBeLessThanOrEqual(3);
+    expect(c.stacks('hero', 'strength')).toBe(CARDS.voluntaryRedundancy.vals[1]);
+    c.hero.maxMana = 1;
+    play(c, 'voluntaryRedundancy');
+    expect(c.hero.maxMana).toBe(1);
+  });
+
+  it('Clean Slate removes every debuff and gives Block for each, leaving the good statuses', () => {
+    const c = still('warrior');
+    c.applyStatus('hero', 'weak', 1, 9);
+    c.applyStatus('hero', 'vulnerable', 1, 9);
+    c.applyStatus('hero', 'poison', 3);
+    c.applyStatus('hero', 'strength', 2);
+    c.hero.block = 0;
+    expect(play(c, 'cleanSlate')).toBe(true);
+    expect(c.has('hero', 'weak') || c.has('hero', 'vulnerable') || c.has('hero', 'poison')).toBe(false);
+    expect(c.stacks('hero', 'strength')).toBe(2);
+    expect(c.hero.block).toBe(3 * CARDS.cleanSlate.vals[0]);
+  });
+});

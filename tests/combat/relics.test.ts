@@ -3,7 +3,7 @@ import type { Combat } from '../../src/game/combat';
 import { CONFIG } from '../../src/data/config';
 import { HEROES } from '../../src/data/heroes';
 import { CARDS } from '../../src/data/cards';
-import { RELICS } from '../../src/data/relics';
+import { RELICS, abilityCostWith } from '../../src/data/relics';
 import { rewardChoices, rollRewards, gainRelic, hasRelic, newRun } from '../../src/game/run';
 import { deckOf, plainBoomer, setup, run } from './helpers';
 
@@ -193,5 +193,11 @@ describe('relics', () => {
     gainRelic(r, 'thermos');
     expect(r.relics).toEqual(['thermos']);
     expect(hasRelic(r, 'thermos')).toBe(true);
+  });
+
+  it("the Cheat Sheet takes a mana off the hero's ability", () => {
+    expect(setup().abilityCost()).toBe(HEROES.warrior.ability.cost);
+    expect(setup({ relics: ['cheatSheet'] }).abilityCost()).toBe(HEROES.warrior.ability.cost - 1);
+    expect(abilityCostWith(1, ['cheatSheet', 'cheatSheet'])).toBe(1);
   });
 });

@@ -1,7 +1,7 @@
 import { t } from '../../core/i18n';
 import { sfx } from '../../audio/sfx';
 import { HEROES } from '../../data/heroes';
-import { RELICS, relicSum } from '../../data/relics';
+import { RELICS, abilityCostWith, relicSum } from '../../data/relics';
 import type { RunState } from '../../game/run';
 import type { HeroDef } from '../../game/types';
 import { openModal } from '../app';
@@ -23,7 +23,7 @@ const feature = (ic: string, name: string, kind: 'passive' | 'active', desc: str
  * Passive and ability of a hero (hero select and the in-run hero sheet). `hidden`: a locked hero
  * shows only what kind of features it has, their names and texts replaced by question marks.
  */
-export function heroFeatures(hero: HeroDef, hidden = false): HTMLElement {
+export function heroFeatures(hero: HeroDef, hidden = false, abilityCost = hero.ability.cost): HTMLElement {
   const id = hero.id;
   const say = (text: string): string => (hidden ? UNKNOWN : text);
   return h(
@@ -34,7 +34,7 @@ export function heroFeatures(hero: HeroDef, hidden = false): HTMLElement {
       ABILITY_ICON[id],
       say(t(`hero.${id}.ability`)),
       'active',
-      `${say(t(`hero.${id}.abilityShort`))} <span class="fcost">${icon('crystal')}${hero.ability.cost}</span>`,
+      `${say(t(`hero.${id}.abilityShort`))} <span class="fcost">${icon('crystal')}${abilityCost}</span>`,
     ),
   );
 }
@@ -43,7 +43,7 @@ export function heroFeatures(hero: HeroDef, hidden = false): HTMLElement {
 export function openHeroSheet(run: RunState): void {
   const hero = HEROES[run.hero];
   sfx('tap');
-  const features = heroFeatures(hero);
+  const features = heroFeatures(hero, false, abilityCostWith(hero.ability.cost, run.relics));
   const sleeve = Math.max(1, hero.sleeve + relicSum(run.relics, 'sleeve') - run.sleeveLost);
   const mana = hero.maxMana + relicSum(run.relics, 'maxMana') + run.crystals;
   const relics = run.relics.map((id) =>

@@ -69,6 +69,8 @@ export interface CombatCard extends CardInst {
   fleeting?: true;
   /** Mana the cards falling into a full sleeve have taken off its cost, until the card is next played (the Rogue's passive). */
   disc?: number;
+  /** Mana off its cost until the card is next played: a card added to the deck during a fight under `StatusDef.hireCut`. */
+  welcome?: number;
   /** The plate a piece of sushi comes on (the Chef's order asks for a dish on a plate). */
   plate?: Plate;
 }
@@ -242,12 +244,18 @@ export interface StatusDef {
   passable?: true;
   /** While active on the hero, its amount (`v`) adds to every tick of this damage-over-time status on the enemy (Virulent Form). */
   dotBonus?: string;
+  /** While active on the hero, this damage-over-time status on the enemy never loses a stack below the amount (`v`) (Pre-Existing Condition). */
+  dotFloor?: string;
   /** A damage-over-time status that ticks for half its amount, rounded up (Poison), then loses 1 as usual. */
   halves?: true;
   /** While active on the hero, its amount (`v`) adds to the discount a falling card gives (Light Fingers). */
   catchBonus?: true;
   /** While active on the hero, every card with a mana cost costs its amount (`v`) instead, X cards keep theirs (Does It Spark Joy?). */
   flatCost?: true;
+  /** While active on the hero, its amount (`v`) comes off a card's cost the first time that card (by id) is played in a fight (Introductory Offer). */
+  firstPlayCut?: true;
+  /** While active on the hero, every card added to the deck during the fight (never a curse) costs its amount (`v`) less until it is played (Signing Bonus). */
+  hireCut?: true;
   /** While active on the hero, the next card that costs mana is free and takes one stack with it (Lost Badge). */
   freeNext?: true;
   /** While active on the hero, no card rule (`canPlay`) applies (Root access). */
@@ -580,6 +588,8 @@ export interface RelicDef {
     startBelt: number;
     /** Extra cards on offer after a fight. */
     rewardCards: number;
+    /** Added to the hero's ability cost (negative: cheaper). */
+    abilityCost: number;
   }>;
   hooks?: RelicHooks;
   /** For a relic that triggers every so often: how full its bar is (0..1) in the fight. It gets a chip with a filling bar. */

@@ -432,6 +432,22 @@ export const warriorCards: CardDef[] = [
     },
   },
   {
+    id: 'voluntaryRedundancy',
+    face: '{drain:0}|{str:1}',
+    cls: 'warrior',
+    type: 'skill',
+    rarity: 'epic',
+    cost: 0,
+    vals: [1, 7],
+    upVals: [1, 9],
+    keywords: ['exhaust'],
+    art: 'voluntaryRedundancy',
+    play: (c, v) => {
+      c.loseCrystals(v[0]);
+      c.applyStatus('hero', 'strength', v[1]);
+    },
+  },
+  {
     id: 'step1',
     face: '{addCard}Step 2',
     cls: 'warrior',

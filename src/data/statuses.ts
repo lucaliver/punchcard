@@ -301,6 +301,12 @@ const defs: StatusDef[] = [
     icon: 'redCross',
     onHurt: (c, side, s) => c.gainBlock(side, s.v),
   },
+  // Signing Bonus (a power): every card added to the deck during the fight (never a curse) costs `v` less until it is played.
+  { id: 'signingBonus', tone: 'blue', kind: 'stacks', good: true, icon: 'addCard', hireCut: true },
+  // Introductory Offer (a power): every card costs `v` less the first time it is played in a fight (by id).
+  { id: 'introductoryOffer', tone: 'blue', kind: 'stacks', good: true, icon: 'crystal', firstPlayCut: true },
+  // Pre-Existing Condition (a power): the enemy's Poison never loses a stack under `v`.
+  { id: 'preExistingCondition', tone: 'toxic', kind: 'stacks', good: true, icon: 'poisonBottle', dotFloor: 'poison' },
   // Good Vibes Only (a power): every time the hero is hit it gains `v` Thorns.
   { id: 'goodVibesOnly', tone: 'red', kind: 'stacks', good: true, icon: 'thorns', onStruck: (c, side, s) => c.applyStatus(side, 'thorns', s.v) },
   // Grudge Ledger (a power): every time the hero is hit the enemy is chilled for `v` seconds.

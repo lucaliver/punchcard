@@ -88,6 +88,8 @@ export const GLYPHS: Record<string, { icon: string; unit?: string; sign?: string
   bare: { icon: 'shieldOff' },
   /** The card's own cost goes down. */
   cheaper: { icon: 'priceTag', sign: '-' },
+  /** The hero's next attacks are critical. */
+  crit: { icon: 'target', tone: 'red' },
   /** A price every card is set to. */
   price: { icon: 'priceTag' },
   /** A card is used up (the Exhaust keyword). */

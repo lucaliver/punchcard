@@ -251,6 +251,14 @@ const wellnessVoucher = `
 ${face(76, 98, 18, 5)}
 <path d="M44 140h66" stroke="${PAPER}" stroke-width="6" stroke-linecap="round"/>`;
 
+const cheatSheet = `
+<path d="M40 22h92l32 32v126H40z" fill="#fff59a" ${OUT}/>
+<path d="M132 22v32h32" fill="#e8d86a" ${OUT}/>
+<path d="M58 62h60M58 78h72M58 94h46" stroke="#b9a64a" stroke-width="5" stroke-linecap="round"/>
+<path d="M58 150h84M58 166h54" stroke="#b9a64a" stroke-width="5" stroke-linecap="round"/>
+<path d="M54 40l8-10 8 10" stroke="${INK}" stroke-width="3" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+${face(100, 126, 22, 5.5)}`;
+
 const statuette = `
 <path d="M34 164h132l8 20H26z" fill="#6c6880" ${OUT}/>
 <path d="M44 140h112v26H44z" fill="#8a8798" ${OUT}/>
@@ -311,6 +319,7 @@ export const RELIC_SPRITES: Record<string, string> = Object.fromEntries(
     rolodex,
     wellnessVoucher,
     correctionFluid,
+    cheatSheet,
   }).map(([id, svg]) => [`relic.${id}`, svg]),
 );
 

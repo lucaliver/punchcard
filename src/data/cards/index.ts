@@ -41,17 +41,20 @@ export function cardKeywordsOf(card: CardLike): Keyword[] {
   return extra.length ? [...new Set([...base, ...extra])] : base;
 }
 
-/** Mana cost of a card copy after its upgrade, perks, a fight's Inflation (`tax`), a `virus`, `costDrop` (`cut`) and the sleeve's discount (`disc`) (-1 = X). A card On Credit costs this much in debt, not in mana. */
+/** Mana cost of a card copy after its upgrade, perks, a fight's Inflation (`tax`), a `virus`, `costDrop` (`cut`), the sleeve's discount (`disc`) and a new card's (`welcome`) (-1 = X). A card On Credit costs this much in debt, not in mana. */
 export function cardCostOf(card: CardLike): number {
   const def = CARDS[card.id];
   const cost = card.up && def.upCost !== undefined ? def.upCost : def.cost;
   if (cost < 0) return cost;
   const base = Math.max(def.minCost ?? 0, cost + (card.perks ?? []).reduce((d, p) => d + (PERKS[p]?.costDelta ?? 0), 0));
-  return Math.max(0, base + (card.tax ?? 0) * CONFIG.inflationCost + (card.virus ? CONFIG.virusCost : 0) - (card.cut ?? 0) - (card.disc ?? 0));
+  return Math.max(
+    0,
+    base + (card.tax ?? 0) * CONFIG.inflationCost + (card.virus ? CONFIG.virusCost : 0) - (card.cut ?? 0) - (card.disc ?? 0) - (card.welcome ?? 0),
+  );
 }
 
 /** The cost a card copy has without the sleeve's temporary discount: what it is "worth" (Fire Sale, Fence It). */
-export const fullCostOf = (card: CardLike): number => cardCostOf({ ...card, disc: 0 });
+export const fullCostOf = (card: CardLike): number => cardCostOf({ ...card, disc: 0, welcome: 0 });
 
 /** Values of a card copy (upgrade, per-fight bonus, tenure and time on the belt included). */
 export function cardValsOf(card: CardLike): number[] {
