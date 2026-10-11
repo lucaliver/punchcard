@@ -424,6 +424,8 @@ const SOUNDS = {
   heartbeat: () => {
     for (const d of [0, 0.15]) tone(60, 0.1, { type: 'sine', vol: 0.4, to: 40, delay: d });
   },
+  /** One step of a bar filling up. */
+  tally: () => tone(1000, 0.03, { type: 'square', vol: 0.04, to: 1300 }),
   /** A desk bell. */
   ding: () => {
     tone(1568, 0.5, { type: 'sine', vol: 0.14 });

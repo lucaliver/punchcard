@@ -32,7 +32,7 @@ const CLASS_ICON: Record<CardClass, string> = {
   curse: 'skull',
 };
 
-type Section = 'cards' | 'enemies' | 'relics' | 'keywords' | 'records' | 'history';
+export type Section = 'cards' | 'enemies' | 'relics' | 'keywords' | 'records' | 'history';
 const SECTIONS: Section[] = ['cards', 'enemies', 'relics', 'keywords', 'records', 'history'];
 const SECTION_ICON: Record<Section, string> = {
   cards: 'cards',
@@ -151,13 +151,14 @@ function recordSlip(): HTMLElement {
 }
 
 /** Every card in the game by class, every enemy and its moves, the relics, and the player's records. */
-export function compendiumScreen(onBack: () => void): Screen {
+/** `open`: the section the handbook opens on (the first, Cards, when none is given). */
+export function compendiumScreen(onBack: () => void, open: Section = 'cards'): Screen {
   const classes = tabsNow();
   const pages = pagesNow();
   const cardList = CARD_LIST.filter((c) => !cardHidden(c.id));
   let tab: CardClass = classes[0];
   let act = 1;
-  let section: Section = 'cards';
+  let section: Section = open;
   const filled = collection();
 
   const tabs = h('div', { class: 'tabs', role: 'tablist' });

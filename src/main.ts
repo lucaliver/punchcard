@@ -275,7 +275,7 @@ function nextNode(): void {
 function endRun(r: RunState, won: boolean): void {
   trackRun(r, won ? 'win' : 'lose');
   saveFightLog(won ? 'won' : 'lost');
-  show(endScreen(r, won, finishRun(r, won), goHeroSelect, goTitle));
+  show(endScreen(r, won, finishRun(r, won), goHeroSelect, goTitle, (section) => show(compendiumScreen(goTitle, section))));
 }
 
 function abandon(): void {

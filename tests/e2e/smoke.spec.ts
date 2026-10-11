@@ -1332,6 +1332,9 @@ test('losing the first fight offers to beg to stay, once, and the fight goes on'
   await expect(page.locator('.end')).toBeVisible({ timeout: 8000 });
   // The handbook's three bars (cards, personnel, stationery) show under the payslip.
   await expect(page.locator('.end .coll-row')).toHaveCount(3);
+  // Tapping a bar opens the handbook on its page.
+  await page.locator('.end .coll-relics').click();
+  await expect(page.getByRole('tab', { name: /stationery/i, selected: true })).toBeVisible();
 });
 
 test('a stun covers the belt with one veil, not a badge on every card', async ({ page }) => {

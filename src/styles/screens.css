@@ -285,7 +285,7 @@
   place-items: center;
 }
 .end .portrait-lg .riso { width: 124px; height: 124px; }
-.end.lose .portrait-lg .riso { transform: rotate(90deg) translateX(20px); }
+.end.lose .portrait-lg .riso { transform: rotate(90deg) translateX(20px); filter: grayscale(1); }
 /* end of the run: the stats print out as a dot-matrix payslip on tractor-feed paper, then get stamped */
 .payslip {
   position: relative;
@@ -365,7 +365,7 @@
   display: grid;
   grid-template-columns: auto 1fr auto;
   align-items: center;
-  gap: 6px 8px;
+  gap: 0 8px;
   color: var(--k);
   background: var(--paper);
   border: var(--line) solid var(--k);
@@ -375,7 +375,15 @@
   line-height: 1;
   animation: slip-line 0.1s steps(1) var(--coll-wait) both;
 }
-.coll-row { display: contents; }
+.coll-row {
+  display: grid;
+  grid-template-columns: subgrid;
+  grid-column: 1 / -1;
+  align-items: center;
+  padding-block: 2px;
+  text-align: left;
+}
+.coll-row:active { translate: 1px 1px; }
 .coll-label { display: flex; align-items: center; gap: 6px; min-width: 0; text-align: left; }
 .coll-label .pico { flex: none; font-size: 1.1em; --ink2: var(--p); }
 .coll-row b { font-weight: 400; font-variant-numeric: tabular-nums; }
@@ -391,15 +399,16 @@
   background: var(--p);
   transform-origin: left;
   transform: scaleX(var(--to));
-  animation: coll-fill 0.9s steps(12) calc(var(--coll-wait) + 0.3s + var(--i) * 0.35s) backwards;
+  /* the same number of steps as COLL_STEPS in end.ts */
+  animation: coll-fill var(--dur-coll-fill) steps(12) calc(var(--coll-wait) + 0.3s + var(--i) * 0.35s) backwards;
 }
 .coll-foes .coll-fill { background: var(--b); }
 .coll-relics .coll-fill { background: var(--y); }
 @keyframes coll-fill {
-  from { transform: scaleX(var(--from)); }
+  from { transform: scaleX(0); }
 }
 /* the bar's gain lands as a small stamp once it has filled */
-.coll-gain { order: 0; animation-delay: calc(var(--coll-wait) + 1.2s + var(--i) * 0.35s); }
+.coll-gain { order: 0; animation-delay: calc(var(--coll-wait) + 0.3s + var(--dur-coll-fill) + var(--i) * 0.35s); }
 .end .act-btn { display: flex; align-items: center; justify-content: center; gap: 10px; }
 .end .act-btn .pico { font-size: 1.2em; --ink2: var(--p); }
 .slip-row.slip-net {
