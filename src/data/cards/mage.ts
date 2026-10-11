@@ -149,7 +149,7 @@ export const mageCards: CardDef[] = [
   },
   {
     id: 'meltdown',
-    face: '{dmg}={burn}×{0}|{burn}=0',
+    face: '{dmg}={burn}×{0}|{noBurn}',
     cls: 'mage',
     type: 'attack',
     rarity: 'rare',

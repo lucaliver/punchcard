@@ -307,7 +307,7 @@ export const warriorCards: CardDef[] = [
   },
   {
     id: 'blowOffSteam',
-    face: '{dmg}={block}×{0}|{block}=0',
+    face: '{dmg}={block}×{0}|{noBlock}',
     cls: 'warrior',
     type: 'attack',
     rarity: 'epic',

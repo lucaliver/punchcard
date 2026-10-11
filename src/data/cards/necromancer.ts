@@ -784,7 +784,7 @@ export const necromancerCards: CardDef[] = [
   },
   {
     id: 'mealVoucher',
-    face: '{dmg}={curse}×{0}|{curse}=0',
+    face: '{dmg}={curse}×{0}|{noCurse}',
     cls: 'necromancer',
     type: 'attack',
     rarity: 'rare',

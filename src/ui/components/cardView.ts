@@ -121,6 +121,9 @@ export const GLYPHS: Record<string, { icon: string; unit?: string; sign?: string
   foeHp: { icon: 'heartbreak', sign: '-', unit: '%' },
   /** The enemy's Chill is taken off it (Icebreaker). */
   noChill: { icon: 'snowOff', tone: 'blue' },
+  noBurn: { icon: 'flameOff', tone: 'red' },
+  noCurse: { icon: 'skullOff', tone: 'purple' },
+  noBlock: { icon: 'shieldOff', tone: 'teal' },
   /** A status that can't fall under this much (Pre-Existing Condition's Poison). */
   floor: { icon: 'lock' },
   /** The enemy's move comes this many seconds closer (Masochist). */

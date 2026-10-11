@@ -400,6 +400,15 @@ export const ICONS: Record<string, { el: Element; svg: string; wide?: boolean }>
     svg: `${shield.replace(HI, 'fill="#16121f" opacity=".0"')}<path d="M34 6l-6 16 8 6-8 12 4 10" stroke="#16121f" stroke-width="4" fill="none"/>`,
   },
   snow: { el: 'ice', svg: snowflake },
+  // Crossed-out versions of a glyph: nothing of it is left (a face reads "{noBurn}" where it used to say "burn = 0")
+  flameOff: {
+    el: 'fire',
+    svg: `${flame}<path d="M4 6l56 54" stroke="#16121f" stroke-width="13" stroke-linecap="round"/><path d="M4 6l56 54" stroke="currentColor" stroke-width="5.5" stroke-linecap="round"/>`,
+  },
+  skullOff: {
+    el: 'shadow',
+    svg: `${skull}<path d="M4 6l56 54" stroke="#16121f" stroke-width="13" stroke-linecap="round"/><path d="M4 6l56 54" stroke="currentColor" stroke-width="5.5" stroke-linecap="round"/>`,
+  },
   snowOff: {
     el: 'ice',
     svg: `${snowflake}<path d="M4 6l56 54" stroke="#16121f" stroke-width="13" stroke-linecap="round"/><path d="M4 6l56 54" stroke="currentColor" stroke-width="5.5" stroke-linecap="round"/>`,
