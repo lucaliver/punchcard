@@ -88,7 +88,7 @@ export const GLYPHS: Record<string, { icon: string; unit?: string; sign?: string
   /** Condition: no Block. */
   bare: { icon: 'shieldOff' },
   /** The card's own cost goes down. */
-  cheaper: { icon: 'priceTag', sign: '-' },
+  cheaper: { icon: 'priceTag', sign: '-', tone: 'blue' },
   /** The enemy's current attack: added to what a card gives or deals (Claims Adjuster, Return to Sender). */
   foe: { icon: 'foeAttack' },
   /** An empty mana crystal is lost for the fight. */
