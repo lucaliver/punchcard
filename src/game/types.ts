@@ -208,6 +208,8 @@ export interface StatusDef {
   selfName?: true;
   /** Icon when the status is on the hero, if it must read differently there (you stunned vs the enemy stunned). */
   selfIcon?: string;
+  /** Tone when the status is on the hero, if it must differ there (Stun is magenta on the enemy and purple on you: asleep). */
+  selfTone?: Tone;
   /** While active, its amount (`v`) counts as Strength: extra damage for attack cards (a timed one is a temporary boost). */
   strength?: true;
   /** While active on the enemy, its amount (`v`) is taken off every hit of the hero's cards (Fine Print); Poison, Burn and thorns slip through. */

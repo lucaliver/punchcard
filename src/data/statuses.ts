@@ -708,6 +708,7 @@ const defs: StatusDef[] = [
     icon: 'stars',
     look: 'stunned',
     selfIcon: 'asleep',
+    selfTone: 'purple',
     selfName: true,
     timeMul: 0,
     handsTied: true,
@@ -1010,6 +1011,9 @@ const defs: StatusDef[] = [
 
 export const STATUSES: Record<string, StatusDef> = Object.fromEntries(defs.map((d) => [d.id, d]));
 export const STATUS_ORDER = defs.map((d) => d.id);
+
+/** A status's tone on a side (its own, or the hero's when it has one). */
+export const statusTone = (id: string, side: Side): Tone => (side === 'hero' ? (STATUSES[id].selfTone ?? STATUSES[id].tone) : STATUSES[id].tone);
 
 /** A status's icon on a side: some read differently on the hero (you stunned vs the enemy stunned). */
 export const statusIcon = (id: string, side: Side): string => (side === 'hero' ? (STATUSES[id].selfIcon ?? STATUSES[id].icon) : STATUSES[id].icon);

@@ -3,7 +3,7 @@ import { sfx } from '../../audio/sfx';
 import { haptic } from '../fx/fx';
 import { CONFIG, halfPct } from '../../data/config';
 import { RELICS } from '../../data/relics';
-import { STATUS_ORDER, STATUSES, statusIcon } from '../../data/statuses';
+import { STATUS_ORDER, STATUSES, statusIcon, statusTone } from '../../data/statuses';
 import type { Fighter } from '../../game/combat';
 import type { MoveDef, Side } from '../../game/types';
 import { icon } from '../art/icons';
@@ -172,7 +172,7 @@ export function createHud(v: CombatView, onPassive: () => void): { render(): voi
           const b = h('button', {
             class: `status ${def.good ? 'good' : 'bad'}${def.span || def.progress ? ' draining' : ''}`,
             'data-status': id,
-            'data-tone': def.tone,
+            'data-tone': statusTone(id, side),
             html: `${def.span || def.progress ? '<i class="drain"></i>' : ''}${icon(statusIcon(id, side))}<span></span>`,
             'aria-label': statusName(id, side),
           });
@@ -361,7 +361,7 @@ export function createHud(v: CombatView, onPassive: () => void): { render(): voi
     tiedSpan = Math.max(tiedSpan, combat.hero.statuses[id].t);
     if (id !== tiedId) {
       tiedId = id;
-      r.stun.dataset.tone = STATUSES[id].tone;
+      r.stun.dataset.tone = statusTone(id, 'hero');
     }
     r.stun.style.setProperty('--left', (Math.ceil((combat.hero.statuses[id].t / tiedSpan) * STUN_STEPS) / STUN_STEPS).toFixed(2));
   };

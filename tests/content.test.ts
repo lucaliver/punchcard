@@ -353,7 +353,8 @@ describe('one ink per thing', () => {
     };
     for (const [kind, g] of Object.entries(GLYPHS)) {
       const st = STATUSES[status[kind] ?? kind];
-      if (st && g.tone) expect(g.tone, kind).toBe(st.tone);
+      // The hero's own stun reads differently (asleep): its glyph takes the status's `selfTone`.
+      if (st && g.tone) expect(g.tone, kind).toBe(kind === 'selfStun' ? st.selfTone : st.tone);
     }
   });
 });

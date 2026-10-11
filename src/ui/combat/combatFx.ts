@@ -4,7 +4,7 @@ import { CARDS } from '../../data/cards';
 import { CONFIG } from '../../data/config';
 import { openModal } from '../app';
 import { HEXES } from '../../data/hexes';
-import { STATUSES } from '../../data/statuses';
+import { STATUSES, statusTone } from '../../data/statuses';
 import { discover } from '../../game/meta';
 import { saveSettings, settings } from '../../game/settings';
 import type { CombatEvent } from '../../game/types';
@@ -156,12 +156,12 @@ export function bindCombatFx(v: CombatView, cards: CardLayer, onEnd: (result: 'w
       case 'status': {
         const def = STATUSES[e.id];
         const p = v.pointOf(e.target);
-        floatText(p.x, p.y - 36, statusName(e.id, e.target), 'status').dataset.tone = def.tone;
+        floatText(p.x, p.y - 36, statusName(e.id, e.target), 'status').dataset.tone = statusTone(e.id, e.target);
         sfx(def.good ? 'status' : 'debuff');
         if (def.burst) burst(def.burst.kind, p.x, p.y, def.burst.n);
         if (def.good && !def.passive) {
           const who = e.target === 'enemy' ? r.enemyArt : r.portrait;
-          who.dataset.tone = def.tone;
+          who.dataset.tone = statusTone(e.id, e.target);
           v.retrigger(who, 'buffed');
         }
         break;

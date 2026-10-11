@@ -1,7 +1,7 @@
 import { type TKey, t } from '../../core/i18n';
 import { CONFIG, halfPct } from '../../data/config';
 import { HEXES } from '../../data/hexes';
-import { STATUSES, statusIcon } from '../../data/statuses';
+import { STATUSES, statusIcon, statusTone } from '../../data/statuses';
 import { sfx } from '../../audio/sfx';
 import type { EnemyDef, MoveDef, Tone } from '../../game/types';
 import { creature } from '../art/creatures';
@@ -115,7 +115,7 @@ export function moveTone(m: MoveDef): Tone | null {
   const onHero = m.status?.find((s) => s.target === 'hero');
   if (m.intent === 'defend' && m.block) return 'teal';
   if (m.dmg || m.release) return 'red';
-  if (onHero) return STATUSES[onHero.id].tone;
+  if (onHero) return statusTone(onHero.id, 'hero');
   if (m.infect) return 'green';
   if (m.inflate) return 'red';
   if (m.curse || m.hex || m.swap) return 'purple';
@@ -124,7 +124,7 @@ export function moveTone(m: MoveDef): Tone | null {
   if (m.absorb) return 'mint';
   if (m.block) return 'teal';
   if (m.heal) return 'green';
-  if (m.status?.length) return STATUSES[m.status[0].id].tone;
+  if (m.status?.length) return statusTone(m.status[0].id, m.status[0].target);
   return null;
 }
 

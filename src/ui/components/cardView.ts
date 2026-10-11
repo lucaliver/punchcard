@@ -34,7 +34,7 @@ export const GLYPHS: Record<string, { icon: string; unit?: string; sign?: string
   mana: { icon: 'crystal', sign: '+', tone: 'blue' },
   stun: { icon: 'stars', unit: 's', tone: 'magenta' },
   /** You are stunned (not the enemy). */
-  selfStun: { icon: 'asleep', unit: 's', tone: 'magenta' },
+  selfStun: { icon: 'asleep', unit: 's', tone: 'purple' },
   chill: { icon: 'snow', unit: 's', tone: 'blue' },
   rush: { icon: 'speedCards', unit: 's', tone: 'amber' },
   burn: { icon: 'flame', tone: 'red' },
@@ -206,12 +206,12 @@ export const statusName = (id: string, side: Side): string => t(STATUSES[id].sel
 export const statusDesc = (id: string, side: Side, v: number): string =>
   keywordHtml(t(STATUSES[id].selfName && side === 'hero' ? `status.${id}.self.d` : `status.${id}.d`, { v }));
 
-/** Keywords that are not statuses but still have a colour: Block is teal, mana blue, Asleep (the hero's stun) magenta like Stun, the hexes purple, Heal green. The card modifiers have none (dark grey). */
+/** Keywords that are not statuses but still have a colour: Block is teal, mana blue, Asleep (the hero's stun) and the hexes purple, Heal green. The card modifiers have none (dark grey). */
 const KEYWORD_TONE: Record<string, Tone> = {
   block: 'teal',
   mana: 'blue',
   crystal: 'blue',
-  asleep: 'magenta',
+  asleep: 'purple',
   heal: 'green',
   damage: 'pink',
   sleeve: 'amber',
