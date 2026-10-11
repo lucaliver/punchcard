@@ -587,8 +587,7 @@ const it: Record<EnKey, string> = {
   'relic.outOfOffice.name': 'Cartello Fuori Sede',
   'relic.outOfOffice.d': 'Il primo colpo da {n} danni o più di ogni combattimento non va a segno.',
   'relic.rolodex.name': 'Rubrica Rotante',
-  'relic.rolodex.d':
-    'Le offerte di carte possono venire da ogni classe, non solo dalla tua: ogni classe e le carte neutre sono ugualmente probabili.',
+  'relic.rolodex.d': 'Le ricompense in carte possono venire da ogni classe, non solo dalla tua.',
   'perk.fastTrack': 'Raccomandazione',
   'perk.fastTrack.d': 'Innata: carta sempre tra le prime sul nastro.',
   'perk.budgetCut': 'Taglio al Budget',
