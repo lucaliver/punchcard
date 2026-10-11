@@ -18,8 +18,12 @@ export const CONFIG = {
   debugTaps: 5,
   /** The hero's portrait sweats under this share of max HP. */
   heroLowHp: 0.3,
-  /** An enemy tenses up before its move lands: from this many seconds left (or half the wind-up, if shorter) it winds up, and from `hard` it shakes harder and rims pink. */
-  anticipate: { soft: 1.5, hard: 0.6 },
+  /**
+   * An enemy tenses up before its move lands: from this many seconds left (or half the wind-up, if shorter) it winds up, and from `hard` it shakes harder and rims pink.
+   * Before that, a hostile move `charge`s over the last share of its wind-up (an aura growing in `chargeSteps` steps), a big count shows over the enemy for the last `count`
+   * seconds, and a hit that takes `heavy` of the hero's max HP (or all of what is left) has a bigger, redder aura.
+   */
+  anticipate: { soft: 1.5, hard: 0.6, charge: 0.5, chargeSteps: 4, count: 3, heavy: 0.3 },
   /** The rust mop: grime a stroke as long as the belt is wide takes off a spot (a spot is 1), and how far (px) past a spot its head still reaches. */
   mop: { scrubPerBelt: 5, reach: 8 },
   /** How far along the belt (in belt widths) a card with a tip has come when the fight stops to explain it. */

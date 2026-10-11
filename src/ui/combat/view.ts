@@ -69,6 +69,7 @@ function markup(run: RunState, combat: Combat): string {
       <div class="shade"></div>
       <div class="enemy-wrap">
         <div class="enemy-art">${creature(enemyDef.art)}<button class="weak-spot" aria-label="${t('status.weakSpot')}">${icon('target')}</button></div>
+        <b class="count" aria-hidden="true"></b>
         <div class="mop" aria-hidden="true">${icon('mop')}</div>
         ${combat.minigame ? `<button class="minigame-btn" aria-label="${t('combat.minigame')}">${icon('kanban')}<span>${t(`task.${combat.minigame.id}.title`)}</span></button>` : ''}
       </div>
@@ -141,6 +142,7 @@ function queryRefs(el: HTMLElement) {
     stage: $('.stage', el),
     enemyWrap: $('.enemy-wrap', el),
     enemyArt: $('.enemy-art', el),
+    count: $('.enemy-wrap .count', el),
     weakSpot: $('.weak-spot', el),
     mop: $('.mop', el),
     beltAlarm: $('.belt-alarm', el),

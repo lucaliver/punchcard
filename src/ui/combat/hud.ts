@@ -34,6 +34,9 @@ export function createHud(v: CombatView, onPassive: () => void): { render(): voi
   let lastMove: MoveDef | null = null;
   /** `moveCount` of the last hit we warned about (one sound cue per hit). */
   let warned = -1;
+  /** The charge step shown on the enemy, and `moveCount * 100 + seconds` of the last tick of the big count. */
+  let lastCharge = 0;
+  let counted = -1;
   /** `moveCount` of the lethal hit the alarm sounded for (-1 while not in danger). */
   let alarmed = -1;
   /** The belt's red wash, in steps (written only when the step changes). */
@@ -227,6 +230,12 @@ export function createHud(v: CombatView, onPassive: () => void): { render(): voi
     return '';
   };
 
+  /** How much the hit being charged will hurt, for the CSS (0 harmless, 1 a hit, 2 a heavy hit, 3 a lethal one). */
+  const setThreat = (el: HTMLElement, level: number): void => {
+    if (level) el.dataset.threat = String(level);
+    else delete el.dataset.threat;
+  };
+
   const setTone = (el: HTMLElement, tone: string | null): void => {
     if (tone) el.dataset.tone = tone;
     else delete el.dataset.tone;
@@ -281,6 +290,27 @@ export function createHud(v: CombatView, onPassive: () => void): { render(): voi
     const hs = combat.hero;
     const incoming = hostile ? Math.max(0, combat.intentDamage(m) * (m.hits ?? 1) - hs.block) : 0;
     setText(r.intentVal, intentValue(m));
+    // Long before that the hostile enemy charges (an aura that grows in steps), a big count shows for the last seconds, and a heavy or lethal hit looks worse.
+    const an = CONFIG.anticipate;
+    const chargeAt = 1 - an.charge;
+    const charge = hostile && rate > 0 ? Math.ceil(Math.max(0, Math.min(1, (p - chargeAt) / an.charge)) * an.chargeSteps) : 0;
+    toggle(r.enemyArt, 'charging', charge > 0);
+    if (charge !== lastCharge) {
+      lastCharge = charge;
+      r.enemyArt.style.setProperty('--charge', String(charge));
+    }
+    const lethalHit = hostile && combat.intentDamage(m) > 0 && incoming >= hs.hp && !combat.isImmune('hero');
+    const threat = !incoming ? 0 : lethalHit ? 3 : incoming >= hs.maxHp * an.heavy ? 2 : 1;
+    setThreat(r.enemyArt, threat);
+    setThreat(r.count, threat);
+    const secs = hostile && rate > 0 && left < an.count ? Math.ceil(left) : 0;
+    toggle(r.count, 'on', secs > 0);
+    if (secs > 0 && counted !== e.moveCount * 100 + secs) {
+      counted = e.moveCount * 100 + secs;
+      setText(r.count, String(secs));
+      v.retrigger(r.count, 'pop');
+      sfx('countTick');
+    }
     // A sound cue just before each hit: knocks if it will hurt, a soft tick if Block covers it.
     if (hostile && combat.intentDamage(m) > 0 && left < 1 && warned !== e.moveCount) {
       warned = e.moveCount;
@@ -292,7 +322,7 @@ export function createHud(v: CombatView, onPassive: () => void): { render(): voi
     r.incoming.style.width = shown ? `${(lost / hs.maxHp) * 100}%` : '0';
     toggle(v.el, 'danger', shown && left < 0.8);
     // The hit being charged would knock the hero out (Dodge would save them): alarm on the edges, and a siren once.
-    const lethal = hostile && combat.intentDamage(m) > 0 && incoming >= hs.hp && !combat.isImmune('hero');
+    const lethal = lethalHit;
     toggle(v.el, 'lethal', lethal);
     if (lethal && alarmed !== e.moveCount) {
       sfx('lethal');

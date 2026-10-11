@@ -187,7 +187,7 @@
 }
 /* status looks (before .hit, so a hit still wins while it lasts). Each look only sets its own piece of the filter and they
    stack, so poison and burn together wear two rims, one outside the other. */
-.enemy-art .riso { filter: var(--f-poison,) var(--f-burn,) var(--f-exposed,) var(--f-weak,) var(--f-wind,); }
+.enemy-art .riso { filter: var(--f-poison,) var(--f-burn,) var(--f-exposed,) var(--f-weak,) var(--f-wind,) var(--f-charge,); }
 .enemy-art.poisoned { --f-poison: drop-shadow(2px 0 0 var(--green)) drop-shadow(-2px 0 0 var(--green)) drop-shadow(0 2px 0 var(--green)) drop-shadow(0 -2px 0 var(--green)); }
 .enemy-art.burning { --f-burn: drop-shadow(2px 0 0 var(--y)) drop-shadow(-2px 0 0 var(--y)) drop-shadow(0 2px 0 var(--y)) drop-shadow(0 -2px 0 var(--y)); }
 .enemy-art.exposed { --f-exposed: drop-shadow(2px 0 0 var(--red)) drop-shadow(-2px 0 0 var(--red)) drop-shadow(0 2px 0 var(--red)) drop-shadow(0 -2px 0 var(--red)); }
@@ -204,6 +204,40 @@
   66% { transform: translateX(-6px); }
 }
 /* before its move lands the enemy tenses up (the class comes from hud.ts): a blow crouches and trembles, anything else swells; the last moments shake harder and rim it pink */
+/* a hostile move charges long before it lands: an aura grows in steps (--charge, 1 to 4) and the enemy sinks a little; a heavier hit (data-threat) has a bigger, redder one */
+.enemy-art[data-threat] { --aura: 1; --aura-ink: var(--p); }
+.enemy-art[data-threat='2'] { --aura: 1.6; --aura-ink: var(--y); }
+.enemy-art[data-threat='3'] { --aura: 2.2; --aura-ink: var(--red); }
+.enemy-art.charging {
+  --px: calc(var(--charge, 0) * var(--aura, 1) * 1px);
+  --f-charge: drop-shadow(var(--px) 0 0 var(--aura-ink, var(--p))) drop-shadow(calc(-1 * var(--px)) 0 0 var(--aura-ink, var(--p)))
+    drop-shadow(0 var(--px) 0 var(--aura-ink, var(--p))) drop-shadow(0 calc(-1 * var(--px)) 0 var(--aura-ink, var(--p)));
+  scale: 1 calc(1 - var(--charge, 0) * 0.012);
+  transform-origin: 50% 100%;
+}
+/* the big count over a charging enemy: the last seconds, one number each */
+.enemy-wrap .count {
+  position: absolute;
+  top: 6px;
+  left: 50%;
+  translate: -50% 0;
+  z-index: 2;
+  display: none;
+  font-family: var(--font-ui);
+  font-size: 72px;
+  line-height: 1;
+  color: var(--paper);
+  text-shadow: 3px 3px 0 var(--k), -2px -2px 0 var(--k), 2px -2px 0 var(--k), -2px 2px 0 var(--k);
+  pointer-events: none;
+}
+.enemy-wrap .count.on { display: block; }
+.enemy-wrap .count[data-threat='2'] { color: var(--y); }
+.enemy-wrap .count[data-threat='3'] { color: var(--red); }
+.enemy-wrap .count.pop { animation: count-pop 0.24s steps(3); }
+@keyframes count-pop {
+  0% { scale: 1.5; }
+  100% { scale: 1; }
+}
 .enemy-art.winding { animation: wind-up 0.3s steps(2) infinite; transform-origin: 50% 100%; }
 .enemy-art.winding.wind-hit { animation-name: wind-down; }
 .enemy-art.winding.wind-hard { animation-duration: 0.14s; --f-wind: drop-shadow(2px 0 0 var(--p)) drop-shadow(-2px 0 0 var(--p)); }

@@ -337,6 +337,18 @@ test('tailor: cargo pants add a sleeve slot to the hero sheet and the fight', as
   await expect(page.locator('.hero-sheet')).toContainText('Cargo Pants');
 });
 
+test('a hostile move shows its charge, then a big count over the enemy for the last seconds', async ({ page }) => {
+  await freshGame(page);
+  await startFight(page);
+  await combat(page, 'c.enemy.move = c.foe.main; c.hero.block = 0; c.enemy.timer = c.enemy.move.windup * 0.7;');
+  await expect(page.locator('.enemy-art.charging')).toBeVisible();
+  await expect(page.locator('.enemy-wrap .count')).toBeHidden();
+  await combat(page, 'c.enemy.timer = c.enemy.move.windup - 2.5;');
+  await expect(page.locator('.enemy-wrap .count')).toHaveText(/^[23]$/);
+  await combat(page, 'c.enemy.move = c.foe.main; c.enemy.timer = 0;');
+  await expect(page.locator('.enemy-art.charging')).toHaveCount(0);
+});
+
 test('debug menus: the fight menu kills the enemy, the map menu opens rooms and rewards and keeps the progress', async ({ page }) => {
   await freshGame(page);
   await startFight(page);
