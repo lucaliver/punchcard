@@ -337,6 +337,18 @@ test('tailor: cargo pants add a sleeve slot to the hero sheet and the fight', as
   await expect(page.locator('.hero-sheet')).toContainText('Cargo Pants');
 });
 
+test('a tap on the way into a fight skips the door', async ({ page }) => {
+  await freshGame(page);
+  await page.getByRole('button', { name: /new run/i }).click();
+  await page.getByRole('button', { name: /start shift/i }).click();
+  await page.getByRole('button', { name: /enter floor 1/i }).click();
+  const door = page.locator('.office-door');
+  await expect(door).toBeVisible();
+  await door.click({ position: { x: 100, y: 300 } });
+  await expect(door).toHaveCount(0, { timeout: 500 });
+  await expect(page.locator('.js-start')).toBeVisible();
+});
+
 test('a hostile move shows its charge, then a big count over the enemy for the last seconds', async ({ page }) => {
   await freshGame(page);
   await startFight(page);

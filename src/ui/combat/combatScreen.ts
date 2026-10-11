@@ -489,6 +489,11 @@ export function combatScreen(run: RunState, combat: Combat, cb: CombatCallbacks)
     card.addEventListener('animationend', (e) => {
       if (e.target === card) card.remove();
     });
+    // A tap skips it.
+    card.addEventListener('click', () => {
+      card.remove();
+      r.enemyArt.classList.remove('boss-enter');
+    });
     el.append(card);
     r.enemyArt.classList.add('boss-enter');
     // Class off when done, or it would outrank the death throes later.
@@ -612,17 +617,22 @@ export function combatScreen(run: RunState, combat: Combat, cb: CombatCallbacks)
         ),
         h('div', { class: 'door-mat' }),
       );
-      door.addEventListener('animationend', (e) => {
-        if (e.target !== door) return;
+      /** The door is over (it walked away, or a tap skipped it): the boss's card or the first fight's tour comes next. */
+      const doorDone = (): void => {
+        if (!door.isConnected) return;
         door.remove();
         if (combat.enemy.def.tier === 'boss') bossIntro();
         else if (!settings.seenTutorial) firstFightTour();
+      };
+      door.addEventListener('animationend', (e) => {
+        if (e.target === door) doorDone();
       });
+      door.addEventListener('click', doorDone);
       // A normal enemy stays out of sight until the clock-in is stamped, then walks in.
       if (combat.enemy.def.tier !== 'boss') r.stage.classList.add('unseen');
       el.append(door);
       // The sound is the knocking: it waits while the name is read.
-      later(() => sfx(actDef(combat.enemy.def.act).door), cssMs('--dur-door-read'));
+      later(() => door.isConnected && sfx(actDef(combat.enemy.def.act).door), cssMs('--dur-door-read'));
       addEventListener('resize', onResize);
       document.addEventListener('visibilitychange', onVisibility);
       render(0);
