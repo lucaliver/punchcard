@@ -281,6 +281,13 @@
   57% { background: var(--y); transform: translateY(-3px) scale(1.05); box-shadow: 0 0 0 4px var(--y), 0 0 0 8px var(--k); }
   100% { transform: none; box-shadow: 0 0 0 0 var(--y), 0 0 0 0 var(--k); }
 }
+/* cards of your deck are upgraded: the same hop as a card joining, in pink, with a ring of blue */
+.hero-portrait.upgraded { animation: upgraded 0.7s steps(7); }
+@keyframes upgraded {
+  0%, 28% { background: var(--p); transform: translateY(-6px) scale(1.1); box-shadow: 0 0 0 6px var(--p), 0 0 0 10px var(--b); }
+  57% { background: var(--p); transform: translateY(-3px) scale(1.05); box-shadow: 0 0 0 4px var(--p), 0 0 0 8px var(--b); }
+  100% { transform: none; box-shadow: 0 0 0 0 var(--p), 0 0 0 0 var(--b); }
+}
 /* low HP: the hero shivers and sweats (two drops running down, out of step) */
 .hero-portrait { position: relative; }
 .hero-portrait.low .riso { animation: shiver 0.3s steps(2) infinite; }

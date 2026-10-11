@@ -256,6 +256,14 @@ export function bindCombatFx(v: CombatView, cards: CardLayer, onEnd: (result: 'w
         }
         break;
       }
+      case 'cardsUpgraded': {
+        const p = v.heroPoint();
+        burst('gold', p.x, p.y, 14);
+        v.retrigger(r.portrait, 'upgraded');
+        floatText(p.x, p.y - 34, `${icon('up')}+${e.n}`, 'deck', 0, true);
+        sfx('levelUp');
+        break;
+      }
       case 'cardDiscarded':
         cards.markRemoval(e.card.uid, 'expired');
         break;

@@ -355,13 +355,16 @@ export function groupCopies(cards: CardInst[]): { card: CardInst; n: number }[] 
 /**
  * Deck grid, sortable by type, cost or name, identical copies grouped (×N). Without `onPick`, tapping (or holding) a
  * card opens its detail. With `onPick`: tap selects a card (shown as `previewSelected` if given, e.g. its upgraded
- * version), hold shows its detail, and the single confirm button calls `onPick`. Tapping outside cancels.
+ * version), hold shows its detail, and the single confirm button calls `onPick`. With `count` (more than one), each copy is its own
+ * card, `count` of them (or all there are) are picked and `onPickMany` gets them. Tapping outside cancels.
  */
 export function openDeck(
   deck: CardInst[],
   opts: {
     title?: string;
     onPick?: (c: CardInst) => void;
+    count?: number;
+    onPickMany?: (cs: CardInst[]) => void;
     confirmLabel?: string;
     filter?: (c: CardInst) => boolean;
     previewSelected?: (c: CardInst) => CardInst;
@@ -369,15 +372,19 @@ export function openDeck(
   } = {},
 ): ModalHandle {
   const cards = deck.filter(opts.filter ?? (() => true));
-  let selected: CardInst | null = null;
+  const many = !!opts.onPickMany;
+  const need = Math.min(opts.count ?? 1, cards.length);
+  let picked: CardInst[] = [];
   let confirm: HTMLButtonElement | null = null;
+  const isPicked = (c: CardInst): boolean => picked.some((p) => p.uid === c.uid);
+  const ready = (): boolean => picked.length === need;
 
   const makeEl = (c: CardInst, n: number): HTMLElement => {
-    const isSelected = selected?.uid === c.uid;
+    const isSelected = isPicked(c);
     const el = cardView(isSelected && opts.previewSelected ? opts.previewSelected(c) : c);
     el.classList.toggle('sel', isSelected);
     if (n > 1) el.append(h('span', { class: 'copies' }, t('deck.copies', { n })));
-    if (!opts.onPick) {
+    if (!opts.onPick && !many) {
       onPress(el, () => {
         sfx('tap');
         openCardDetail(c);
@@ -388,41 +395,45 @@ export function openDeck(
       el,
       () => {
         sfx('tap');
-        selected = selected?.uid === c.uid ? null : c;
+        // One pick swaps with the last; several keep the first ones until the player taps one off.
+        picked = isPicked(c) ? picked.filter((p) => p.uid !== c.uid) : many && picked.length < need ? [...picked, c] : many ? picked : [c];
         render();
-        if (confirm) confirm.disabled = !selected;
+        if (confirm) confirm.disabled = !ready();
       },
       () => openCardDetail(isSelected && opts.previewSelected ? opts.previewSelected(c) : c),
     );
     return el;
   };
-  const grid = h('div', { class: `deck-grid ${opts.onPick ? 'pick' : ''}` });
+  const grid = h('div', { class: `deck-grid ${opts.onPick || many ? 'pick' : ''}` });
   const sorter = sortControl(() => render(true));
   /** `print`: the cards are dealt in (opening, sorting), not on a selection change. */
   function render(print = false): void {
-    grid.replaceChildren(...stagger(groupCopies(sortCards(cards)).map((g) => makeEl(g.card, g.n))));
-    grid.classList.toggle('has-sel', !!selected);
+    const shown = many ? sortCards(cards).map((card) => ({ card, n: 1 })) : groupCopies(sortCards(cards));
+    grid.replaceChildren(...stagger(shown.map((g) => makeEl(g.card, g.n))));
+    grid.classList.toggle('has-sel', picked.length > 0);
     grid.classList.toggle('print', print);
   }
   render(true);
 
   const handle = openModal({
-    title: opts.onPick ? (opts.title ?? t('deck.title')) : `${opts.title ?? t('deck.title')} (${cards.length})`,
+    title: opts.onPick || many ? (opts.title ?? t('deck.title')) : `${opts.title ?? t('deck.title')} (${cards.length})`,
     body: cards.length ? h('div', null, sorter, grid) : h('p', null, t('deck.empty')),
-    actions: opts.onPick
-      ? [
-          {
-            label: opts.confirmLabel ?? t('common.confirm'),
-            onClick: () => {
-              if (!selected) return false;
-              opts.onPick?.(selected);
+    actions:
+      opts.onPick || many
+        ? [
+            {
+              label: opts.confirmLabel ?? t('common.confirm'),
+              onClick: () => {
+                if (!ready()) return false;
+                if (many) opts.onPickMany?.(picked);
+                else opts.onPick?.(picked[0]);
+              },
             },
-          },
-        ]
-      : [{ label: t('common.close'), cls: 'secondary' }],
+          ]
+        : [{ label: t('common.close'), cls: 'secondary' }],
     onClose: opts.onClose,
   });
-  if (opts.onPick) {
+  if (opts.onPick || many) {
     confirm = handle.el.querySelector<HTMLButtonElement>('.actions .btn');
     if (confirm) confirm.disabled = true;
   }

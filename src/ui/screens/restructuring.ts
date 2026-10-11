@@ -1,115 +1,84 @@
 import { t } from '../../core/i18n';
 import { sfx } from '../../audio/sfx';
 import { CONFIG } from '../../data/config';
-import { canPullStrings, canRestructure, payRestructure, restructureCard, rollRestructure, type RunState } from '../../game/run';
-import type { CardInst } from '../../game/types';
+import { canGiftRelic, canRestructure, giftRelic, restructure, type RunState } from '../../game/run';
 import type { Screen } from '../app';
 import { h } from '../dom';
 import { icon } from '../art/icons';
-import { CARD_SHOW_MS, playCardChange } from '../components/cardShow';
+import { CARD_SHOW_MS, playCardChange, playRelic } from '../components/cardShow';
 import { openDeck } from '../components/modals';
 import { closeRoom, roomOption, roomScene } from '../components/room';
 import { runHud } from './journey';
 
 /**
- * Restructuring: up to `restructureCards` deck cards are repositioned, each into another card of its rarity, from scratch.
- * Lateral Move is free and random; Pull Strings costs HP (once) and lets the player pick each new card out of a few.
+ * Restructuring: pick `restructureCards` deck cards and they turn into random cards of any rarity, from scratch,
+ * or take a random stationery and leave the deck as it is.
  */
 export function restructuringScreen(run: RunState, onDone: () => void): Screen {
-  /** The cards this visit already moved: they stay where they landed. */
-  const moved = new Set<number>();
-  let left = CONFIG.restructureCards;
-  let timer = 0;
-  let hud = runHud(run);
+  const timers: number[] = [];
+  const movable = run.deck.filter((c) => canRestructure(run, c)).length;
   const options = h('div', { class: 'rest-options' });
-  const movable = (): number => run.deck.filter((c) => !moved.has(c.uid) && canRestructure(run, c)).length;
 
-  /** The card turns into `id`; the paid way takes its HP with the first card. */
-  function move(card: CardInst, id: string, paid: boolean): void {
-    if (paid && left === CONFIG.restructureCards) {
-      payRestructure(run);
-      const fresh = runHud(run);
-      hud.replaceWith(fresh);
-      hud = fresh;
-    }
-    const before = { ...card };
-    const after = restructureCard(run, card.uid, id);
-    if (!after) return;
-    moved.add(after.uid);
-    left--;
-    playCardChange(el, before, { ...after }, t('restructure.moved'), { start: 'reshuffle', end: 'deckAdd' });
-    if (!left || !movable()) {
-      closeRoom(el, onDone, CARD_SHOW_MS);
-      return;
-    }
-    options.querySelectorAll('button').forEach((b) => {
-      b.disabled = true;
+  /** The picked cards turn into other ones, shown one after the other. */
+  function transform(uids: number[]): void {
+    const moved = restructure(run, uids);
+    moved.forEach(({ before, after }, i) => {
+      const show = (): void => playCardChange(el, before, { ...after }, t('restructure.moved'), { start: 'reshuffle', end: 'deckAdd' });
+      if (i) timers.push(window.setTimeout(show, i * CARD_SHOW_MS));
+      else show();
     });
-    timer = window.setTimeout(() => next(paid), CARD_SHOW_MS);
+    closeRoom(el, onDone, Math.max(1, moved.length) * CARD_SHOW_MS);
   }
 
-  /** The player picked the card to move: a random card takes its place, or a few are laid out to pick from. */
-  function picked(card: CardInst, paid: boolean): void {
-    if (!paid) {
-      const [def] = rollRestructure(run, card.uid, 1);
-      if (def) move(card, def.id, false);
-      return;
-    }
-    const offer = rollRestructure(run, card.uid, CONFIG.restructureChoices).map((def, i): CardInst => ({ uid: -100 - i, id: def.id, up: false }));
-    // Tapping outside leaves the card where it is: nothing is paid until a card has moved.
-    openDeck(offer, { title: t('restructure.choose'), confirmLabel: t('restructure.take'), onPick: (c) => move(card, c.id, true) });
-  }
-
-  function pick(paid: boolean): void {
+  function pickCards(): void {
     sfx('tap');
     openDeck(run.deck, {
-      title: t('restructure.pick'),
+      title: t('restructure.pick', { n: Math.min(CONFIG.restructureCards, movable) }),
       confirmLabel: t('restructure.confirm'),
-      filter: (c) => !moved.has(c.uid) && canRestructure(run, c),
-      onPick: (c) => picked(c, paid),
+      filter: (c) => canRestructure(run, c),
+      count: CONFIG.restructureCards,
+      onPickMany: (cards) => transform(cards.map((c) => c.uid)),
     });
   }
 
-  /** The two ways in. */
-  function menu(): void {
-    const free = movable() > 0;
-    const paid = movable() >= CONFIG.restructureCards && canPullStrings(run);
-    const paidDesc = !canPullStrings(run) ? t('restructure.weak') : t('restructure.none');
-    options.replaceChildren(
-      roomOption(
-        icon('swap'),
-        t('restructure.lateral'),
-        free ? t('restructure.lateralDesc', { n: CONFIG.restructureCards }) : t('restructure.none'),
-        !free,
-        () => pick(false),
-      ),
-      roomOption(
-        icon('bloodMoney'),
-        t('restructure.strings'),
-        paid ? t('restructure.stringsDesc', { hp: CONFIG.restructureHp, n: CONFIG.restructureCards, k: CONFIG.restructureChoices }) : paidDesc,
-        !paid,
-        () => pick(true),
-      ),
-    );
+  function gift(): void {
+    sfx('tap');
+    const id = giftRelic(run);
+    if (!id) return;
+    playRelic(el, id, { start: 'chomp', end: 'jingle' });
+    closeRoom(el, onDone, CARD_SHOW_MS);
   }
 
-  /** After the first card: the next one (the free way may stop here, the paid one is already paid for). */
-  function next(paid: boolean): void {
-    options.replaceChildren(
-      roomOption(icon('swap'), t('restructure.next'), t('restructure.nextDesc'), false, () => pick(paid)),
-      ...(paid ? [] : [roomOption(icon('check'), t('restructure.done'), t('restructure.doneDesc'), false, () => closeRoom(el, onDone, 0))]),
-    );
-  }
+  options.append(
+    roomOption(
+      icon('swap'),
+      t('restructure.lateral'),
+      movable ? t('restructure.lateralDesc', { n: Math.min(CONFIG.restructureCards, movable) }) : t('restructure.none'),
+      !movable,
+      pickCards,
+    ),
+    roomOption(
+      icon('stapler'),
+      t('restructure.gift'),
+      canGiftRelic(run) ? t('restructure.giftDesc') : t('restructure.giftNone'),
+      !canGiftRelic(run),
+      gift,
+    ),
+  );
 
   const el = h(
     'div',
     { class: 'screen' },
-    hud,
+    runHud(run),
     h('h1', { class: 'h1', style: { marginTop: '12px' } }, t('restructure.title')),
     h('p', { class: 'sub' }, t('restructure.desc')),
     roomScene('restructuring'),
     options,
   );
-  menu();
-  return { el, leave: () => window.clearTimeout(timer) };
+  return {
+    el,
+    leave: () => {
+      for (const id of timers) window.clearTimeout(id);
+    },
+  };
 }

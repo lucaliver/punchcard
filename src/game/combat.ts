@@ -1915,6 +1915,7 @@ export class Combat {
       card.up = true;
       if (tax > 0) card.tax = (card.tax ?? 0) + tax;
     }
+    if (picks.length) this.events.emit({ type: 'cardsUpgraded', n: picks.length });
     return picks.length;
   }
 
@@ -2443,12 +2444,17 @@ export class Combat {
   /** `n` random cards (belt first, then the rest of the deck; `deckOnly`: just the piles) are hexed, and cost `cheaper` less for the rest of the fight (Voodoo Pin); `upgrade` upgrades them for it too (Statuette). */
   pinCards(id: string, n: number, cheaper: number, opts: { upgrade?: boolean; deckOnly?: boolean } = {}): void {
     const hex = HEXES[id];
+    let upgraded = 0;
     for (const card of this.pickCards((c) => !isCurse(c) && !c.hex && this.cardCost(c) > 0, n, opts.deckOnly)) {
       card.hex = { id, left: hex.taps, t: hex.thaw };
       card.cut = (card.cut ?? 0) + cheaper;
-      if (opts.upgrade) card.up = true;
+      if (opts.upgrade && !card.up) {
+        card.up = true;
+        upgraded++;
+      }
       this.events.emit({ type: 'hexed', card });
     }
+    if (upgraded) this.events.emit({ type: 'cardsUpgraded', n: upgraded });
   }
 
   /** Inflation: `n` random cards (belt first, then the rest of the deck) cost 1 more mana until they're next played. */

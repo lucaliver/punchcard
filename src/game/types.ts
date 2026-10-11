@@ -623,6 +623,8 @@ export type CombatEvent =
   /** A rule (a stun, a status that bans cards…) stopped a tap on a card. */
   | { type: 'ruled'; card: CombatCard }
   | { type: 'cardAdded'; card: CombatCard; to: 'belt' | 'draw' | 'discard' }
+  /** `n` cards of the deck are upgraded for the fight (the portrait celebrates). */
+  | { type: 'cardsUpgraded'; n: number }
   | { type: 'cardDiscarded'; card: CombatCard }
   | { type: 'hexed'; card: CombatCard }
   | { type: 'inflated'; card: CombatCard }

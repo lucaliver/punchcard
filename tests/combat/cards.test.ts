@@ -2128,3 +2128,19 @@ describe('the office batch: streaks, clocks, piles, curses and corporate speak',
     expect(dealt(c, () => play(c, 'punch'))).toBe(CARDS.punch.vals[0] + extra);
   });
 });
+
+describe('upgrading cards in a fight', () => {
+  it('tells the portrait how many cards were upgraded, and stays silent when none could be', () => {
+    const c = setup();
+    const seen: number[] = [];
+    c.events.on((e) => {
+      if (e.type === 'cardsUpgraded') seen.push(e.n);
+    });
+    const n = c.upgradeRandom(2);
+    expect(n).toBeGreaterThan(0);
+    expect(seen).toEqual([n]);
+    for (const card of [...c.draw, ...c.discard]) card.up = true;
+    c.upgradeRandom(2);
+    expect(seen).toEqual([n]);
+  });
+});

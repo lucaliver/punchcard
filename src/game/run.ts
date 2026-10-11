@@ -629,13 +629,13 @@ export function gainRelic(run: RunState, id: string): void {
  * The relics the Lost & Found offers: ones the run doesn't hold yet, each dealt from the act's rarity odds. The first is at least
  * the act's guaranteed rarity, and no two share a rarity while the pool allows it.
  */
-export function rollRelics(run: RunState): string[] {
+export function rollRelics(run: RunState, n: number = CONFIG.lostFoundChoices): string[] {
   const rng = rngOf(run);
   const act = currentNode(run).act;
   const floor = RARITY_ORDER.indexOf(relicGuarantee(act));
-  let left = RELIC_LIST.filter((r) => r.rarity !== 'special' && !hasRelic(run, r.id));
+  let left = unownedRelics(run);
   const picks: RelicDef[] = [];
-  while (picks.length < CONFIG.lostFoundChoices && left.length) {
+  while (picks.length < n && left.length) {
     const fresh = (r: RelicDef): boolean => !picks.some((p) => p.rarity === r.rarity);
     const high = (r: RelicDef): boolean => RARITY_ORDER.indexOf(r.rarity) >= floor;
     // Each rule gives way when it would leave nothing to pick from.
@@ -728,39 +728,46 @@ export function photocopyCard(run: RunState, uid: number): void {
   run.cleared = true;
 }
 
-/** The cards a restructuring can turn a deck card into: the others of its rarity (as for a reward: no basic card). */
-const restructurePool = (run: RunState, card: CardInst): CardDef[] => poolOf(run, CARDS[card.id].rarity).filter((c) => c.id !== card.id);
+/** The cards a restructuring can turn a deck card into: any other card of any rarity (as for a reward: no basic card). */
+const restructurePool = (run: RunState, card: CardInst): CardDef[] =>
+  RARITY_ORDER.filter((r) => r !== 'special')
+    .flatMap((r) => poolOf(run, r))
+    .filter((c) => c.id !== card.id);
 
-/** Restructuring moves a deck card unless it is a curse or a card a fight deals, or nothing else has its rarity to turn it into. */
+/** Restructuring moves a deck card unless it is a curse or a card a fight deals. */
 export const canRestructure = (run: RunState, card: CardInst): boolean => !fixed(card) && restructurePool(run, card).length > 0;
-export const canPullStrings = (run: RunState): boolean => run.hp > CONFIG.restructureHp;
 
-/** `n` different cards the deck card could turn into (the hero's class weighs `classCardWeight` against neutral, as in a reward). */
-export function rollRestructure(run: RunState, uid: number, n: number): CardDef[] {
-  const card = run.deck.find((c) => c.uid === uid);
-  if (!card) return [];
+/**
+ * Each deck card of `uids` turns into a random other card of any rarity (the hero's class weighs `classCardWeight` against neutral, as in a reward),
+ * starting from scratch: no upgrade, no perks. Returns each card as it was and as it is now.
+ */
+export function restructure(run: RunState, uids: number[]): { before: CardInst; after: CardInst }[] {
   const rng = rngOf(run);
-  let left = restructurePool(run, card);
-  const picks: CardDef[] = [];
-  while (picks.length < n && left.length) {
-    const def = pickReward(rng, run, left);
-    picks.push(def);
-    left = left.filter((c) => c !== def);
+  const moved: { before: CardInst; after: CardInst }[] = [];
+  for (const uid of uids) {
+    const before = run.deck.find((c) => c.uid === uid);
+    if (!before || !canRestructure(run, before)) continue;
+    const def = pickReward(rng, run, restructurePool(run, before));
+    discover([def.id]);
+    const after = swapCard(run, uid, def.id);
+    if (after) moved.push({ before: { ...before }, after });
   }
   run.rng = rng.state;
-  discover(picks.map((c) => c.id));
-  return picks;
-}
-
-/** The deck card turns into another one of its rarity, starting from scratch (no upgrade, no perks). Returns the new card. */
-export function restructureCard(run: RunState, uid: number, id: string): CardInst | undefined {
   run.cleared = true;
-  return swapCard(run, uid, id);
+  return moved;
 }
 
-/** The paid way takes its HP once, with the first card it moves. */
-export function payRestructure(run: RunState): void {
-  run.hp -= CONFIG.restructureHp;
+/** The relics the run doesn't hold yet (no special one). */
+const unownedRelics = (run: RunState): RelicDef[] => RELIC_LIST.filter((r) => r.rarity !== 'special' && !hasRelic(run, r.id));
+
+/** Whether the Restructuring's other way, a random stationery, has anything left to give. */
+export const canGiftRelic = (run: RunState): boolean => unownedRelics(run).length > 0;
+
+/** A random stationery the run doesn't hold yet, dealt like the Lost & Found's (the act's rarity odds, at least its guaranteed one); the run takes it. */
+export function giftRelic(run: RunState): string | undefined {
+  const [id] = rollRelics(run, 1);
+  if (id) gainRelic(run, id);
+  return id;
 }
 
 /** A new shift starts rested: heals fully as the next act's map opens. Returns the HP gained. */
