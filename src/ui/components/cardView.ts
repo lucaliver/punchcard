@@ -80,7 +80,7 @@ export const GLYPHS: Record<string, { icon: string; unit?: string; sign?: string
   sweep: { icon: 'windKey', sign: '+' },
   manaRegen: { icon: 'crystalUp', unit: 's', tone: 'blue' },
   /** Multitasking, for seconds or as charges. */
-  multi: { icon: 'bolt2', unit: 's', tone: 'purple' },
+  multi: { icon: 'bolt2', unit: 's', tone: 'blue' },
   dark: { icon: 'bulbOff', unit: 's', tone: 'purple' },
   stop: { icon: 'pause', unit: 's', tone: 'purple' },
   shrink: { icon: 'growth', sign: '-' },

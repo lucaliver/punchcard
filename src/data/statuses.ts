@@ -612,7 +612,7 @@ const defs: StatusDef[] = [
   { id: 'rootAccess', tone: 'blue', kind: 'timed', good: true, icon: 'terminal', ignoresRules: true },
   {
     id: 'multitasking',
-    tone: 'purple',
+    tone: 'blue',
     kind: 'timed',
     good: true,
     icon: 'bolt2',
