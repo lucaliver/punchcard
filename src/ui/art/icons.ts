@@ -293,10 +293,6 @@ export const ICONS: Record<string, { el: Element; svg: string; wide?: boolean }>
     el: 'steel',
     svg: `<path d="M6.4 3.2h51.2v3.2h-51.2zM6.4 6.4h51.2v3.2h-51.2zM6.4 9.6h6.4v3.2h-6.4zM51.2 9.6h6.4v3.2h-6.4zM6.4 12.8h51.2v3.2h-51.2zM6.4 16h51.2v3.2h-51.2zM12.8 19.2h6.4v3.2h-6.4zM44.8 19.2h6.4v3.2h-6.4zM12.8 22.4h6.4v3.2h-6.4zM25.6 22.4h12.8v3.2h-12.8zM44.8 22.4h6.4v3.2h-6.4zM16 25.6h6.4v3.2h-6.4zM25.6 25.6h12.8v3.2h-12.8zM41.6 25.6h6.4v3.2h-6.4zM16 28.8h6.4v3.2h-6.4zM25.6 28.8h12.8v3.2h-12.8zM41.6 28.8h6.4v3.2h-6.4zM19.2 32h25.6v3.2h-25.6zM22.4 35.2h19.2v3.2h-19.2zM22.4 38.4h19.2v3.2h-19.2zM22.4 41.6h19.2v3.2h-19.2zM22.4 44.8h19.2v3.2h-19.2zM22.4 48h6.4v3.2h-6.4zM35.2 48h6.4v3.2h-6.4zM22.4 51.2h6.4v3.2h-6.4zM35.2 51.2h6.4v3.2h-6.4zM22.4 54.4h6.4v3.2h-6.4zM35.2 54.4h6.4v3.2h-6.4zM22.4 57.6h6.4v3.2h-6.4zM35.2 57.6h6.4v3.2h-6.4zM19.2 60.8h9.6v3.2h-9.6zM35.2 60.8h9.6v3.2h-9.6z"/>`,
   },
-  doubleClock: {
-    el: 'blood',
-    svg: `<circle cx="22" cy="28" r="18"/><circle cx="42" cy="38" r="18"/><path d="M42 38V26M42 38l8 5" stroke="#16121f" stroke-width="4.5" stroke-linecap="round" fill="none"/>`,
-  },
   grievance: {
     el: 'steel',
     svg: `<path d="M12 4h30l10 10v46H12z"/><rect x="28" y="16" width="8" height="22" fill="#16121f"/><rect x="28" y="44" width="8" height="8" fill="#16121f"/>`,

@@ -103,21 +103,6 @@ export const warriorCards: CardDef[] = [
     art: 'printerSmash',
     play: (c, v) => void c.hit(v[0], { kind: 'blunt' }),
   },
-  {
-    id: 'doubleShift',
-    face: '{hp:0}|{mana:1}',
-    cls: 'warrior',
-    type: 'skill',
-    rarity: 'common',
-    cost: 0,
-    vals: [2, 3],
-    upVals: [1, 4],
-    art: 'doubleClock',
-    play: (c, v) => {
-      c.loseHp(v[0]);
-      c.gainMana(v[1]);
-    },
-  },
 
   // Rares
   {

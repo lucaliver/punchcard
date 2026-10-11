@@ -913,8 +913,6 @@ const zh: Record<EnKey, string> = {
   'card.bellaCiao.desc': '获得 {0} 点[mana]和 {1} 点[block]。',
   'card.printerSmash.name': '砸打印机',
   'card.printerSmash.desc': '造成 {0} 点伤害。',
-  'card.doubleShift.name': '连轴转',
-  'card.doubleShift.desc': '失去 {0} 点生命。获得 {1} 点[mana]。',
   'card.youShallNotPass.name': '你不能通过',
   'card.youShallNotPass.desc': '获得 {0} 点[block]。接下来 {2} 秒内若被击中，反弹 {1} 点伤害。',
   'card.picketDrums.name': '罢工鼓声',

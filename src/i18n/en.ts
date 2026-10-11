@@ -920,8 +920,6 @@ const en = {
   'card.bellaCiao.desc': 'Gain {0} [mana] and {1} [block].',
   'card.printerSmash.name': 'Printer Smash',
   'card.printerSmash.desc': 'Deal {0} damage.',
-  'card.doubleShift.name': 'Double Shift',
-  'card.doubleShift.desc': 'Lose {0} HP. Gain {1} [mana].',
   'card.youShallNotPass.name': 'You Shall Not Pass',
   'card.youShallNotPass.desc': 'Gain {0} [block]. If hit in the next {2}s, deal {1} back.',
   'card.picketDrums.name': 'Picket Drums',

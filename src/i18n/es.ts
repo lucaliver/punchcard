@@ -925,8 +925,6 @@ const es: Record<EnKey, string> = {
   'card.bellaCiao.desc': 'Gana {0} de [mana] y {1} de [block].',
   'card.printerSmash.name': 'Paliza a la impresora',
   'card.printerSmash.desc': 'Haz {0} de daño.',
-  'card.doubleShift.name': 'Turno doble',
-  'card.doubleShift.desc': 'Pierdes {0} PV. Ganas {1} de [mana].',
   'card.youShallNotPass.name': '¡No pasarás!',
   'card.youShallNotPass.desc': 'Gana {0} de [block]. Si te golpean en los próximos {2}s, devuelve {1}.',
   'card.picketDrums.name': 'Tambores de piquete',

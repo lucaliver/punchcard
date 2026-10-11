@@ -54,7 +54,7 @@ export interface RunStats {
 }
 
 /** Shape of the saved run; a save of another version is dropped. */
-const SAVE_VERSION = 11;
+const SAVE_VERSION = 12;
 
 export interface RunState {
   version: number;
