@@ -143,7 +143,7 @@ test('compendium shows cards, enemies and relics in separate sections', async ({
     .click();
   await expect(page.locator('.comp-grid .card').first()).toBeVisible();
   await expect(page.locator('.foe').first()).toBeHidden();
-  await page.getByRole('tab', { name: /personnel/i }).click();
+  await page.getByRole('tab', { name: /enemies/i }).click();
   await expect(page.locator('.foe').first()).toBeVisible();
   await page.getByRole('tab', { name: /act 3/i }).click();
   await expect(page.getByRole('tab', { name: /act 3/i })).toHaveAttribute('aria-selected', 'true');
@@ -934,7 +934,7 @@ test('debug: Unlock all hires every hero and reveals every card and enemy in the
     .getByRole('button', { name: /handbook/i })
     .click();
   await expect(page.locator('.card.undiscovered')).toHaveCount(0);
-  await page.getByRole('tab', { name: /personnel/i }).click();
+  await page.getByRole('tab', { name: /enemies/i }).click();
   await expect(page.locator('.foe h3', { hasText: '????' })).toHaveCount(0);
   await page.getByRole('button', { name: /back/i }).click();
   await expect(page.locator('.timecard-cta')).toHaveCount(1);
@@ -1085,7 +1085,7 @@ test('handbook: enemies not met yet are silhouettes with no move pattern', async
     .locator('.menu')
     .getByRole('button', { name: /handbook/i })
     .click();
-  await page.getByRole('tab', { name: /personnel/i }).click();
+  await page.getByRole('tab', { name: /enemies/i }).click();
   await expect(page.locator('.foe.undiscovered').first()).toBeVisible();
   await expect(page.locator('.foe.undiscovered .move, .foe.undiscovered [data-status]')).toHaveCount(0);
 });
@@ -1096,7 +1096,7 @@ test('handbook: pressing a status in a move pattern explains it', async ({ page 
     .locator('.menu')
     .getByRole('button', { name: /handbook/i })
     .click();
-  await page.getByRole('tab', { name: /personnel/i }).click();
+  await page.getByRole('tab', { name: /enemies/i }).click();
   await page.locator('.foe [data-status]').first().click();
   await expect(page.locator('.modal .info')).toBeVisible();
 });
@@ -1330,7 +1330,7 @@ test('losing the first fight offers to beg to stay, once, and the fight goes on'
   // The second time is final.
   await combat(page, "delete c.hero.statuses.dodge; c.damage('enemy', 'hero', 9999, { raw: true, ignoreBlock: true }, 'enemy');");
   await expect(page.locator('.end')).toBeVisible({ timeout: 8000 });
-  // The handbook's three bars (cards, personnel, stationery) show under the payslip.
+  // The handbook's three bars (cards, enemies, stationery) show under the payslip.
   await expect(page.locator('.end .coll-row')).toHaveCount(3);
   // Tapping a bar opens the handbook on its page.
   await page.locator('.end .coll-relics').click();

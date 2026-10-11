@@ -62,7 +62,7 @@ const en = {
   'compendium.title': 'Employee Handbook',
   'compendium.progress': '{n}/{total} discovered',
   'compendium.cards': 'Cards',
-  'compendium.enemies': 'Personnel',
+  'compendium.enemies': 'Enemies',
   'compendium.foes': '{n}/{total} met',
   'compendium.relics': 'Stationery',
   'compendium.relicsFound': '{n}/{total} found',
