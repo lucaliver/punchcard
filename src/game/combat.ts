@@ -100,6 +100,8 @@ export interface CombatSetup {
   sleeveLost?: number;
   /** Ids of the cards played so far in the run's earlier fights (see `Combat.uniquePlayed`). */
   playedIds?: string[];
+  /** The hero's ability was already used in this act: it can be used once per act (`RunState.abilityAct`). */
+  abilitySpent?: boolean;
 }
 
 interface DamageOpts {
@@ -147,6 +149,8 @@ export class Combat {
   beltRows: number;
   /** Belt rows cards can spawn on right now (an enemy may keep some shut for a while). */
   rowsOpen: number;
+  /** The ability has been used in this act (in this fight or an earlier one): it comes back with the next act. */
+  abilitySpent: boolean;
   /** The sleeve and the ability are out of reach (`EnemyDef.deepBelt`): nothing can be stashed, the ability can't be used. */
   lowerHidden = false;
   /** The card the hero is dragging around the screen: it can't fall off the belt while held (a `sweep` card for as long as it is held, any other for `CONFIG.dragGrace` seconds). */
@@ -257,6 +261,7 @@ export class Combat {
     this.regenMul = regenMul;
     this.runBeltMul = this.baseBeltMul = beltMul;
     this.canBeg = !!setup.canBeg && !this.relicFlags[BEG_FLAG];
+    this.abilitySpent = !!setup.abilitySpent;
 
     this.hero = {
       hp: setup.hp,
@@ -1489,12 +1494,20 @@ export class Combat {
   }
 
   abilityReady(): boolean {
-    return !this.result && this.intro <= 0 && !this.lowerHidden && !this.flag('hero', 'handsTied') && this.hero.mana >= this.abilityCost();
+    return (
+      !this.abilitySpent &&
+      !this.result &&
+      this.intro <= 0 &&
+      !this.lowerHidden &&
+      !this.flag('hero', 'handsTied') &&
+      this.hero.mana >= this.abilityCost()
+    );
   }
 
   useAbility(): boolean {
     if (!this.abilityReady()) return false;
     this.hero.mana -= this.abilityCost();
+    this.abilitySpent = true;
     this.stats.abilities++;
     this.events.emit({ type: 'ability', id: this.heroDef.ability.id });
     this.heroDef.ability.use(this);

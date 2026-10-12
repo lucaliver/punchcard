@@ -23,6 +23,7 @@ import {
   applyCombat,
   isFirstRun,
   canCopy,
+  combatSetup,
   canGiftRelic,
   canRestructure,
   giftRelic,
@@ -52,6 +53,7 @@ import {
   vend,
   vendingCost,
 } from '../../src/game/run';
+import { Combat } from '../../src/game/combat';
 import { run, setup } from './helpers';
 
 describe('the handbook bars at the end of a run', () => {
@@ -304,6 +306,28 @@ describe('scripted acts', () => {
   });
 });
 
+describe('the hero ability, once per act', () => {
+  it('a fight that uses it spends it for the rest of the act, and the next act has it back', () => {
+    const r = newRun('warrior', 5);
+    r.current = r.nodes.find((n) => n.act === 1 && n.enemy)!.id;
+    expect(new Combat(combatSetup(r)).abilitySpent).toBe(false);
+    const fight = new Combat(combatSetup(r));
+    fight.abilitySpent = true;
+    applyCombat(r, fight);
+    expect(r.abilityAct).toBe(1);
+    expect(new Combat(combatSetup(r)).abilitySpent).toBe(true);
+    r.current = r.nodes.find((n) => n.act === 2 && n.enemy)!.id;
+    expect(new Combat(combatSetup(r)).abilitySpent).toBe(false);
+  });
+
+  it('a fight that leaves it alone does not spend it', () => {
+    const r = newRun('warrior', 5);
+    r.current = r.nodes.find((n) => n.act === 1 && n.enemy)!.id;
+    applyCombat(r, new Combat(combatSetup(r)));
+    expect(r.abilityAct).toBe(0);
+  });
+});
+
 describe('saved runs', () => {
   it('a run that does not reach the last act is dropped', () => {
     const store = new Map<string, string>();
@@ -339,6 +363,8 @@ describe('saved runs', () => {
     };
     expect(loadWith({})).toEqual(JSON.parse(JSON.stringify(good)));
     expect(loadWith({ money: undefined })?.money).toBe(0);
+    expect(loadWith({ abilityAct: 2 })?.abilityAct).toBe(2);
+    expect(loadWith({ abilityAct: 'two' })?.abilityAct).toBe(0);
     expect(loadWith({ playedIds: ['punch', 'bogus'] })?.playedIds).toEqual(['punch']);
     expect(loadWith({ playedIds: undefined })?.playedIds).toEqual([]);
     expect(

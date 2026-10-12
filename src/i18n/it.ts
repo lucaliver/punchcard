@@ -272,6 +272,8 @@ const it: Record<EnKey, string> = {
   'hero.sleeve': 'Posti nella manica: {n}',
   'hero.tag.passive': 'Passiva',
   'hero.abilityCost': 'Costa {n} di mana. Fai crescere i cristalli per permettertela.',
+  'hero.abilityOnce': 'Una volta per turno.',
+  'hero.abilitySpent': 'Già usata: sarà di nuovo pronta al prossimo turno.',
   'hero.tag.active': 'Attiva',
   'hero.warrior.name': 'Guerriero',
   'hero.warrior.job': "Ha perso un braccio nell'ora di punta",
@@ -339,6 +341,9 @@ const it: Record<EnKey, string> = {
   'combat.start': 'Timbra',
   'combat.foePassive': 'Passiva del nemico',
   'combat.startHint': 'Tieni premuto su qualsiasi cosa per capire cosa fa',
+  'combat.payInfo.t': 'Paga in palio',
+  'combat.payInfo.d':
+    'Quello che questo scontro paga se lo vinci adesso: una base, più una moneta per ogni secondo sotto i {$payPar}s. Vinci in fretta e guadagni di più: è il punteggio della run.',
   'combat.paused': 'In pausa',
   'combat.resume': 'Riprendi',
   'combat.keys': 'Tasti: Spazio pausa · A abilità · D mazzo · 1, 2… manica',

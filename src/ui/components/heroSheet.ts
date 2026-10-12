@@ -34,7 +34,7 @@ export function heroFeatures(hero: HeroDef, hidden = false, abilityCost = hero.a
       ABILITY_ICON[id],
       say(t(`hero.${id}.ability`)),
       'active',
-      `${say(t(`hero.${id}.abilityShort`))} <span class="fcost">${icon('crystal')}${abilityCost}</span>`,
+      `${say(t(`hero.${id}.abilityShort`))} ${say(t('hero.abilityOnce'))} <span class="fcost">${icon('crystal')}${abilityCost}</span>`,
     ),
   );
 }

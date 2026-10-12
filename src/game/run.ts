@@ -64,7 +64,7 @@ export interface RunStats {
 }
 
 /** Shape of the saved run; a save of another version is dropped. */
-const SAVE_VERSION = 13;
+const SAVE_VERSION = 14;
 
 export interface RunState {
   version: number;
@@ -85,6 +85,8 @@ export interface RunState {
   crystals: number;
   /** Sleeve slots lost for good (Life Insurance), off the hero's own and the stationery's. */
   sleeveLost: number;
+  /** The act whose ability use is spent (0: none yet): the hero's ability works once per act, so it is ready again when the act changes. */
+  abilityAct: number;
   /** Ids of the cards played in the run so far, each once (`Combat.uniquePlayed`). */
   playedIds: string[];
   /** Fights in a row (so far) that never touched the sleeve. */
@@ -232,6 +234,7 @@ export function newRun(hero: HeroId, seed: number, scripted: readonly number[] =
     mods,
     crystals: 0,
     sleeveLost: 0,
+    abilityAct: 0,
     sleeveIdle: 0,
     playedIds: [],
   };
@@ -440,6 +443,7 @@ export function combatSetup(run: RunState): CombatSetup {
     canBeg: true,
     bonusMaxMana: run.crystals,
     sleeveLost: run.sleeveLost,
+    abilitySpent: run.abilityAct === node.act,
     playedIds: run.playedIds,
     seed,
   };
@@ -464,6 +468,7 @@ export function applyCombat(run: RunState, combat: Combat): void {
   run.sleeveIdle = combat.sleeveUses ? 0 : run.sleeveIdle + 1;
   run.stats.time += combat.time;
   const node = currentNode(run);
+  if (combat.abilitySpent) run.abilityAct = node.act;
   recordFight({
     tier: combat.enemy.def.tier,
     won: combat.result === 'win',
@@ -925,6 +930,7 @@ function parseRun(raw: unknown): RunState | null {
     mods,
     crystals,
     sleeveLost,
+    abilityAct,
     sleeveIdle,
     playedIds,
     reward,
@@ -961,6 +967,7 @@ function parseRun(raw: unknown): RunState | null {
     mods: isStrings(mods) ? mods.filter((id) => id in MODIFIERS) : [],
     crystals: isNum(crystals) ? Math.max(0, crystals) : 0,
     sleeveLost: isNum(sleeveLost) ? Math.max(0, sleeveLost) : 0,
+    abilityAct: isNum(abilityAct) ? Math.max(0, abilityAct) : 0,
     sleeveIdle: isNum(sleeveIdle) ? Math.max(0, sleeveIdle) : 0,
     playedIds: isStrings(playedIds) ? playedIds.filter((id) => !!CARDS[id]) : [],
     reward: cleared && offers.length ? offers.map(({ id, up }) => ({ id, up })) : undefined,

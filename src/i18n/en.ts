@@ -269,6 +269,8 @@ const en = {
   'hero.sleeve': 'Sleeve slots: {n}',
   'hero.tag.passive': 'Passive',
   'hero.abilityCost': 'Costs {n} mana. Grow your crystals to afford it.',
+  'hero.abilityOnce': 'Once per shift.',
+  'hero.abilitySpent': 'Already used: it is ready again next shift.',
   'hero.tag.active': 'Active',
   'hero.warrior.name': 'Warrior',
   'hero.warrior.job': 'He lost one arm during rush hour',
@@ -336,6 +338,9 @@ const en = {
   'combat.start': 'Clock in',
   'combat.foePassive': 'Enemy passive',
   'combat.startHint': 'Hold anything to learn what it does',
+  'combat.payInfo.t': 'Pay on offer',
+  'combat.payInfo.d':
+    'What this fight pays if you win it now: a base, plus a coin for every second under {$payPar}s. Win fast, earn more: it is your score for the run.',
   'combat.paused': 'Paused',
   'combat.resume': 'Resume',
   'combat.keys': 'Keys: Space pause · A ability · D deck · 1, 2… sleeve',

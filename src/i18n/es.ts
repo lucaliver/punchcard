@@ -271,6 +271,8 @@ const es: Record<EnKey, string> = {
   'hero.sleeve': 'Huecos de manga: {n}',
   'hero.tag.passive': 'Pasiva',
   'hero.abilityCost': 'Cuesta {n} de maná. Haz crecer tus cristales para poder pagarla.',
+  'hero.abilityOnce': 'Una vez por turno.',
+  'hero.abilitySpent': 'Ya usada: estará lista otra vez en el próximo turno.',
   'hero.tag.active': 'Activa',
   'hero.warrior.name': 'Guerrero',
   'hero.warrior.job': 'Perdió un brazo en la hora punta',
@@ -338,6 +340,9 @@ const es: Record<EnKey, string> = {
   'combat.start': 'Fichar',
   'combat.foePassive': 'Pasiva del enemigo',
   'combat.startHint': 'Mantén pulsado cualquier cosa para saber qué hace',
+  'combat.payInfo.t': 'Paga en juego',
+  'combat.payInfo.d':
+    'Lo que paga este combate si lo ganas ahora: una base, más una moneda por cada segundo por debajo de {$payPar}s. Gana rápido y cobra más: es tu puntuación de la partida.',
   'combat.paused': 'En pausa',
   'combat.resume': 'Reanudar',
   'combat.keys': 'Teclas: Espacio pausa · A habilidad · D mazo · 1, 2… manga',

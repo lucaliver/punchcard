@@ -161,6 +161,11 @@ test('the hero speaks in a bubble that keeps off the enemy bars, and its face fo
   await startFight(page);
   await combat(page, 'c.hero.mana = 20; c.useAbility();');
   await expect(page.locator('.shout')).toBeVisible();
+  // The ability works once per act: it is dimmed, and a tap with the mana to spare only says so.
+  await expect(page.locator('.js-ability')).toHaveClass(/spent/);
+  await combat(page, 'c.hero.mana = 20;');
+  await page.locator('.js-ability').click();
+  await expect(page.locator('.hint-toast')).toContainText(/ready again next shift/i);
   const portrait = page.locator('.hero-portrait');
   await expect(portrait).toHaveAttribute('data-mood', 'cast');
   const box = (sel: string): Promise<{ top: number; bottom: number }> =>
@@ -254,6 +259,13 @@ test('a press that goes on shows the ring of the hold, and the fight shows the p
   expect(before).toBeGreaterThan(0);
   await combat(page, 'for (let i = 0; i < 60 * 10; i++) c.tick(1 / 60);');
   await expect.poll(async () => Number(await pay.textContent())).toBeLessThan(before - 5);
+  // Holding the pay on offer says what it is.
+  const chip = page.locator('.pay-chip');
+  await chip.dispatchEvent('pointerdown');
+  await page.waitForTimeout(500);
+  await chip.dispatchEvent('pointerup');
+  await expect(page.locator('.modal .info-desc')).toContainText(/second/i);
+  await page.getByRole('button', { name: 'Close' }).click();
   const card = page.locator('.belt-cards .card').first();
   await card.dispatchEvent('pointerdown', { pointerId: 1, clientX: 100, clientY: 400 });
   await expect(page.locator('.hold-ring')).toHaveCount(1);
@@ -1332,6 +1344,8 @@ test('the very first fight opens on a tour of the board, one step at a time, bef
   await page.getByRole('button', { name: /start shift/i }).click();
   await page.getByRole('button', { name: /enter floor 1/i }).click();
   await expect(page.locator('.coach-count')).toHaveText('1/5');
+  // The hint about holding things is written under Clock in only on this first fight.
+  await expect(page.locator('.start-btn small')).toHaveCount(1);
   for (let i = 0; i < 4; i++) await page.locator('.coach .btn').click();
   await page.getByRole('button', { name: 'Got it!' }).click();
   await expect(page.locator('.coach')).toHaveCount(0);
@@ -1472,6 +1486,8 @@ test('the enemy walks in as the door opens, and its passive is on a slip under C
   const slip = page.locator('.start-wrap .foe-traits');
   await expect(slip).toBeVisible();
   await expect(slip.locator('.trait-head')).toContainText(/enemy passive/i);
+  // Past the very first fight, nothing is written under the button but its name.
+  await expect(page.locator('.start-btn small')).toHaveCount(0);
   const [button, under] = await Promise.all([page.locator('.js-start').boundingBox(), slip.boundingBox()]);
   expect(under!.y).toBeGreaterThanOrEqual(button!.y + button!.height - 1);
   // The belt and its cards are dark until the clock-in.

@@ -128,6 +128,7 @@ export const VALUES = {
   // Heroes
   thickSkinPct: pct(THICK_SKIN.mul - 1),
   picketTime: PICKET_TIME,
+  payPar: CONFIG.pay.par,
   picketBlock: PICKET_BLOCK,
   timeTheft: TIME_THEFT,
   multitaskingMax: CONFIG.multitaskingMax,

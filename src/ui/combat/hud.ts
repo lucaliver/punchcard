@@ -506,6 +506,7 @@ export function createHud(v: CombatView, onPassive: () => void): { render(): voi
     // The ability charges with mana: it lights up once the hero can afford it.
     r.ability.style.setProperty('--p', String(Math.min(1, hs.mana / combat.abilityCost())));
     toggle(r.ability, 'ready', combat.abilityReady());
+    toggle(r.ability, 'spent', combat.abilitySpent);
   };
 
   return {

@@ -254,7 +254,7 @@ export function combatScreen(run: RunState, combat: Combat, cb: CombatCallbacks)
       tag: t('hero.tag.active'),
       tagCls: 'active',
       desc: t(`hero.${v.heroId}.abilityShort`),
-      extra: [t('hero.abilityCost', { n: combat.abilityCost() })],
+      extra: [t('hero.abilityCost', { n: combat.abilityCost() }), t(combat.abilitySpent ? 'hero.abilitySpent' : 'hero.abilityOnce')],
     });
   const passiveInfo = (): void =>
     void info({
@@ -285,6 +285,7 @@ export function combatScreen(run: RunState, combat: Combat, cb: CombatCallbacks)
     });
     bindMoveDetails(sheet.el);
   };
+  const payInfo = (): void => void info({ icon: 'coin', title: t('combat.payInfo.t'), desc: t('combat.payInfo.d') });
   const manaInfo = (): void => void info({ icon: 'crystal', title: t('common.mana'), desc: t('howto.mana.d') });
   /** Every card in this fight that isn't gone for good: draw pile, belt, sleeve and discard pile (curses included). */
   const deckInfo = (): void => {
@@ -301,7 +302,7 @@ export function combatScreen(run: RunState, combat: Combat, cb: CombatCallbacks)
       if (state.paused || state.ended) return;
       if (!combat.useAbility()) {
         sfx('error');
-        v.toast(t('hero.abilityCost', { n: combat.abilityCost() }));
+        v.toast(combat.abilitySpent ? t('hero.abilitySpent') : t('hero.abilityCost', { n: combat.abilityCost() }));
       }
     },
     abilityInfo,
@@ -348,6 +349,8 @@ export function combatScreen(run: RunState, combat: Combat, cb: CombatCallbacks)
   });
   // The mana bar explains itself only on a hold (it's right under the thumb while playing).
   onTapOrHold(r.manaRow, () => {}, manaInfo);
+  // So does the pay on offer in the top bar.
+  onTapOrHold(r.payChip, () => {}, payInfo);
 
   const openPause = (): void => {
     if (pauseModal || state.ended) return;
@@ -686,7 +689,11 @@ export function combatScreen(run: RunState, combat: Combat, cb: CombatCallbacks)
       const startWrap = h(
         'div',
         { class: 'start-wrap' },
-        h('button', { class: 'btn cta start-btn js-start', html: `${t('combat.start')}<small>${t('combat.startHint')}</small>` }),
+        // The hint about holding things is for the very first fight (where the tour has just said it): after that it is gone.
+        h('button', {
+          class: 'btn cta start-btn js-start',
+          html: `${t('combat.start')}${settings.seenTutorial ? '' : `<small>${t('combat.startHint')}</small>`}`,
+        }),
       );
       // Before the fight, the enemy's passives are spelled out under the button, on a slip headed with the enemy's face, so the player knows what they're facing.
       const traits = enemyTraits(combat.enemy.def, true);

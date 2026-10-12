@@ -59,6 +59,8 @@ const DEBUFFS = ['karoshi', 'chainSmoking', 'waterCooler', 'blackFriday', 'walko
 
 /** Taps a second the bot gives Conveyor Sis's mana button (about what a thumb does). */
 const TAPS_PER_SECOND = 4;
+/** The bot spends the act's ability in an ordinary fight only when its HP is under this share. */
+const BOT_ABILITY_HP = 0.5;
 
 /** The Supervisor's backlog: the bot keeps the window open `MINIGAME_OPEN` seconds of every `MINIGAME_CYCLE` (the rest it plays its cards) and makes a move every `MINIGAME_GAP` seconds, a person's time to look at a board. */
 const MINIGAME_CYCLE = 9;
@@ -93,7 +95,8 @@ function botCoffee(c: Combat, task: CoffeeTask): void {
 export function botDecide(c: Combat, rnd: () => number, opts: BotOpts): void {
   for (let i = 0; c.manaTapOn && i < opts.reaction * TAPS_PER_SECOND; i++) c.tapMana();
   if (rnd() < opts.sloppiness) return;
-  if (c.abilityReady()) c.useAbility();
+  // The ability works once per act: the bot keeps it for the tough fights, or for when it is in trouble.
+  if (c.abilityReady() && (c.enemy.def.tier !== 'normal' || c.hero.hp < c.hero.maxHp * BOT_ABILITY_HP)) c.useAbility();
   // The shell game: the bot keeps its eye on the right card and picks it as soon as the cards stop.
   if (c.chore instanceof ShellGame) {
     if (c.chore.phase === 'pick') c.pickShell(c.chore.prizePlace);

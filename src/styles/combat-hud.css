@@ -250,6 +250,9 @@
 }
 .ability-btn.ready .charge { display: none; }
 .ability-btn.ready .albl { background: var(--res-ink); }
+/* used up for this act: it comes back with the next one */
+.ability-btn.spent { opacity: 0.45; box-shadow: none; }
+.ability-btn.spent .charge { display: none; }
 @keyframes ready {
   50% { box-shadow: 7px 7px 0 var(--res-ink); transform: translate(-2px, -2px); }
 }

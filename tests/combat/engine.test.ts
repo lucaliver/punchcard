@@ -719,6 +719,21 @@ describe('combat engine', () => {
     expect(c.useAbility()).toBe(false);
   });
 
+  it('the ability works once: a second use is refused however much mana there is, and a spent act starts a fight with it spent', () => {
+    const c = setup();
+    run(c, CONFIG.introTime + 0.01);
+    c.hero.mana = c.hero.maxMana = 20;
+    expect(c.useAbility()).toBe(true);
+    c.hero.mana = 20;
+    expect(c.abilityReady()).toBe(false);
+    expect(c.useAbility()).toBe(false);
+    expect(c.hero.mana).toBe(20);
+    const next = setup({ abilitySpent: true });
+    run(next, CONFIG.introTime + 0.01);
+    next.hero.mana = 20;
+    expect(next.useAbility()).toBe(false);
+  });
+
   it('synergy cards: Fortified Block holds, Counterstrike reads Block, Contagion reads Poison', () => {
     const c = setup({ deck: deckOf(['safetyRegs', 'grievance']) });
     c.enemy.move = { id: 'wait', intent: 'defend', windup: 999 };
