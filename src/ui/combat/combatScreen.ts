@@ -30,6 +30,7 @@ import { createShellWindow } from './shellWindow';
 import { createMatch3Window } from './match3Window';
 import { createSushiSlip } from './sushiSlip';
 import { createHud } from './hud';
+import { watchSideways } from '../components/rotateBanner';
 import { ABILITY_ICON, createCombatView, PASSIVE_ICON } from './view';
 
 export { ABILITY_ICON } from './view';
@@ -555,6 +556,11 @@ export function combatScreen(run: RunState, combat: Combat, cb: CombatCallbacks)
   const onVisibility = (): void => {
     if (document.hidden) openPause();
   };
+  // A phone turned sideways covers the game with a banner: the fight waits behind it.
+  let stopSideways = (): void => {};
+  const onSideways = (sideways: boolean): void => {
+    if (sideways) openPause();
+  };
   const onResize = (): void => layout();
 
   // ------------------------------------------------------------------ loop
@@ -646,6 +652,7 @@ export function combatScreen(run: RunState, combat: Combat, cb: CombatCallbacks)
       later(() => door.isConnected && sfx(actDef(combat.enemy.def.act).door), cssMs('--dur-door-read'));
       addEventListener('resize', onResize);
       document.addEventListener('visibilitychange', onVisibility);
+      stopSideways = watchSideways(onSideways);
       render(0);
       meetEnemy(combat.enemy.def.id);
       if (combat.enemy.def.tier === 'boss') sfx('siren');
@@ -687,6 +694,7 @@ export function combatScreen(run: RunState, combat: Combat, cb: CombatCallbacks)
       unsubscribe();
       removeEventListener('resize', onResize);
       document.removeEventListener('visibilitychange', onVisibility);
+      stopSideways();
       document.removeEventListener('keydown', onKey);
     },
     frame(dt) {

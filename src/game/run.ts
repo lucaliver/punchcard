@@ -5,7 +5,17 @@ import { CARD_LIST, CARDS, RARITY_ORDER, cardCostOf, cardKeywordsOf, rewardPool 
 import { PERKS } from '../data/perks';
 import { RELIC_LIST, RELICS, relicSum } from '../data/relics';
 import { ACT_DEFS, actDef } from '../data/acts';
-import { BEG_FLAG, CONFIG, type RewardKind, relicGuarantee, relicOdds, rewardGuarantee, rewardOdds, rewardUpgradeChance } from '../data/config';
+import {
+  BEG_FLAG,
+  CONFIG,
+  REWARD_CHOICES,
+  type RewardKind,
+  relicGuarantee,
+  relicOdds,
+  rewardGuarantee,
+  rewardOdds,
+  rewardUpgradeChance,
+} from '../data/config';
 import { MODIFIERS, resolveMods } from '../data/modifiers';
 import { ENEMIES, enemiesFor } from '../data/enemies';
 import { HERO_LIST, HEROES, starterCards } from '../data/heroes';
@@ -475,9 +485,8 @@ export function applyCombat(run: RunState, combat: Combat): void {
 }
 
 /** Distinct reward cards for the current node (the player swaps one into the deck). */
-export const REWARD_CHOICES = 4;
-export const rewardChoices = (run: RunState): number =>
-  Math.max(1, REWARD_CHOICES + resolveMods(run.mods).rewardCards + relicSum(run.relics, 'rewardCards'));
+export const rewardChoices = (run: RunState, kind: RewardKind): number =>
+  Math.max(1, REWARD_CHOICES[kind] + resolveMods(run.mods).rewardCards + relicSum(run.relics, 'rewardCards'));
 
 /** A card on offer: any of the offered cards may come already upgraded (`rewardUpgradeChance`). */
 export interface RewardOffer {
@@ -510,7 +519,7 @@ export function rollRewards(run: RunState, kind: RewardKind): RewardOffer[] {
   const { rarity: floor, count } = rewardGuarantee(kind, act);
   // The first cards dealt follow the odds of the guaranteed rarity and above.
   const atLeast = odds.filter(([r]) => RARITY_ORDER.indexOf(r) >= RARITY_ORDER.indexOf(floor));
-  for (let tries = 0; picks.length < rewardChoices(run) && tries < 80; tries++) {
+  for (let tries = 0; picks.length < rewardChoices(run, kind) && tries < 80; tries++) {
     const rarity = rng.weighted(picks.length < count ? atLeast : odds, ([, w]) => w)[0];
     const pool = poolOf(run, rarity).filter((c) => !picks.includes(c));
     if (pool.length) picks.push(pickReward(rng, run, pool));

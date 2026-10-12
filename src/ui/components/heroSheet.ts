@@ -10,7 +10,7 @@ import { icon } from '../art/icons';
 import { relicArt } from '../art/relics';
 import { ABILITY_ICON, PASSIVE_ICON } from '../combat/view';
 import { h } from '../dom';
-import { UNKNOWN } from './cardView';
+import { UNKNOWN, keywordHtml } from './cardView';
 import { openDeck } from './modals';
 
 const feature = (ic: string, name: string, kind: 'passive' | 'active', desc: string): HTMLElement =>
@@ -25,7 +25,7 @@ const feature = (ic: string, name: string, kind: 'passive' | 'active', desc: str
  */
 export function heroFeatures(hero: HeroDef, hidden = false, abilityCost = hero.ability.cost): HTMLElement {
   const id = hero.id;
-  const say = (text: string): string => (hidden ? UNKNOWN : text);
+  const say = (text: string): string => (hidden ? UNKNOWN : keywordHtml(text));
   return h(
     'div',
     { class: 'hero-features' },

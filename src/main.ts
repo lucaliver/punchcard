@@ -49,6 +49,8 @@ import { fitFaces } from './ui/components/fitFace';
 import { h, keepPressedClicks } from './ui/dom';
 import { applyCardArt, openDebugFight, openDebugMenu } from './ui/components/debugMenu';
 import { initFx } from './ui/fx/fx';
+import { initRotateBanner } from './ui/components/rotateBanner';
+import { initWings } from './ui/components/wings';
 import { CARD_ART } from './ui/art/cardArt';
 import { preloadArt } from './ui/art/riso';
 import { CREATURES } from './ui/art/creatures';
@@ -345,6 +347,8 @@ async function boot(): Promise<void> {
   initApp(root);
   catchCrashes();
   initFx(root);
+  initWings();
+  initRotateBanner();
   // Browsers only allow audio after a user gesture.
   addEventListener('pointerdown', unlockAudio, { passive: true });
   addEventListener('keydown', unlockAudio);

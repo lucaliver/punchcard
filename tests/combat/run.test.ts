@@ -574,9 +574,12 @@ describe('management memos', () => {
     hard.hp = 1;
     expect(restHeal(hard)).toBeLessThan(restHeal(plain));
     expect(restHeal(plain)).toBe(Math.round(0.9 * (plain.maxHp - 1)));
-    expect(rewardChoices(plain)).toBe(4);
-    expect(rewardChoices(hard)).toBe(3);
-    expect(rollRewards(hard, 'fight')).toHaveLength(3);
+    expect(rewardChoices(plain, 'fight')).toBe(3);
+    expect(rewardChoices(plain, 'elite')).toBe(4);
+    expect(rewardChoices(plain, 'boss')).toBe(4);
+    expect(rewardChoices(hard, 'elite')).toBe(3);
+    expect(rollRewards(hard, 'fight')).toHaveLength(2);
+    expect(rollRewards(hard, 'elite')).toHaveLength(3);
     const base = setup().beltRate();
     expect(setup({ beltMul: 1.15 }).beltRate()).toBeCloseTo(base * 1.15);
   });

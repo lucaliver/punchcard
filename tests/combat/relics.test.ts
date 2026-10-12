@@ -57,8 +57,10 @@ describe('relics', () => {
     expect(setup({ relics: ['lanyard'] }).beltRate()).toBeCloseTo(setup().beltRate() * 1.15);
     const r = newRun('warrior', 3);
     gainRelic(r, 'companyCard');
-    expect(rewardChoices(r)).toBe(5);
-    expect(rollRewards(r, 'fight')).toHaveLength(5);
+    expect(rewardChoices(r, 'fight')).toBe(4);
+    expect(rewardChoices(r, 'boss')).toBe(5);
+    expect(rollRewards(r, 'fight')).toHaveLength(4);
+    expect(rollRewards(r, 'boss')).toHaveLength(5);
   });
 
   it('the Statuette petrifies cards at the start of a fight and upgrades them for that fight only', () => {

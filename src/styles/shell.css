@@ -118,3 +118,53 @@
 @media (hover: hover) and (pointer: fine) {
   .kbd-hint { display: block; text-align: center; font-size: 15px; opacity: 0.8; }
 }
+
+/* ------------------------------------------------------------------ a phone held sideways: a curtain over everything, asking to turn it upright */
+.rotate-banner {
+  display: none;
+  position: fixed;
+  inset: 0;
+  z-index: var(--z-rotate);
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 12px 24px;
+  text-align: center;
+  color: var(--paper);
+  background-color: var(--void);
+  background-image: radial-gradient(circle, var(--bg-dot) 30%, transparent 34%);
+  background-size: 8px 8px;
+}
+.rotate-banner.on { display: flex; }
+.rotate-banner h2 {
+  margin: 0;
+  font-family: var(--font-display);
+  font-size: 20px;
+  line-height: 1.2;
+  text-transform: uppercase;
+  text-shadow: 3px 3px 0 var(--p);
+}
+.rotate-banner p { margin: 0; font-size: 16px; opacity: 0.85; }
+/* a phone that lies on its side and stands up, over and over */
+.rotate-phone {
+  position: relative;
+  width: 38px;
+  height: 64px;
+  margin-bottom: 4px;
+  background: var(--paper);
+  border: 3px solid var(--k);
+  box-shadow: 3px 3px 0 var(--p);
+  rotate: -90deg;
+  animation: stand-up 2.4s steps(6) infinite;
+}
+.rotate-phone i {
+  position: absolute;
+  inset: 5px 4px 9px;
+  background: var(--b);
+}
+@keyframes stand-up {
+  0%, 25% { rotate: -90deg; }
+  60%, 100% { rotate: 0deg; }
+}
+.reduce-motion .rotate-phone { animation: none; rotate: 0deg; }

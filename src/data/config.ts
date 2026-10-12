@@ -12,6 +12,8 @@ export const CONFIG = {
   heartbeatGap: 0.9,
   /** Milliseconds under which a light vibration is dropped if another has just fired (patterns and heavy knocks always go through). */
   hapticGap: 30,
+  /** A click on a button adds a knock only when nothing has vibrated for this long (ms): a press that already did is not doubled on release. */
+  buttonHapticQuiet: 300,
   /** Milliseconds a press must last to count as "hold to inspect" (every screen). */
   longPressMs: 350,
   /** Taps on the version line in Settings that reveal the Debug menus switch. */
@@ -253,6 +255,9 @@ export const CONFIG = {
 } as const;
 
 export type RewardKind = 'fight' | 'elite' | 'boss';
+
+/** Distinct cards a reward offers (before memos and stationery): a normal fight a few, the ones that add a card to the deck one more. */
+export const REWARD_CHOICES: Record<RewardKind, number> = { fight: 3, elite: 4, boss: 4 };
 
 /**
  * Rarity odds (weights) of each card offered after a fight, an elite or an act boss, one entry per act (later acts use the last):

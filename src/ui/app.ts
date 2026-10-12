@@ -1,4 +1,5 @@
 import { icon } from './art/icons';
+import { refreshWings } from './components/wings';
 import { SLACK_MS, cssMs, h } from './dom';
 
 export interface Screen {
@@ -36,6 +37,7 @@ export function show(screen: Screen): void {
     m.remove();
   });
   current = screen;
+  refreshWings();
   root.append(screen.el);
   screen.enter?.();
 }

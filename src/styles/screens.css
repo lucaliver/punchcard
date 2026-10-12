@@ -62,9 +62,10 @@
 @media (min-height: 800px) {
   .swap-deck { --deck-n: 4; }
 }
-/* the offered cards (four, `--swap-n` says when there are more) are a bit bigger than a short phone's deck */
+/* the offered cards (three to four, `--swap-n` says when there are more) are a bit bigger than a short phone's deck; fewer than four sit in the middle */
 .swap-offer {
   --swap-n: 4;
+  justify-content: center;
   --swap-cw: calc((min(100vw, 520px) - 32px - 2 * 10px - 2 * var(--line) - (var(--swap-n) - 1) * 8px) / var(--swap-n));
   grid-template-columns: repeat(var(--swap-n), var(--swap-cw));
 }

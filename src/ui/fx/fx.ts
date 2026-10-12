@@ -44,6 +44,11 @@ export function initFx(root: HTMLElement): void {
   document.addEventListener('visibilitychange', () => {
     if (document.hidden && 'vibrate' in navigator) navigator.vibrate(0);
   });
+  // Every button gives a small knock when it is clicked, so no screen has to remember to ask for one. A button that already vibrated
+  // (on the press, or with a stronger pattern) is left alone.
+  document.addEventListener('click', (e) => {
+    if (e.target instanceof Element && e.target.closest('button') && performance.now() - lastHaptic > CONFIG.buttonHapticQuiet) haptic('tap');
+  });
   requestAnimationFrame(loop);
 }
 

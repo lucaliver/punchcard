@@ -7,6 +7,8 @@ test('title, hero select and journey render without errors', async ({ page }) =>
   await expect(page.locator('.title-screen .logo')).toHaveText(/punchcard/i);
   await page.getByRole('button', { name: /new run/i }).click();
   await expect(page.locator('.hero-slide')).toHaveCount(4);
+  // Keywords in a hero's ability read as words, never as their `[mark]`.
+  await expect(page.locator('.hero-features').first()).not.toContainText('[');
   // Carousel: the hero in view is the one that starts.
   await page.locator('.hero-arrow.next').click();
   await expect(page.locator('.hero-dot').nth(1)).toHaveAttribute('aria-current', 'true');
@@ -59,6 +61,42 @@ test('a hero who has won a full day can pin up management memos before a run', a
   expect(problems).toEqual([]);
 });
 
+test('a phone held sideways is asked to turn upright, and the desktop gets its side boards', async ({ page, browser, baseURL }) => {
+  const problems = await freshGame(page);
+  const banner = page.locator('.rotate-banner');
+  await expect(banner).toBeHidden();
+  await expect(page.locator('.wing-l')).toBeHidden();
+  await page.setViewportSize({ width: 740, height: 360 });
+  await expect(banner).toBeVisible();
+  await page.setViewportSize({ width: 390, height: 844 });
+  await expect(banner).toBeHidden();
+  // A wide window with a mouse (not a touch screen) pins the boards either side of the column.
+  const desk = await browser.newContext({ viewport: { width: 1440, height: 900 }, baseURL });
+  const wide = await desk.newPage();
+  await wide.goto('/');
+  await expect(wide.locator('.wing-l .rules li')).toHaveCount(6);
+  await expect(wide.locator('.wing-r .badge')).not.toHaveCount(0);
+  await expect(wide.locator('.rotate-banner')).toBeHidden();
+  await desk.close();
+  expect(problems).toEqual([]);
+});
+
+test('every button gives a small knock', async ({ page }) => {
+  await page.addInitScript(() => {
+    (window as unknown as { __vib: number }).__vib = 0;
+    navigator.vibrate = () => {
+      (window as unknown as { __vib: number }).__vib++;
+      return true;
+    };
+  });
+  const problems = await freshGame(page);
+  const knocks = (): Promise<number> => page.evaluate(() => (window as unknown as { __vib: number }).__vib);
+  const before = await knocks();
+  await page.getByRole('button', { name: /settings/i }).click();
+  await expect.poll(knocks).toBeGreaterThan(before);
+  expect(problems).toEqual([]);
+});
+
 test('an uncaught error shows the machine jam window, and Restart reloads the game', async ({ page }) => {
   await freshGame(page);
   await page.evaluate(() => {
@@ -93,7 +131,7 @@ test('a fight can be played and won, then a reward is offered', async ({ page })
   await expect(page.locator('.reward')).toBeVisible({ timeout: 5000 });
   // Reward = swap: the whole deck on top, 4 offers below; Swap needs one of each.
   await expect(page.locator('.swap-deck .card')).toHaveCount(20);
-  await expect(page.locator('.swap-offer .card')).toHaveCount(4);
+  await expect(page.locator('.swap-offer .card')).toHaveCount(3);
   const swap = page.getByRole('button', { name: 'Swap' });
   await expect(swap).toBeDisabled();
   await page.locator('.swap-deck .card').first().click();

@@ -73,7 +73,7 @@ src/
   ui/          app (screens, modals), dom
     art/       icons (64×64), creatures (200×200), relics (200×200 stationery sprites), rooms (200×200 picture of each room, and the props of the contract screen and the studio mark: `PROP_SPRITES`), actArt (the skyline behind each act's map title, and the animated scene of its intro), riso (pixel renderer), cardArt (the cards' own paintings: one 160×68 vector per card, printed 56 pixels wide; the Warrior's so far, and the two X cards that moved to the Rogue)
     combat/    view, hud, cardLayer, mop, crank, taskFrame (the window every chore shares), coffeeWindow, shellWindow, badgeWindow, match3Window (the Supervisor's minigame), combatFx, combatScreen
-    components/ cardView, cardShow, coach, modals, memos, debugMenu, room, moveText, heroSheet, shareSlip, decor, reviewModal, runDetail
+    components/ cardView, cardShow, coach, modals, memos, debugMenu, room, moveText, heroSheet, shareSlip, decor, reviewModal, runDetail, wings (the desktop's side boards), rotateBanner (a phone held sideways)
     fx/        particles, floating text, shake, haptics
     screens/   title, studio, heroSelect, journey, reward, rest, promotion, copyRoom, tailor, lostFound, vending, crossTraining, end, compendium
   feedback/    `firebase.ts`: the only file that knows Firebase (reviews, crash reports)
@@ -117,7 +117,8 @@ dev/           art.html, og.html, map-editor.html (dev server only)
 
 - Screens: `show(screen)`, a screen is `{ el, enter?, leave?, frame? }`. Modals: `openModal`, `openInfo`, `openCardDetail`, `openDeck`.
 - Tap = act, **hold = inspect** (`onPress`, `onTapOrHold`, `CONFIG.longPressMs`); inspecting pauses the fight (`view.inspect`). Tap targets ≥ 44 px. Modals close on a full tap on the backdrop, never on pointerdown.
-- Desktop: above 560 px wide the column gets a poster frame (`shell.css`); hover feedback only under `(hover: hover) and (pointer: fine)`. Mouse: right click on a card inspects it. Keys in a fight (`onKey`, `combatScreen.ts`): Space/P/Esc pause (Space/P also resume), Space/Enter start, A ability, D deck, 1-9 sleeve slot; open windows keep their own keys (Esc closes them).
+- Every `<button>` clicked gives a light knock (`initFx`, `fx.ts`): a screen only adds a `haptic(…)` of its own when the moment is stronger or happens on the press. A phone held sideways (`rotateBanner.ts`) gets a curtain asking to turn it upright and the fight pauses behind it.
+- Desktop: above 560 px wide the column gets a poster frame (`shell.css`); from 1000 px with a mouse, notice boards (`wings.ts`, `wings.css`: the keys, the staff's ID badges that follow the unlocked heroes) hang either side; hover feedback only under `(hover: hover) and (pointer: fine)`. Mouse: right click on a card inspects it. Keys in a fight (`onKey`, `combatScreen.ts`): Space/P/Esc pause (Space/P also resume), Space/Enter start, A ability, D deck, 1-9 sleeve slot; open windows keep their own keys (Esc closes them).
 - An uncaught error opens the *Machine jam* window (`catchCrashes` in `main.ts`); catch expected rejections yourself.
 - Debug menus show only with the Settings switch `debugMenus` (hidden until the home screen's version line is tapped `CONFIG.debugTaps` times); they are temporary. Their Card art switch (`settings.cardArt`, `card-art` on the root) swaps the cards' icons for their paintings at runtime.
 
