@@ -15,6 +15,7 @@ import { openDeck, openInfo, openSettings, openStatInfo } from '../components/mo
 import { openHeroSheet } from '../components/heroSheet';
 import { dropLetters } from '../components/decor';
 import { creature } from '../art/creatures';
+import { heroFaces } from '../components/heroMood';
 import { UNKNOWN } from '../components/cardView';
 import { actArt } from '../art/actArt';
 
@@ -56,7 +57,7 @@ export function clockText(min: number): string {
 }
 
 export function runHud(run: RunState, extra?: HTMLElement): HTMLElement {
-  const portrait = h('button', { class: 'chip hero-chip', 'aria-label': t(`hero.${run.hero}.name`), html: creature(run.hero) });
+  const portrait = h('button', { class: 'chip hero-chip faces', 'aria-label': t(`hero.${run.hero}.name`), html: heroFaces(run.hero) });
   // Tap or hold the portrait for the hero's sheet.
   onPress(portrait, () => openHeroSheet(run));
   // HP explains itself and the deck opens, on a tap or a hold alike.

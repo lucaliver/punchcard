@@ -73,28 +73,30 @@ export function openSettings(extra: ModalAction[] = [], home = false): ModalHand
     (v) => (settings.analytics = v),
     t('settings.analyticsHint'),
   );
-  const debugRow = toggleRow(
-    t('settings.debugMenus'),
-    () => settings.debugMenus,
-    (v) => {
-      settings.debugMenus = v;
-      // Testing must not pollute the stats: debug turns them off (the switch can still be turned back on).
-      if (v) {
-        settings.analytics = false;
-        analyticsRow.querySelector('.switch')?.setAttribute('aria-checked', 'false');
-      }
-      // The screens behind this window are already built: show or hide their debug buttons now.
-      for (const b of document.querySelectorAll<HTMLElement>('.debug-fab')) b.hidden = !v;
-    },
-  );
+  const setDebug = (v: boolean): void => {
+    settings.debugMenus = v;
+    // Testing must not pollute the stats: debug turns them off (the switch can still be turned back on).
+    if (v) {
+      settings.analytics = false;
+      analyticsRow.querySelector('.switch')?.setAttribute('aria-checked', 'false');
+    }
+    // The screens behind this window are already built: show or hide their debug buttons now.
+    for (const b of document.querySelectorAll<HTMLElement>('.debug-fab')) b.hidden = !v;
+  };
+  const debugRow = toggleRow(t('settings.debugMenus'), () => settings.debugMenus, setDebug);
   debugRow.hidden = !settings.debugMenus;
-  // Debug menus stay hidden until the version line is tapped `CONFIG.debugTaps` times.
+  // Debug menus stay hidden until the version line is tapped `CONFIG.debugTaps` times: that tap also turns them on.
   let taps = 0;
   if (version)
     onTapOrHold(
       version,
       () => {
-        if (++taps >= CONFIG.debugTaps) debugRow.hidden = false;
+        if (++taps < CONFIG.debugTaps || !debugRow.hidden) return;
+        debugRow.hidden = false;
+        setDebug(true);
+        debugRow.querySelector('.switch')?.setAttribute('aria-checked', 'true');
+        saveSettings();
+        sfx('tap');
       },
       openResetConfirm,
       cssMs('--dur-hold'),

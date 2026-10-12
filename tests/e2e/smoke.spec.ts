@@ -148,8 +148,9 @@ test('a fight can be played and won, then a reward is offered', async ({ page })
   await page.locator('.swap-offer .card').first().click();
   await expect(swap).toBeEnabled();
   await swap.click();
-  // Back on the map: act 1 starts on a single road, so the one floor ahead is open.
+  // Back on the map: act 1 starts on a single road, so the one floor ahead is open; the fight won shows who was beaten there.
   await expect(page.locator('.node.open')).toHaveCount(1);
+  await expect(page.locator('.node.beaten .ico .riso')).toHaveCount(1);
   const deck = (await page.evaluate('window.__game.run.deck.length')) as number;
   expect(deck).toBe(20);
   expect(problems).toEqual([]);
@@ -688,17 +689,17 @@ test('closing the game on the reward screen keeps the same offers for Continue, 
   expect(await offers()).toBeUndefined();
 });
 
-test('debug menus are off by default, the switch appears after 5 taps on the version, and shows them at once', async ({ page }) => {
+test('debug menus are off by default, the switch appears turned on after 4 taps on the version', async ({ page }) => {
   await freshGame(page, { debug: false });
   await expect(page.locator('.debug-fab')).toBeHidden();
   await page.getByRole('button', { name: /settings/i }).click();
   const sw = page.getByRole('switch', { name: 'Debug menus' });
   await expect(sw).toBeHidden();
-  for (let i = 0; i < 4; i++) await page.locator('.version').click();
+  for (let i = 0; i < 3; i++) await page.locator('.version').click();
   await expect(sw).toBeHidden();
   await page.locator('.version').click();
   await expect(sw).toBeVisible();
-  await page.getByRole('switch', { name: 'Debug menus' }).click();
+  await expect(sw).toHaveAttribute('aria-checked', 'true');
   await page.getByRole('button', { name: 'Close' }).click();
   await expect(page.locator('.debug-fab')).toBeVisible();
 });
@@ -1431,6 +1432,10 @@ test('the enemy walks in as the door opens, and its passive is on a slip under C
   await expect(slip.locator('.trait-head')).toContainText(/enemy passive/i);
   const [button, under] = await Promise.all([page.locator('.js-start').boundingBox(), slip.boundingBox()]);
   expect(under!.y).toBeGreaterThanOrEqual(button!.y + button!.height - 1);
+  // The belt and its cards are dark until the clock-in.
+  await expect(page.locator('.combat.waiting')).toHaveCount(1);
+  await page.locator('.js-start').click();
+  await expect(page.locator('.combat.waiting')).toHaveCount(0);
   expect(problems).toEqual([]);
 });
 

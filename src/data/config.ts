@@ -20,7 +20,7 @@ export const CONFIG = {
   /** Milliseconds a press must last to count as "hold to inspect" (every screen). */
   longPressMs: 350,
   /** Taps on the version line in Settings that reveal the Debug menus switch. */
-  debugTaps: 5,
+  debugTaps: 4,
   /** The hero's portrait sweats under this share of max HP. */
   heroLowHp: 0.3,
   /**
