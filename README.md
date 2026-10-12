@@ -46,7 +46,7 @@ mosse. Tra uno scontro e l'altro migliori il mazzo.
 - **Mana:** si ricarica col tempo. Il massimo parte basso e cresce con le carte **cristallo**.
 - **Nemici:** un attacco base e, a intervalli, una mossa speciale. La **barra minaccia** mostra la mossa in carica.
 - **Difesa:** il **Blocco** assorbe i danni ma svanisce col tempo, quindi va giocato poco prima del colpo.
-- **Abilità dell'eroe:** una mossa potente a mana alto.
+- **Abilità dell'eroe:** una mossa potente a mana alto, usabile una sola volta per atto (si ricarica al turno successivo).
 - **Regole dei nemici:** passive e maledizioni cambiano il modo di giocare (carte bloccate, nastro rallentato o ruotato…).
 - **Faccende a mano:** certe mosse nemiche chiedono di fare qualcosa subito (preparare un caffè alla macchinetta, seguire
   il gioco delle tre carte…). Se ci riesci in tempo la mossa salta e il nemico resta stordito; se sbagli, paghi.
