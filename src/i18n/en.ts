@@ -1944,7 +1944,7 @@ const en = {
   'card.officeChristmasParty.name': 'Office Christmas Party',
   'card.officeChristmasParty.desc': '[heal] {0} HP and gain {1} [strength]. Shuffle a [@gossip] into your draw pile (the morning after).',
   'card.promotionWithoutARaise.name': 'Promotion Without Raise',
-  'card.promotionWithoutARaise.desc': 'Upgrade {0} random cards in your deck for this fight. They cost {1} more [mana] until played.',
+  'card.promotionWithoutARaise.desc': 'Upgrade {0} random cards in your deck for this fight.',
   'card.recurringMeeting.name': 'Recurring Meeting',
   'card.recurringMeeting.desc': 'Every {$meetingEvery}s, gain {0} [strength]. Every {$meetingSync}s, a [@quickSync] joins your belt.',
   'status.recurringMeeting': 'Recurring Meeting',

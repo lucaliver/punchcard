@@ -1958,7 +1958,7 @@ const es: Record<EnKey, string> = {
   'card.officeChristmasParty.name': 'Cena de Navidad de la Empresa',
   'card.officeChristmasParty.desc': '[heal] {0} PV y ganas {1} de [strength]. Baraja un [@gossip] en tu mazo de robo (al día siguiente).',
   'card.promotionWithoutARaise.name': 'Ascenso Sin Aumento',
-  'card.promotionWithoutARaise.desc': 'Mejora {0} cartas al azar de tu mazo durante este combate. Cuestan {1} de [mana] más hasta que se jueguen.',
+  'card.promotionWithoutARaise.desc': 'Mejora {0} cartas al azar de tu mazo durante este combate.',
   'card.recurringMeeting.name': 'Reunión Recurrente',
   'card.recurringMeeting.desc': 'Cada {$meetingEvery}s, ganas {0} de [strength]. Cada {$meetingSync}s, una [@quickSync] se une a tu cinta.',
   'status.recurringMeeting': 'Reunión Recurrente',

@@ -2068,13 +2068,13 @@ describe('the office batch: streaks, clocks, piles, curses and corporate speak',
     expect(c.draw.some((x) => x.id === 'gossip')).toBe(true);
   });
 
-  it('Promotion Without a Raise upgrades cards of the deck and makes them cost more until played', () => {
+  it('Promotion Without a Raise upgrades cards of the deck and nothing else', () => {
     const c = still();
     pile(c, 'draw', ['punch', 'punch', 'punch', 'punch']);
     expect(play(c, 'promotionWithoutARaise')).toBe(true);
     const up = c.draw.filter((x) => x.up);
     expect(up).toHaveLength(CARDS.promotionWithoutARaise.vals[0]);
-    expect(up.every((x) => x.tax === CARDS.promotionWithoutARaise.vals[1])).toBe(true);
+    expect(up.every((x) => !x.tax)).toBe(true);
   });
 
   it('Recurring Meeting gives Strength every so often and puts a Quick Sync on the belt', () => {

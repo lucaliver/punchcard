@@ -131,7 +131,7 @@ export const GLYPHS: Record<string, { icon: string; unit?: string; sign?: string
   /** The enemy's move comes this many seconds closer (Masochist). */
   hurry: { icon: 'timer', sign: '-', unit: 's' },
   /** Upgrades cards for the fight (not a card growing on its own: that is `grow`). */
-  upgrade: { icon: 'upgrade', sign: '+' },
+  upgrade: { icon: 'upgrade', sign: '+', tone: 'green' },
   /** Sorted by cost (Restructuring). */
   sort: { icon: 'sortCost' },
   /** A card that costs at least this much (Skim Off the Top). */

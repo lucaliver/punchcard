@@ -1959,8 +1959,7 @@ const it: Record<EnKey, string> = {
   'card.officeChristmasParty.name': 'Festa di Natale in Ufficio',
   'card.officeChristmasParty.desc': '[heal] {0} HP e ottieni {1} di [strength]. Mescola un [@gossip] nel tuo mazzo di pesca (il giorno dopo).',
   'card.promotionWithoutARaise.name': 'Promozione Senza Aumento',
-  'card.promotionWithoutARaise.desc':
-    'Potenzia {0} carte a caso nel tuo mazzo per questo scontro. Costano {1} di [mana] in più finché non vengono giocate.',
+  'card.promotionWithoutARaise.desc': 'Potenzia {0} carte a caso nel tuo mazzo per questo scontro.',
   'card.recurringMeeting.name': 'Riunione Ricorrente',
   'card.recurringMeeting.desc': 'Ogni {$meetingEvery}s, ottieni {0} di [strength]. Ogni {$meetingSync}s, un [@quickSync] si aggiunge al tuo nastro.',
   'status.recurringMeeting': 'Riunione Ricorrente',

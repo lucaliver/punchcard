@@ -1931,7 +1931,7 @@ const zh: Record<EnKey, string> = {
   'card.officeChristmasParty.name': '公司圣诞派对',
   'card.officeChristmasParty.desc': '[heal] {0} 点生命并获得 {1} 点[strength]。把一张[@gossip]洗入你的抽牌堆（第二天早上）。',
   'card.promotionWithoutARaise.name': '升职不加薪',
-  'card.promotionWithoutARaise.desc': '本场战斗中升级你牌组里随机 {0} 张牌。它们在打出前多花 {1} 点[mana]。',
+  'card.promotionWithoutARaise.desc': '本场战斗中升级你牌组里随机 {0} 张牌。',
   'card.recurringMeeting.name': '例行会议',
   'card.recurringMeeting.desc': '每 {$meetingEvery} 秒，获得 {0} 点[strength]。每 {$meetingSync} 秒，一张[@quickSync]加入你的传送带。',
   'status.recurringMeeting': '例行会议',
