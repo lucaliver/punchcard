@@ -141,7 +141,7 @@ con cura o stordimento vanno pensate con un freno incluso.
 - **Scontro:** si entra da una doppia porta d'ufficio; tutto ciò che serve (nemico, minaccia, vita, nastro, mana, sleeve)
   sta in una colonna sola, senza distogliere lo sguardo dalle carte.
 - **Fine run:** busta paga stampata, timbrata *Paid* o *Void*, condivisibile; se sblocca un eroe, un biglietto lo presenta.
-- **Impostazioni:** volumi, velocità, riduci animazioni, vibrazione, verso del nastro, lingua (inglese, italiano, spagnolo, cinese).
+- **Impostazioni:** volumi, riduci animazioni, vibrazione, lingua (inglese, italiano, spagnolo, cinese).
 - **Desktop:** sopra una certa larghezza la colonna diventa un poster; si gioca anche con la tastiera e il tasto destro ispeziona.
 
 ## 6. Direzione artistica e audio

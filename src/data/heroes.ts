@@ -88,7 +88,7 @@ const necromancer: HeroDef = {
   hp: 60,
   maxMana: 2,
   regen: CONFIG.manaRegen,
-  blockDecay: 0.9,
+  blockDecay: 1.0,
   startDeck: [
     ...rep('skeletonCrew', 6),
     ...rep('karlMarx', 5),
