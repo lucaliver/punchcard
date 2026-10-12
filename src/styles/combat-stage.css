@@ -435,7 +435,7 @@
   to { top: 96%; }
 }
 
-/* threat bar: the enemy's next move, right above the belt where the eyes are; its icon and number sit on the right, next to the countdown */
+/* threat bar: the enemy's next move, right above the belt where the eyes are; its number and icon (the icon right of the number, no line between) sit on the right, next to the countdown */
 .threat {
   position: relative;
   width: 100%;
@@ -449,17 +449,16 @@
   font-family: var(--font-ui);
 }
 .threat .t-ico {
-  order: 1;
+  order: 2;
   flex: none;
   width: 38px;
   display: grid;
   place-items: center;
   font-size: 28px;
-  border-left: 2px solid var(--void);
   --ink2: var(--y);
 }
 .threat .t-val {
-  order: 2;
+  order: 1;
   flex: none;
   min-width: 34px;
   padding: 0 6px;
@@ -470,6 +469,8 @@
   border-left: 2px solid var(--void);
 }
 .threat .t-val:empty { display: none; }
+/* without a number the icon is the one that meets the bar */
+.threat .t-val:empty + .t-ico { border-left: 2px solid var(--void); }
 .threat .t-track {
   position: relative;
   flex: 1;

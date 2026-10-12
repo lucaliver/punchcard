@@ -81,8 +81,8 @@ function markup(run: RunState, combat: Combat): string {
           <div class="bar js-ehp"><div class="ghost"></div><div class="fill"></div><div class="txt"></div></div>
         </div>
         <div class="threat" role="status" aria-live="polite">
-          <div class="t-ico js-intent-ico"></div>
           <div class="t-val"></div>
+          <div class="t-ico js-intent-ico"></div>
           <div class="t-track"><div class="t-fill"></div><span class="t-lbl"></span></div>
           <div class="t-time"></div>
         </div>
