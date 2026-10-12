@@ -329,7 +329,6 @@ const es: Record<EnKey, string> = {
 
   // -------------------------------------------------------------- combat
   'combat.fight': '¡A trabajar!',
-  'combat.bossIntro': 'Auditoría sorpresa',
   'combat.timeCard': 'Tarjeta de fichar',
   'combat.clockIn': 'Entrada {time}',
   'combat.clockOut': 'Salida {time}',
@@ -1089,7 +1088,7 @@ const es: Record<EnKey, string> = {
   'card.returnToSender.name': 'Devolver al remitente',
   'card.returnToSender.desc': 'Haz {0} de [damage] más el [damage] del ataque actual del enemigo.',
   'card.mentorshipProgram.name': 'Programa de mentoría',
-  'card.mentorshipProgram.desc': 'Mejora {0} cartas al azar de tu mazo de robo y descarte durante este combate.',
+  'card.mentorshipProgram.desc': 'Mejora una carta al azar de tu mazo de forma permanente.',
   'card.signingBonus.name': 'Bono de fichaje',
   'card.signingBonus.desc': 'Las cartas que se añaden a tu mazo cuestan {0} de [mana] menos hasta que se juegan.',
   'card.cleanSlate.name': 'Borrón y cuenta nueva',
@@ -1908,11 +1907,9 @@ const es: Record<EnKey, string> = {
   'status.moveFastAndBreakThings': 'Muévete Rápido y Rompe Cosas',
   'status.moveFastAndBreakThings.d': 'Cada carta que se cae de tu cinta hace {v} de daño.',
   'card.scopeCreep.name': 'Scope Creep',
-  'card.scopeCreep.desc':
-    'Cada {$scopeEvery}s, mejora una carta al azar de tu mazo durante este combate. Cuesta {1} de [mana] más hasta que se juegue.',
+  'card.scopeCreep.desc': 'Cada {$scopeEvery}s, mejora una carta al azar de tu mazo durante este combate.',
   'status.scopeCreep': 'Scope Creep',
-  'status.scopeCreep.d':
-    'Cada {$scopeEvery}s, mejora {v} {v|carta|cartas} al azar de tu mazo durante este combate. Cuestan {$scopeTax} de [mana] más hasta que se jueguen.',
+  'status.scopeCreep.d': 'Cada {$scopeEvery}s, mejora {v} {v|carta|cartas} al azar de tu mazo durante este combate.',
   'card.fridayDeploy.name': 'Despliegue en Viernes',
   'card.fridayDeploy.desc': 'Haz {0} de [damage]. Baraja {1} [@deadline]s en tu mazo de robo.',
   'card.vibeCoding.name': 'Vibe Coding',

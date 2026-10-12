@@ -74,7 +74,7 @@ test('a phone held sideways is asked to turn upright, and the desktop gets its s
   const desk = await browser.newContext({ viewport: { width: 1440, height: 900 }, baseURL });
   const wide = await desk.newPage();
   await wide.goto('/');
-  await expect(wide.locator('.wing-l .rules li')).toHaveCount(6);
+  await expect(wide.locator('.wing-l .keylist li')).toHaveCount(6);
   await expect(wide.locator('.wing-r .badge')).not.toHaveCount(0);
   await expect(wide.locator('.rotate-banner')).toBeHidden();
   await desk.close();
@@ -142,6 +142,42 @@ test('a fight can be played and won, then a reward is offered', async ({ page })
   await expect(page.locator('.node.open')).toHaveCount(1);
   const deck = (await page.evaluate('window.__game.run.deck.length')) as number;
   expect(deck).toBe(20);
+  expect(problems).toEqual([]);
+});
+
+test('the hero speaks in a bubble that keeps off the enemy bars, and its face follows the fight', async ({ page }) => {
+  const problems = await freshGame(page);
+  await startFight(page);
+  await combat(page, 'c.hero.mana = 20; c.useAbility();');
+  await expect(page.locator('.shout')).toBeVisible();
+  const portrait = page.locator('.hero-portrait');
+  await expect(portrait).toHaveAttribute('data-mood', 'cast');
+  const box = (sel: string): Promise<{ top: number; bottom: number }> =>
+    page.evaluate((q) => {
+      const r = document.querySelector(q)!.getBoundingClientRect();
+      return { top: r.top, bottom: r.bottom };
+    }, sel);
+  const bubble = await box('.shout');
+  for (const bar of ['.threat', '.js-ehp']) expect(bubble.bottom, bar).toBeLessThanOrEqual((await box(bar)).top + 1);
+  // The ability gave Block that would swallow the blow: a wince needs HP lost.
+  await combat(page, "c.hero.block = 0; c.damage('enemy', 'hero', 5, { raw: true }, 'enemy');");
+  await expect(portrait).toHaveAttribute('data-mood', 'hurt');
+  await combat(page, "c.damage('hero', 'enemy', 999, { raw: true }, 'hero');");
+  await expect(portrait).toHaveAttribute('data-mood', 'cheer');
+  expect(problems).toEqual([]);
+});
+
+test('a boss walks in with the lights out, and the curtain lifts by itself', async ({ page }) => {
+  const problems = await freshGame(page, { veteran: true });
+  await page.getByRole('button', { name: /new run/i }).click();
+  await page.getByRole('button', { name: /start shift/i }).click();
+  await page.evaluate(
+    "(() => { const g = window.__game; const n = g.run.nodes.find((x) => x.type === 'boss' && x.act === 1); g.run.current = n.id; g.run.cleared = false; g.run.path = [0]; g.goJourney(); })()",
+  );
+  await page.locator('.journey:not(.leaving) .btn.cta').click();
+  const dark = page.locator('.boss-intro');
+  await expect(dark).toBeVisible({ timeout: 15_000 });
+  await expect(dark).toBeHidden({ timeout: 5000 });
   expect(problems).toEqual([]);
 });
 

@@ -4,9 +4,12 @@ import type { Combat } from '../../game/combat';
 import { currentNode, type RunState, totalFloors } from '../../game/run';
 import type { HeroId, Side } from '../../game/types';
 import { creature } from '../art/creatures';
+import { stageArt } from '../art/stageArt';
 import { icon } from '../art/icons';
 import { darkEyes, motes } from '../components/decor';
 import { $, centerOf, h, retrigger } from '../dom';
+import { createHeroMood, type HeroMood, heroFaces } from './heroMood';
+import { say } from './speech';
 
 export const ABILITY_ICON: Record<string, string> = { warrior: 'picketLine', mage: 'stolenClock', necromancer: 'shutdown', rogue: 'stocktake' };
 export const PASSIVE_ICON: Record<string, string> = { warrior: 'thickSkin', mage: 'bolt2', necromancer: 'biohazard', rogue: 'stickyFingers' };
@@ -41,7 +44,10 @@ export interface CombatView {
   pointOf(side: Side): Point;
   /** A short notice in the middle of the fight; `alert` makes it a bad-news one that stays longer; `delayMs` holds it back (e.g. behind a speech bubble). */
   toast(text: string, alert?: boolean, delayMs?: number): void;
-  banner(text: string, bad?: boolean): void;
+  /** The hero's face: it blinks, winces, shouts and grins (`heroMood.ts`). */
+  mood: HeroMood;
+  /** The hero says a line, in a speech bubble low on the stage (it never covers the enemy's bars). */
+  shout(text: string): void;
   /** Pauses the fight while something is being inspected (set by the combat screen). */
   inspect(open: boolean): void;
   /** Measures the cards and the enemy's room again (the belt got another number of rows). */
@@ -58,6 +64,7 @@ function markup(run: RunState, combat: Combat): string {
       <button class="icon-btn js-pause" aria-label="${t('combat.paused')}">${icon('pause')}</button>
     </header>
     <section class="stage">
+      <div class="stage-art" aria-hidden="true">${stageArt(enemyDef.act)}</div>
       <div class="stage-floor"></div>
       ${motes(14)}
       ${darkEyes([
@@ -90,7 +97,7 @@ function markup(run: RunState, combat: Combat): string {
     </section>
     <!-- right above the belt: your HP, Block and statuses stay in view while you play -->
     <section class="hero-row">
-      <div class="hero-portrait">${creature(heroId)}<i class="snore" aria-hidden="true">${icon('zzz')}</i><div class="rims"></div><div class="relic-peek"></div></div>
+      <div class="hero-portrait">${heroFaces(heroId)}<i class="snore" aria-hidden="true">${icon('zzz')}</i><div class="rims"></div><div class="relic-peek"></div></div>
       <div class="hero-info">
         <div class="statuses js-hstatus"></div>
         <div class="hpline">
@@ -209,6 +216,7 @@ export function createCombatView(run: RunState, combat: Combat): CombatView {
     combat,
     heroId: run.hero,
     r,
+    mood: createHeroMood(r.portrait),
     state: { paused: true, waiting: true, ended: false, frameNo: 0, beltW: 0, cardW: 0, rowH: 0, ltr: true, stop: 0 },
     retrigger,
     enemyPoint,
@@ -228,10 +236,6 @@ export function createCombatView(run: RunState, combat: Combat): CombatView {
     relayout() {
       /* replaced by the combat screen */
     },
-    banner(text, bad = false) {
-      const b = h('div', { class: `banner ${bad ? 'bad' : ''}` }, text);
-      b.addEventListener('animationend', () => b.remove());
-      el.append(b);
-    },
+    shout: (text) => void say(r.stage, text, 'shout', run.hero, CONFIG.shoutMs, CONFIG.shoutHold),
   };
 }

@@ -1,7 +1,6 @@
 import { t } from '../../core/i18n';
-import { type SoundId, sfx, voice } from '../../audio/sfx';
+import { type SoundId, sfx } from '../../audio/sfx';
 import { CARDS } from '../../data/cards';
-import { CONFIG } from '../../data/config';
 import { openModal } from '../app';
 import { HEXES } from '../../data/hexes';
 import { STATUSES, statusTone } from '../../data/statuses';
@@ -15,6 +14,7 @@ import { centerOf, cssMs, h } from '../dom';
 import { burst, floatText, haptic, shake } from '../fx/fx';
 import { keywordText, statusName } from '../components/cardView';
 import type { CardLayer } from './cardLayer';
+import { type Bubble, say } from './speech';
 import type { CombatView } from './view';
 
 const SOUND_FOR_KIND: Record<string, SoundId> = {
@@ -55,39 +55,11 @@ export function bindCombatFx(v: CombatView, cards: CardLayer, onEnd: (result: 'w
   const hexHinted = new Set<string>();
 
   /** An enemy's speech bubble over the stage (one at a time): it is typed out within `ms`, stays `CONFIG.speechHold` ms once all the text is there, then goes by itself. */
+  let bubble: Bubble | null = null;
   const speak = (text: string, ms = SPEECH_MS): void => {
-    r.stage.querySelector('.speech')?.remove();
-    clearInterval(typing);
-    clearTimeout(hideTimer);
-    // The line is typed out letter by letter (the unsaid part keeps the bubble's size) while the enemy's voice reads it, in a pitch of its own.
-    const said = h('span', null);
-    const unsaid = h('span', { class: 'unsaid' }, text);
-    const bubble = h('div', { class: 'speech', 'aria-label': text }, said, unsaid);
-    r.stage.append(bubble);
-    const letters = [...text];
-    const gap = Math.min(CONFIG.voiceMs, (ms * 0.7) / Math.max(1, letters.length));
-    const total = gap * letters.length + CONFIG.speechHold;
-    speechEnd = performance.now() + total;
-    hideTimer = window.setTimeout(() => {
-      bubble.classList.add('out');
-      bubble.addEventListener('animationend', () => bubble.remove());
-    }, total);
-    const [lo, hi] = CONFIG.voicePitch;
-    const id = v.combat.enemy.def.id;
-    voice(text, lo + ([...id].reduce((sum, c) => sum + c.charCodeAt(0) * 7, 0) % (hi - lo)), gap);
-    let n = 0;
-    typing = window.setInterval(() => {
-      n++;
-      said.textContent = letters.slice(0, n).join('');
-      unsaid.textContent = letters.slice(n).join('');
-      if (n >= letters.length) clearInterval(typing);
-    }, gap);
+    bubble = say(r.stage, text, 'speech', v.combat.enemy.def.id, ms);
   };
-  let typing = 0;
-  let hideTimer = 0;
-  /** When the bubble on screen will have gone: a note meant to follow it waits until then. */
-  let speechEnd = 0;
-  const speechLeft = (): number => Math.max(0, speechEnd - performance.now());
+  const speechLeft = (): number => (bubble ? Math.max(0, bubble.end - performance.now()) : 0);
 
   const onEvent = (e: CombatEvent): void => {
     switch (e.type) {
@@ -127,6 +99,7 @@ export function bindCombatFx(v: CombatView, cards: CardLayer, onEnd: (result: 'w
             // What hit it sets the flash: a heavy blow throws the frame back, poison and fire tint it.
             r.portrait.dataset.hit = e.source === 'dot' ? e.kind : e.amount >= 12 ? 'heavy' : '';
             v.retrigger(r.portrait, 'hurt');
+            v.mood.flash('hurt', 0.35);
             shake(e.amount >= 12 ? 'big' : 'small');
             haptic(e.amount >= 12 ? 'heavy' : 'hit');
           } else if (e.blocked > 0 && e.source !== 'dot') v.retrigger(r.portrait, 'parried');
@@ -356,7 +329,8 @@ export function bindCombatFx(v: CombatView, cards: CardLayer, onEnd: (result: 'w
         f.addEventListener('animationend', () => f.remove());
         v.el.append(f);
         v.retrigger(r.portrait, 'casting');
-        v.banner(t(`hero.${v.heroId}.ability`));
+        v.mood.flash('cast', 0.7);
+        v.shout(`${t(`hero.${v.heroId}.ability`)}!`);
         sfx('ability');
         haptic('ability');
         break;
@@ -542,8 +516,7 @@ export function bindCombatFx(v: CombatView, cards: CardLayer, onEnd: (result: 'w
   };
   const unsubscribe = v.combat.events.on(onEvent);
   return () => {
-    clearInterval(typing);
-    clearTimeout(hideTimer);
+    bubble?.cancel();
     unsubscribe();
   };
 }
