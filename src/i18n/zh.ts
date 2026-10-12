@@ -347,7 +347,7 @@ const zh: Record<EnKey, string> = {
   'task.coffee.code': '代码 {code}',
   'task.coffee.step.coins': '投入硬币',
   'task.coffee.step.code': '输入代码',
-  'task.coffee.step.place': '杯子 + 小勺',
+  'task.coffee.step.place': '先杯子，后小勺',
   'task.coffee.step.sugar': '加糖 + 开始',
   'task.coffee.step.brew': '制作中……',
   'task.coffee.step.done': '请享用！',

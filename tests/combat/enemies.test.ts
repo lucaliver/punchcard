@@ -245,13 +245,15 @@ describe('Factory Siren', () => {
   it('her song ties your hands (stashing still works), and the belt plays the cards that slip off, for free', () => {
     const c = setup({ enemy: ENEMIES.factorySiren, deck: deckOf(['punch', 'punch', 'punch', 'punch', 'punch', 'punch']) });
     run(c, CONFIG.introTime + 0.01);
-    c.applyStatus('hero', 'stun', 1, 8);
-    c.applyStatus('hero', 'autopilot', 1, 8);
+    // Long enough for a card to cross the belt and slip off its end.
+    const span = CONFIG.beltTime / c.beltRate() + 0.3;
+    c.applyStatus('hero', 'stun', 1, span);
+    c.applyStatus('hero', 'autopilot', 1, span);
     const first = c.belt[0].card.uid;
     expect(c.playCard(first)).toBe(false);
     expect(c.stash(c.belt[c.belt.length - 1].card.uid, 0)).toBe(true);
     const hp = c.enemy.hp;
-    run(c, 8);
+    run(c, span);
     expect(c.hero.mana).toBeLessThanOrEqual(c.hero.maxMana);
     expect(c.enemy.hp).toBeLessThan(hp);
   });

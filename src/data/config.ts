@@ -51,8 +51,12 @@ export const CONFIG = {
   crashMax: 2000,
   /** Seconds between two stats hits (`src/analytics/`): a burst is spread out instead of sent at once. */
   statsGap: 0.4,
-  /** Seconds for a card to cross one full belt width. */
+  /** Seconds for a card to cross one full belt width, at full belt speed. */
   beltTime: 7.7,
+  /** How fast every belt runs, as a share of full speed (the base of `Combat.beltRate`). */
+  beltSpeed: 0.9,
+  /** Seconds per mana point, for every hero (`HeroDef.regen` takes it unless a hero needs its own). */
+  manaRegen: 1.25,
   /** Card width as a fraction of the belt width (the UI mirrors this). */
   cardWidth: 0.25,
   /** Minimum gap between spawns, in belt widths. */

@@ -350,7 +350,7 @@ const en = {
   'task.coffee.code': 'Code {code}',
   'task.coffee.step.coins': 'INSERT COINS',
   'task.coffee.step.code': 'ENTER CODE',
-  'task.coffee.step.place': 'CUP + SPOON',
+  'task.coffee.step.place': 'CUP, THEN SPOON',
   'task.coffee.step.sugar': 'SUGAR + START',
   'task.coffee.step.brew': 'BREWING…',
   'task.coffee.step.done': 'ENJOY!',

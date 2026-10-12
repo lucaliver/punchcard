@@ -115,7 +115,7 @@ describe('combat engine', () => {
       expect(pos.length).toBeGreaterThan(2);
       for (let i = 1; i < pos.length; i++) expect(pos[i] - pos[i - 1]).toBeGreaterThan(CONFIG.spacing * 0.9);
     }
-    expect(c.beltRate()).toBeCloseTo(CONFIG.twoRowSpeed);
+    expect(c.beltRate()).toBeCloseTo(CONFIG.beltSpeed * CONFIG.twoRowSpeed);
   });
 
   it('cards never overlap on a row, even while queued curses hold the other one back', () => {

@@ -82,11 +82,11 @@ function botMatch(c: Combat, game: MatchThree, rnd: () => number): boolean {
 
 /** The next right move of the Boss's coffee. */
 function botCoffee(c: Combat, task: CoffeeTask): void {
-  if (task.phase === 'coins') {
+  if (task.phase === 'code') c.coffee({ kind: 'key', key: task.code[task.keysDone] });
+  else if (task.phase === 'coins') {
     const coin = task.coins.find((x) => !x.used && task.fits(x));
     if (coin) c.coffee({ kind: 'coin', id: coin.id });
-  } else if (task.phase === 'code') c.coffee({ kind: 'key', key: task.code[task.keysDone] });
-  else if (task.phase === 'place') c.coffee({ kind: 'item', item: COFFEE_SERVICE.find((x) => !task.placed.includes(x))! });
+  } else if (task.phase === 'place') c.coffee({ kind: 'item', item: COFFEE_SERVICE[task.placed.length] });
   else if (task.phase === 'sugar') c.coffee(task.dial < task.sugar ? { kind: 'sugar', by: 1 } : { kind: 'start' });
 }
 

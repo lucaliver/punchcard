@@ -548,7 +548,7 @@ export class Combat {
   }
 
   beltRate(): number {
-    return (this.beltRows > 1 ? CONFIG.twoRowSpeed : 1) * this.runBeltMul * this.phaseBeltMul * this.beltBoost();
+    return CONFIG.beltSpeed * (this.beltRows > 1 ? CONFIG.twoRowSpeed : 1) * this.runBeltMul * this.phaseBeltMul * this.beltBoost();
   }
 
   /** How much statuses speed the belt up (Rush, Hurry, Crunch), slow it down (Slowdown, rust) or stop it (Stalled, full rust, or about to turn around): 1 when none does. */

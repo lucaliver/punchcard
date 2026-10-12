@@ -32,7 +32,7 @@ const warrior: HeroDef = {
   id: 'warrior',
   hp: 70,
   maxMana: 3,
-  regen: 1.25,
+  regen: CONFIG.manaRegen,
   blockDecay: CONFIG.heroBlockDecay,
   slowBlock: THICK_SKIN,
   // Starter decks: only basic cards (plus mana crystals); everything else comes from rewards.
@@ -57,7 +57,7 @@ const mage: HeroDef = {
   unlock: { finishRun: 'warrior' },
   hp: 60,
   maxMana: 3,
-  regen: 1.25,
+  regen: CONFIG.manaRegen,
   blockDecay: 1.0,
   startDeck: [...rep('clippy', 8), ...rep('spamFilter', 7), 'coffee', 'italianEspresso', 'caffeineJolt', 'staticShock', 'burnout'],
   startUpgraded: ['clippy', 'spamFilter'],
@@ -87,7 +87,7 @@ const necromancer: HeroDef = {
   unlock: { reachBoss: 1 },
   hp: 60,
   maxMana: 2,
-  regen: 1.25,
+  regen: CONFIG.manaRegen,
   blockDecay: 0.9,
   startDeck: [
     ...rep('skeletonCrew', 6),
@@ -119,7 +119,7 @@ const rogue: HeroDef = {
   unlock: { allStamped: ACT_DEFS.length },
   hp: 60,
   maxMana: 3,
-  regen: 1.25,
+  regen: CONFIG.manaRegen,
   blockDecay: 1.0,
   startDeck: [
     ...rep('borrowedStapler', 7),

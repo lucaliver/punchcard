@@ -353,7 +353,7 @@ const it: Record<EnKey, string> = {
   'task.coffee.code': 'Codice {code}',
   'task.coffee.step.coins': 'INSERISCI MONETE',
   'task.coffee.step.code': 'DIGITA IL CODICE',
-  'task.coffee.step.place': 'BICCHIERE + CUCCHIAINO',
+  'task.coffee.step.place': 'BICCHIERE, POI CUCCHIAINO',
   'task.coffee.step.sugar': 'ZUCCHERO + START',
   'task.coffee.step.brew': 'IN PREPARAZIONE…',
   'task.coffee.step.done': 'BUON CAFFÈ!',

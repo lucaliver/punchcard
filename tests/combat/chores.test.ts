@@ -29,17 +29,19 @@ describe("the Boss's coffee", () => {
     c.skipEnemyMove();
     return c;
   };
-  /** Puts in coins the slot takes until the price is paid. */
+  /** Keys in the code, then puts in coins the slot takes until the price is paid. */
   const pay = (c: Combat): void => {
     const task = coffeeOf(c);
+    for (const key of task.code) expect(c.coffee({ kind: 'key', key })).toBe('ok');
     while (task.phase === 'coins') c.coffee({ kind: 'coin', id: task.coins.find((x) => !x.used && task.fits(x))!.id });
   };
   /** Does the whole chore with the right moves, up to pressing start (the fork on the tray is a mistake: it costs seconds). */
   const doChore = (c: Combat): void => {
     const task = coffeeOf(c);
     pay(c);
-    for (const key of task.code) expect(c.coffee({ kind: 'key', key })).toBe('ok');
     expect(c.coffee({ kind: 'item', item: 'fork' })).toBe('wrong');
+    // The spoon waits for the cup.
+    expect(c.coffee({ kind: 'item', item: 'spoon' })).toBe('wrong');
     expect(c.coffee({ kind: 'item', item: 'cup' })).toBe('ok');
     expect(c.coffee({ kind: 'item', item: 'spoon' })).toBe('ok');
     for (let i = 0; i < task.sugar; i++) c.coffee({ kind: 'sugar', by: 1 });
@@ -56,7 +58,7 @@ describe("the Boss's coffee", () => {
     });
     expect(c.chore).toBeNull();
     run(c, CONFIG.introTime + 0.1);
-    expect(c.chore?.phase).toBe('coins');
+    expect(c.chore?.phase).toBe('code');
     const uid = c.belt[0].card.uid;
     expect(c.isCovered(uid)).toBe(true);
     expect(c.playCard(uid)).toBe(false);
@@ -71,7 +73,7 @@ describe("the Boss's coffee", () => {
     expect(c.chore).toBeNull();
     expect(c.hero.hp).toBe(80);
     expect(c.has('enemy', 'stun')).toBe(true);
-    expect(phases).toEqual(['open', 'wrong', 'done']);
+    expect(phases).toEqual(['open', 'wrong', 'wrong', 'done']);
     expect(said).toEqual(['enemy.slavesCeo.order', 'enemy.slavesCeo.calm']);
     expect(c.isCovered(uid)).toBe(false);
   });
@@ -84,7 +86,6 @@ describe("the Boss's coffee", () => {
     });
     run(c, CONFIG.introTime + 0.1);
     const task = coffeeOf(c);
-    pay(c);
     const wrong = (task.code[0] % CONFIG.coffee.keys) + 1;
     const t0 = c.enemy.timer;
     expect(c.coffee({ kind: 'key', key: wrong })).toBe('wrong');
@@ -115,6 +116,7 @@ describe("the Boss's coffee", () => {
   it('the slot only takes coins the purse can still make the price with, so any order of good coins pays up', () => {
     for (let seed = 1; seed <= 60; seed++) {
       const task = new CoffeeTask(new Rng(seed));
+      for (const key of task.code) task.act({ kind: 'key', key });
       for (const coin of task.coins) {
         if (task.phase !== 'coins') break;
         const was = task.paid;
@@ -123,7 +125,7 @@ describe("the Boss's coffee", () => {
         if (!fits) expect(task.paid).toBe(was);
       }
       expect(task.paid, `seed ${seed}`).toBe(task.price);
-      expect(task.phase).toBe('code');
+      expect(task.phase).toBe('place');
     }
   });
 });

@@ -18,7 +18,7 @@ const FILL_STEPS = 20;
 /** Sparks that fly off the served cup. */
 const SPARKS = 8;
 /** The window's four steps, in order (the pour and the served cup are still the fourth). */
-const STEPS: Record<CoffeePhase, number> = { coins: 1, code: 2, place: 3, sugar: 4, brew: 4, done: 4 };
+const STEPS: Record<CoffeePhase, number> = { code: 1, coins: 2, place: 3, sugar: 4, brew: 4, done: 4 };
 const STEP_COUNT = 4;
 /** The icon of each thing on the tray. */
 const ITEM_ICON: Record<CoffeeItem, string> = { cup: 'paperCup', spoon: 'spoon', fork: 'fork' };
@@ -41,8 +41,8 @@ export function createTaskWindow(v: CombatView): { render(): void } {
       <div class="tk-note">
         <small>${t('task.coffee.order')}</small>
         <b class="tk-drink"></b>
-        <span class="tk-pay"></span>
         <span class="tk-code"></span>
+        <span class="tk-pay"></span>
         <span class="tk-sugar"></span>
       </div>
       <div class="tk-machine">
@@ -242,8 +242,8 @@ export function createTaskWindow(v: CombatView): { render(): void } {
     if (built === task.phase) return;
     const was = built;
     built = task.phase;
-    if (task.phase === 'coins') buildCoins(task);
-    else if (task.phase === 'code') buildCode();
+    if (task.phase === 'code') buildCode();
+    else if (task.phase === 'coins') buildCoins(task);
     else if (task.phase === 'place') buildPlace(task);
     else if (task.phase === 'sugar') buildSugar(task);
     else if (task.phase === 'brew') buildBrew();
@@ -263,14 +263,14 @@ export function createTaskWindow(v: CombatView): { render(): void } {
       const phase = task.phase;
       setText(refs.step, `${STEPS[phase]}/${STEP_COUNT}`);
       setText(refs.msg, t(`task.coffee.step.${phase}`));
-      toggle(refs.pay, 'cur', phase === 'coins');
       toggle(refs.code, 'cur', phase === 'code');
+      toggle(refs.pay, 'cur', phase === 'coins');
       toggle(refs.sugar, 'cur', phase === 'sugar');
-      if (phase === 'coins') {
+      if (phase === 'code') {
+        setText(refs.val, task.code.map((n, i) => (i < task.keysDone ? n : '_')).join(' '));
+      } else if (phase === 'coins') {
         setText(refs.val, `${money(task.paid)} / ${money(task.price)}`);
         for (const c of task.coins) coinEls.get(c.id)?.classList.toggle('gone', c.used);
-      } else if (phase === 'code') {
-        setText(refs.val, task.code.map((n, i) => (i < task.keysDone ? n : '_')).join(' '));
       } else if (phase === 'place') {
         setText(refs.val, '');
         for (const [item, b] of itemEls) {

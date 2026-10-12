@@ -810,7 +810,7 @@ test("the Nerd's update window covers the belt: Postpone sends it away for a few
   expect(problems).toEqual([]);
 });
 
-test("the Boss's coffee: a chore window covers the belt and the sleeve; pay, key in the code, prepare, and the move is off", async ({ page }) => {
+test("the Boss's coffee: a chore window covers the belt and the sleeve; key in the code, pay, prepare, and the move is off", async ({ page }) => {
   const problems = await freshGame(page);
   await page.getByRole('button', { name: /debug/i }).click();
   await page.locator('.debug-tabs button').last().click();
@@ -843,21 +843,7 @@ test("the Boss's coffee: a chore window covers the belt and the sleeve; pay, key
   ).toBe(true);
   // The Boss's note says what he wants.
   await expect(page.locator('.tk-drink')).not.toBeEmpty();
-  // Step 1: coins. One goes in by a drag, the rest by taps.
-  const nextCoin = (): Promise<number | null> =>
-    combat(page, "const t = c.chore; return t.phase === 'coins' ? (t.coins.find((x) => !x.used && t.fits(x))?.id ?? null) : null;") as Promise<
-      number | null
-    >;
-  const first = (await nextCoin())!;
-  const coin = (await page.locator('.tk-coin').nth(first).boundingBox())!;
-  const slot = (await page.locator('.tk-slot').boundingBox())!;
-  await page.mouse.move(coin.x + coin.width / 2, coin.y + coin.height / 2);
-  await page.mouse.down();
-  await page.mouse.move(slot.x + slot.width / 2, slot.y + slot.height / 2, { steps: 6 });
-  await page.mouse.up();
-  expect(await combat(page, 'return c.chore.paid > 0;')).toBe(true);
-  for (let id = await nextCoin(); id !== null; id = await nextCoin()) await page.locator('.tk-coin').nth(id).tap();
-  // Step 2: the code. A wrong key costs seconds off the countdown.
+  // Step 1: the code. A wrong key costs seconds off the countdown.
   await expect(page.locator('.tk-pad')).toBeVisible();
   const code = (await combat(page, 'return c.chore.code;')) as number[];
   const wrong = (code[0] % 9) + 1;
@@ -876,11 +862,27 @@ test("the Boss's coffee: a chore window covers the belt and the sleeve; pay, key
       .locator('.tk-key')
       .nth(n - 1)
       .tap();
-  // Step 3: the cup goes under the spout by a drag, the fork bounces, the spoon by a tap.
+  // Step 2: coins. One goes in by a drag, the rest by taps.
+  await expect(page.locator('.tk-purse')).toBeVisible();
+  const nextCoin = (): Promise<number | null> =>
+    combat(page, "const t = c.chore; return t.phase === 'coins' ? (t.coins.find((x) => !x.used && t.fits(x))?.id ?? null) : null;") as Promise<
+      number | null
+    >;
+  const first = (await nextCoin())!;
+  const coin = (await page.locator('.tk-coin').nth(first).boundingBox())!;
+  const slot = (await page.locator('.tk-slot').boundingBox())!;
+  await page.mouse.move(coin.x + coin.width / 2, coin.y + coin.height / 2);
+  await page.mouse.down();
+  await page.mouse.move(slot.x + slot.width / 2, slot.y + slot.height / 2, { steps: 6 });
+  await page.mouse.up();
+  expect(await combat(page, 'return c.chore.paid > 0;')).toBe(true);
+  for (let id = await nextCoin(); id !== null; id = await nextCoin()) await page.locator('.tk-coin').nth(id).tap();
+  // Step 3: the cup goes under the spout by a drag, the fork and the spoon before the cup bounce, then the spoon by a tap.
   await expect(page.locator('.tk-item[data-item="cup"]')).toBeVisible();
   const errors = (await combat(page, 'return c.chore.errors;')) as number;
   await page.locator('.tk-item[data-item="fork"]').tap();
-  expect(await combat(page, 'return c.chore.errors;')).toBe(errors + 1);
+  await page.locator('.tk-item[data-item="spoon"]').tap();
+  expect(await combat(page, 'return c.chore.errors;')).toBe(errors + 2);
   const cupBox = (await page.locator('.tk-item[data-item="cup"]').boundingBox())!;
   const spotBox = (await page.locator('.tk-spot').boundingBox())!;
   await page.mouse.move(cupBox.x + cupBox.width / 2, cupBox.y + cupBox.height / 2);

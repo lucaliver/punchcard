@@ -17,7 +17,7 @@ const ramp: Partial<MoveDef> = { status: [gainStrength] };
 /** Seconds the Factory Siren's song holds you (stunned, on autopilot). */
 const SIREN_SONG = 8;
 
-/** Seconds the Boss's coffee move takes to land: the chore (pay, key in the code, cup and spoon, sugar, pour) fits in it with a little to spare. */
+/** Seconds the Boss's coffee move takes to land: the chore (key in the code, pay, cup and spoon, sugar, pour) fits in it with a little to spare. */
 const GET_COFFEE = 26;
 
 /** Seconds the Punch Clock's badge swipe takes to land: a refusal or two (it never reads the first) and a few tries at the right speed fit in it. */

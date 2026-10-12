@@ -2,8 +2,8 @@ import type { Rng } from '../core/rng';
 import { COFFEE_COINS, COFFEE_DRINKS, COFFEE_ITEMS, COFFEE_SERVICE, type CoffeeDrink, type CoffeeItem } from '../data/coffee';
 import { CONFIG } from '../data/config';
 
-/** The four steps (pay, key in the code, put the cup and the spoon under the spout, dial the sugar and start), then the machine pours (`brew`) and the cup is served (`done`). */
-export type CoffeePhase = 'coins' | 'code' | 'place' | 'sugar' | 'brew' | 'done';
+/** The four steps (key in the code, pay, put the cup and then the spoon under the spout, dial the sugar and start), then the machine pours (`brew`) and the cup is served (`done`). */
+export type CoffeePhase = 'code' | 'coins' | 'place' | 'sugar' | 'brew' | 'done';
 
 export type CoffeeAction =
   | { kind: 'coin'; id: number }
@@ -33,13 +33,13 @@ const fewest = (values: number[], sum: number): number =>
     : Math.min(...values.map((v, i) => (v <= sum ? 1 + fewest([...values.slice(0, i), ...values.slice(i + 1)], sum - v) : Infinity)), Infinity);
 
 /**
- * One order of the Boss's coffee: pay the price with the right coins, key in the drink's code, put the cup and the spoon (not the fork) under the spout, dial the sugar and press start.
+ * One order of the Boss's coffee: key in the drink's code, pay the price with the right coins, put the cup and then the spoon (not the fork) under the spout, dial the sugar and press start.
  * Pure state, driven by `Combat.coffee` (which turns a `wrong` into lost seconds) and ticked by simulated time.
  */
 export class CoffeeTask {
   readonly id = 'coffee' as const;
   readonly covers = true;
-  phase: CoffeePhase = 'coins';
+  phase: CoffeePhase = 'code';
   readonly drink: CoffeeDrink;
   readonly sugar: number;
   readonly price: number;
@@ -89,13 +89,14 @@ export class CoffeeTask {
       case 'key':
         if (this.phase !== 'code') return 'ignored';
         if (a.key !== this.code[this.keysDone]) return 'wrong';
-        if (++this.keysDone === this.code.length) this.phase = 'place';
+        if (++this.keysDone === this.code.length) this.phase = 'coins';
         return 'ok';
       case 'item':
         if (this.phase !== 'place' || this.placed.includes(a.item)) return 'ignored';
-        if (!COFFEE_SERVICE.includes(a.item)) return 'wrong';
+        // The service goes under the spout in its own order (the cup, then the spoon): anything else is a mistake.
+        if (a.item !== COFFEE_SERVICE[this.placed.length]) return 'wrong';
         this.placed.push(a.item);
-        if (COFFEE_SERVICE.every((x) => this.placed.includes(x))) this.phase = 'sugar';
+        if (this.placed.length === COFFEE_SERVICE.length) this.phase = 'sugar';
         return 'ok';
       case 'sugar':
         if (this.phase !== 'sugar') return 'ignored';
@@ -127,7 +128,7 @@ export class CoffeeTask {
     if (!this.fits(coin)) return 'wrong';
     coin.used = true;
     this.paid += coin.value;
-    if (this.paid === this.price) this.phase = 'code';
+    if (this.paid === this.price) this.phase = 'place';
     return 'ok';
   }
 
