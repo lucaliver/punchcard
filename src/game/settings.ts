@@ -1,5 +1,5 @@
 import { load, store } from '../core/save';
-import { GAME_SPEEDS } from '../data/config';
+import { CONFIG, GAME_SPEEDS } from '../data/config';
 
 export interface Settings {
   /** Volumes from 0 (off) to 1. */
@@ -18,10 +18,10 @@ export interface Settings {
   debugMenus: boolean;
   /** Debug: shows the cards' own paintings (`art/cardArt.ts`) in place of their icons, where a card has one. */
   cardArt: boolean;
-  /** Debug: every hero regenerates a mana every `CONFIG.debugRegen` seconds. */
-  debugRegen: boolean;
-  /** Debug: the belt runs at `CONFIG.debugBeltMul` of its speed. */
-  debugBelt: boolean;
+  /** Debug: seconds per mana for every hero (0 = each hero's own). */
+  debugRegen: number;
+  /** Debug: a multiplier on the belt's speed (1 = normal). */
+  debugBelt: number;
   /** Sends anonymous play counters (`src/analytics/`). */
   analytics: boolean;
 }
@@ -38,8 +38,8 @@ const defaults: Settings = {
   seenTips: [],
   debugMenus: false,
   cardArt: false,
-  debugRegen: false,
-  debugBelt: false,
+  debugRegen: 0,
+  debugBelt: 1,
   analytics: true,
 };
 
@@ -50,9 +50,14 @@ for (const k of ['sfxVolume', 'musicVolume'] as const) {
   settings[k] = typeof v === 'number' && Number.isFinite(v) ? Math.min(1, Math.max(0, v)) : defaults[k];
 }
 
-for (const k of ['reduceMotion', 'haptics', 'localeChosen', 'seenTutorial', 'debugMenus', 'cardArt', 'debugRegen', 'debugBelt', 'analytics'] as const)
+for (const k of ['reduceMotion', 'haptics', 'localeChosen', 'seenTutorial', 'debugMenus', 'cardArt', 'analytics'] as const)
   if (typeof settings[k] !== 'boolean') settings[k] = defaults[k];
 if (!GAME_SPEEDS.some((s) => s === settings.speed)) settings.speed = defaults.speed;
+const { regen, belt } = CONFIG.debugPace;
+if (typeof settings.debugRegen !== 'number' || (settings.debugRegen !== 0 && !(settings.debugRegen >= regen.min && settings.debugRegen <= regen.max)))
+  settings.debugRegen = defaults.debugRegen;
+if (typeof settings.debugBelt !== 'number' || !(settings.debugBelt >= belt.min && settings.debugBelt <= belt.max))
+  settings.debugBelt = defaults.debugBelt;
 if (typeof settings.locale !== 'string') settings.locale = defaults.locale;
 if (!Array.isArray(settings.seenTips) || settings.seenTips.some((id) => typeof id !== 'string')) settings.seenTips = [];
 

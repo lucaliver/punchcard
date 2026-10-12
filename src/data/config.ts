@@ -36,8 +36,11 @@ export const CONFIG = {
   historyMax: 30,
   /** Debug fight option: the hero's HP. */
   debugHp: 500,
-  debugRegen: 1,
-  debugBeltMul: 0.85,
+  /** Debug sliders for the pace of a fight: seconds per mana (0 = the hero's own) and a multiplier on the belt's speed (1 = normal). */
+  debugPace: {
+    regen: { min: 0.25, max: 3, step: 0.05, start: 1 },
+    belt: { min: 0.5, max: 1.5, step: 0.05 },
+  },
   /** Runs finished (won, lost or abandoned) before the home asks for a rating. */
   ratingAfterRuns: 2,
   /** Stars from which a rating counts as a good one (the review asks what was liked, not what was not). */

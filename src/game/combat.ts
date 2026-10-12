@@ -171,6 +171,8 @@ export class Combat {
   private beltTurns = 0;
   private regenMul = 1;
   private runBeltMul = 1;
+  /** The belt's speed from the run (setup and relics), before the debug pace. */
+  private baseBeltMul = 1;
   /** Deck uids permanently removed (potions). */
   consumed: number[] = [];
   /** How many times each deck copy with `CardDef.tenure` has been played in the run so far, counting this fight (the run keeps it). */
@@ -251,7 +253,7 @@ export class Combat {
     }
     sleeve = Math.max(1, sleeve - (setup.sleeveLost ?? 0));
     this.regenMul = regenMul;
-    this.runBeltMul = beltMul;
+    this.runBeltMul = this.baseBeltMul = beltMul;
     this.canBeg = !!setup.canBeg && !this.relicFlags[BEG_FLAG];
 
     this.hero = {
@@ -537,6 +539,12 @@ export class Combat {
 
   enemyTimeRate(): number {
     return this.mul('enemy', 'timeMul');
+  }
+
+  /** Temporary debug tool: sets the pace while the fight runs: seconds per mana (0 = the hero's own) and a multiplier on the belt's speed. */
+  setDebugPace(regen: number, belt: number): void {
+    this.hero.regen = regen > 0 ? regen : this.heroDef.regen;
+    this.runBeltMul = this.baseBeltMul * belt;
   }
 
   beltRate(): number {

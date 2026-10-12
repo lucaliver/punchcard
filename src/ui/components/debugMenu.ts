@@ -24,33 +24,80 @@ export function applyCardArt(): void {
   document.documentElement.classList.toggle('card-art', settings.cardArt);
 }
 
-/** Temporary debug tool: a switch on one boolean setting (the fight reads it when it starts; the card art applies at once). */
-function debugSwitch(key: 'cardArt' | 'debugRegen' | 'debugBelt', label: string, cls: string, onChange?: () => void): HTMLButtonElement {
+/** Temporary debug tool: the card-art switch, at runtime (every card on screen changes at once). */
+function cardArtSwitch(cls: string): HTMLButtonElement {
   const btn = h(
     'button',
     {
       class: cls,
-      'aria-pressed': String(settings[key]),
+      'aria-pressed': String(settings.cardArt),
       onclick: () => {
-        settings[key] = !settings[key];
+        settings.cardArt = !settings.cardArt;
         saveSettings();
-        onChange?.();
-        btn.setAttribute('aria-pressed', String(settings[key]));
+        applyCardArt();
+        btn.setAttribute('aria-pressed', String(settings.cardArt));
         sfx('tap');
       },
     },
-    label,
+    t('debug.cardArt'),
   );
   return btn;
 }
 
-/** The debug switches every debug window shows. */
-function debugSwitches(cls: string): HTMLButtonElement[] {
-  return [
-    debugSwitch('cardArt', t('debug.cardArt'), cls, applyCardArt),
-    debugSwitch('debugRegen', t('debug.regen'), cls),
-    debugSwitch('debugBelt', t('debug.belt'), cls),
-  ];
+/** Temporary debug tool: sliders for the mana regen and the belt's speed, saved for the next fights; `onChange` lets a running fight take them at once. */
+function paceSliders(onChange?: () => void): HTMLElement {
+  const { regen, belt } = CONFIG.debugPace;
+  const rows = [
+    {
+      key: 'debugRegen',
+      label: t('debug.regen'),
+      range: regen,
+      start: regen.start,
+      text: (v: number) => (v ? t('debug.paceSeconds', { n: v.toFixed(2) }) : t('debug.paceAuto')),
+    },
+    { key: 'debugBelt', label: t('debug.belt'), range: belt, start: 1, text: (v: number) => `${Math.round(v * 100)}%` },
+  ] as const;
+  const sync: (() => void)[] = [];
+  const els = rows.map((row) => {
+    const input = h('input', {
+      class: 'slider',
+      type: 'range',
+      min: row.range.min,
+      max: row.range.max,
+      step: row.range.step,
+      'aria-label': row.label,
+    });
+    const num = h('b', { class: 'slider-val' });
+    const show = (): void => {
+      input.value = String(settings[row.key] || row.start);
+      num.textContent = row.text(settings[row.key]);
+    };
+    sync.push(show);
+    show();
+    input.addEventListener('input', () => {
+      settings[row.key] = Number(input.value);
+      num.textContent = row.text(settings[row.key]);
+      onChange?.();
+    });
+    input.addEventListener('change', saveSettings);
+    return h('div', { class: 'debug-pace-row' }, h('span', null, row.label), h('div', { class: 'slider-wrap' }, input, num));
+  });
+  const reset = h(
+    'button',
+    {
+      class: 'btn small secondary',
+      onclick: () => {
+        settings.debugRegen = 0;
+        settings.debugBelt = 1;
+        saveSettings();
+        for (const show of sync) show();
+        onChange?.();
+        sfx('tap');
+      },
+    },
+    t('debug.paceReset'),
+  );
+  return h('div', { class: 'debug-pace' }, ...els, reset);
 }
 
 /** Temporary debug tool: the small floating bug button that opens a debug menu (placed per screen by `.debug-fab`). */
@@ -68,7 +115,12 @@ export function debugButton(label: string, onClick: () => void): HTMLButtonEleme
 }
 
 /** Temporary debug tool: a window of cheat buttons; a tap closes the window, then does it. */
-export function openDebugMenu(title: string, items: { label: string; icon: string; run: () => void }[], onClose?: () => void): ModalHandle {
+export function openDebugMenu(
+  title: string,
+  items: { label: string; icon: string; run: () => void }[],
+  onClose?: () => void,
+  onPace?: () => void,
+): ModalHandle {
   const handle = openModal({
     title,
     body: h(
@@ -89,7 +141,8 @@ export function openDebugMenu(title: string, items: { label: string; icon: strin
           h('span', null, it.label),
         ),
       ),
-      ...debugSwitches('btn small secondary debug-switch'),
+      cardArtSwitch('btn small secondary debug-switch'),
+      paceSliders(onPace),
     ),
     actions: [{ label: t('common.close'), cls: 'secondary' }],
     onClose,
@@ -135,7 +188,7 @@ export function openDebugFight(onPick: (hero: HeroId, enemy: string, cards: stri
     },
     t('debug.allCards'),
   );
-  const options = h('div', { class: 'debug-options' }, hpBtn, allBtn, ...debugSwitches('btn small secondary'));
+  const options = h('div', { class: 'debug-options' }, hpBtn, allBtn, cardArtSwitch('btn small secondary'));
   const renderHeroes = (): void => {
     heroSeg.replaceChildren(
       ...HERO_LIST.filter((hd) => !heroHidden(hd.id)).map((hd) =>

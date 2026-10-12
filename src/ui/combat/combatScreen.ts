@@ -453,6 +453,7 @@ export function combatScreen(run: RunState, combat: Combat, cb: CombatCallbacks)
         { label: t('debug.lose'), icon: 'ko', run: () => combat.loseHp(combat.hero.hp) },
       ],
       () => v.inspect(false),
+      () => combat.setDebugPace(settings.debugRegen, settings.debugBelt),
     );
   };
   el.append(debugButton(t('debug.menu'), openDebug));

@@ -232,10 +232,8 @@ function enterNode(to?: number): void {
   }
   // Each shift has its own fight music (by the enemy's act, so debug fights match too).
   playMusic(node.type === 'boss' ? 'boss' : node.type === 'elite' ? 'elite' : actDef(ENEMIES[node.enemy!].act).music);
-  const setup = combatSetup(run);
-  if (settings.debugBelt) setup.beltMul = (setup.beltMul ?? 1) * CONFIG.debugBeltMul;
-  const combat = new Combat(setup);
-  if (settings.debugRegen) combat.hero.regen = CONFIG.debugRegen;
+  const combat = new Combat(combatSetup(run));
+  combat.setDebugPace(settings.debugRegen, settings.debugBelt);
   if (import.meta.env.DEV) Object.assign(window, { __combat: combat });
   saveRun(run);
   show(combatScreen(run, combat, { onEnd: afterCombat, onQuit: abandon, onMenu: goTitle }));

@@ -431,6 +431,18 @@ test('debug menus: the fight menu kills the enemy, the map menu opens rooms and 
   await page.getByRole('button', { name: 'Give me 50 Block' }).click();
   expect(await combat(page, 'return c.hero.block;')).toBeGreaterThanOrEqual(50);
   await combat(page, 'c.enemy.timer = 2;');
+  // The pace sliders act on the running fight: a slower mana regen and belt, and back to the hero's own.
+  const own = (await combat(page, 'return c.heroDef.regen;')) as number;
+  const belt = (await combat(page, 'return c.beltRate();')) as number;
+  await page.locator('.combat .debug-fab').click();
+  await page.getByLabel('Mana regen (s)').fill('2');
+  await page.getByLabel('Belt speed').fill('0.5');
+  expect(await combat(page, 'return c.hero.regen;')).toBe(2);
+  expect(await combat(page, 'return c.beltRate();')).toBeCloseTo(belt * 0.5, 5);
+  await page.getByRole('button', { name: 'Reset pace' }).click();
+  expect(await combat(page, 'return c.hero.regen;')).toBe(own);
+  expect(await combat(page, 'return c.beltRate();')).toBeCloseTo(belt, 5);
+  await page.getByRole('button', { name: 'Close' }).click();
   await page.locator('.combat .debug-fab').click();
   await page.getByRole('button', { name: 'Skip enemy move' }).click();
   expect(await combat(page, 'return c.enemy.timer < 1;')).toBe(true);
