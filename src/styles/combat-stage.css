@@ -451,7 +451,7 @@
 .threat .t-ico {
   order: 2;
   flex: none;
-  width: 38px;
+  width: 34px;
   display: grid;
   place-items: center;
   font-size: 28px;
@@ -460,8 +460,7 @@
 .threat .t-val {
   order: 1;
   flex: none;
-  min-width: 34px;
-  padding: 0 6px;
+  padding: 0 0 0 8px;
   display: grid;
   place-items: center;
   font-size: 26px;
@@ -529,7 +528,8 @@
 }
 /* the bar and its icon take the move's tone (set by the HUD from what the move does); an idle move stays grey */
 .threat { --t-ink: var(--tone, var(--muted)); --t-ink2: var(--tone-hi, var(--intent-idle-hi)); }
-.threat .t-ico { color: var(--t-ink); }
+.threat .t-ico,
+.threat .t-val { color: var(--t-ink); }
 .threat[data-intent='charge'] { background-color: var(--y); }
 /* the enemy is down: its bar greys out, whatever it was charging */
 .threat.down { --t-ink: var(--muted); --t-ink2: var(--paper-dim); background-color: var(--paper); }
