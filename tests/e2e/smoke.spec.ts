@@ -1435,6 +1435,9 @@ test('the enemy walks in as the door opens, and its passive is on a slip under C
   // The belt and its cards are dark until the clock-in.
   await expect(page.locator('.combat.waiting')).toHaveCount(1);
   await page.locator('.js-start').click();
+  // The time card is stamped with the player's own clock, not the workday's.
+  const hour = await page.evaluate(() => String(new Date().getHours()).padStart(2, '0'));
+  await expect(page.locator('.tc-stamp')).toContainText(`${hour}:`);
   await expect(page.locator('.combat.waiting')).toHaveCount(0);
   expect(problems).toEqual([]);
 });

@@ -1,12 +1,12 @@
 import { t } from '../../core/i18n';
-import { endTemporaryMusic, playTemporaryMusic, setMusicTempo } from '../../audio/music';
+import { endTemporaryMusic, playTemporaryMusic, setMusicHeaviness, setMusicTempo } from '../../audio/music';
 import { sfx } from '../../audio/sfx';
 import { CARDS } from '../../data/cards';
 import { actDef } from '../../data/acts';
 import { CONFIG, halfAtOf } from '../../data/config';
 import type { Combat } from '../../game/combat';
 import type { MoveDef } from '../../game/types';
-import { clockAt, currentNode, isFirstRun, type RunState, totalFloors } from '../../game/run';
+import { currentNode, isFirstRun, type RunState, totalFloors } from '../../game/run';
 import { meetEnemy } from '../../game/meta';
 import { saveSettings, settings } from '../../game/settings';
 import { type ModalHandle, openModal, type Screen } from '../app';
@@ -21,7 +21,7 @@ import { $, SLACK_MS, cssMs, h, onPress, onTapOrHold } from '../dom';
 import { burst, haptic, shake } from '../fx/fx';
 import { bindCrank } from './crank';
 import { bindMop } from './mop';
-import { clockText } from '../screens/journey';
+import { realClockText } from '../screens/journey';
 import { createCardLayer } from './cardLayer';
 import { bindCombatFx } from './combatFx';
 import { createBadgeWindow } from './badgeWindow';
@@ -79,6 +79,7 @@ export function combatScreen(run: RunState, combat: Combat, cb: CombatCallbacks)
   let beltOffset = 0;
   let lastDragged = 0;
   let lastTempo = 1;
+  let lastHeavy = 0;
   let acc = 0;
   /** Seconds since the last heartbeat of an enemy about to fall. */
   let beat = 0;
@@ -162,7 +163,7 @@ export function combatScreen(run: RunState, combat: Combat, cb: CombatCallbacks)
         r.enemyArt.classList.add('boss');
       } else v.shout(t('reward.cleared'));
       // Clocking out when the next floor starts (the end of the shift after a boss).
-      timeCard('out', clockText(clockAt(run, { ...currentNode(run), floor: currentNode(run).floor + 1 })));
+      timeCard('out', realClockText());
       if (!boss) sfx('victory');
     } else {
       // Fired: the hero goes down, and the payslip on the end screen says the rest.
@@ -586,6 +587,13 @@ export function combatScreen(run: RunState, combat: Combat, cb: CombatCallbacks)
       lastTempo = tempo;
       setMusicTempo(tempo);
     }
+    // The lower the hero's HP, the heavier the music (it lightens again once the fight is over).
+    const [calm, grim] = CONFIG.heavyMusic;
+    const heavy = state.ended ? 0 : Math.max(0, Math.min(1, (calm - combat.hero.hp / combat.hero.maxHp) / (calm - grim)));
+    if (heavy !== lastHeavy) {
+      lastHeavy = heavy;
+      setMusicHeaviness(heavy);
+    }
     v.mood.frame(dt);
     hud.render();
     taskWindow.render();
@@ -696,7 +704,7 @@ export function combatScreen(run: RunState, combat: Combat, cb: CombatCallbacks)
         sfx('button');
         haptic('tap');
         // The clock-in is stamped first; once it is away the fight runs.
-        timeCard('in', clockText(clockAt(run, currentNode(run))), () => {
+        timeCard('in', realClockText(), () => {
           state.waiting = false;
           syncPause();
           v.shout(t('combat.fight'));
@@ -707,6 +715,7 @@ export function combatScreen(run: RunState, combat: Combat, cb: CombatCallbacks)
     },
     leave() {
       setMusicTempo(1);
+      setMusicHeaviness(0);
       for (const id of timers) clearTimeout(id);
       unsubscribe();
       removeEventListener('resize', onResize);

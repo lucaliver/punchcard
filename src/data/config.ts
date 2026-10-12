@@ -23,6 +23,8 @@ export const CONFIG = {
   debugTaps: 4,
   /** The hero's portrait sweats under this share of max HP. */
   heroLowHp: 0.3,
+  /** The music gets heavier as the hero's HP falls: nothing above this share of max HP, all of it at (and below) the second one. */
+  heavyMusic: [0.7, 0.2],
   /**
    * An enemy tenses up before its move lands: from this many seconds left (or half the wind-up, if shorter) it winds up, and from `hard` it shakes harder and rims pink.
    * Before that, a hostile move `charge`s over the last share of its wind-up (an aura growing in `chargeSteps` steps), a big count shows over the enemy for the last `count`

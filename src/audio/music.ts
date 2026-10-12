@@ -751,7 +751,31 @@ const TRACKS: Record<TrackId, Track> = {
 /** 0 (off) to 1. */
 let volume = 1;
 let wanted: TrackId | null = null;
-let current: { id: TrackId; out: GainNode; timer: number; step: () => number; jump: (to: number) => void } | null = null;
+let current: {
+  id: TrackId;
+  out: GainNode;
+  /** The low shelf and the low-pass the music goes through: `setMusicHeaviness` moves them. */
+  shelf: BiquadFilterNode;
+  lp: BiquadFilterNode;
+  drive: GainNode;
+  timer: number;
+  step: () => number;
+  jump: (to: number) => void;
+} | null = null;
+/** How heavy the music is, 0 (as written) to 1: the bass is boosted, a sub-octave joins it, the kick hits harder and the top gets darker. */
+let heavy = 0;
+/** What full heaviness does: the low shelf's boost (dB), how much darker the low-pass gets (Hz at 0 and at 1), the sub-octave's volume and the kick's extra weight. */
+const HEAVY = { shelfDb: 11, lowpass: [5200, 2600], sub: 0.3, kick: 0.6, bass: 0.5, grit: 0.45 } as const;
+const heavyShelf = (): number => HEAVY.shelfDb * heavy;
+/** A soft clip: the grit that makes the low notes heard on a phone's small speaker (its harmonics, not its fundamental). */
+let gritCurve: Float32Array<ArrayBuffer> | null = null;
+const grit = (): Float32Array<ArrayBuffer> => {
+  if (gritCurve) return gritCurve;
+  gritCurve = new Float32Array(257);
+  for (let i = 0; i < gritCurve.length; i++) gritCurve[i] = Math.tanh((i / 128 - 1) * 5);
+  return gritCurve;
+};
+const heavyLowpass = (): number => HEAVY.lowpass[0] + (HEAVY.lowpass[1] - HEAVY.lowpass[0]) * heavy;
 let pulseWave: PeriodicWave | null = null;
 let thinWave: PeriodicWave | null = null;
 const VOLUME = 0.2;
@@ -855,11 +879,21 @@ function start(id: TrackId): void {
   out.gain.setValueAtTime(0.0001, ctx.currentTime);
   // Short fade-in: the track is audible right away.
   out.gain.linearRampToValueAtTime(VOLUME * tr.gain * volume, ctx.currentTime + 0.35);
-  // A gentle low-pass keeps the square waves from getting harsh.
+  // A gentle low-pass keeps the square waves from getting harsh; ahead of it, a low shelf that boosts the bass as the music gets heavier.
+  const shelf = ctx.createBiquadFilter();
+  shelf.type = 'lowshelf';
+  shelf.frequency.value = 160;
+  shelf.gain.value = heavyShelf();
   const lp = ctx.createBiquadFilter();
   lp.type = 'lowpass';
-  lp.frequency.value = 5200;
-  out.connect(lp).connect(bus);
+  lp.frequency.value = heavyLowpass();
+  out.connect(shelf).connect(lp).connect(bus);
+  // The same sound, clipped and mixed in more the heavier the music is.
+  const shaper = ctx.createWaveShaper();
+  shaper.curve = grit();
+  const drive = ctx.createGain();
+  drive.gain.value = HEAVY.grit * heavy;
+  shelf.connect(shaper).connect(drive).connect(lp);
 
   // Read every step, so a tempo change (the belt rushing) is heard right away.
   const sixteenth = (): number => 60 / tr.bpm / 4 / tempo;
@@ -877,11 +911,14 @@ function start(id: TrackId): void {
     if (b !== null) {
       const len = tr.bass.slice(i + 1).findIndex((x) => x !== null);
       const steps = len < 0 ? 16 - i : len + 1;
-      note(out, m(ch.root + b), t, sixteenth() * Math.min(steps, 4) * 0.9, {
+      const len2 = sixteenth() * Math.min(steps, 4) * 0.9;
+      note(out, m(ch.root + b), t, len2, {
         wave: tr.bassWave === 'pulse' ? 'thin' : 'triangle',
-        vol: tr.bassWave === 'pulse' ? 0.16 : 0.34,
+        vol: (tr.bassWave === 'pulse' ? 0.16 : 0.34) * (1 + HEAVY.bass * heavy),
         release: 0.04,
       });
+      // Heavier music: the bass line doubled an octave down, a plain sine under it.
+      if (heavy > 0.02) note(out, m(ch.root + b - 12), t, len2, { wave: 'sine', vol: HEAVY.sub * heavy, release: 0.05 });
     }
 
     const a = tr.arp[i];
@@ -910,7 +947,7 @@ function start(id: TrackId): void {
 
     for (const lane of tr.drums) {
       const c = lane[i];
-      if (c && c !== '.') drum(out, c, t, id === 'menu' ? 0.5 : 0.8);
+      if (c && c !== '.') drum(out, c, t, (id === 'menu' ? 0.5 : 0.8) * (c === 'k' ? 1 + HEAVY.kick * heavy : 1));
     }
 
     if (tr.crackle && Math.random() < 0.35) drum(out, 'c', t + Math.random() * sixteenth(), 1);
@@ -926,6 +963,9 @@ function start(id: TrackId): void {
   current = {
     id,
     out,
+    shelf,
+    lp,
+    drive,
     timer,
     step: () => step,
     jump: (to) => {
@@ -980,6 +1020,17 @@ let tempo = 1;
 
 export function setMusicTempo(k: number): void {
   tempo = k;
+}
+
+/** Makes the music heavier (0 = as written, 1 = as heavy as it gets) or lighter again; the filters glide there in a moment. */
+export function setMusicHeaviness(k: number): void {
+  heavy = Math.max(0, Math.min(1, k));
+  const g = audioGraph();
+  if (!current || !g) return;
+  const t = g.ctx.currentTime;
+  current.shelf.gain.setTargetAtTime(heavyShelf(), t, 0.4);
+  current.lp.frequency.setTargetAtTime(heavyLowpass(), t, 0.4);
+  current.drive.gain.setTargetAtTime(HEAVY.grit * heavy, t, 0.4);
 }
 
 /** Track to go back to when a temporary track (e.g. the pause theme) ends. */

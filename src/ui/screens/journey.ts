@@ -50,6 +50,13 @@ const LAMP_MS = 45;
 /** A point on the map: x in % of its width, y in px. */
 type Pt = [number, number];
 
+/** The player's own clock, as text (e.g. 14:05): what the time card is stamped with, whatever hour the game's workday is at. */
+export function realClockText(): string {
+  const now = new Date();
+  const pad = (n: number): string => String(n).padStart(2, '0');
+  return t('journey.clock', { h: pad(now.getHours()), m: pad(now.getMinutes()) });
+}
+
 /** A workday clock time (minutes after midnight) as text, e.g. 08:27. */
 export function clockText(min: number): string {
   const pad = (n: number): string => String(n).padStart(2, '0');
