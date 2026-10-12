@@ -7,6 +7,9 @@ export const CONFIG = {
   voiceMs: 42,
   /** Milliseconds an enemy's speech bubble stays up once all its text is there. */
   speechHold: 2500,
+  /** The hero's own lines (`shout`): how long a line stays once typed out, and how long it takes to type. */
+  shoutHold: 900,
+  shoutMs: 500,
   /** An enemy under this many HP (and alive) is heard breathing: a heartbeat every `heartbeatGap` seconds until it falls. */
   enemyLowHp: 15,
   heartbeatGap: 0.9,

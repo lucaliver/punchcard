@@ -267,7 +267,19 @@
 }
 .hero-portrait .riso { width: 100%; height: 100%; }
 /* a bust, not the whole figure: the sprite is zoomed so the hero fills the frame (feet and shadow cropped) */
-.hero-portrait > .riso { scale: 1.3; transform-origin: 50% 22%; }
+.hero-portrait > .riso { scale: 1.3; transform-origin: 50% 22%; animation: idle 2.4s steps(1) infinite; }
+/* idle: the hero breathes, up a pixel and back */
+@keyframes idle {
+  50% { translate: 0 -2%; }
+}
+/* a face on top of the drawing, shown while the portrait has that mood (`heroMood.ts`); the plain drawing steps aside */
+.hero-portrait > .riso.mood { position: absolute; inset: 0; visibility: hidden; }
+.hero-portrait[data-mood] > .riso:not(.mood) { visibility: hidden; }
+.hero-portrait[data-mood='blink'] > .mood-blink,
+.hero-portrait[data-mood='hurt'] > .mood-hurt,
+.hero-portrait[data-mood='tired'] > .mood-tired,
+.hero-portrait[data-mood='cheer'] > .mood-cheer,
+.hero-portrait[data-mood='cast'] > .mood-cast { visibility: visible; }
 /* Dodge: the hero is a ghost, the hits go through */
 .hero-portrait.ghost > .riso { opacity: 0.45; }
 .hero-portrait.hurt { animation: hurt 0.3s steps(2); }

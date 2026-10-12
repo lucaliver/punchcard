@@ -327,7 +327,6 @@ const en = {
 
   // -------------------------------------------------------------- combat
   'combat.fight': 'Get to work!',
-  'combat.bossIntro': 'Surprise Audit',
   'combat.timeCard': 'Time card',
   'combat.clockIn': 'In {time}',
   'combat.clockOut': 'Out {time}',

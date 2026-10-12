@@ -31,6 +31,12 @@
   --door-shade: #3f2318;
   --door-hi: #9a6244;
   --door-bar: #c9ccd6;
+  /* the scene behind the enemy in a fight (`art/stageArt.ts`): far shapes, near shapes, lights, warning lights, window glass, candle wax */
+  --stage-far: #2d2350;
+  --stage-near: #3a2e66;
+  --stage-lit: var(--y);
+  --stage-hot: var(--p);
+  --stage-wax: #8d83b0;
 }
 [data-act='2'] {
   --stamp-ink: var(--tc-accent);
@@ -62,6 +68,10 @@
   --door-panel: #e4d8c6;
   --door-shade: #8f93a3;
   --door-hi: #f4ecdf;
+  --stage-far: #4a1c30;
+  --stage-near: #612640;
+  --stage-lit: #e0b040;
+  --stage-hot: #ff6a8a;
 }
 [data-act='3'] {
   --stamp-ink: var(--tc-accent);
@@ -91,6 +101,10 @@
   --door-panel: #6b7f8a;
   --door-shade: #2d3b42;
   --door-hi: #8fa5b0;
+  --stage-far: #0d3844;
+  --stage-near: #14495a;
+  --stage-lit: #e8c440;
+  --stage-hot: var(--red);
 }
 /* the first act's map is a brighter violet than its other screens: the morning shift starts at dawn */
 .journey[data-act='1'] {

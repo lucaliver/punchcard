@@ -330,7 +330,6 @@ const it: Record<EnKey, string> = {
 
   // -------------------------------------------------------------- combat
   'combat.fight': 'Al lavoro!',
-  'combat.bossIntro': 'Audit a Sorpresa',
   'combat.timeCard': 'Cartellino',
   'combat.clockIn': 'Entrata {time}',
   'combat.clockOut': 'Uscita {time}',

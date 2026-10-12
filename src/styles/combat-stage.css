@@ -43,6 +43,27 @@
   justify-content: flex-end;
   padding: 0 12px 10px;
 }
+/* the scene behind the enemy (`art/stageArt.ts`): it stands on the floor strip, as wide as the stage; a short stage crops its top */
+.stage-art {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 109px;
+  height: min(calc(var(--app-w) * 0.4167), calc(100% - 109px));
+  pointer-events: none;
+}
+.stage-art-svg { display: block; width: 100%; height: 100%; }
+.stage-art-svg .a { fill: var(--stage-far); }
+.stage-art-svg .b { fill: var(--stage-near); }
+.stage-art-svg .l { fill: var(--stage-lit); }
+.stage-art-svg .h { fill: var(--stage-hot); }
+.stage-art-svg .w { fill: var(--stage-wax); }
+.stage-art-svg .g { fill: var(--stage-lit); opacity: 0.2; }
+/* the gears turn an eighth at a time */
+.stage-art-svg .gear { transform-box: view-box; transform-origin: var(--cx) var(--cy); animation: gear-cw 8s steps(8) infinite; }
+.stage-art-svg .gear.ccw { animation-name: gear-ccw; }
+@keyframes gear-cw { to { transform: rotate(360deg); } }
+@keyframes gear-ccw { to { transform: rotate(-360deg); } }
 .stage-floor {
   /* a strip of dithered stone at the enemy's feet */
   position: absolute;

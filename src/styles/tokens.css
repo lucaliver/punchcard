@@ -140,8 +140,9 @@
   /* a step of the Supervisor's match-3 (pieces pop, then the board falls): the window plays a move's rounds one step at a time */
   --dur-match: 260ms;
   --dur-door-read: 1000ms;
-  /* the boss's title card after the door (script removes it when its animation ends) */
-  --dur-boss-intro: 2200ms;
+  /* the boss's blackout after the door: the tubes flicker, then come on for good at --boss-lights of the way (script waits on both and removes the curtain when its animation ends) */
+  --dur-boss-intro: 2400ms;
+  --boss-lights: 0.62;
   --dur-swap-fly: 350ms;
   --dur-swap-gone: 200ms;
   /** extra time the bonus card of a skipped reward stays up to be read */
@@ -155,7 +156,6 @@
   --z-danger: 35;
   --z-speech: 35;
   --z-overlay: 40;
-  --z-banner: 45;
   --z-fx: 50;
   --z-curtain: 50;
   --z-floaters: 60;

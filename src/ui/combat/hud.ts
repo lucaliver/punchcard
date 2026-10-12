@@ -466,7 +466,9 @@ export function createHud(v: CombatView, onPassive: () => void): { render(): voi
   const renderHeroExtras = (): void => {
     const hs = combat.hero;
     // Low on HP: the portrait sweats and shivers.
-    toggle(r.portrait, 'low', hs.hp > 0 && hs.hp <= hs.maxHp * CONFIG.heroLowHp);
+    const low = hs.hp > 0 && hs.hp <= hs.maxHp * CONFIG.heroLowHp;
+    toggle(r.portrait, 'low', low);
+    v.mood.setLow(low);
     // The ability charges with mana: it lights up once the hero can afford it.
     r.ability.style.setProperty('--p', String(Math.min(1, hs.mana / combat.abilityCost())));
     toggle(r.ability, 'ready', combat.abilityReady());
