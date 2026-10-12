@@ -311,7 +311,7 @@ export const rogueCards: CardDef[] = [
   },
   {
     id: 'introductoryOffer',
-    face: '{*cheaper:0}',
+    face: '{*cards}{cheaper:0}',
     cls: 'rogue',
     type: 'power',
     rarity: 'epic',
