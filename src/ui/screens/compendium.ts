@@ -6,7 +6,20 @@ import { ENEMY_LIST } from '../../data/enemies';
 import type { EnemyDef, RelicDef } from '../../game/types';
 import { HERO_LIST } from '../../data/heroes';
 import { RELIC_LIST } from '../../data/relics';
-import { cardHidden, collection, enemyMet, hasStamp, heroHidden, isDiscovered, records, relicSeen, runHistory } from '../../game/meta';
+import {
+  cardHidden,
+  type CollectionKind,
+  collection,
+  enemyMet,
+  hasStamp,
+  heroHidden,
+  isDiscovered,
+  markPageSeen,
+  newPages,
+  records,
+  relicSeen,
+  runHistory,
+} from '../../game/meta';
 import type { CardClass, RunLog } from '../../game/types';
 import type { Screen } from '../app';
 import { h, onPress, stagger } from '../dom';
@@ -44,8 +57,12 @@ const SECTION_ICON: Record<Section, string> = {
   history: 'lateClock',
 };
 
-/** A tab button's face: its pixel icon, then its word. */
-const tabFace = (iconId: string, label: string): string => `${icon(iconId)}<span>${label}</span>`;
+/** A tab button's face: its pixel icon, then its word (and a dot when the page has something new). */
+const tabFace = (iconId: string, label: string, fresh = false): string =>
+  `${icon(iconId)}<span>${label}</span>${fresh ? '<i class="new-dot"></i>' : ''}`;
+
+/** The page of the collection a section is (the others hold no collection). */
+const PAGE_OF: Partial<Record<Section, CollectionKind>> = { cards: 'cards', enemies: 'foes', relics: 'relics' };
 
 /** Every page of the handbook in the order a swipe turns through them: a class of cards, an act of enemies, then the single pages. */
 interface Page {
@@ -99,10 +116,22 @@ function stampGrid(): HTMLElement {
   );
 }
 
+/** The history before there is any: an empty desk with a mug still steaming and a note left on it. */
+const emptyDesk = (): HTMLElement =>
+  h(
+    'div',
+    { class: 'empty-desk' },
+    h('div', {
+      class: 'desk-scene',
+      html: `<i class="mug">${icon('coffee')}<u></u><u></u></i><i class="tray">${icon('clipboard')}</i><i class="sticky">${t('history.note')}</i>`,
+    }),
+    h('p', { class: 'sub' }, t('history.empty')),
+  );
+
 /** The runs played, newest first, one line each. */
 function historyList(): HTMLElement {
   const runs = runHistory();
-  if (!runs.length) return h('p', { class: 'sub' }, t('history.empty'));
+  if (!runs.length) return emptyDesk();
   const line = (r: RunLog): HTMLElement =>
     h(
       'button',
@@ -161,6 +190,9 @@ export function compendiumScreen(onBack: () => void, open: Section = 'cards'): S
   let act = 1;
   let section: Section = open;
   const filled = collection();
+  // Pages with something new since they were last opened get a dot on their tab until they are.
+  const news = newPages();
+  const fresh = new Set<Section>(SECTIONS.filter((sct) => PAGE_OF[sct] && news[PAGE_OF[sct]]));
 
   const tabs = h('div', { class: 'tabs', role: 'tablist' });
   const grid = h('div', { class: 'deck-grid comp-grid print' });
@@ -198,13 +230,16 @@ export function compendiumScreen(onBack: () => void, open: Section = 'cards'): S
   const history = h('div', null);
 
   const render = (): void => {
+    fresh.delete(section);
+    const page = PAGE_OF[section];
+    if (page) markPageSeen(page);
     sectionSwitch.replaceChildren(
       ...SECTIONS.map((sct) =>
         h('button', {
           role: 'tab',
           'aria-selected': String(sct === section),
           'aria-pressed': String(sct === section),
-          html: tabFace(SECTION_ICON[sct], t(`compendium.${sct}`)),
+          html: tabFace(SECTION_ICON[sct], t(`compendium.${sct}`), fresh.has(sct)),
           onclick: () => {
             sfx('tap');
             section = sct;

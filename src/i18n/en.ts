@@ -84,6 +84,7 @@ const en = {
   'compendium.records': 'Records',
   'compendium.history': 'History',
   'history.empty': 'No workdays on file yet.',
+  'history.note': 'Back in 5 min.',
   'history.where': 'Act {a} · floor {n}',
   'history.stats': '{k} kills · {c} cards',
   'history.deck': 'Deck ({n})',

@@ -8,7 +8,7 @@ import type { CombatCard } from '../../game/types';
 import { icon } from '../art/icons';
 import { cardCostLabel, cardFace, cardView } from '../components/cardView';
 import { openCardDetail, openInfo } from '../components/modals';
-import { SLACK_MS, cssMs, h, onTapOrHold, setHtml, setText, toggle } from '../dom';
+import { SLACK_MS, cssMs, h, holdRing, onTapOrHold, setHtml, setText, toggle } from '../dom';
 import { burst, haptic } from '../fx/fx';
 import type { CombatView } from './view';
 
@@ -214,6 +214,7 @@ export function createCardLayer(v: CombatView): CardLayer {
     const cardEl = (ev.target as Element).closest<HTMLElement>('.card');
     if (!cardEl) return;
     const uid = Number(cardEl.dataset.uid);
+    holdRing(ev);
     const rc = cardEl.getBoundingClientRect();
     try {
       cardEl.setPointerCapture(ev.pointerId);

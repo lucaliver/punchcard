@@ -61,6 +61,7 @@ function markup(run: RunState, combat: Combat): string {
   return `
     <header class="topbar">
       <div class="floor-chip"><div class="enemy-name">${t(`enemy.${enemyDef.id}.name`)}${enemyDef.tier !== 'normal' ? `<span class="tier ${enemyDef.tier}">${t(`journey.node.${enemyDef.tier}`)}</span>` : ''}</div><small>${t('common.floorOf', { a: node.act, n: node.floor, total: totalFloors(run) })}</small></div>
+      <div class="pay-chip" aria-label="${t('common.pay')}">${icon('coin')}<b class="js-pay"></b></div>
       <button class="icon-btn js-pause" aria-label="${t('combat.paused')}">${icon('pause')}</button>
     </header>
     <section class="stage">
@@ -173,6 +174,9 @@ function queryRefs(el: HTMLElement) {
     sparks: $('.belt-sparks', el),
     ability: $<HTMLButtonElement>('.js-ability', el),
     pause: $<HTMLButtonElement>('.js-pause', el),
+    /** What the fight would pay if it ended now (it drops a coin a second until par). */
+    pay: $('.js-pay', el),
+    payChip: $('.pay-chip', el),
     manaRow: $('.mana-row', el),
     pips: $('.mana-pips', el),
     manaNum: $('.mana-num', el),

@@ -2,7 +2,7 @@ import { t } from '../../core/i18n';
 import { CONFIG } from '../../data/config';
 import { sfx } from '../../audio/sfx';
 import { ENEMY_LIST } from '../../data/enemies';
-import { enemyMet, handbookHintDue, markHandbookSeen, neverPlayed, ratingDue, signContract } from '../../game/meta';
+import { enemyMet, handbookHintDue, markHandbookSeen, neverPlayed, newPages, ratingDue, signContract } from '../../game/meta';
 import { currentNode, type RunState, totalFloors } from '../../game/run';
 import { burst, haptic } from '../fx/fx';
 import type { Screen } from '../app';
@@ -145,6 +145,8 @@ export function titleScreen(cb: TitleCallbacks): Screen {
     dismissHint();
     cb.onCompendium();
   });
+  // Something new in the handbook since it was last looked at: a dot on its button.
+  if (Object.values(newPages()).some(Boolean)) handbookBtn.append(h('i', { class: 'new-dot' }));
   /** Lights the Handbook button and puts the note above it (measured once the screen is on show). */
   const placeHint = (): void => {
     if (hint.hidden) return;

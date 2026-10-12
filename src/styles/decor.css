@@ -108,6 +108,42 @@
 [data-rarity='legendary'] > .relic-gem { --gem: var(--y); }
 [data-rarity='special'] > .relic-gem { --gem: var(--k); }
 
+/* the ring that fills while a press goes on towards a hold (`holdRing`, dom.ts): eight pixels lit one after another, in the time the hold takes */
+.hold-ring {
+  position: fixed;
+  width: 0;
+  height: 0;
+  pointer-events: none;
+}
+.hold-ring i {
+  position: absolute;
+  left: -5px;
+  top: -5px;
+  width: 10px;
+  height: 10px;
+  background: var(--paper);
+  border: 2px solid var(--k);
+  opacity: 0.45;
+  transform: rotate(calc(var(--i) * 45deg)) translateY(-17px) rotate(calc(var(--i) * -45deg));
+  animation: ring-dot 0.01s steps(1) forwards;
+  animation-delay: calc(var(--ms) / 8 * var(--i));
+}
+@keyframes ring-dot {
+  to { opacity: 1; background: var(--p); }
+}
+/* "new": a pink pip in the corner of a button (a handbook page, or the handbook itself, with something found since it was last opened) */
+.new-dot {
+  position: absolute;
+  top: 3px;
+  right: 3px;
+  width: 12px;
+  height: 12px;
+  background: var(--p);
+  border: 2px solid var(--k);
+  animation: bob 0.8s steps(2) infinite;
+}
+.section-switch button,
+.menu .btn { position: relative; }
 /* a face on top of the drawing, shown while its container (`.faces`: the fight's portrait, the hero select) has that mood (`heroMood.ts`); the plain drawing steps aside */
 .faces > .riso.mood { position: absolute; inset: 0; visibility: hidden; }
 .faces[data-mood] > .riso:not(.mood) { visibility: hidden; }

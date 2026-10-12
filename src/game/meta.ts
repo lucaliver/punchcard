@@ -43,6 +43,8 @@ interface Meta {
   rated: boolean;
   /** The handbook has been opened (or the home's hint about it dismissed). */
   handbookSeen: boolean;
+  /** How many of each page of the handbook had been found when the page was last opened: a dot on its tab says more has been found since. `null` until the first look. */
+  pagesSeen: Tally | null;
   /** How much of the handbook was filled when the last run started: the end of the run shows the bars climbing from there. */
   base: Tally | null;
 }
@@ -78,6 +80,7 @@ const meta: Meta = load('meta', {
   history: [],
   rated: false,
   handbookSeen: false,
+  pagesSeen: null,
   base: null,
 });
 // Saved data is untrusted: keep only known hero ids.
@@ -89,6 +92,9 @@ if (typeof meta.runs !== 'number') meta.runs = 0;
 meta.signed = meta.signed === true;
 meta.rated = meta.rated === true;
 meta.handbookSeen = meta.handbookSeen === true;
+const isTally = (x: unknown): x is Tally =>
+  typeof x === 'object' && x !== null && (['cards', 'foes', 'relics'] as const).every((k) => Number.isFinite((x as Record<string, unknown>)[k]));
+meta.pagesSeen = isTally(meta.pagesSeen) ? meta.pagesSeen : null;
 meta.base =
   typeof meta.base === 'object' && meta.base && (['cards', 'foes', 'relics'] as const).every((k) => Number.isFinite(meta.base?.[k]))
     ? meta.base
@@ -187,6 +193,28 @@ const tally = (): { found: Tally; total: Tally } => {
     total: { cards: cards.length, foes: ENEMY_LIST.length, relics: RELIC_LIST.length },
   };
 };
+
+/** What each page held when it was last opened; the first look takes what it holds now as read. */
+function pagesSeen(found: Tally): Tally {
+  meta.pagesSeen ??= { ...found };
+  return meta.pagesSeen;
+}
+
+/** The handbook's pages that have something new since they were last opened (the first look takes today's count as read). */
+export function newPages(): Record<CollectionKind, boolean> {
+  const { found } = tally();
+  const seen = pagesSeen(found);
+  return { cards: found.cards > seen.cards, foes: found.foes > seen.foes, relics: found.relics > seen.relics };
+}
+
+/** A page of the handbook has been opened: whatever it holds now is no longer new. */
+export function markPageSeen(kind: CollectionKind): void {
+  const { found } = tally();
+  const seen = pagesSeen(found);
+  if (seen[kind] === found[kind]) return;
+  seen[kind] = found[kind];
+  store('meta', meta);
+}
 
 /** How much of each page of the handbook is filled now (`n` of `total`), and how much was when the last run started (`from`). */
 export function collection(): Record<CollectionKind, { from: number; n: number; total: number }> {

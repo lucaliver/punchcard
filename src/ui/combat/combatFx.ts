@@ -6,7 +6,7 @@ import { HEXES } from '../../data/hexes';
 import { STATUSES, statusTone } from '../../data/statuses';
 import { discover } from '../../game/meta';
 import { saveSettings, settings } from '../../game/settings';
-import type { CombatEvent } from '../../game/types';
+import type { CardType, CombatEvent } from '../../game/types';
 import { creature } from '../art/creatures';
 import { relicArt } from '../art/relics';
 import { icon } from '../art/icons';
@@ -14,6 +14,7 @@ import { centerOf, cssMs, h } from '../dom';
 import { burst, floatText, haptic, shake } from '../fx/fx';
 import { keywordText, statusName } from '../components/cardView';
 import type { CardLayer } from './cardLayer';
+import { CONFIG } from '../../data/config';
 import { type Bubble, say } from './speech';
 import type { CombatView } from './view';
 
@@ -41,6 +42,9 @@ const SPEECH_MS = 3000;
 /** A passive's bubble (Paradigm Shift) is a short quip, typed faster. */
 const QUIP_MS = 1500;
 
+/** The sound a card makes when it is played, by its type. */
+const PLAY_SOUND: Partial<Record<CardType, SoundId>> = { attack: 'playAttack', defense: 'playDefense', skill: 'playSkill', power: 'playPower' };
+
 /** Hit-stop (s) by damage dealt: the fight freezes for a beat on heavy hits, longer on huge ones. */
 function hitStopFor(amount: number, target: 'hero' | 'enemy'): number {
   if (amount >= 30) return 0.14;
@@ -50,6 +54,10 @@ function hitStopFor(amount: number, target: 'hero' | 'enemy'): number {
 /** Turns combat engine events into feedback: floating text, particles, sounds, haptics and small animations. */
 export function bindCombatFx(v: CombatView, cards: CardLayer, onEnd: (result: 'win' | 'lose') => void): () => void {
   const { r } = v;
+
+  /** Where the chain of cards played in a row has got to (`CONFIG.chain`), and when the last one was played. */
+  let chain = 0;
+  let lastPlay = 0;
 
   /** Hexes (and Inflation) already explained this fight (one hint each). */
   const hexHinted = new Set<string>();
@@ -177,11 +185,16 @@ export function bindCombatFx(v: CombatView, cards: CardLayer, onEnd: (result: 'w
         haptic('error');
         break;
       }
-      case 'cardPlayed':
+      case 'cardPlayed': {
         cards.markRemoval(e.card.uid, 'played');
-        sfx('cardPlay');
+        // Each card played soon after the last one sounds a step higher, up a scale; a pause starts it again.
+        const now = performance.now();
+        chain = now - lastPlay < CONFIG.chain.windowMs ? Math.min(chain + 1, CONFIG.chain.steps.length - 1) : 0;
+        lastPlay = now;
+        sfx(PLAY_SOUND[CARDS[e.card.id].type] ?? 'cardPlay', 2 ** (CONFIG.chain.steps[chain] / 12));
         haptic('play');
         break;
+      }
       case 'cardEaten':
         cards.markRemoval(e.card.uid, 'played');
         sfx('cardPlay');

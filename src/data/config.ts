@@ -19,10 +19,14 @@ export const CONFIG = {
   buttonHapticQuiet: 300,
   /** Milliseconds a press must last to count as "hold to inspect" (every screen). */
   longPressMs: 350,
+  /** A press shows the ring that fills towards a hold only after this many ms (a tap never does). */
+  holdRingDelayMs: 120,
   /** Taps on the version line in Settings that reveal the Debug menus switch. */
   debugTaps: 4,
   /** The hero's portrait sweats under this share of max HP. */
   heroLowHp: 0.3,
+  /** Cards played one after another climb a scale: each one within `windowMs` of the last is a step higher (semitones), the top step holding. */
+  chain: { windowMs: 1800, steps: [0, 2, 4, 5, 7, 9, 11, 12] },
   /** The music gets heavier as the hero's HP falls: nothing above this share of max HP, all of it at (and below) the second one. */
   heavyMusic: [0.7, 0.2],
   /**

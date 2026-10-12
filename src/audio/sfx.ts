@@ -56,6 +56,9 @@ export function unlockAudio(): void {
 
 type Wave = OscillatorType;
 
+/** Pitch multiplier of the sound being played (`sfx(id, pitch)`): every tone and noise filter of it is scaled by it. */
+let bend = 1;
+
 function env(g: GainNode, t: number, a: number, peak: number, dur: number): void {
   g.gain.setValueAtTime(0.0001, t);
   g.gain.exponentialRampToValueAtTime(peak, t + a);
@@ -68,8 +71,8 @@ function tone(freq: number, dur: number, opts: { type?: Wave; vol?: number; to?:
   const o = ctx.createOscillator();
   const g = ctx.createGain();
   o.type = opts.type ?? 'sine';
-  o.frequency.setValueAtTime(freq, t);
-  if (opts.to) o.frequency.exponentialRampToValueAtTime(opts.to, t + dur);
+  o.frequency.setValueAtTime(freq * bend, t);
+  if (opts.to) o.frequency.exponentialRampToValueAtTime(opts.to * bend, t + dur);
   env(g, t, opts.attack ?? 0.005, opts.vol ?? 0.3, dur);
   o.connect(g).connect(master);
   o.start(t);
@@ -87,8 +90,8 @@ function noise(
   src.loop = true;
   const f = ctx.createBiquadFilter();
   f.type = opts.type ?? 'bandpass';
-  f.frequency.setValueAtTime(opts.freq ?? 1200, t);
-  if (opts.to) f.frequency.exponentialRampToValueAtTime(opts.to, t + dur);
+  f.frequency.setValueAtTime((opts.freq ?? 1200) * bend, t);
+  if (opts.to) f.frequency.exponentialRampToValueAtTime(opts.to * bend, t + dur);
   f.Q.value = opts.q ?? 1;
   const g = ctx.createGain();
   env(g, t, opts.attack ?? 0.004, opts.vol ?? 0.4, dur);
@@ -109,6 +112,25 @@ const SOUNDS = {
     tone(780, 0.08, { type: 'triangle', vol: 0.1, delay: 0.04 });
   },
   cardPlay: () => noise(0.18, { freq: 900, to: 3200, vol: 0.18, q: 0.8 }),
+  /** A card played, by the colour of its type: an attack whooshes up, a defense clunks, a skill flips, a power swells. */
+  playAttack: () => {
+    noise(0.12, { freq: 1800, to: 5200, vol: 0.2, q: 1 });
+    tone(240, 0.07, { type: 'square', vol: 0.07, to: 520 });
+  },
+  playDefense: () => {
+    tone(180, 0.1, { type: 'triangle', vol: 0.24, to: 120 });
+    noise(0.1, { freq: 700, vol: 0.16, type: 'lowpass' });
+  },
+  playSkill: () => {
+    noise(0.05, { freq: 3800, vol: 0.12, q: 2 });
+    tone(520, 0.06, { type: 'triangle', vol: 0.13 });
+    tone(780, 0.08, { type: 'triangle', vol: 0.1, delay: 0.045 });
+  },
+  playPower: () => {
+    tone(110, 0.3, { type: 'sawtooth', vol: 0.1, to: 220 });
+    tone(330, 0.25, { type: 'triangle', vol: 0.1, to: 660, delay: 0.03 });
+    noise(0.2, { freq: 400, to: 2400, vol: 0.15, type: 'lowpass' });
+  },
   cardSpawn: () => tone(300, 0.05, { type: 'triangle', vol: 0.04, to: 380 }),
   cardExpire: () => noise(0.25, { freq: 1600, to: 300, vol: 0.1 }),
   stash: () => {
@@ -458,11 +480,14 @@ export function voice(text: string, pitch: number, gapMs: number): void {
 
 const lastPlayed: Partial<Record<SoundId, number>> = {};
 
-export function sfx(id: SoundId): void {
+/** Plays a sound; `pitch` (1 = as written) raises or lowers every note of it (a chain of cards climbs). */
+export function sfx(id: SoundId, pitch = 1): void {
   if (volume <= 0 || !ctx) return;
   // Avoid stacking the same sound many times in one frame (multi-hit attacks).
   const now = performance.now();
   if ((lastPlayed[id] ?? 0) > now - 40) return;
   lastPlayed[id] = now;
+  bend = pitch;
   SOUNDS[id]();
+  bend = 1;
 }

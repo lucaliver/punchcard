@@ -5,6 +5,7 @@ import { CONFIG, halfPct } from '../../data/config';
 import { RELICS } from '../../data/relics';
 import { STATUS_ORDER, STATUSES, statusIcon, statusTone } from '../../data/statuses';
 import type { Fighter } from '../../game/combat';
+import { fightPay } from '../../game/run';
 import type { MoveDef, Side } from '../../game/types';
 import { icon } from '../art/icons';
 import { relicArt } from '../art/relics';
@@ -441,6 +442,13 @@ export function createHud(v: CombatView, onPassive: () => void): { render(): voi
     for (const { el, at } of phaseTicks) toggle(el, 'passed', combat.enemy.hp <= combat.enemy.maxHp * at);
   };
 
+  // The pay on offer, ticking down while the fight goes on: a second under par is a coin more (see `fightPay`).
+  const renderPay = (): void => {
+    const now = fightPay(combat.enemy.def.tier, v.state.waiting ? 0 : combat.time);
+    setText(r.pay, now);
+    toggle(r.payChip, 'spent', now <= fightPay(combat.enemy.def.tier, CONFIG.pay.par));
+  };
+
   const renderMana = (): void => {
     const hs = combat.hero;
     const shown = Math.max(hs.maxMana, hs.mana);
@@ -504,6 +512,7 @@ export function createHud(v: CombatView, onPassive: () => void): { render(): voi
     render() {
       renderBar(r.eHp, r.eBlock, combat.enemy);
       renderPhases();
+      renderPay();
       renderBar(r.hHp, r.hBlock, combat.hero);
       renderStatuses('enemy', r.eStatus);
       renderStatuses('hero', r.hStatus);

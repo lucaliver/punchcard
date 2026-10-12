@@ -85,6 +85,7 @@ const it: Record<EnKey, string> = {
   'compendium.records': 'Record',
   'compendium.history': 'Storico',
   'history.empty': 'Nessuna giornata in archivio, per ora.',
+  'history.note': 'Torno tra 5 min.',
   'history.where': 'Atto {a} · piano {n}',
   'history.stats': '{k} nemici · {c} carte',
   'history.deck': 'Mazzo ({n})',

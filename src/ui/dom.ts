@@ -61,6 +61,49 @@ export function centerOf(el: Element): { x: number; y: number } {
   return { x: r.left + r.width / 2, y: r.top + r.height / 2 };
 }
 
+/** Pixels the pointer may wander during a press before the ring stops (the press has become a drag or a scroll). */
+const RING_SLOP = 12;
+/** How far above a finger the ring is drawn (so the finger doesn't hide it), and how far below and right of a mouse. */
+const RING_LIFT = 56;
+const RING_MOUSE = 26;
+
+/**
+ * Shows that a press is on its way to being a hold (`longMs`, the hold-to-inspect of the whole game): a ring of eight pixels that fills round
+ * beside the pointer. It starts after a short grace so a tap never shows it, and goes when the pointer is let go or wanders off, or when the hold is reached.
+ */
+export function holdRing(e: PointerEvent, longMs: number = CONFIG.longPressMs): void {
+  const [x0, y0] = [e.clientX, e.clientY];
+  const touch = e.pointerType !== 'mouse';
+  let ring: HTMLElement | null = null;
+  const stop = (): void => {
+    clearTimeout(show);
+    clearTimeout(end);
+    ring?.remove();
+    removeEventListener('pointerup', stop);
+    removeEventListener('pointercancel', stop);
+    removeEventListener('pointermove', move);
+  };
+  const move = (ev: PointerEvent): void => {
+    if (Math.hypot(ev.clientX - x0, ev.clientY - y0) > RING_SLOP) stop();
+  };
+  const show = window.setTimeout(() => {
+    ring = h('div', {
+      class: 'hold-ring',
+      style: {
+        left: `${touch ? x0 : x0 + RING_MOUSE}px`,
+        top: `${touch ? y0 - RING_LIFT : y0 + RING_MOUSE}px`,
+        '--ms': `${longMs - CONFIG.holdRingDelayMs}ms`,
+      },
+      html: Array.from({ length: 8 }, (_, i) => `<i style="--i:${i}"></i>`).join(''),
+    });
+    (document.querySelector('.fx-layer') ?? document.body).append(ring);
+  }, CONFIG.holdRingDelayMs);
+  const end = window.setTimeout(stop, longMs + 60);
+  addEventListener('pointerup', stop);
+  addEventListener('pointercancel', stop);
+  addEventListener('pointermove', move);
+}
+
 /**
  * Calls `fn` on a tap/click and also on a long press (so holding a card does the same as tapping it),
  * without firing twice and without the browser's long-press context menu.
@@ -69,7 +112,8 @@ export function centerOf(el: Element): { x: number; y: number } {
 export function onPress(el: HTMLElement, fn: () => void, longMs: number = CONFIG.longPressMs): void {
   let timer = 0;
   let firedLong = false;
-  el.addEventListener('pointerdown', () => {
+  el.addEventListener('pointerdown', (e) => {
+    holdRing(e, longMs);
     firedLong = false;
     clearTimeout(timer);
     timer = window.setTimeout(() => {
@@ -92,7 +136,8 @@ export function onPress(el: HTMLElement, fn: () => void, longMs: number = CONFIG
 export function onTapOrHold(el: HTMLElement, onTap: () => void, onHold: () => void, longMs: number = CONFIG.longPressMs): void {
   let timer = 0;
   let held = false;
-  el.addEventListener('pointerdown', () => {
+  el.addEventListener('pointerdown', (e) => {
+    holdRing(e, longMs);
     held = false;
     clearTimeout(timer);
     timer = window.setTimeout(() => {

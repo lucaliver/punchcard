@@ -26,6 +26,23 @@
   gap: 2px 8px;
   font-size: 24px;
 }
+/* the pay on offer: a ticket that loses a coin a second until par, then is dimmed (only the base is left) */
+.pay-chip {
+  flex: none;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  padding: 2px 8px 3px 4px;
+  font-family: var(--font-ui);
+  font-size: 22px;
+  line-height: 1;
+  color: var(--k);
+  background: var(--paper);
+  border: 2px solid var(--k);
+  box-shadow: 3px 3px 0 var(--shadow);
+}
+.pay-chip .pico { font-size: 22px; }
+.pay-chip.spent { opacity: 0.6; }
 .floor-chip small {
   display: block;
   font-size: 15px;

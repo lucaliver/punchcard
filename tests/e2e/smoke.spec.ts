@@ -220,6 +220,48 @@ test('the combat layout never moves when statuses appear', async ({ page }) => {
   expect(norm(await snap())).toBe(norm(a));
 });
 
+test('the handbook shows a dot on what is new since it was last opened, and an empty history has a desk', async ({ page }) => {
+  const problems = await freshGame(page);
+  await page.evaluate(() => {
+    const key = 'cardstone+:meta';
+    const meta = JSON.parse(localStorage.getItem(key) ?? '{}');
+    meta.met = ['snitch'];
+    meta.pagesSeen = { cards: 999, foes: 0, relics: 999 };
+    localStorage.setItem(key, JSON.stringify(meta));
+  });
+  await page.reload();
+  await expect(page.locator('.title-screen')).toBeVisible();
+  await expect(page.locator('.menu .new-dot')).toHaveCount(1);
+  await page
+    .locator('.menu')
+    .getByRole('button', { name: /handbook/i })
+    .click();
+  const enemies = page.getByRole('tab', { name: /enemies/i });
+  await expect(enemies.locator('.new-dot')).toHaveCount(1);
+  await expect(page.getByRole('tab', { name: /stationery/i }).locator('.new-dot')).toHaveCount(0);
+  await enemies.click();
+  await expect(enemies.locator('.new-dot')).toHaveCount(0);
+  await page.getByRole('tab', { name: /history/i }).click();
+  await expect(page.locator('.empty-desk')).toBeVisible();
+  expect(problems).toEqual([]);
+});
+
+test('a press that goes on shows the ring of the hold, and the fight shows the pay on offer ticking down', async ({ page }) => {
+  const problems = await freshGame(page);
+  await startFight(page);
+  const pay = page.locator('.js-pay');
+  const before = Number(await pay.textContent());
+  expect(before).toBeGreaterThan(0);
+  await combat(page, 'for (let i = 0; i < 60 * 10; i++) c.tick(1 / 60);');
+  await expect.poll(async () => Number(await pay.textContent())).toBeLessThan(before - 5);
+  const card = page.locator('.belt-cards .card').first();
+  await card.dispatchEvent('pointerdown', { pointerId: 1, clientX: 100, clientY: 400 });
+  await expect(page.locator('.hold-ring')).toHaveCount(1);
+  await page.locator('.combat').dispatchEvent('pointerup', { pointerId: 1, clientX: 100, clientY: 400 });
+  await expect(page.locator('.hold-ring')).toHaveCount(0);
+  expect(problems).toEqual([]);
+});
+
 test('compendium shows cards, enemies and relics in separate sections', async ({ page }) => {
   const problems = await freshGame(page);
   await page

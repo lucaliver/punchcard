@@ -83,6 +83,7 @@ const zh: Record<EnKey, string> = {
   'compendium.records': '纪录',
   'compendium.history': '履历',
   'history.empty': '暂无工作日记录。',
+  'history.note': '五分钟后回来',
   'history.where': '第 {a} 幕 · 第 {n} 层',
   'history.stats': '击败 {k} · 出牌 {c}',
   'history.deck': '牌组（{n}）',
