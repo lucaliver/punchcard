@@ -1086,7 +1086,7 @@ const it: Record<EnKey, string> = {
   'card.returnToSender.name': 'Rispedire al Mittente',
   'card.returnToSender.desc': "Fai {0} [damage] più i [damage] dell'attacco in corso del nemico.",
   'card.mentorshipProgram.name': 'Programma di Mentoring',
-  'card.mentorshipProgram.desc': 'Potenzia una carta a caso nel tuo mazzo in modo permanente.',
+  'card.mentorshipProgram.desc': 'Potenzia {0} carte a caso nel mazzo di pesca e nello scarto per questo scontro.',
   'card.signingBonus.name': 'Bonus di Ingresso',
   'card.signingBonus.desc': 'Le carte aggiunte al tuo mazzo costano {0} di [mana] in meno finché non vengono giocate.',
   'card.cleanSlate.name': 'Tabula Rasa',
@@ -1908,9 +1908,11 @@ const it: Record<EnKey, string> = {
   'status.moveFastAndBreakThings': 'Muoviti Veloce e Rompi Tutto',
   'status.moveFastAndBreakThings.d': 'Ogni carta che cade dal tuo nastro fa {v} danni.',
   'card.scopeCreep.name': 'Scope Creep',
-  'card.scopeCreep.desc': 'Ogni {$scopeEvery}s, potenzia una carta a caso nel tuo mazzo per questo scontro.',
+  'card.scopeCreep.desc':
+    'Ogni {$scopeEvery}s, potenzia una carta a caso nel tuo mazzo per questo scontro. Costa {1} di [mana] in più finché non viene giocata.',
   'status.scopeCreep': 'Scope Creep',
-  'status.scopeCreep.d': 'Ogni {$scopeEvery}s, potenzia {v} {v|carta|carte} a caso nel tuo mazzo per questo scontro.',
+  'status.scopeCreep.d':
+    'Ogni {$scopeEvery}s, potenzia {v} {v|carta|carte} a caso nel tuo mazzo per questo scontro. Costano {$scopeTax} di [mana] in più finché non vengono giocate.',
   'card.fridayDeploy.name': 'Rilascio di Venerdì',
   'card.fridayDeploy.desc': 'Fai {0} [damage]. Mescola {1} [@deadline] nel tuo mazzo di pesca.',
   'card.vibeCoding.name': 'Vibe Coding',

@@ -28,11 +28,11 @@ export const CONFIG = {
    * Before that, a hostile move `charge`s over the last share of its wind-up (an aura growing in `chargeSteps` steps), a big count shows over the enemy for the last `count`
    * seconds, and a hit that takes `heavy` of the hero's max HP (or all of what is left) has a bigger, redder aura.
    */
-  /** Seconds before a hostile move lands that its bar turns pink and shakes (at most half of the move's wind-up, so a quick move isn't alarmed all along). */
-  urgentAt: 3,
   anticipate: { soft: 1.5, hard: 0.6, charge: 0.5, chargeSteps: 4, count: 3, heavy: 0.3 },
   /** The rust mop: grime a stroke as long as the belt is wide takes off a spot (a spot is 1), and how far (px) past a spot its head still reaches. */
   mop: { scrubPerBelt: 5, reach: 8 },
+  /** Seconds before a hostile move lands that its bar turns pink and shakes (at most half of the move's wind-up, so a quick move isn't alarmed all along). */
+  urgentAt: 3,
   /** How far along the belt (in belt widths) a card with a tip has come when the fight stops to explain it. */
   tipPos: 0.25,
   /** Milliseconds between the end of the fight and leaving it (the enemy finishes dying). */
