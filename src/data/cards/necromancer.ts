@@ -170,16 +170,19 @@ export const necromancerCards: CardDef[] = [
   },
   {
     id: 'boris',
-    face: '{dmg}{poison:0}',
+    face: '{dmg}{poison:0}|{!loseStr:1}',
     cls: 'necromancer',
     type: 'power',
     rarity: 'legendary',
     cost: 4,
     upCost: 3,
-    vals: [2],
-    upVals: [3],
+    vals: [2, 2],
+    upVals: [3, 1],
     art: 'fish',
-    play: (c, v) => c.applyStatus('hero', 'plague', v[0]),
+    play: (c, v) => {
+      c.applyStatus('hero', 'plague', v[0]);
+      c.applyStatus('hero', 'strength', -v[1]);
+    },
   },
   {
     // A policy pays once: the claim heals, the sleeve shrinks for good and the card is torn out of the deck (a card stolen for the fight has no deck copy to lose).
@@ -230,15 +233,19 @@ export const necromancerCards: CardDef[] = [
   },
   {
     id: 'classStruggle',
-    face: '{poison}+{0}',
+    face: '{poison}+{0}|{!loseStr:1}',
     cls: 'necromancer',
     type: 'power',
     rarity: 'legendary',
     cost: 4,
     upCost: 3,
-    vals: [2],
+    vals: [2, 3],
+    upVals: [2, 2],
     art: 'crown',
-    play: (c, v) => c.applyStatus('hero', 'virulence', v[0]),
+    play: (c, v) => {
+      c.applyStatus('hero', 'virulence', v[0]);
+      c.applyStatus('hero', 'strength', -v[1]);
+    },
   },
 
   // Archetype synergy: Poison

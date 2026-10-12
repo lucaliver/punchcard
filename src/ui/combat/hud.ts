@@ -93,13 +93,7 @@ export function createHud(v: CombatView, onPassive: () => void): { render(): voi
     const f = combat.fighter(side);
     // A hero whose passive is a status always shows it first, empty or not.
     const lead = side === 'hero' ? combat.heroDef.passiveStatus : undefined;
-    const list = [
-      ...(lead ? [lead] : []),
-      ...STATUS_ORDER.filter(
-        (id) =>
-          id !== lead && !STATUSES[id].hidden && f.statuses[id] && (STATUSES[id].kind === 'timed' ? f.statuses[id].t > 0 : f.statuses[id].v > 0),
-      ),
-    ];
+    const list = [...(lead ? [lead] : []), ...STATUS_ORDER.filter((id) => id !== lead && !STATUSES[id].hidden && combat.has(side, id))];
     const e = combat.enemy.def;
     // A secret half-HP trait only shows once it has kicked in.
     const secret = side === 'enemy' && !!e.halfSecret && !combat.enemy.halfTriggered;

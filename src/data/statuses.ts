@@ -128,7 +128,7 @@ const endOnPlay =
     c.removeStatus(side, id);
 
 const defs: StatusDef[] = [
-  { id: 'strength', tone: 'red', kind: 'stacks', good: true, chip: 'icon', icon: 'muscle', strength: true },
+  { id: 'strength', tone: 'red', kind: 'stacks', good: true, chip: 'icon', icon: 'muscle', strength: true, signed: true },
   // Workaholic: `v` Strength, for a while only.
   { id: 'workaholic', tone: 'red', kind: 'timed', good: true, icon: 'muscle', strength: true },
   { id: 'brownNosing', tone: 'blue', kind: 'timed', good: true, icon: 'crystalUp', regenMul: 2 },

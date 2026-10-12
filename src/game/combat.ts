@@ -329,7 +329,7 @@ export class Combat {
 
   has(side: Side, id: string): boolean {
     const s = this.fighter(side).statuses[id];
-    return !!s && (STATUSES[id].kind === 'timed' ? s.t > 0 : s.v > 0);
+    return !!s && (STATUSES[id].kind === 'timed' ? s.t > 0 : STATUSES[id].signed ? s.v !== 0 : s.v > 0);
   }
 
   /** The product of a speed or damage factor over the side's active statuses (1 when none has it). */
@@ -1830,7 +1830,7 @@ export class Combat {
       s.v = Math.max(s.v, t ? v : 1);
     } else {
       s.v += v;
-      if (s.v <= 0) delete f.statuses[id];
+      if (def.signed ? s.v === 0 : s.v <= 0) delete f.statuses[id];
     }
     if (!silent) this.events.emit({ type: 'status', target: side, id, amount: def.kind === 'timed' ? t || v : v });
     if (side === 'enemy' && v > 0) {

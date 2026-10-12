@@ -39,6 +39,8 @@ export const GLYPHS: Record<string, { icon: string; unit?: string; sign?: string
   rush: { icon: 'speedCards', unit: 's', tone: 'amber' },
   burn: { icon: 'flame', tone: 'red' },
   str: { icon: 'muscle', sign: '+', tone: 'red' },
+  /** Strength you lose (the sign comes from the glyph: the value is the amount). */
+  loseStr: { icon: 'muscle', sign: '-', tone: 'red' },
   dodge: { icon: 'dodge', unit: 's', tone: 'teal' },
   parry: { icon: 'crossed', tone: 'red' },
   hp: { icon: 'blood', sign: '-' },

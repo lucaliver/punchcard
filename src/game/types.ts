@@ -212,6 +212,8 @@ export interface StatusDef {
   selfTone?: Tone;
   /** While active, its amount (`v`) counts as Strength: extra damage for attack cards (a timed one is a temporary boost). */
   strength?: true;
+  /** A `stacks` status that may go below zero: it stays (and counts as active) until it is exactly 0 (Strength, which Boris and Class Struggle sap). */
+  signed?: true;
   /** While active on the enemy, its amount (`v`) is taken off every hit of the hero's cards (Fine Print); Poison, Burn and thorns slip through. */
   cutsHits?: true;
   /** While active on the enemy, no hit of the hero's cards deals more than its amount (`v`); Poison, Burn and thorns slip through (Rate Limit). */

@@ -891,6 +891,18 @@ describe('cards that fill the classes out', () => {
     expect(c.stacks('hero', 'virulence')).toBe(CARDS.classStruggle.vals[0]);
   });
 
+  it('Boris and Class Struggle sap Strength below zero, and it counts against attacks until it is back to 0', () => {
+    const c = quiet();
+    cast(c, 'boris');
+    expect(c.stacks('hero', 'strength')).toBe(-CARDS.boris.vals[1]);
+    expect(c.strengthOf('hero')).toBe(-CARDS.boris.vals[1]);
+    cast(c, 'classStruggle');
+    expect(c.stacks('hero', 'strength')).toBe(-CARDS.boris.vals[1] - CARDS.classStruggle.vals[1]);
+    c.applyStatus('hero', 'strength', CARDS.boris.vals[1] + CARDS.classStruggle.vals[1]);
+    expect(c.has('hero', 'strength')).toBe(false);
+    expect(c.hero.statuses.strength).toBeUndefined();
+  });
+
   it('Matador stuns the enemy only when a hit is dodged, Ghost in the Machine stretches the Dodge with every card', () => {
     const c = quiet();
     cast(c, 'matador');
