@@ -656,6 +656,17 @@
 }
 /* the hero's own bar is green (the enemy's stays pink), so the two read apart at a glance */
 .js-hhp .fill { background: var(--green); }
+/* where a boss's phases start on its bar */
+.bar .phase-tick {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  width: 4px;
+  translate: -2px 0;
+  background: var(--k);
+  box-shadow: 2px 0 0 var(--paper), -2px 0 0 var(--paper);
+}
+.bar .phase-tick.passed { opacity: 0.35; }
 .bar .incoming {
   position: absolute;
   top: 0;

@@ -13,8 +13,13 @@ import { icon } from '../art/icons';
 import { groupCopies, sortCards } from '../components/modals';
 import { payslipImage, type ShareSlip, shareImage, slipRows } from '../components/shareSlip';
 import { dropLetters, motes } from '../components/decor';
+import { createHeroMood, heroFaces } from '../components/heroMood';
 import { burst, haptic } from '../fx/fx';
 import { playMusic } from '../../audio/music';
+
+/** The victory dance: the faces the hero pulls, one per beat (seconds, the length of the hop in `screens.css`). */
+const DANCE = ['cheer', 'cast', 'cheer', 'blink'] as const;
+const DANCE_BEAT = 0.8;
 
 /** Payslip rows that can carry a one-run record. */
 const ROW_RECORD: Partial<Record<TKey, RunRecord>> = {
@@ -76,6 +81,12 @@ export function endScreen(
     return e;
   };
   const filled = collection();
+  // The hero: a win is a victory dance (they hop, grin, shout and grin again), a loss leaves them lying there, battered.
+  const portrait = h('div', { class: 'portrait-lg faces', html: `${motes(10)}${heroFaces(run.hero)}` });
+  const mood = createHeroMood(portrait);
+  if (!won) mood.flash('tired', Number.POSITIVE_INFINITY);
+  let dance = DANCE_BEAT;
+  let danceStep = 0;
   const el = h(
     'div',
     { class: `screen end ${won ? 'win' : 'lose'}` },
@@ -83,7 +94,7 @@ export function endScreen(
       'div',
       { class: 'end-body' },
       h('h1', { class: 'h1 end-title', 'aria-label': title, html: dropLetters(title) }),
-      h('div', { class: 'portrait-lg', html: `${motes(10)}${creature(run.hero)}` }),
+      portrait,
       ...end.hired.map((id) =>
         // Tapping the new hire opens the hero select right on them.
         h('button', {
@@ -167,6 +178,18 @@ export function endScreen(
         if (++n < 6) confetti = window.setTimeout(pop, 450);
       };
       confetti = window.setTimeout(pop, 500);
+    },
+    frame(dt) {
+      mood.frame(dt);
+      if (!won) return;
+      // Every beat of the dance (`--dur-dance`) the face changes, and the hero lands in a puff of ink.
+      dance += dt;
+      if (dance >= DANCE_BEAT) {
+        dance -= DANCE_BEAT;
+        mood.flash(DANCE[danceStep++ % DANCE.length], DANCE_BEAT);
+        const r = portrait.getBoundingClientRect();
+        if (danceStep % 2 === 0) burst('gold', r.left + r.width / 2, r.bottom - 10, 10, 0.7, 40);
+      }
     },
     leave() {
       clearTimeout(confetti);

@@ -532,7 +532,6 @@ const it: Record<EnKey, string> = {
   'cross.take': 'Prendila',
   'cross.learned': 'Formato!',
   'restructure.title': 'Ristrutturazione',
-  'restructure.stamp': 'Ristrutturato',
   'restructure.desc': 'Non ti stiamo licenziando.\nTi stiamo riposizionando.',
   'restructure.lateral': 'Spostamento laterale',
   'restructure.lateralDesc': 'Scegli {n} {n|carta|carte}: diventano carte casuali di qualsiasi rarità',

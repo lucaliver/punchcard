@@ -421,11 +421,24 @@ export function createHud(v: CombatView, onPassive: () => void): { render(): voi
     toggle(r.enemyArt, 'absorbing', !!combat.enemy.move.absorb && combat.enemyTimeRate() > 0);
     // Blackout: the cards hide what they do (their art, name and cost stay).
     toggle(v.el, 'blackout', combat.cardsHidden);
+    // Before Clock in the belt and its cards are dimmed (they can still be held and read); they light up as the fight starts.
+    toggle(v.el, 'waiting', v.state.waiting);
     // Autopilot: a blue fade at the belt's exit, where the cards play themselves.
     toggle(r.belt, 'autoplay', combat.isAutoplay());
     renderSparks();
     // Belt rows an enemy keeps shut are barred (the `rowsOpen` / `rowsClose` events slide the bars away or in).
     toggle(r.belt, 'row-shut', combat.rowsOpen < combat.beltRows);
+  };
+
+  // A boss with phases shows where each one starts on its HP bar: a tick at that share, dimmed once passed.
+  const phaseTicks = (combat.enemy.def.phases ?? []).map((p) => {
+    const el = h('i', { class: 'phase-tick', style: { left: `${p.at * 100}%` } });
+    // Under the number, so it stays readable.
+    r.eHp.querySelector('.txt')?.before(el);
+    return { el, at: p.at };
+  });
+  const renderPhases = (): void => {
+    for (const { el, at } of phaseTicks) toggle(el, 'passed', combat.enemy.hp <= combat.enemy.maxHp * at);
   };
 
   const renderMana = (): void => {
@@ -447,12 +460,12 @@ export function createHud(v: CombatView, onPassive: () => void): { render(): voi
       // The filling pip grows in eighths, not smoothly: the bar ticks like everything else on screen.
       p.style.setProperty('--f', partial ? String(Math.floor((hs.manaTimer / hs.regen) * PIP_STEPS) / PIP_STEPS) : '0');
       if (full && i >= lastMana) {
-        // The pip that has just filled pops and throws a few sparks; if a card on the belt was waiting for exactly this much, it lights up for it.
+        // The pip that has just filled pops (and throws sparks only when it is the last one: full mana); if a card on the belt was waiting for exactly this much, it lights up for it.
         const unlocks = !v.state.waiting && i + 1 === hs.mana && wanted.has(hs.mana);
         v.retrigger(p, unlocks ? 'unlock' : 'gain');
-        if (!v.state.waiting && lastMana > 0) {
+        if (!v.state.waiting && lastMana > 0 && hs.mana >= hs.maxMana) {
           const rc = p.getBoundingClientRect();
-          burst('mana', rc.left + rc.width / 2, rc.top + rc.height / 2, unlocks ? 10 : 4, 0.5, 30);
+          burst('mana', rc.left + rc.width / 2, rc.top + rc.height / 2, 10, 0.5, 30);
         }
       }
     }
@@ -490,6 +503,7 @@ export function createHud(v: CombatView, onPassive: () => void): { render(): voi
   return {
     render() {
       renderBar(r.eHp, r.eBlock, combat.enemy);
+      renderPhases();
       renderBar(r.hHp, r.hBlock, combat.hero);
       renderStatuses('enemy', r.eStatus);
       renderStatuses('hero', r.hStatus);

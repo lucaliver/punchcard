@@ -221,12 +221,14 @@ export function journeyScreen(run: RunState, onEnter: (to?: number) => void, onH
     const open = n.id === cur.id ? !run.cleared : options.includes(n.id);
     const missed = !past && !open && n.id !== cur.id && !reachable.has(n.id);
     const fog = foggy(n);
+    // A fight already won shows who was beaten there.
+    const foe = past && n.enemy ? ENEMIES[n.enemy] : undefined;
     const revealed = !!before && !before.has(n.id) && dist.has(n.id) && !past;
     const label = fog ? UNKNOWN : t(`journey.node.${nodeKind(n)}`);
     const el = h(
       'div',
       {
-        class: `node ${n.type} ${past ? 'done' : ''} ${missed ? 'missed' : ''} ${open ? 'open' : ''} ${fog ? 'fog' : ''} ${revealed ? 'revealed' : ''}`,
+        class: `node ${n.type} ${past ? 'done' : ''} ${foe ? 'beaten' : ''} ${missed ? 'missed' : ''} ${open ? 'open' : ''} ${fog ? 'fog' : ''} ${revealed ? 'revealed' : ''}`,
         style: { left: `${laneX(n.lane)}%`, top: `${y(n)}px` },
       },
       h(
@@ -239,7 +241,13 @@ export function journeyScreen(run: RunState, onEnter: (to?: number) => void, onH
         },
         h('span', {
           class: 'ico',
-          html: fog ? icon('question') : past || !(n.type === 'boss' && !!actDef(n.act).bossClock) ? icon(past ? 'check' : nodeIcon(n)) : undefined,
+          html: fog
+            ? icon('question')
+            : foe
+              ? `${creature(foe.art)}<i class="done-tick">${icon('check')}</i>`
+              : past || !(n.type === 'boss' && !!actDef(n.act).bossClock)
+                ? icon(past ? 'check' : nodeIcon(n))
+                : undefined,
         }),
         h('span', { class: 'label' }, label),
       ),

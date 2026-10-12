@@ -1,4 +1,3 @@
-import { t } from '../../core/i18n';
 import { type SoundId, sfx } from '../../audio/sfx';
 import type { NodeType } from '../../game/run';
 import { h } from '../dom';
@@ -24,23 +23,11 @@ const NO_SCENE = { anim: '', inks: [], alt: false };
 
 /**
  * How a room's picture comes in (`rooms.css`, `.enter-<type>`): the sounds that go with it (at `ms` after the screen opens) and the extra pieces it needs
- * on the sprite's box (`fx`: a stamp, a bar of light, the two halves of a curtain).
+ * on the sprite's box (`fx`: a bar of light, the two halves of a curtain).
  */
 const ENTRANCE: Partial<Record<NodeType, { sounds: [ms: number, sound: SoundId][]; fx?: () => string }>> = {
-  rest: {
-    sounds: [
-      [480, 'blunt'],
-      [1000, 'cup'],
-    ],
-    fx: () => '<i class="room-fx cup"></i>',
-  },
-  promotion: {
-    sounds: [
-      [100, 'machinery'],
-      [950, 'stamp'],
-    ],
-    fx: () => `<i class="room-fx stamp">${t('task.badge.stamp.ok')}</i>`,
-  },
+  rest: { sounds: [[480, 'blunt']] },
+  promotion: { sounds: [[100, 'machinery']] },
   copy: { sounds: [[0, 'copier']], fx: () => '<i class="room-fx scan"></i>' },
   tailor: { sounds: [[250, 'swipe']], fx: () => '<i class="room-fx drape l"></i><i class="room-fx drape r"></i>' },
   lostFound: { sounds: [[420, 'thunk']] },
@@ -50,7 +37,7 @@ const ENTRANCE: Partial<Record<NodeType, { sounds: [ms: number, sound: SoundId][
       [850, 'coin'],
     ],
   },
-  restructuring: { sounds: [[650, 'stamp']], fx: () => `<i class="room-fx stamp band">${t('restructure.stamp')}</i>` },
+  restructuring: { sounds: [[300, 'reshuffle']] },
 };
 
 /** The big picture at the top of a room: its sprite, moving, on a plinth in the act's ink, with motes drifting behind. It comes in its own way (`ENTRANCE`). */

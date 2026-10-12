@@ -281,6 +281,10 @@
 /* rooms already done, or out of reach, are dimmed (opaque: the footsteps on the corridors stop at their walls) */
 .node.done .dot { background: var(--map-done); box-shadow: none; }
 .node.done .label { color: var(--map-done-ink); }
+/* a fight won: the enemy's little portrait on the dot, with a tick in its corner */
+.node.beaten .ico { position: relative; height: 40px; overflow: hidden; }
+.node.beaten .ico .riso { width: 40px; height: 40px; scale: 1.25; transform-origin: 50% 70%; }
+.node.beaten .ico .done-tick { position: absolute; right: 14%; bottom: 0; display: grid; font-size: 16px; --ink2: var(--map-done); }
 .node.missed .dot { color: var(--map-missed-line); background: var(--map-missed); border-color: var(--map-missed-line); box-shadow: none; }
 .node.missed .label { color: var(--map-missed-ink); }
 /* elite and boss floors are vaults: a second wall around the room */

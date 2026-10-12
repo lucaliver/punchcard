@@ -525,7 +525,6 @@ const zh: Record<EnKey, string> = {
   'cross.take': '带走',
   'cross.learned': '培训完毕！',
   'restructure.title': '组织重组',
-  'restructure.stamp': '已重组',
   'restructure.desc': '我们不是要开除你。\n我们是在重新定位你。',
   'restructure.lateral': '平级调动',
   'restructure.lateralDesc': '选择 {n} {n|张|张}卡牌：它们会变成任意稀有度的随机卡牌',

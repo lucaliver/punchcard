@@ -529,7 +529,6 @@ const en = {
   'cross.take': 'Take it',
   'cross.learned': 'Trained!',
   'restructure.title': 'Restructuring',
-  'restructure.stamp': 'Restructured',
   'restructure.desc': "We're not firing you.\nWe're repositioning you.",
   'restructure.lateral': 'Lateral Move',
   'restructure.lateralDesc': 'Pick {n} {n|card|cards}: they turn into random cards of any rarity',

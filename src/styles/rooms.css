@@ -167,7 +167,7 @@
   56% { transform: translateX(2%); }
   64%, 100% { transform: none; }
 }
-/* Promotion: it rises a floor at a time, then APPROVED is stamped on it */
+/* Promotion: it rises a floor at a time */
 .enter-promotion .room-stage { animation: promo-in 0.9s steps(1) both; }
 @keyframes promo-in {
   0% { transform: translateY(70%); }
@@ -176,28 +176,6 @@
   54% { transform: translateY(16%); }
   72%, 100% { transform: none; }
 }
-.room-fx.stamp {
-  left: 50%;
-  top: 38%;
-  padding: 1px 7px 2px;
-  font-family: var(--font-display);
-  font-size: clamp(11px, 3.6vw, 15px);
-  line-height: 1;
-  white-space: nowrap;
-  text-transform: uppercase;
-  color: var(--p);
-  background: var(--paper);
-  border: 3px solid var(--p);
-  translate: -50% 0;
-  rotate: -12deg;
-  animation: stamp-slam 1.6s steps(1) 0.95s both;
-}
-@keyframes stamp-slam {
-  0% { opacity: 1; scale: 2.2; }
-  8%, 70% { opacity: 1; scale: 1; }
-  100% { opacity: 0; scale: 1; }
-}
-.room-fx.stamp.band { top: 44%; color: var(--b); border-color: var(--b); rotate: 9deg; animation-delay: 0.65s; }
 /* Copy Room: a bar of light sweeps the glass once, and the machine is printed in behind it */
 .enter-copy .room-stage { animation: copy-in 0.9s steps(10) both; }
 @keyframes copy-in {
@@ -215,7 +193,8 @@
 }
 @keyframes scan-sweep {
   from { opacity: 1; left: 0; }
-  to { opacity: 1; left: 98%; }
+  90% { opacity: 1; left: 98%; }
+  to { opacity: 0; left: 98%; }
 }
 /* Tailor: a fitting-room curtain draws back from the dress form */
 .room-fx.drape {
@@ -260,7 +239,7 @@
   66% { opacity: 0.4; }
   76%, 100% { opacity: 1; filter: none; }
 }
-/* Restructuring: the org chart pops in out of true, and the boxes settle into place under a stamp */
+/* Restructuring: the org chart pops in out of true and settles */
 .enter-restructuring .room-stage { animation: org-in 0.9s steps(1) both; }
 @keyframes org-in {
   0% { transform: scale(0.3) rotate(-14deg); opacity: 0; }
