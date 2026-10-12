@@ -9,9 +9,13 @@ import { creature } from '../art/creatures';
 import { icon } from '../art/icons';
 import { heroFeatures } from '../components/heroSheet';
 import { dropLetters, motes } from '../components/decor';
+import { createHeroMood, type HeroMood, heroFaces } from '../components/heroMood';
 import { openMemos } from '../components/memos';
 import { openDeck, openStatInfo } from '../components/modals';
 import { h, onPress, retrigger, stagger } from '../dom';
+
+/** The faces a hero in view pulls when tapped, one after the other. */
+const REACTIONS = ['cast', 'cheer', 'hurt'] as const;
 
 /** How to unlock a hero (a hero hired only by the debug menu is not on this screen until then). */
 const unlockText = (u: HeroUnlock): string =>
@@ -23,7 +27,8 @@ const unlockText = (u: HeroUnlock): string =>
         ? t('hero.unlock.allStamped', { n: u.allStamped })
         : '';
 
-function slide(hero: HeroDef, index: number): HTMLElement {
+/** The faces of the hero in view (the others stand still): `slide` registers them, the screen's `frame` runs the one on show. */
+function slide(hero: HeroDef, index: number, moods: (HeroMood | null)[]): HTMLElement {
   const id = hero.id;
   const locked = !heroUnlocked(id);
   // A locked hero shows as a dark silhouette with a padlock and, right under it, how to unlock it; its stats stay
@@ -45,7 +50,7 @@ function slide(hero: HeroDef, index: number): HTMLElement {
     },
     h('div', {
       class: 'hero-stage',
-      html: `${motes(8)}<div class="pedestal"></div><div class="hero-sprite">${creature(id)}</div><div class="hero-num">${String(index + 1).padStart(2, '0')}</div>${badge}`,
+      html: `${motes(8)}<div class="pedestal"></div><div class="hero-sprite${locked ? '' : ' faces'}">${locked ? creature(id) : heroFaces(id)}</div><div class="hero-num">${String(index + 1).padStart(2, '0')}</div>${badge}`,
     }),
     h('h2', { class: 'hero-name', 'aria-label': t(`hero.${id}.name`), html: dropLetters(t(`hero.${id}.name`)) }),
     h('p', { class: 'hero-job' }, t(`hero.${id}.job`)),
@@ -83,7 +88,18 @@ function slide(hero: HeroDef, index: number): HTMLElement {
     haptic('locked');
     retrigger(lock, 'rattle');
   });
-  if (locked) el.querySelector<HTMLElement>('.hero-sprite')!.addEventListener('click', () => lock?.click());
+  const sprite = el.querySelector<HTMLElement>('.hero-sprite')!;
+  if (locked) sprite.addEventListener('click', () => lock?.click());
+  else {
+    // A tap on the hero makes them react: a different face each time.
+    const mood = createHeroMood(sprite);
+    moods[index] = mood;
+    let turn = 0;
+    sprite.addEventListener('click', () => {
+      mood.flash(REACTIONS[turn++ % REACTIONS.length], 0.8);
+      haptic('tap');
+    });
+  }
   return el;
 }
 
@@ -94,7 +110,8 @@ export function heroSelectScreen(onStart: (hero: HeroId) => void, onBack: () => 
     0,
     heroes.findIndex((hd) => hd.id === first),
   );
-  const slides = heroes.map(slide);
+  const moods: (HeroMood | null)[] = [];
+  const slides = heroes.map((hd, i) => slide(hd, i, moods));
   const track = h('div', { class: 'hero-track', role: 'region', 'aria-label': t('hero.select') }, ...slides);
   const dots = heroes.map((hd, i) =>
     h('button', {
@@ -147,6 +164,8 @@ export function heroSelectScreen(onStart: (hero: HeroId) => void, onBack: () => 
     slides.forEach((s, i) => {
       s.classList.toggle('current', i === index);
     });
+    // The hero that comes into view says hello.
+    moods[index]?.flash('cheer', 1);
     dots.forEach((d, i) => {
       d.setAttribute('aria-current', String(i === index));
     });
@@ -199,6 +218,9 @@ export function heroSelectScreen(onStart: (hero: HeroId) => void, onBack: () => 
     el,
     enter() {
       track.scrollTo({ left: index * track.clientWidth, behavior: 'instant' });
+    },
+    frame(dt) {
+      moods[index]?.frame(dt);
     },
   };
 }

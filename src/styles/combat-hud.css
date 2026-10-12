@@ -38,9 +38,36 @@
   transform: none;
   background: var(--b);
 }
+/* the edge of the filling pip, and the facet of a full one */
+.pip.partial::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: calc(var(--f, 0) * 100% - 3px);
+  width: 3px;
+  background: var(--mana-hi);
+}
+.pip.full::after {
+  content: '';
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 0;
+  height: 4px;
+  background: var(--mana-hi);
+  opacity: 0.55;
+}
 .pip.gain { animation: pipgain 0.3s steps(2); }
 @keyframes pipgain {
   50% { background: var(--y); }
+}
+/* a pip that fills the last bit a card on the belt was waiting for: it jumps and its frame flashes */
+.pip.unlock { animation: pipunlock 0.6s steps(6); }
+@keyframes pipunlock {
+  0%, 100% { transform: none; }
+  17%, 50% { transform: translateY(-4px) scale(1.15); border-color: var(--y); background: var(--y); }
+  33%, 67% { transform: translateY(-2px) scale(1.1); border-color: var(--paper); background: var(--mana-hi); }
 }
 .mana-row.flash .pip { animation: flashpip 0.3s steps(2); }
 /* full mana: the bar blinks, spend it! */
@@ -272,14 +299,6 @@
 @keyframes idle {
   50% { translate: 0 -2%; }
 }
-/* a face on top of the drawing, shown while the portrait has that mood (`heroMood.ts`); the plain drawing steps aside */
-.hero-portrait > .riso.mood { position: absolute; inset: 0; visibility: hidden; }
-.hero-portrait[data-mood] > .riso:not(.mood) { visibility: hidden; }
-.hero-portrait[data-mood='blink'] > .mood-blink,
-.hero-portrait[data-mood='hurt'] > .mood-hurt,
-.hero-portrait[data-mood='tired'] > .mood-tired,
-.hero-portrait[data-mood='cheer'] > .mood-cheer,
-.hero-portrait[data-mood='cast'] > .mood-cast { visibility: visible; }
 /* Dodge: the hero is a ghost, the hits go through */
 .hero-portrait.ghost > .riso { opacity: 0.45; }
 .hero-portrait.hurt { animation: hurt 0.3s steps(2); }

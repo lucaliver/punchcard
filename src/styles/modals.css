@@ -251,7 +251,7 @@
   font-weight: 700;
   color: var(--ref-ink, var(--p));
   text-decoration: underline;
-  cursor: pointer;
+  cursor: var(--cursor-hand);
 }
 /* the ink of a hero's class comes from the hero's data (`--ref-ink`); the cards without a hero have their own */
 .rules .card-ref[data-cls='neutral'] { --ref-ink: var(--tone-amber); }
@@ -308,7 +308,7 @@
 /* on a screen the sort line sits on the night, not on paper */
 .screen .deck-sort button[aria-pressed='true'] { color: var(--fg); }
 .deck-sort .pico { font-size: 16px; color: var(--p); --ink2: transparent; }
-.deck-grid.pick .card { cursor: pointer; }
+.deck-grid.pick .card { cursor: var(--cursor-hand); }
 .deck-grid.pick .card:active { transform: translate(3px, 3px); box-shadow: none; }
 .deck-grid.pick.has-sel .card:not(.sel) { opacity: 0.45; }
 .deck-grid.pick .card.sel { outline: 4px solid var(--y); outline-offset: 3px; transform: translateY(-4px); }
@@ -384,7 +384,7 @@
 .fx[data-card],
 .fx[data-status],
 .fx[data-hex],
-.fx[data-rule] { cursor: pointer; text-decoration: underline dotted; text-underline-offset: 3px; }
+.fx[data-rule] { cursor: var(--cursor-hand); text-decoration: underline dotted; text-underline-offset: 3px; }
 .fx-bad { color: var(--p); }
 .fx-bad .pico { color: var(--p); }
 .fx-good { color: var(--green); }

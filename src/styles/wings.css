@@ -144,4 +144,37 @@
     background: var(--brass);
     border: 2px solid var(--k);
   }
+  /* during a run: the hero's shift (the right board) and the stationery collected (the left one) */
+  .shift-head { display: flex; align-items: center; gap: 10px; }
+  .shift-head .badge-art { flex: none; width: 56px; height: 56px; }
+  .shift-head b {
+    display: block;
+    font-family: var(--font-display);
+    font-size: 14px;
+    text-transform: uppercase;
+  }
+  .shift-head span { font-family: var(--font); font-size: 13px; opacity: 0.8; }
+  .shift-stats {
+    display: flex;
+    justify-content: space-between;
+    margin: 12px 0 0;
+    padding: 6px 4px 0;
+    list-style: none;
+    border-top: 2px dashed var(--paper-rule);
+    font-family: var(--font-ui);
+    font-size: 20px;
+  }
+  .shift-stats li { display: flex; align-items: center; gap: 4px; }
+  .shift-stats .pico { font-size: 22px; }
+  .gear {
+    display: grid;
+    gap: 6px;
+    max-height: 300px;
+    margin: 0;
+    padding: 0;
+    overflow: hidden;
+    list-style: none;
+  }
+  .gear li { display: flex; align-items: center; gap: 8px; font-family: var(--font); font-size: 13px; line-height: 1.15; }
+  .gear .riso { flex: none; width: 34px; height: 34px; }
 }

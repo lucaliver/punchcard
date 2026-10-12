@@ -180,7 +180,7 @@ export function combatScreen(run: RunState, combat: Combat, cb: CombatCallbacks)
   const unsubFx = bindCombatFx(v, cards, finish);
   // The belt has grown into the room the lower part left: the enemy's room changed, so it is measured again once the row is in.
   const unsubRow = combat.events.on((e) => {
-    if (e.type === 'rowAdded') later(layout, cssMs('--dur-row-grow') + SLACK_MS);
+    if (e.type === 'rowAdded' || e.type === 'rows') later(layout, cssMs('--dur-row-grow') + SLACK_MS);
     if (e.type === 'sleeveGrew') fitSleeve();
   });
   const unsubscribe = (): void => {
@@ -220,6 +220,12 @@ export function combatScreen(run: RunState, combat: Combat, cb: CombatCallbacks)
       const shade = $('.shade', el).getBoundingClientRect();
       const ground = shade.top + shade.height / 2;
       const size = Math.max(72, Math.min(ENEMY_MAX, ground - wrap.top));
+      // The room grew (a boss's belt lost a row): the enemy grows into it, from the size it had.
+      const before = Number.parseFloat(el.style.getPropertyValue('--enemy-size'));
+      if (before && size > before * 1.08 && !state.waiting) {
+        r.enemyArt.style.setProperty('--grow-from', String(before / size));
+        v.retrigger(r.enemyArt, 'grows');
+      }
       // The drawing, not its square, fills the room: zoomed in (a little at most), centred, its feet on the ground.
       const [x0, y0, x1, y1] = spriteBox(combat.enemy.def.art);
       const k = Math.min(ENEMY_ZOOM, 1 / (y1 - y0), wrap.width / size / (x1 - x0));
@@ -461,7 +467,7 @@ export function combatScreen(run: RunState, combat: Combat, cb: CombatCallbacks)
   };
   el.append(debugButton(t('debug.menu'), openDebug));
 
-  /** A normal enemy walks in: its shadow grows on the floor first, then it drops in and lands (a boss has its own card). */
+  /** A normal enemy walks in as the door opens onto the room: its shadow grows on the floor first, then it drops in and lands (a boss has its own entrance). */
   const enterScene = (): void => {
     r.stage.classList.replace('unseen', 'entering');
     // Class off when done, or it would outrank the idle bob and the death throes later.
@@ -647,14 +653,17 @@ export function combatScreen(run: RunState, combat: Combat, cb: CombatCallbacks)
         if (!door.isConnected) return;
         door.remove();
         if (combat.enemy.def.tier === 'boss') bossIntro();
-        else if (!settings.seenTutorial) firstFightTour();
-        else sleeveHint();
+        else {
+          // A normal enemy walks in as soon as the door is behind us; the tour (or the sleeve hint) waits until it has landed.
+          enterScene();
+          later(settings.seenTutorial ? sleeveHint : firstFightTour, cssMs('--dur-enter'));
+        }
       };
       door.addEventListener('animationend', (e) => {
         if (e.target === door) doorDone();
       });
       door.addEventListener('click', doorDone);
-      // A normal enemy stays out of sight until the clock-in is stamped, then walks in.
+      // A normal enemy stays out of sight while the door opens, then walks in (`doorDone`).
       if (combat.enemy.def.tier !== 'boss') r.stage.classList.add('unseen');
       el.append(door);
       // The sound is the knocking: it waits while the name is read.
@@ -671,27 +680,26 @@ export function combatScreen(run: RunState, combat: Combat, cb: CombatCallbacks)
         { class: 'start-wrap' },
         h('button', { class: 'btn cta start-btn js-start', html: `${t('combat.start')}<small>${t('combat.startHint')}</small>` }),
       );
-      // Before the fight, the enemy's passives are spelled out above it, so the player knows what they're facing.
+      // Before the fight, the enemy's passives are spelled out under the button, on a slip headed with the enemy's face, so the player knows what they're facing.
       const traits = enemyTraits(combat.enemy.def, true);
-      const traitsEl = traits.length
-        ? h(
+      if (traits.length)
+        startWrap.append(
+          h(
             'div',
             { class: 'foe-traits' },
+            h('div', { class: 'trait-head', html: `<span class="trait-face">${creature(combat.enemy.def.art)}</span>${t('combat.foePassive')}` }),
             ...traits.map((x) => h('div', { class: 'trait', html: `${icon(x.icon)}<p>${x.name ? `<b>${x.name}</b>` : ''}${x.desc}</p>` })),
-          )
-        : null;
-      if (traitsEl) r.stage.append(traitsEl);
+          ),
+        );
       startWrap.querySelector('button')!.addEventListener('click', () => {
         startWrap.remove();
-        traitsEl?.remove();
         sfx('button');
         haptic('tap');
-        // The clock-in is stamped first; once it is away the fight runs and a normal enemy walks in.
+        // The clock-in is stamped first; once it is away the fight runs.
         timeCard('in', clockText(clockAt(run, currentNode(run))), () => {
           state.waiting = false;
           syncPause();
           v.shout(t('combat.fight'));
-          if (combat.enemy.def.tier !== 'boss') enterScene();
         });
       });
       // Centred on the belt: the enemy, the threat bar and the hero stay readable.

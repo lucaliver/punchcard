@@ -1,6 +1,6 @@
 import { t } from '../../core/i18n';
 import { sfx } from '../../audio/sfx';
-import { haptic } from '../fx/fx';
+import { burst, haptic } from '../fx/fx';
 import { CONFIG, halfPct } from '../../data/config';
 import { RELICS } from '../../data/relics';
 import { STATUS_ORDER, STATUSES, statusIcon, statusTone } from '../../data/statuses';
@@ -26,6 +26,9 @@ const ALL_LOOKS = [...new Set([...LOOKS.map((s) => s.look), 'enraged'])];
 const STUN_STEPS = 20;
 /** Steps of the belt's red wash (motion is stepped). */
 const BELT_ALARM_STEPS = 8;
+
+/** The filling mana pip shows its progress in this many steps. */
+const PIP_STEPS = 8;
 
 export function createHud(v: CombatView, onPassive: () => void): { render(): void } {
   const { combat, r } = v;
@@ -434,14 +437,24 @@ export function createHud(v: CombatView, onPassive: () => void): { render(): voi
       r.pips.replaceChildren(...Array.from({ length: shown }, (_, i) => h('div', { class: `pip ${had && i >= had ? 'gain' : ''}` })));
     }
     const pips = r.pips.children;
+    const wanted = new Set(combat.belt.map((b) => combat.costOf(b.card)));
     for (let i = 0; i < pips.length; i++) {
       const p = pips[i] as HTMLElement;
       const full = i < hs.mana;
       toggle(p, 'full', full);
       const partial = i === hs.mana;
       toggle(p, 'partial', partial);
-      p.style.setProperty('--f', partial ? String(hs.manaTimer / hs.regen) : '0');
-      if (full && i >= lastMana) v.retrigger(p, 'gain');
+      // The filling pip grows in eighths, not smoothly: the bar ticks like everything else on screen.
+      p.style.setProperty('--f', partial ? String(Math.floor((hs.manaTimer / hs.regen) * PIP_STEPS) / PIP_STEPS) : '0');
+      if (full && i >= lastMana) {
+        // The pip that has just filled pops and throws a few sparks; if a card on the belt was waiting for exactly this much, it lights up for it.
+        const unlocks = !v.state.waiting && i + 1 === hs.mana && wanted.has(hs.mana);
+        v.retrigger(p, unlocks ? 'unlock' : 'gain');
+        if (!v.state.waiting && lastMana > 0) {
+          const rc = p.getBoundingClientRect();
+          burst('mana', rc.left + rc.width / 2, rc.top + rc.height / 2, unlocks ? 10 : 4, 0.5, 30);
+        }
+      }
     }
     lastMana = hs.mana;
     // Full: nothing more to gain by waiting, so the bar blinks to invite a play (once the fight has started).

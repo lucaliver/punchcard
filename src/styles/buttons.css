@@ -22,7 +22,7 @@
   background: var(--paper2);
   box-shadow: none;
   border-style: dashed;
-  cursor: default;
+  cursor: var(--cursor-arrow);
 }
 .btn.secondary { background: var(--paper); }
 .btn.danger {

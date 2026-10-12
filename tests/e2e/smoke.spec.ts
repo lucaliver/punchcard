@@ -9,6 +9,9 @@ test('title, hero select and journey render without errors', async ({ page }) =>
   await expect(page.locator('.hero-slide')).toHaveCount(4);
   // Keywords in a hero's ability read as words, never as their `[mark]`.
   await expect(page.locator('.hero-features').first()).not.toContainText('[');
+  // Tap the hero in view: they pull a face.
+  await page.locator('.hero-slide.current .hero-sprite').click();
+  await expect(page.locator('.hero-slide.current .hero-sprite')).toHaveAttribute('data-mood', 'cast');
   // Carousel: the hero in view is the one that starts.
   await page.locator('.hero-arrow.next').click();
   await expect(page.locator('.hero-dot').nth(1)).toHaveAttribute('aria-current', 'true');
@@ -73,10 +76,17 @@ test('a phone held sideways is asked to turn upright, and the desktop gets its s
   // A wide window with a mouse (not a touch screen) pins the boards either side of the column.
   const desk = await browser.newContext({ viewport: { width: 1440, height: 900 }, baseURL });
   const wide = await desk.newPage();
-  await wide.goto('/');
+  await freshGame(wide);
   await expect(wide.locator('.wing-l .keylist li')).toHaveCount(6);
   await expect(wide.locator('.wing-r .badge')).not.toHaveCount(0);
+  await expect(wide.locator('.wing-r .shift .shift-head')).toHaveCount(0);
   await expect(wide.locator('.rotate-banner')).toBeHidden();
+  // In a run the right board shows the hero's shift instead of the staff.
+  await wide.getByRole('button', { name: /new run/i }).click();
+  await wide.getByRole('button', { name: /start shift/i }).click();
+  // (The boards only show with a mouse; the test browser may not report one, so what is checked is what they hold.)
+  await expect(wide.locator('.wing-r .shift .shift-head')).toHaveCount(1);
+  await expect(wide.locator('.wing-r section').first()).toHaveJSProperty('hidden', true);
   await desk.close();
   expect(problems).toEqual([]);
 });
@@ -1405,6 +1415,23 @@ test('restructuring: the other way gives a random stationery and leaves the deck
   await expect(page.locator('.node.open').first()).toBeVisible({ timeout: 10000 });
   expect(await deckUids(page)).toEqual(before);
   expect(await page.evaluate('window.__game.run.relics.length')).toBe(1);
+});
+
+test('the enemy walks in as the door opens, and its passive is on a slip under Clock in', async ({ page }) => {
+  const problems = await freshGame(page, { veteran: true });
+  await page.getByRole('button', { name: /new run/i }).click();
+  await page.getByRole('button', { name: /start shift/i }).click();
+  await page.evaluate('(() => { const g = window.__game; g.run.nodes[g.run.current].enemy = "snitch"; })()');
+  await page.getByRole('button', { name: /enter floor 1/i }).click();
+  await expect(page.locator('.office-door')).toBeHidden({ timeout: 15_000 });
+  // Nobody waits for the clock-in to appear: it is on stage already.
+  await expect(page.locator('.stage.unseen')).toHaveCount(0);
+  const slip = page.locator('.start-wrap .foe-traits');
+  await expect(slip).toBeVisible();
+  await expect(slip.locator('.trait-head')).toContainText(/enemy passive/i);
+  const [button, under] = await Promise.all([page.locator('.js-start').boundingBox(), slip.boundingBox()]);
+  expect(under!.y).toBeGreaterThanOrEqual(button!.y + button!.height - 1);
+  expect(problems).toEqual([]);
 });
 
 test('Power Socket: the belt goes dead and a crank knob turns it, both rows', async ({ page }) => {

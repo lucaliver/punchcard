@@ -3,42 +3,36 @@ import { disc, parts, puff, type Rect, twinkle } from './actArt';
 /**
  * The scene behind the enemy in a fight, one per act: 96×40 cells of flat pixel rects (about 4px each on a phone), standing on the stage's floor. Tone on tone
  * with the night (`--stage-*` in `acts.css`) so it is a place, not a picture: `a` the far shapes, `b` the near ones, `l` things lit, `h` the warning lights,
- * `g` window glass, `w` candle wax. The enemy hides the middle, so the weight is at the sides and up high.
+ * `g` window glass and the first light of day. The enemy hides the middle, so the weight is at the sides and up high.
  */
 
-/** A round arch standing on `y0` (its springline), `hw` half its width, `rise` tall, a stroke `th` thick: one rect per row. */
-function arch(cx: number, hw: number, y0: number, rise: number, th: number): Rect[] {
-  const out: Rect[] = [];
-  for (let r = 0; r < rise; r++) {
-    const outer = Math.round(hw * Math.sqrt(1 - (r / rise) ** 2));
-    const inner = r < rise - th ? Math.round((hw - th) * Math.sqrt(1 - (r / (rise - th)) ** 2)) : 0;
-    const y = y0 - r;
-    if (inner <= 0) out.push([cx - outer, y, 2 * outer, 1]);
-    else out.push([cx - outer, y, outer - inner, 1], [cx + inner, y, outer - inner, 1]);
-  }
-  return out;
-}
-
-/** Act 1, the crypt: a colonnade of round arches, tombs in the gaps, candles on the pillars and a chandelier hanging over the enemy. */
+/** Act 1, the company car park in the morning: a violet dawn behind a chain-link fence and the office towers, two street lamps still on, a car at either side. */
 // biome-ignore format: pixel rects read best in rows
-const crypt = (): string => {
-  const pillars = [0, 31, 63, 93];
-  const candles = [1, 32, 64, 94];
+const parking = (): string => {
+  // the fence's mesh: a pixel every other cell, every other row
+  const mesh: Rect[] = [];
+  for (let y = 26; y < 36; y += 2) for (let x = (y / 2) % 2; x < 96; x += 2) mesh.push([x, y, 1, 1]);
+  const car = (x: number): string =>
+    parts('b', [[x, 31, 22, 6], [x + 4, 26, 13, 5]]) +
+    parts('a', [[x + 5, 27, 5, 4], [x + 11, 27, 5, 4], [x + 2, 36, 5, 4], [x + 15, 36, 5, 4]]);
   return (
-    // tombs and a cross between the pillars, far behind
-    parts('a', [
-      [10, 33, 5, 7], [11, 32, 3, 1], [20, 30, 2, 10], [18, 32, 6, 2],
-      [40, 34, 6, 6], [41, 33, 4, 1], [72, 33, 5, 7], [73, 32, 3, 1], [82, 31, 2, 9], [80, 33, 6, 2],
-      [4, 38, 90, 2],
-    ]) +
-    parts('b', pillars.map((x): Rect => [x, 14, 3, 26])) +
-    parts('b', [...arch(16, 14, 14, 11, 2), ...arch(48, 14, 14, 11, 2), ...arch(80, 14, 14, 11, 2)]) +
-    // the capital of every pillar, and the chandelier's chain and ring
-    parts('b', pillars.map((x): Rect => [x - 1, 13, 5, 2])) +
-    parts('b', [[47, 0, 2, 6], [42, 6, 12, 1], [41, 7, 2, 1], [53, 7, 2, 1]]) +
-    parts('w', [...candles.map((x): Rect => [x, 27, 2, 3]), [42, 4, 2, 2], [47, 4, 2, 2], [52, 4, 2, 2]]) +
-    candles.map((x, i) => twinkle(x, 25, 1.3 + i * 0.35, -i * 0.5, 'l', 2, 2)).join('') +
-    [43, 48, 53].map((x, i) => twinkle(x - 1, 2, 1.1 + i * 0.4, -i * 0.3, 'l', 2, 2)).join('')
+    // the first light of the day, in bands over the towers
+    parts('g', [[0, 23, 96, 1], [0, 25, 96, 2], [0, 28, 96, 3]]) +
+    parts('a', [[0, 12, 8, 28], [9, 18, 6, 22], [16, 8, 9, 32], [70, 14, 8, 26], [79, 6, 9, 34], [89, 15, 7, 25]]) +
+    parts('g', [[2, 15, 2, 1], [2, 20, 2, 1], [19, 12, 2, 1], [19, 17, 2, 1], [82, 10, 2, 1], [82, 16, 2, 1], [92, 19, 2, 1]]) +
+    // the fence
+    parts('a', mesh) +
+    parts('b', [[0, 24, 96, 1], [0, 36, 96, 1], ...[0, 24, 48, 72, 95].map((x): Rect => [x, 23, 1, 17])]) +
+    // two street lamps, still lit
+    parts('b', [[3, 6, 1, 34], [1, 5, 6, 2], [92, 4, 1, 36], [87, 3, 7, 2]]) +
+    twinkle(1, 7, 3.2, 0, 'l', 6, 1) +
+    twinkle(87, 5, 4.1, -1.7, 'l', 7, 1) +
+    // a car at each side: one with its exhaust, one with a hazard light blinking
+    car(8) +
+    parts('l', [[29, 32, 1, 2]]) +
+    puff(6, 35, 0) +
+    car(68) +
+    twinkle(68, 32, 1.2, 0, 'h', 1, 2)
   );
 };
 
@@ -100,7 +94,7 @@ const factory = (): string => {
   );
 };
 
-const SCENES = [crypt, office, factory];
+const SCENES = [parking, office, factory];
 
 /** The scene behind the enemy of an act (1-based; a later act takes the last scene, like `actDef`). */
 export const stageArt = (act: number): string =>

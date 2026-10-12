@@ -8,7 +8,7 @@ import { stageArt } from '../art/stageArt';
 import { icon } from '../art/icons';
 import { darkEyes, motes } from '../components/decor';
 import { $, centerOf, h, retrigger } from '../dom';
-import { createHeroMood, type HeroMood, heroFaces } from './heroMood';
+import { createHeroMood, type HeroMood, heroFaces } from '../components/heroMood';
 import { say } from './speech';
 
 export const ABILITY_ICON: Record<string, string> = { warrior: 'picketLine', mage: 'stolenClock', necromancer: 'shutdown', rogue: 'stocktake' };
@@ -97,7 +97,7 @@ function markup(run: RunState, combat: Combat): string {
     </section>
     <!-- right above the belt: your HP, Block and statuses stay in view while you play -->
     <section class="hero-row">
-      <div class="hero-portrait">${heroFaces(heroId)}<i class="snore" aria-hidden="true">${icon('zzz')}</i><div class="rims"></div><div class="relic-peek"></div></div>
+      <div class="hero-portrait faces">${heroFaces(heroId)}<i class="snore" aria-hidden="true">${icon('zzz')}</i><div class="rims"></div><div class="relic-peek"></div></div>
       <div class="hero-info">
         <div class="statuses js-hstatus"></div>
         <div class="hpline">

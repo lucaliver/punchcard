@@ -108,7 +108,7 @@
   .btn:hover:not(:disabled):not(.locked),
   .ability-btn:hover { filter: brightness(1.08); }
   .belt-cards .card,
-  .sleeve .card { cursor: pointer; }
+  .sleeve .card { cursor: var(--cursor-hand); }
   .belt-cards .card:hover,
   .sleeve .card:hover { outline: var(--line) solid var(--y); outline-offset: 1px; }
 }

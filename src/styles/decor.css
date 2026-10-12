@@ -107,3 +107,12 @@
 [data-rarity='epic'] > .relic-gem { --gem: var(--p); }
 [data-rarity='legendary'] > .relic-gem { --gem: var(--y); }
 [data-rarity='special'] > .relic-gem { --gem: var(--k); }
+
+/* a face on top of the drawing, shown while its container (`.faces`: the fight's portrait, the hero select) has that mood (`heroMood.ts`); the plain drawing steps aside */
+.faces > .riso.mood { position: absolute; inset: 0; visibility: hidden; }
+.faces[data-mood] > .riso:not(.mood) { visibility: hidden; }
+.faces[data-mood='blink'] > .mood-blink,
+.faces[data-mood='hurt'] > .mood-hurt,
+.faces[data-mood='tired'] > .mood-tired,
+.faces[data-mood='cheer'] > .mood-cheer,
+.faces[data-mood='cast'] > .mood-cast { visibility: visible; }

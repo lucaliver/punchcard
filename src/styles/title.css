@@ -333,7 +333,7 @@
 .language-hint { display: block; font-size: 0.6em; opacity: 0.8; }
 
 /* ------------------------------------------------------------------ studio card (shown once, right after the contract is signed) */
-.studio { background: var(--void); align-items: center; justify-content: center; gap: 14px; text-align: center; cursor: pointer; }
+.studio { background: var(--void); align-items: center; justify-content: center; gap: 14px; text-align: center; cursor: var(--cursor-hand); }
 .studio-mark { width: clamp(120px, 42vw, 180px); aspect-ratio: 1; animation: studio-pop 0.4s steps(5) both; }
 .studio-mark .riso { width: 100%; height: 100%; }
 .studio-name {

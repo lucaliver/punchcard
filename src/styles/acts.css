@@ -31,12 +31,11 @@
   --door-shade: #3f2318;
   --door-hi: #9a6244;
   --door-bar: #c9ccd6;
-  /* the scene behind the enemy in a fight (`art/stageArt.ts`): far shapes, near shapes, lights, warning lights, window glass, candle wax */
+  /* the scene behind the enemy in a fight (`art/stageArt.ts`): far shapes, near shapes, lights, warning lights, window glass */
   --stage-far: #2d2350;
   --stage-near: #3a2e66;
   --stage-lit: var(--y);
   --stage-hot: var(--p);
-  --stage-wax: #8d83b0;
 }
 [data-act='2'] {
   --stamp-ink: var(--tc-accent);

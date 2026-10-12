@@ -347,7 +347,7 @@ async function boot(): Promise<void> {
   initApp(root);
   catchCrashes();
   initFx(root);
-  initWings();
+  initWings(() => run);
   initRotateBanner();
   // Browsers only allow audio after a user gesture.
   addEventListener('pointerdown', unlockAudio, { passive: true });

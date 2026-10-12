@@ -72,7 +72,7 @@
 .swap-deck .card,
 .swap-offer .card {
   --cw: var(--swap-cw);
-  cursor: pointer;
+  cursor: var(--cursor-hand);
   transition: transform 0.1s steps(2), opacity 0.1s steps(2);
 }
 .swap-offer .card { animation: deal 0.24s steps(3); }
@@ -220,7 +220,7 @@
 }
 .cross-offer .card {
   --cw: var(--cross-cw);
-  cursor: pointer;
+  cursor: var(--cursor-hand);
   animation: deal 0.24s steps(3);
   transition: transform 0.1s steps(2), opacity 0.1s steps(2);
 }
@@ -633,7 +633,7 @@
   /* it is stamped on at once, then keeps beckoning: it pulses like a call to action */
   animation: stamp-in 0.2s steps(2) both, cta-pulse 0.9s steps(2) 0.2s infinite;
   font: inherit;
-  cursor: pointer;
+  cursor: var(--cursor-hand);
 }
 .new-hire:active { animation: none; translate: 2px 2px; box-shadow: 2px 2px 0 var(--p); }
 /* the arrow nudges toward the next hire (the same glint and nudge as the other calls to action) */
