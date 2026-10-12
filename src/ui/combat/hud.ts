@@ -272,7 +272,7 @@ export function createHud(v: CombatView, onPassive: () => void): { render(): voi
     // Tenths only when they matter (long fuses such as Guy Asleep's would not fit the box).
     setHtml(r.intentTime, rate > 0 ? `${left >= 10 ? Math.ceil(left) : left.toFixed(1)}s` : icon('pause'));
     const hostile = !v.state.ended && (m.intent === 'attack' || m.intent === 'charge' || !!m.release);
-    toggle(r.intent, 'urgent', hostile && left < 1.1);
+    toggle(r.intent, 'urgent', hostile && left < Math.min(CONFIG.urgentAt, m.windup * 0.5));
     toggle(r.intent, 'down', combat.result === 'win');
     // The enemy tenses up before the move lands: it crouches for a blow, swells for anything else, and shakes harder at the end.
     const winding = !v.state.ended && rate > 0 && m.intent !== 'idle' && left < Math.min(CONFIG.anticipate.soft, m.windup * 0.5);
