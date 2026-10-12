@@ -473,6 +473,7 @@ export function applyCombat(run: RunState, combat: Combat): void {
   if (combat.consumed.length) run.deck = run.deck.filter((c) => !combat.consumed.includes(c.uid));
   run.playedIds = [...combat.runPlayed];
   for (const card of run.deck) if (combat.tenured[card.uid]) card.tenure = combat.tenured[card.uid];
+  for (const card of run.deck) if (combat.upgraded.includes(card.uid)) card.up = true;
   // The hero keeps at least one slot, wherever the slots come from.
   run.sleeveLost = Math.min(run.sleeveLost + combat.sleeveLost, HEROES[run.hero].sleeve - 1);
   if (combat.result === 'win') {

@@ -327,6 +327,7 @@ const en = {
 
   // -------------------------------------------------------------- combat
   'combat.fight': 'Get to work!',
+  'combat.bossIntro': 'Surprise Audit',
   'combat.timeCard': 'Time card',
   'combat.clockIn': 'In {time}',
   'combat.clockOut': 'Out {time}',
@@ -1083,7 +1084,7 @@ const en = {
   'card.returnToSender.name': 'Return to Sender',
   'card.returnToSender.desc': "Deal {0} [damage] plus the [damage] of the enemy's current attack.",
   'card.mentorshipProgram.name': 'Mentorship Program',
-  'card.mentorshipProgram.desc': 'Upgrade {0} random cards in your draw and discard piles for this fight.',
+  'card.mentorshipProgram.desc': 'Upgrade a random card in your deck permanently.',
   'card.signingBonus.name': 'Signing Bonus',
   'card.signingBonus.desc': 'Cards added to your deck cost {0} less [mana] until they are played.',
   'card.cleanSlate.name': 'Clean Slate',
@@ -1894,10 +1895,9 @@ const en = {
   'status.moveFastAndBreakThings': 'Move Fast and Break Things',
   'status.moveFastAndBreakThings.d': 'Every card that falls off your belt deals {v} damage.',
   'card.scopeCreep.name': 'Scope Creep',
-  'card.scopeCreep.desc': 'Every {$scopeEvery}s, upgrade a random card in your deck for this fight. It costs {1} more [mana] until played.',
+  'card.scopeCreep.desc': 'Every {$scopeEvery}s, upgrade a random card in your deck for this fight.',
   'status.scopeCreep': 'Scope Creep',
-  'status.scopeCreep.d':
-    'Every {$scopeEvery}s, upgrade {v} random {v|card|cards} in your deck for this fight. They cost {$scopeTax} more [mana] until played.',
+  'status.scopeCreep.d': 'Every {$scopeEvery}s, upgrade {v} random {v|card|cards} in your deck for this fight.',
   'card.fridayDeploy.name': 'Friday Deploy',
   'card.fridayDeploy.desc': 'Deal {0} [damage]. Shuffle {1} [@deadline]s into your draw pile.',
   'card.vibeCoding.name': 'Vibe Coding',

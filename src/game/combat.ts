@@ -175,6 +175,8 @@ export class Combat {
   private baseBeltMul = 1;
   /** Deck uids permanently removed (potions). */
   consumed: number[] = [];
+  /** Deck uids upgraded for good this fight (Mentorship Program): the run upgrades those copies. */
+  upgraded: number[] = [];
   /** How many times each deck copy with `CardDef.tenure` has been played in the run so far, counting this fight (the run keeps it). */
   tenured: Record<number, number> = {};
   /** Sleeve slots lost for good this fight: they leave the sleeve from the next fight on (Life Insurance). */
@@ -1912,16 +1914,20 @@ export class Combat {
     );
   }
 
-  /** Upgrades up to `n` random cards of the draw and discard piles for this fight (only ones an upgrade changes), each costing `tax` more until it is next played. Returns how many. */
-  upgradeRandom(n: number, tax = 0): number {
+  /**
+   * Upgrades up to `n` random cards (only ones an upgrade changes) for this fight: the draw and discard piles. With `forGood` it is any card
+   * of the run's deck, wherever it is, and the upgrade stays in the run (`upgraded`). Returns how many.
+   */
+  upgradeRandom(n: number, forGood = false): number {
     const fits = (c: CombatCard): boolean => {
       const def = CARDS[c.id];
       return !c.up && !isCurse(c) && def.rarity !== 'special' && (!!def.upVals || def.upCost !== undefined || !!def.upKeywords);
     };
-    const picks = this.rng.shuffle([...this.draw, ...this.discard].filter(fits)).slice(0, n);
+    const pool = forGood ? this.allCards().filter((c) => !c.temp) : [...this.draw, ...this.discard];
+    const picks = this.rng.shuffle(pool.filter(fits)).slice(0, n);
     for (const card of picks) {
       card.up = true;
-      if (tax > 0) card.tax = (card.tax ?? 0) + tax;
+      if (forGood) this.upgraded.push(card.uid);
     }
     if (picks.length) this.events.emit({ type: 'cardsUpgraded', n: picks.length });
     return picks.length;

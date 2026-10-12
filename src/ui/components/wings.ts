@@ -32,8 +32,8 @@ let staff: HTMLElement | null = null;
 /** Desktop only (`wings.css` hides them on a phone): a notice board either side of the phone-shaped column, so the wide window is not empty. */
 export function initWings(): void {
   staff = h('div', { class: 'staff' });
-  const keylist = h('ul', {
-    class: 'keylist',
+  const rules = h('ul', {
+    class: 'rules',
     html: RULES.map(({ key, label }) => `<li><kbd>${key()}</kbd><span>${t(label)}</span></li>`).join(''),
   });
   document.body.append(
@@ -41,7 +41,7 @@ export function initWings(): void {
       'aside',
       { class: 'wing wing-l', 'aria-hidden': 'true' },
       h('p', { class: 'wing-slogan' }, t('menu.slogan')),
-      h('section', { class: 'note' }, h('h3', null, t('wing.rules')), keylist),
+      h('section', { class: 'note' }, h('h3', null, t('wing.rules')), rules),
     ),
     h(
       'aside',

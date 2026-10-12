@@ -92,9 +92,7 @@ export const DAYS_EVERY = 5;
 export const MEETING_EVERY = 10;
 export const MEETING_SYNC = 20;
 /** Scope Creep: seconds between two upgrades. Cron Job: seconds between two free plays. */
-export const SCOPE_EVERY = 6;
-/** Scope Creep: the mana an upgraded card costs more until it is played. */
-export const SCOPE_TAX = 1;
+export const SCOPE_EVERY = 8;
 export const CRON_EVERY = 10;
 /** The Union Remembers: HP lost for each helping of Poison. */
 export const UNION_HP = 4;
@@ -501,7 +499,7 @@ const defs: StatusDef[] = [
       if (n % MEETING_SYNC === 0) c.addTempCard('quickSync', 'belt');
     }),
   },
-  // Scope Creep (a power): every few seconds `v` random cards of the deck are upgraded for the fight and cost 1 more until played.
+  // Scope Creep (a power): every few seconds `v` random cards of the deck are upgraded for the fight.
   {
     id: 'scopeCreep',
     tone: 'blue',
@@ -510,7 +508,7 @@ const defs: StatusDef[] = [
     icon: 'growth',
     progress: cycle(SCOPE_EVERY),
     tick: everySecond((c, _side, n, s) => {
-      if (n % SCOPE_EVERY === 0) c.upgradeRandom(s.v, SCOPE_TAX);
+      if (n % SCOPE_EVERY === 0) c.upgradeRandom(s.v);
     }),
   },
   // Cron Job (a power): `v` random cards of the discard pile are played for free every few seconds.

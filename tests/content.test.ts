@@ -1,8 +1,6 @@
 import { readFileSync, readdirSync } from 'node:fs';
 import { describe, expect, it } from 'vitest';
 import { CREATURES } from '../src/ui/art/creatures';
-import { MOODS, moodId } from '../src/ui/art/heroMoods';
-import { stageArt } from '../src/ui/art/stageArt';
 import enStrings from '../src/i18n/en';
 import esStrings from '../src/i18n/es';
 import itStrings from '../src/i18n/it';
@@ -173,12 +171,6 @@ describe('content integrity', () => {
       expect(strings[`move.${DEBUG_ENEMY.main.id}`]).toBeTruthy();
     }
     expect(CREATURES[DEBUG_ENEMY.art]).toBeTruthy();
-  });
-
-  it('every hero has a face for every mood, and every act a scene behind its fights', () => {
-    for (const h of HERO_LIST) for (const m of MOODS) expect(CREATURES[moodId(h.id, m)], `${h.id} ${m}`).toBeTruthy();
-    for (const [i] of ACT_DEFS.entries()) expect(stageArt(i + 1), `act ${i + 1}`).toContain('<rect');
-    expect(new Set(ACT_DEFS.map((_, i) => stageArt(i + 1))).size, 'one scene per act').toBe(ACT_DEFS.length);
   });
 
   it('every enemy with a half-HP trait has an angrier face to change into', () => {

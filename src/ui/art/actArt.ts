@@ -3,13 +3,13 @@
  * map theme (`journey.css`): `a` is the solid silhouette, `b` thin lighter strokes (fences, bats, clouds, smoke), `c` wax and the moon, `l` lit windows, flames, stars and the sun, `w` the act's warm accent,
  * `d` the small birds that fly across the first act's morning. `tall` draws the act intro's version: the same scene plus a sky, and everything in it moves.
  */
-export type Rect = [x: number, y: number, w: number, h: number];
+type Rect = [x: number, y: number, w: number, h: number];
 
-export const parts = (cls: string, rects: Rect[]): string =>
+const parts = (cls: string, rects: Rect[]): string =>
   rects.map(([x, y, w, h]) => `<rect class="${cls}" x="${x}" y="${y}" width="${w}" height="${h}"/>`).join('');
 
 /** A pixel disc, one rect per row. */
-export const disc = (cx: number, cy: number, r: number): Rect[] =>
+const disc = (cx: number, cy: number, r: number): Rect[] =>
   Array.from({ length: 2 * r + 1 }, (_, i): Rect => {
     const dy = i - r;
     const half = Math.round(Math.sqrt(r * r + 0.5 - dy * dy));
@@ -167,14 +167,14 @@ const lightsOut = (x: number, y: number, dur: number, delay: number): string =>
   `<g class="off" style="--d:${dur}s;--dl:${delay}s">${parts('a', [[x, y, 2, 2]])}</g>`;
 
 /** A puff of smoke or steam rising from a chimney or a rooftop unit at (x, y). */
-export const puff = (x: number, y: number, delay: number): string =>
+const puff = (x: number, y: number, delay: number): string =>
   `<g class="puff" style="--x:${x}px;--y:${y}px;--dl:${delay}s">${parts('b', [
     [0, 0, 2, 1],
     [1, -1, 1, 1],
   ])}</g>`;
 
 /** A dot of light (`w`×`h` cells) that goes out now and then: a star, a candle's flame tip, a plane's or a crane's lamp (`cls` is its ink). */
-export const twinkle = (x: number, y: number, dur: number, delay: number, cls = 'l', w = 1, h = 1): string =>
+const twinkle = (x: number, y: number, dur: number, delay: number, cls = 'l', w = 1, h = 1): string =>
   `<g class="twinkle" style="--d:${dur}s;--dl:${delay}s">${parts(cls, [[x, y, w, h]])}</g>`;
 
 /** A bat of the first act's night, two frames (wings up, wings down) swapped by the CSS; it crosses the intro's sky. */

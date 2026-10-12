@@ -15,7 +15,6 @@ import {
   MEETING_EVERY,
   MEETING_SYNC,
   SCOPE_EVERY,
-  SCOPE_TAX,
   STATUSES,
   TABS_EVERY,
   UNION_HP,
@@ -1619,14 +1618,26 @@ describe('the legendary batch: Claims Adjuster, Return to Sender, Fuck You Money
     expect(d.exhaust.filter((x) => x.id === 'punch')).toHaveLength(CARDS.fuckYouMoney.upVals![0]);
   });
 
-  it('Mentorship Program upgrades random cards of the draw and discard piles, only ones an upgrade changes', () => {
+  it('Mentorship Program upgrades a random card of the deck for good, only one an upgrade changes', () => {
     const c = still('warrior');
     stuff(c, ['punch', 'bobTheBuilder'], 'draw');
     stuff(c, ['hostileTakeover', 'gatekeeping'], 'discard');
-    expect(play(c, 'mentorshipProgram')).toBe(true);
+    c.hero.mana = c.hero.maxMana;
+    const card = c.addTempCard('mentorshipProgram', 'belt');
+    expect(c.playCard(card.uid)).toBe(false);
+    card.passed = true;
+    expect(c.playCard(card.uid)).toBe(true);
     const all = [...c.draw, ...c.discard];
-    expect(all.filter((x) => x.up)).toHaveLength(CARDS.mentorshipProgram.vals[0]);
+    const up = all.filter((x) => x.up);
+    expect(up).toHaveLength(CARDS.mentorshipProgram.vals[0]);
     expect(all.find((x) => x.id === 'gatekeeping')!.up).toBe(false);
+    expect(c.upgraded).toEqual(up.map((x) => x.uid));
+    const r = newRun('warrior', 3);
+    r.deck = Array.from({ length: 3 }, (_, i) => ({ uid: 900 + i, id: 'punch', up: false }));
+    const fight = new Combat({ ...combatSetup(r), hp: 80, maxHp: 80 });
+    fight.upgraded.push(901);
+    applyCombat(r, fight);
+    expect(r.deck.map((x) => x.up)).toEqual([false, true, false]);
   });
 
   it('Signing Bonus takes mana off the cards added to the deck, until they are played, but not off curses', () => {
@@ -1844,7 +1855,7 @@ describe('the office batch: streaks, clocks, piles, curses and corporate speak',
     expect(dealt(c, () => void c.dropOldest())).toBe(0);
   });
 
-  it('Scope Creep upgrades a card of the deck every few seconds and makes it cost more until it is played', () => {
+  it('Scope Creep upgrades a card of the deck every few seconds, for the fight only', () => {
     const c = still('mage');
     pile(
       c,
@@ -1856,7 +1867,8 @@ describe('the office batch: streaks, clocks, piles, curses and corporate speak',
     run(c, SCOPE_EVERY + 0.1);
     const upgraded = deck().filter((x) => x.up);
     expect(upgraded).toHaveLength(1);
-    expect(upgraded[0].tax).toBe(SCOPE_TAX);
+    expect(upgraded[0].tax).toBeUndefined();
+    expect(c.upgraded).toEqual([]);
     run(c, SCOPE_EVERY);
     expect(deck().filter((x) => x.up).length).toBeGreaterThanOrEqual(2);
   });

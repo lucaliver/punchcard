@@ -126,7 +126,6 @@ export function combatScreen(run: RunState, combat: Combat, cb: CombatCallbacks)
     if (result === 'win') {
       // Death throes (it shakes, bleeds and sinks), then the print comes apart ink by ink. A boss gets stamped first.
       r.enemyArt.classList.add('dead');
-      v.mood.flash('cheer', Number.POSITIVE_INFINITY);
       r.eStatus.classList.add('gone');
       const p = v.enemyPoint();
       burst('blood', p.x, p.y, 36, 1.4);
@@ -160,14 +159,13 @@ export function combatScreen(run: RunState, combat: Combat, cb: CombatCallbacks)
         );
         sfx('bossBlast');
         r.enemyArt.classList.add('boss');
-      } else v.shout(t('reward.cleared'));
+      } else v.banner(t('reward.cleared'));
       // Clocking out when the next floor starts (the end of the shift after a boss).
       timeCard('out', clockText(clockAt(run, { ...currentNode(run), floor: currentNode(run).floor + 1 })));
       if (!boss) sfx('victory');
     } else {
       // Fired: the hero goes down, and the payslip on the end screen says the rest.
       r.portrait.classList.add('down');
-      v.mood.flash('hurt', Number.POSITIVE_INFINITY);
       sfx('defeat');
       haptic('defeat');
     }
@@ -461,6 +459,7 @@ export function combatScreen(run: RunState, combat: Combat, cb: CombatCallbacks)
   };
   el.append(debugButton(t('debug.menu'), openDebug));
 
+  /** A boss walks in with a title card: two bars slam across the screen, its name stamped between them, and the room shakes. */
   /** A normal enemy walks in: its shadow grows on the floor first, then it drops in and lands (a boss has its own card). */
   const enterScene = (): void => {
     r.stage.classList.replace('unseen', 'entering');
@@ -481,28 +480,23 @@ export function combatScreen(run: RunState, combat: Combat, cb: CombatCallbacks)
     );
   };
 
-  /**
-   * A boss walks in with the office lights out: the room is black, the tubes flicker (the boss is only a shape against them), then they come on for
-   * good and it stands there, its landing shaking the room. A tap skips it.
-   */
   const bossIntro = (): void => {
-    const dark = h('div', { class: 'boss-intro', 'aria-hidden': 'true' });
-    const lightsOn = (): void => {
-      const p = v.enemyPoint();
-      burst('ash', p.x, p.y + 60, 26, 1.1);
-      sfx('bossBlast');
-      shake('big');
-      haptic('alarm');
-    };
-    const skip = (): void => {
-      dark.remove();
-      r.enemyArt.classList.remove('boss-enter');
-    };
-    dark.addEventListener('animationend', (e) => {
-      if (e.target === dark) dark.remove();
+    const card = h(
+      'div',
+      { class: 'boss-intro', 'aria-hidden': 'true' },
+      h('div', { class: 'bi-bar top' }),
+      h('div', { class: 'bi-bar bot' }),
+      h('div', { class: 'bi-name' }, h('small', null, t('combat.bossIntro')), h('b', null, t(`enemy.${combat.enemy.def.id}.name`))),
+    );
+    card.addEventListener('animationend', (e) => {
+      if (e.target === card) card.remove();
     });
-    dark.addEventListener('click', skip);
-    el.append(dark);
+    // A tap skips it.
+    card.addEventListener('click', () => {
+      card.remove();
+      r.enemyArt.classList.remove('boss-enter');
+    });
+    el.append(card);
     r.enemyArt.classList.add('boss-enter');
     // Class off when done, or it would outrank the death throes later.
     r.enemyArt.addEventListener(
@@ -512,11 +506,9 @@ export function combatScreen(run: RunState, combat: Combat, cb: CombatCallbacks)
       },
       { once: true },
     );
-    later(
-      () => dark.isConnected && lightsOn(),
-      cssMs('--dur-boss-intro') * Number.parseFloat(getComputedStyle(document.documentElement).getPropertyValue('--boss-lights')),
-    );
-    sfx('machinery');
+    sfx('bossBlast');
+    shake('big');
+    haptic('alarm');
   };
 
   /** The first run, after a few fights that never used the sleeve: once, an overlay points at it. */
@@ -580,7 +572,6 @@ export function combatScreen(run: RunState, combat: Combat, cb: CombatCallbacks)
       lastTempo = tempo;
       setMusicTempo(tempo);
     }
-    v.mood.frame(dt);
     hud.render();
     taskWindow.render();
     shellWindow.render();
@@ -690,7 +681,7 @@ export function combatScreen(run: RunState, combat: Combat, cb: CombatCallbacks)
         timeCard('in', clockText(clockAt(run, currentNode(run))), () => {
           state.waiting = false;
           syncPause();
-          v.shout(t('combat.fight'));
+          v.banner(t('combat.fight'));
           if (combat.enemy.def.tier !== 'boss') enterScene();
         });
       });

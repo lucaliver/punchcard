@@ -51,7 +51,7 @@
     text-align: center;
     text-shadow: 2px 2px 0 var(--p);
   }
-  .keylist {
+  .rules {
     display: grid;
     grid-template-columns: max-content minmax(0, 1fr);
     align-items: center;
@@ -60,15 +60,15 @@
     padding: 0;
     list-style: none;
   }
-  .keylist li { display: contents; }
+  .rules li { display: contents; }
   /* a key cap: the face, and the thick edge under it */
-  .keylist span {
+  .rules span {
     overflow-wrap: anywhere;
     font-family: var(--font);
     font-size: 15px;
     line-height: 1.15;
   }
-  .keylist kbd {
+  .rules kbd {
     justify-self: start;
     min-width: 32px;
     padding: 2px 6px 4px;

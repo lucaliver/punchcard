@@ -1,7 +1,6 @@
 import type { Combat } from '../../game/combat';
 import type { CardDef } from '../../game/types';
 import { CONFIG } from '../config';
-import { SCOPE_TAX } from '../statuses';
 import { WHEN } from './conditions';
 
 /** Whole seconds of Rush the belt has left (Any% Speedrun). */
@@ -799,18 +798,6 @@ export const mageCards: CardDef[] = [
       c.rushBelt(v[0]);
       c.applyStatus('hero', 'moveFastAndBreakThings', v[1], v[0]);
     },
-  },
-  {
-    id: 'scopeCreep',
-    face: '{*timer}{upgrade:0}|{pricier:1}',
-    cls: 'mage',
-    type: 'power',
-    rarity: 'epic',
-    cost: 2,
-    upCost: 1,
-    vals: [1, SCOPE_TAX],
-    art: 'scopeCreep',
-    play: (c, v) => c.applyStatus('hero', 'scopeCreep', v[0]),
   },
   {
     id: 'fridayDeploy',

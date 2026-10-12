@@ -1,4 +1,3 @@
-import { heroMoods } from './heroMoods';
 import { sprite } from './riso';
 
 /**
@@ -1632,7 +1631,6 @@ export const CREATURES: Record<string, string> = {
   mage,
   necromancer,
   rogue,
-  ...heroMoods({ warrior, mage, necromancer, rogue }),
 };
 
 /** Riso-pixel sprite of a creature (see riso.ts). */
