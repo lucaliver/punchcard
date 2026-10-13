@@ -410,12 +410,9 @@
   50% { border-color: var(--p); box-shadow: var(--sh) var(--sh) 0 var(--p); }
 }
 /* a Fleeting card in its last stretch of the belt trembles as well as blinking: play it now or lose it */
-.card.last-chance { animation: leaving 0.3s steps(2) infinite, tremble 0.18s steps(1) infinite; }
+.card.last-chance { animation: leaving 0.3s steps(2) infinite, tremble 0.3s steps(1) infinite; }
 @keyframes tremble {
-  0% { translate: 2px 0; rotate: 1.5deg; }
-  25% { translate: -2px 1px; rotate: -1.5deg; }
-  50% { translate: 1px -1px; rotate: 1deg; }
-  75% { translate: -1px 0; rotate: -1deg; }
+  50% { translate: 1px 0; }
 }
 .card.dragging {
   z-index: var(--z-drag) !important;
