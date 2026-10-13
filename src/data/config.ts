@@ -247,6 +247,11 @@ export const CONFIG = {
   /** Copy Room: a card can't be shredded below this many deck cards; a photocopy costs this much HP (and needs more left). */
   shredMinDeck: 10,
   copyHpCost: 8,
+  /** Raffle: how many deck cards the result of the wheel is applied to. */
+  wheelCards: 3,
+  /** Raffle: how long the wheel turns (s) and how many full turns it makes before it stops. */
+  wheelSpinTime: 4.2,
+  wheelTurns: 4,
   /** Restructuring: how many deck cards the player picks to turn into random ones. */
   restructureCards: 2,
   /** Tailor: the max HP the let-out uniform gives. */

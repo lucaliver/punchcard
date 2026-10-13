@@ -19,7 +19,8 @@ import { rewardOdds, rewardUpgradeChance } from '../src/data/config';
 import { DIFFICULTY, ENEMY_LIST, enemyMoves } from '../src/data/enemies';
 import { HERO_LIST, HEROES, starterCards } from '../src/data/heroes';
 import { VALUES } from '../src/data/values';
-import { PERK_LIST } from '../src/data/perks';
+import { PERK_LIST, PERKS } from '../src/data/perks';
+import { WHEEL } from '../src/data/wheel';
 import { STATUS_ORDER, STATUSES } from '../src/data/statuses';
 import { cardText, GLYPHS, TAG_ICON } from '../src/ui/components/cardView';
 import { RULES, moveTone } from '../src/ui/components/moveText';
@@ -301,6 +302,15 @@ describe('content integrity', () => {
   it('every perk and status has a name and a description', () => {
     for (const p of PERK_LIST) expect(en[`perk.${p.id}`] && en[`perk.${p.id}.d`], p.id).toBeTruthy();
     for (const id of STATUS_ORDER) expect(en[`status.${id}`] && en[`status.${id}.d`], id).toBeTruthy();
+  });
+
+  it("every slice of the Raffle's wheel has an icon, a real perk or a name of its own, and the wheel has one unlucky perk at least", () => {
+    for (const s of WHEEL) {
+      expect(ICONS[s.icon], `${s.id}: missing icon ${s.icon}`).toBeTruthy();
+      if (s.effect.kind === 'perk') expect(PERKS[s.effect.perk], `${s.id}: unknown perk`).toBeTruthy();
+      else expect(en[`wheel.${s.id}`] && en[`wheel.${s.id}.d`], s.id).toBeTruthy();
+    }
+    expect(WHEEL.some((s) => s.effect.kind === 'perk' && PERKS[s.effect.perk].bad)).toBe(true);
   });
 });
 

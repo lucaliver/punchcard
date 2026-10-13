@@ -20,12 +20,13 @@ export interface CardInst {
   tenure?: number;
 }
 
-/** A permanent perk a deck card can earn: extra keywords and/or a cost change. */
+/** A permanent perk a deck card can earn: extra keywords and/or a cost change. A `bad` one is a drawback: the Promotion never offers it, the Raffle's wheel can land on it. */
 export interface PerkDef {
   id: string;
   icon: string;
   keywords?: Keyword[];
   costDelta?: number;
+  bad?: boolean;
 }
 
 /** A curse cast on one card during a fight (e.g. petrified): it must be tapped `taps` times, then thaws for `thaw` s (`stages`: it shows as a picture instead of a card). */

@@ -240,3 +240,5 @@
 /* cost lowered by a perk (Budget Cut) or by the sleeve's discount */
 .card .c-cost.cheap,
 .card .c-cost.sale { color: var(--y); }
+/* cost raised by a perk (Overtime): the same red as Inflation's */
+.card .c-cost.dear { color: var(--paper); background: var(--red); }

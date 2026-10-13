@@ -3,6 +3,7 @@ import { loadRaw, remove, store } from '../core/save';
 import { nextUid, peekUid, resetUid } from '../core/util';
 import { CARD_LIST, CARDS, RARITY_ORDER, cardCostOf, cardKeywordsOf, rewardPool } from '../data/cards';
 import { PERKS } from '../data/perks';
+import { WHEEL, type WheelSlot } from '../data/wheel';
 import { RELIC_LIST, RELICS, relicSum } from '../data/relics';
 import { ACT_DEFS, actDef } from '../data/acts';
 import {
@@ -34,6 +35,7 @@ export const NODE_TYPES = [
   'vending',
   'crossTraining',
   'restructuring',
+  'wheel',
   'boss',
 ] as const;
 export type NodeType = (typeof NODE_TYPES)[number];
@@ -114,7 +116,7 @@ const LANES: Slot[][] = [
   ['promotion', 'fight', 'special', 'fight', 'rest', 'special', 'fight', 'rest'],
 ];
 /** A `special` slot of a lane becomes one of these when the act is built; one act never deals the same room twice. */
-export const SPECIALS: NodeType[] = ['copy', 'tailor', 'lostFound', 'vending', 'crossTraining', 'restructuring'];
+export const SPECIALS: NodeType[] = ['copy', 'tailor', 'lostFound', 'vending', 'crossTraining', 'restructuring', 'wheel'];
 /** Rooms that show up once in a whole run, however many acts it has. */
 const ONCE_PER_RUN: NodeType[] = ['tailor', 'restructuring'];
 /** Floors on a single road at the start of act 1, before the map splits in two (then the lanes skip as many floors). The last of them is always a special room. */
@@ -613,12 +615,13 @@ const fixed = (card: CardInst): boolean => CARDS[card.id].cls === 'curse' || CAR
 
 export const canUpgrade = (card: CardInst): boolean => !card.up && !fixed(card);
 
-/** A perk fits a card when it would change something: a keyword it lacks, or a cost it can still lose. */
+/** A perk fits a card when it would change something: a keyword it lacks, or a cost it can still move. */
 export function canPerk(card: CardInst, perk: string): boolean {
   const p = PERKS[perk];
   if (card.perks?.includes(perk) || fixed(card)) return false;
   if (p.keywords?.every((k) => cardKeywordsOf(card).includes(k))) return false;
-  if (p.costDelta && cardCostOf(card) <= (CARDS[card.id].minCost ?? 0)) return false;
+  // An X card has no price to move; a discount stops at the card's cheapest.
+  if (p.costDelta && (cardCostOf(card) < 0 || (p.costDelta < 0 && cardCostOf(card) <= (CARDS[card.id].minCost ?? 0)))) return false;
   return true;
 }
 
@@ -790,6 +793,45 @@ export function giftRelic(run: RunState): string | undefined {
   const [id] = rollRelics(run, 1);
   if (id) gainRelic(run, id);
   return id;
+}
+
+/** Whether a slice of the Raffle's wheel does something to this card (a day off does nothing to anyone). */
+export function canWheel(card: CardInst, slot: WheelSlot): boolean {
+  switch (slot.effect.kind) {
+    case 'upgrade':
+      return canUpgrade(card);
+    case 'perk':
+      return canPerk(card, slot.effect.perk);
+    case 'none':
+      return false;
+  }
+}
+
+/** The deck cards a slice would land on. */
+export const wheelTargets = (run: RunState, slot: WheelSlot): CardInst[] => run.deck.filter((c) => canWheel(c, slot));
+
+/**
+ * The spin: where the wheel stops, as an index of `WHEEL`. A slice nobody in the deck could take is never dealt (a day off always is). The run's
+ * generator is read but not advanced, so leaving and coming back lands on the same slice.
+ */
+export function spinWheel(run: RunState): number {
+  const open = WHEEL.flatMap((slot, i) => (slot.effect.kind === 'none' || wheelTargets(run, slot).length ? [i] : []));
+  return rngOf(run).pick(open);
+}
+
+/** The slice's effect lands on each deck card of `uids` it fits. Returns each card as it was and as it is now. */
+export function applyWheel(run: RunState, slot: WheelSlot, uids: number[]): { before: CardInst; after: CardInst }[] {
+  const changed: { before: CardInst; after: CardInst }[] = [];
+  for (const uid of uids) {
+    const card = run.deck.find((c) => c.uid === uid);
+    if (!card || !canWheel(card, slot)) continue;
+    const before = { ...card };
+    if (slot.effect.kind === 'upgrade') upgradeCard(run, uid);
+    else if (slot.effect.kind === 'perk') addPerk(run, uid, slot.effect.perk);
+    changed.push({ before, after: { ...card } });
+  }
+  run.cleared = true;
+  return changed;
 }
 
 /** A new shift starts rested: heals fully as the next act's map opens. Returns the HP gained. */

@@ -68,14 +68,14 @@ Deploy: a push to `master` publishes to GitHub Pages (`.github/workflows/pages.y
 src/
   core/        rng (seeded), emitter, i18n (typed keys), save (safe localStorage), util
   i18n/        en.ts (every player-facing string, the source), it.ts / es.ts / zh.ts (`Record<EnKey, string>`, same placeholders)
-  data/        config (all tuning), acts, statuses, heroes, enemies, perks, hexes, relics, modifiers, coffee (the Coffee Machine's drinks and coins), values, cards/<class>.ts
+  data/        config (all tuning), acts, statuses, heroes, enemies, perks, hexes, relics, modifiers, coffee (the Coffee Machine's drinks and coins), wheel (the Raffle's slices), values, cards/<class>.ts
   game/        combat (engine), chore (the shared shape of a chore) with coffee, shells, sushi and badge, minigame (the shared shape of an enemy's minigame) with match3, run (map graph, rewards, save), meta (discoveries, unlocks, records, act stamps), settings, types
   ui/          app (screens, modals), dom
     art/       icons (64×64), creatures (200×200), relics (200×200 stationery sprites), rooms (200×200 picture of each room, and the props of the contract screen and the studio mark: `PROP_SPRITES`), actArt (the skyline behind each act's map title, and the animated scene of its intro), stageArt (the scene behind the enemy in a fight, one per act), heroMoods (the hero's faces: blink, hurt, tired, cheer, cast), riso (pixel renderer), cardArt (the cards' own paintings: one 160×68 vector per card, printed 56 pixels wide; the Warrior's so far, and the two X cards that moved to the Rogue)
     combat/    view, hud, cardLayer, mop, crank, taskFrame (the window every chore shares), coffeeWindow, shellWindow, badgeWindow, match3Window (the Supervisor's minigame), combatFx, speech (the speech bubbles), heroMood (the portrait's face), combatScreen
     components/ cardView, cardShow, coach, modals, memos, debugMenu, room, moveText, heroSheet, shareSlip, decor, reviewModal, runDetail, wings (the desktop's side boards), rotateBanner (a phone held sideways)
     fx/        particles, floating text, shake, haptics
-    screens/   title, studio, heroSelect, journey, reward, rest, promotion, copyRoom, tailor, lostFound, vending, crossTraining, end, compendium
+    screens/   title, studio, heroSelect, journey, reward, rest, promotion, copyRoom, tailor, lostFound, vending, crossTraining, wheel (the Raffle), end, compendium
   feedback/    `firebase.ts`: the only file that knows Firebase (reviews, crash reports)
   analytics/   anonymous play counters: `index.ts` (what is counted and when), `goatcounter.ts` (the only file that knows the service)
   audio/       sfx (synth), music (sequencer + tracks)

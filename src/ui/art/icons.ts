@@ -2101,6 +2101,11 @@ export const ICONS: Record<string, { el: Element; svg: string; wide?: boolean }>
     el: 'steel',
     svg: `<rect x="22" y="4" width="20" height="14"/><path ${S} stroke-width="4" d="M32 18v8M14 26h36M14 26v6M50 26v6"/><rect x="4" y="32" width="20" height="14"/><rect x="40" y="32" width="20" height="14"/><path ${S} stroke-width="4" d="M12 55h40M18 49l-6 6 6 6M46 49l6 6-6 6"/>`,
   },
+  /** The map's Raffle room: a prize wheel of six slices with its pointer on top. */
+  luckyWheel: {
+    el: 'holy',
+    svg: `<circle cx="32" cy="35" r="25"/><path fill="none" stroke="#16121f" stroke-width="4" d="M32 35V10M32 35L10.3 22.5M32 35L53.7 22.5M32 35V60M32 35L10.3 47.5M32 35L53.7 47.5"/><circle cx="32" cy="35" r="6" fill="#16121f"/><path fill="#16121f" d="M25 2h14L32 18z"/>`,
+  },
   inventoryShrinkage: {
     el: 'steel',
     svg: `<path d="M8 22l8-14h32l8 14z"/><path d="M8 24h48v34H8z"/><path ${HI} d="M10 26h6v30h-6z"/><path fill="#16121f" d="M24 30h16v10h8L32 54 16 40h8z"/>`,

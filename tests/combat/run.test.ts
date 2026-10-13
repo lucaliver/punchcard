@@ -4,6 +4,7 @@ import { ENEMIES, enemiesFor } from '../../src/data/enemies';
 import { HEROES } from '../../src/data/heroes';
 import { CARD_LIST, CARDS, RARITY_ORDER, cardCostOf } from '../../src/data/cards';
 import { RELICS } from '../../src/data/relics';
+import { WHEEL } from '../../src/data/wheel';
 import {
   cardHidden,
   collection,
@@ -21,6 +22,8 @@ import {
 import { ACT_DEFS } from '../../src/data/acts';
 import {
   applyCombat,
+  applyWheel,
+  canWheel,
   isFirstRun,
   canCopy,
   combatSetup,
@@ -35,6 +38,7 @@ import {
   restsBoth,
   rewardChoices,
   rollRewards,
+  spinWheel,
   swapCard,
   canShred,
   fightPay,
@@ -493,6 +497,40 @@ describe('the Copy Room', () => {
     expect(id).toBeTruthy();
     expect(r.relics).toEqual([id]);
     expect(giftRelic(r)).not.toBe(id);
+  });
+
+  it('the Raffle lands on the same slice every time the room is entered, and never on one nobody in the deck could take', () => {
+    const r = newRun('warrior', 5);
+    expect(spinWheel(r)).toBe(spinWheel(r));
+    const landed = new Set<number>();
+    for (let seed = 1; seed <= 80; seed++) landed.add(spinWheel(newRun('warrior', seed)));
+    expect(landed.size).toBeGreaterThan(2);
+    // A deck of upgraded cards, none left to take a perk: only the day off can come up.
+    for (let seed = 1; seed <= 20; seed++) {
+      const run = newRun('warrior', seed);
+      for (const c of run.deck) Object.assign(c, { up: true, perks: ['fastTrack', 'budgetCut', 'overtime', 'redTape'] });
+      expect(WHEEL[spinWheel(run)].effect.kind).toBe('none');
+    }
+  });
+
+  it('the Raffle puts its slice on the picked cards only: an upgrade, a perk that moves the cost either way, or nothing', () => {
+    const r = newRun('warrior', 5);
+    const slot = (id: string) => WHEEL.find((s) => s.id === id)!;
+    const [a, b, c] = r.deck.filter((x) => canWheel(x, slot('overtime')));
+    const price = cardCostOf(a);
+    const done = applyWheel(r, slot('overtime'), [a.uid, b.uid]);
+    expect(done.map((d) => d.before.uid)).toEqual([a.uid, b.uid]);
+    expect(done[0].before.perks).toBeUndefined();
+    expect(cardCostOf(a)).toBe(price + 1);
+    expect(c.perks).toBeUndefined();
+    // The same slice does not stack on a card that has it already.
+    expect(canWheel(a, slot('overtime'))).toBe(false);
+    expect(applyWheel(r, slot('overtime'), [a.uid])).toHaveLength(0);
+    const trained = applyWheel(r, slot('training'), [c.uid]);
+    expect(trained[0].before.up).toBe(false);
+    expect(c.up).toBe(true);
+    expect(applyWheel(r, slot('dayOff'), [])).toEqual([]);
+    expect(r.cleared).toBe(true);
   });
 
   it('the Lost & Found offers relics the run does not hold yet', () => {

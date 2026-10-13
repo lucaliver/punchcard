@@ -24,6 +24,7 @@ type DynamicPrefix =
   | 'compendium'
   | 'intent'
   | 'perk'
+  | 'wheel'
   | 'relic'
   | 'memo'
   | 'hex'

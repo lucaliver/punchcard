@@ -30,6 +30,7 @@ export const NODE_ICON: Record<RunNode['type'], string> = {
   vending: 'vendingMachine',
   crossTraining: 'whiteboard',
   restructuring: 'orgChart',
+  wheel: 'luckyWheel',
   boss: 'tophat',
 };
 /** What a room is called on the map and in its info (the last act's boss is the final one). */

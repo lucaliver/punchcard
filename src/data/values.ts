@@ -145,6 +145,8 @@ export const VALUES = {
   nameTagTime: NAME_TAG_TIME,
   bellStun: BELL_STUN,
   budgetCut: -(PERKS.budgetCut.costDelta ?? 0),
+  overtime: PERKS.overtime.costDelta ?? 0,
+  wheelCards: CONFIG.wheelCards,
   justCausePct: pct(JUST_CAUSE_HP),
   hardshipPct: pct(HARDSHIP_HP),
   begDodge: CONFIG.beg.dodge,
