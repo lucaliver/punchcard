@@ -285,7 +285,7 @@
   0% { translate: -2px 0; }
   50% { translate: 2px 5px; scale: 1.04 0.93; }
 }
-/* before its entrance (after the clock-in) a normal enemy is not on stage yet */
+/* before its entrance (the door, then the walk-in or a boss's blackout) the enemy is not on stage yet */
 .stage.unseen .enemy-art, .stage.unseen .shade { visibility: hidden; }
 /* a normal enemy walks in: its shadow grows on the floor, then it drops in, squashes on landing and settles */
 .stage.entering .shade { animation: shade-in var(--dur-enter) steps(6) both; }

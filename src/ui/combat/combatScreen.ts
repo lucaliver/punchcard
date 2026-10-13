@@ -425,7 +425,9 @@ export function combatScreen(run: RunState, combat: Combat, cb: CombatCallbacks)
     } else if (document.querySelector('.modal-back, .coach')) return;
     else if (state.waiting) {
       if (key !== ' ' && key !== 'enter') return;
-      $<HTMLButtonElement>('.js-start', el).click();
+      // The button is gone once pressed (the time card is stamping) and hidden until the first fight's tour reaches it.
+      const start = el.querySelector<HTMLButtonElement>('.js-start');
+      if (start && !start.closest('[hidden]')) start.click();
     } else if (pauseKey || key === 'escape') openPause();
     else if (key === 'a') r.ability.click();
     else if (key === 'd') deckInfo();
@@ -514,6 +516,7 @@ export function combatScreen(run: RunState, combat: Combat, cb: CombatCallbacks)
     dark.addEventListener('click', skip);
     el.append(dark);
     r.enemyArt.classList.add('boss-enter');
+    r.stage.classList.remove('unseen');
     // Class off when done, or it would outrank the death throes later.
     r.enemyArt.addEventListener(
       'animationend',
@@ -540,9 +543,7 @@ export function combatScreen(run: RunState, combat: Combat, cb: CombatCallbacks)
 
   /** The very first fight: before Start, a tour of the board, one part at a time. */
   const firstFightTour = (): void => {
-    // Clock in only comes up as the tour's last step.
     const startWrap = $('.start-wrap', el);
-    startWrap.hidden = true;
     coach(
       el,
       [
@@ -674,8 +675,8 @@ export function combatScreen(run: RunState, combat: Combat, cb: CombatCallbacks)
         if (e.target === door) doorDone();
       });
       door.addEventListener('click', doorDone);
-      // A normal enemy stays out of sight while the door opens, then walks in (`doorDone`).
-      if (combat.enemy.def.tier !== 'boss') r.stage.classList.add('unseen');
+      // The enemy stays out of sight while the door opens: a normal one walks in (`doorDone`), a boss shows up only inside the blackout (`bossIntro`).
+      r.stage.classList.add('unseen');
       el.append(door);
       // The sound is the knocking: it waits while the name is read.
       later(() => door.isConnected && sfx(actDef(combat.enemy.def.act).door), cssMs('--dur-door-read'));
@@ -695,6 +696,8 @@ export function combatScreen(run: RunState, combat: Combat, cb: CombatCallbacks)
           html: `${t('combat.start')}${settings.seenTutorial ? '' : `<small>${t('combat.startHint')}</small>`}`,
         }),
       );
+      // In the very first fight Clock in stays hidden until the tour's last step (`firstFightTour`): pressed earlier, it would pull the tour's targets away.
+      startWrap.hidden = !settings.seenTutorial && combat.enemy.def.tier !== 'boss';
       // Before the fight, the enemy's passives are spelled out under the button, on a slip headed with the enemy's face, so the player knows what they're facing.
       const traits = enemyTraits(combat.enemy.def, true);
       if (traits.length)

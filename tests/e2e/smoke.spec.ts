@@ -191,8 +191,11 @@ test('a boss walks in with the lights out, and the curtain lifts by itself', asy
     "(() => { const g = window.__game; const n = g.run.nodes.find((x) => x.type === 'boss' && x.act === 1); g.run.current = n.id; g.run.cleared = false; g.run.path = [0]; g.goJourney(); })()",
   );
   await page.locator('.journey:not(.leaving) .btn.cta').click();
+  // The boss is not on stage while the door opens: it shows up only inside the blackout.
+  await expect(page.locator('.stage.unseen')).toHaveCount(1);
   const dark = page.locator('.boss-intro');
   await expect(dark).toBeVisible({ timeout: 15_000 });
+  await expect(page.locator('.stage.unseen')).toHaveCount(0);
   await expect(dark).toBeHidden({ timeout: 5000 });
   expect(problems).toEqual([]);
 });
@@ -1343,6 +1346,10 @@ test('the very first fight opens on a tour of the board, one step at a time, bef
   await page.getByRole('button', { name: /new run/i }).click();
   await page.getByRole('button', { name: /start shift/i }).click();
   await page.getByRole('button', { name: /enter floor 1/i }).click();
+  await expect(page.locator('.coach-count')).toHaveText('1/5');
+  // Clock in is out of reach until the tour's last step (pressed earlier it would break the tour).
+  await expect(page.locator('.js-start')).toBeHidden();
+  await page.keyboard.press('Space');
   await expect(page.locator('.coach-count')).toHaveText('1/5');
   // The hint about holding things is written under Clock in only on this first fight.
   await expect(page.locator('.start-btn small')).toHaveCount(1);
