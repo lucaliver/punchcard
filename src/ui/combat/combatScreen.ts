@@ -182,7 +182,7 @@ export function combatScreen(run: RunState, combat: Combat, cb: CombatCallbacks)
   // The belt has grown into the room the lower part left: the enemy's room changed, so it is measured again once the row is in.
   const unsubRow = combat.events.on((e) => {
     if (e.type === 'rowAdded' || e.type === 'rows') later(layout, cssMs('--dur-row-grow') + SLACK_MS);
-    if (e.type === 'sleeveGrew') fitSleeve();
+    if (e.type === 'sleeveGrew' || e.type === 'sleeveShrank') fitSleeve();
   });
   const unsubscribe = (): void => {
     unsubFx();

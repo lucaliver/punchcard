@@ -20,13 +20,12 @@ export interface CardInst {
   tenure?: number;
 }
 
-/** A permanent perk a deck card can earn: extra keywords and/or a cost change. A `bad` one is a drawback: the Promotion never offers it, the Raffle's wheel can land on it. */
+/** A permanent perk a deck card can earn: extra keywords and/or a cost change. */
 export interface PerkDef {
   id: string;
   icon: string;
   keywords?: Keyword[];
   costDelta?: number;
-  bad?: boolean;
 }
 
 /** A curse cast on one card during a fight (e.g. petrified): it must be tapped `taps` times, then thaws for `thaw` s (`stages`: it shows as a picture instead of a card). */
@@ -621,6 +620,8 @@ export type CombatEvent =
   | { type: 'cardEaten'; card: CombatCard }
   /** The sleeve grew a slot for the rest of the fight. */
   | { type: 'sleeveGrew' }
+  /** The sleeve lost its last slot for the rest of the fight. */
+  | { type: 'sleeveShrank' }
   /** Cards in the sleeve got cheaper (a full sleeve caught a falling card, a card cut their cost). */
   | { type: 'sleeveCheaper' }
   | { type: 'cardStolen'; card: CombatCard }

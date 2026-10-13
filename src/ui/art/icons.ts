@@ -925,6 +925,45 @@ export const ICONS: Record<string, { el: Element; svg: string; wide?: boolean }>
     el: 'curse',
     svg: `<path d="M4 6h38v52H4z"/><g fill="#16121f"><rect x="10" y="14" width="26" height="4"/><rect x="10" y="24" width="26" height="4"/><rect x="10" y="34" width="16" height="4"/></g><path d="M38 54l18-36 6 3-18 36-7 3z"/>`,
   },
+  // A window with its title bar and a close box, frozen on an hourglass.
+  notResponding: {
+    el: 'curse',
+    svg: `<path d="M6 8h52v48H6z"/><path fill="#16121f" d="M6 8h52v10H6z"/><rect x="48" y="10" width="6" height="6"/><path fill="#16121f" opacity=".35" d="M12 24h40v26H12z"/><path fill="#16121f" d="M24 28h16l-8 10zM24 48h16l-8-10z"/>`,
+  },
+  // A card held up by the referee: a tilted card with an exclamation mark.
+  finalWarning: {
+    el: 'curse',
+    svg: `<g transform="rotate(-8 32 32)"><path d="M16 4h32v54H16z"/><path ${HI} d="M18 6h5v50h-5z"/><path fill="#16121f" d="M29 14h6v24h-6zM29 44h6v7h-6z"/></g>`,
+  },
+  // A torn-off slip of paper with a zigzag edge and a few lines of small print.
+  pinkSlip: {
+    el: 'curse',
+    svg: `<path d="M10 4h44v50l-7.3 7-7.4-7-7.3 7-7.3-7-7.4 7-7.3-7z"/><g fill="#16121f"><rect x="17" y="12" width="30" height="5"/><rect x="17" y="23" width="30" height="4"/><rect x="17" y="32" width="20" height="4"/></g><path ${HI} d="M12 6h5v44h-5z"/>`,
+  },
+  // The slip in its envelope: the notice that lands on your desk.
+  layoffNotice: {
+    el: 'curse',
+    svg: `<path d="M14 4h36v30H14z"/><g fill="#16121f"><rect x="20" y="10" width="24" height="4"/><rect x="20" y="19" width="24" height="3"/></g><path d="M4 24h56v36H4z"/><path fill="none" stroke="#16121f" stroke-width="3" stroke-linejoin="round" d="M4 26l28 20 28-20"/><path ${HI} d="M6 28h5v30H6z"/>`,
+  },
+  hotMic: {
+    el: 'curse',
+    svg: `<rect x="21" y="3" width="22" height="32" rx="11"/><g fill="#16121f" opacity=".4"><rect x="21" y="12" width="22" height="3"/><rect x="21" y="19" width="22" height="3"/><rect x="21" y="26" width="22" height="3"/></g><path ${S} stroke-width="5" d="M12 28c0 13 8 20 20 20s20-7 20-20"/><path d="M29 48h6v8h-6z"/><path d="M18 56h28v6H18z"/><path ${S} stroke-width="3.5" d="M5 8l7 5M59 8l-7 5"/>`,
+  },
+  // A coffee mug with nothing in it: no steam, a dry ring at the bottom.
+  emptyMug: {
+    el: 'fire',
+    svg: `<path d="M8 14h38v30c0 9-7 16-16 16h-6C15 60 8 53 8 44z"/><path fill="#16121f" d="M13 18h28v6H13z"/><path ${HI} d="M13 28h4v22h-4z"/><path d="M46 20h5c6 0 10 4 10 9s-4 9-10 9h-6v-7h6c2 0 3-1 3-2s-1-2-3-2h-5z"/><ellipse cx="27" cy="52" rx="8" ry="3" fill="#16121f" opacity=".4"/>`,
+  },
+  // A gravestone with a clock on it: the project that never ends.
+  deathMarch: {
+    el: 'curse',
+    svg: `<path d="M10 58V26a22 22 0 0 1 44 0v32z"/><circle cx="32" cy="30" r="13" fill="none" stroke="#16121f" stroke-width="4"/><path fill="none" stroke="#16121f" stroke-width="4" stroke-linecap="round" d="M32 22v9l6 4"/><path d="M4 58h56v5H4z"/><path ${HI} d="M13 30h4v26h-4z"/>`,
+  },
+  // Strength on the enemy's side: a flexed arm with a skull beside it.
+  foeStr: {
+    el: 'blood',
+    svg: `<g transform="translate(24 0) scale(.66)">${muscle}</g><g transform="translate(0 26) scale(.62)">${skull}</g>`,
+  },
 
   pyramidScheme: {
     el: 'steel',
@@ -2100,11 +2139,6 @@ export const ICONS: Record<string, { el: Element; svg: string; wide?: boolean }>
   orgChart: {
     el: 'steel',
     svg: `<rect x="22" y="4" width="20" height="14"/><path ${S} stroke-width="4" d="M32 18v8M14 26h36M14 26v6M50 26v6"/><rect x="4" y="32" width="20" height="14"/><rect x="40" y="32" width="20" height="14"/><path ${S} stroke-width="4" d="M12 55h40M18 49l-6 6 6 6M46 49l6 6-6 6"/>`,
-  },
-  /** The map's Raffle room: a prize wheel of six slices with its pointer on top. */
-  luckyWheel: {
-    el: 'holy',
-    svg: `<circle cx="32" cy="35" r="25"/><path fill="none" stroke="#16121f" stroke-width="4" d="M32 35V10M32 35L10.3 22.5M32 35L53.7 22.5M32 35V60M32 35L10.3 47.5M32 35L53.7 47.5"/><circle cx="32" cy="35" r="6" fill="#16121f"/><path fill="#16121f" d="M25 2h14L32 18z"/>`,
   },
   inventoryShrinkage: {
     el: 'steel',

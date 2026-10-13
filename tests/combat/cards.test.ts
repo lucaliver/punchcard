@@ -324,6 +324,85 @@ describe('pop culture cards', () => {
     expect(500 - c.hero.hp).toBe(bite + bite + more);
   });
 
+  describe('curses that bite when they slip off the belt', () => {
+    /** A calm fight with the curse set to fall off the belt: runs it off and returns the card. */
+    const slip = (c: Combat, id: string): CombatCard => {
+      c.addTempCard(id, 'draw');
+      const card = c.draw.find((x) => x.id === id)!;
+      c.belt.length = 0;
+      c.belt.push({ card, pos: EXPIRE_POS, row: 0 });
+      run(c, CONFIG.fallGrace + 0.05);
+      return card;
+    };
+    const calm = (): Combat => {
+      const c = setup({ hp: 500, maxHp: 500 });
+      c.enemy.move = { id: 'wait', intent: 'defend', windup: 999 };
+      run(c, CONFIG.introTime + 0.01);
+      return c;
+    };
+
+    it('Not Responding stops your belt dead', () => {
+      const c = calm();
+      expect(c.has('hero', 'stalled')).toBe(false);
+      slip(c, 'notResponding');
+      expect(c.has('hero', 'stalled')).toBe(true);
+    });
+
+    it('Out of Coffee chills your mana', () => {
+      const c = calm();
+      slip(c, 'outOfCoffee');
+      expect(c.has('hero', 'chill')).toBe(true);
+    });
+
+    it('Hot Mic strengthens the enemy for good', () => {
+      const c = calm();
+      slip(c, 'hotMic');
+      expect(c.stacks('enemy', 'strength')).toBe(CARDS.hotMic.vals[0]);
+    });
+
+    it('Final Warning shuffles a Pink Slip into your deck, and a Pink Slip takes a sleeve slot for the fight', () => {
+      const c = calm();
+      c.addSleeveSlot();
+      slip(c, 'finalWarning');
+      expect(c.draw.some((x) => x.id === 'pinkSlip')).toBe(true);
+      const slots = c.sleeve.length;
+      slip(c, 'pinkSlip');
+      expect(c.sleeve).toHaveLength(slots - 1);
+    });
+
+    it('a lost sleeve slot moves its card to a free slot, or to the discard pile when the sleeve is full, and never empties the sleeve', () => {
+      const c = calm();
+      c.addSleeveSlot();
+      c.addSleeveSlot();
+      const [a, b] = [c.draw.pop()!, c.draw.pop()!];
+      c.sleeve.fill(null);
+      c.sleeve[c.sleeve.length - 1] = a;
+      c.dropSleeveSlot();
+      expect(c.sleeve).toHaveLength(2);
+      expect(c.sleeveCards()).toEqual([a]);
+      c.sleeve[1] = b;
+      c.dropSleeveSlot();
+      expect(c.sleeve).toEqual([a]);
+      expect(c.discard).toContain(b);
+      c.dropSleeveSlot();
+      expect(c.sleeve).toHaveLength(1);
+    });
+
+    it("Death March can't be played and hurts more every time it slips off the belt", () => {
+      const c = calm();
+      const [hit, more] = CARDS.deathMarch.vals;
+      const card = slip(c, 'deathMarch');
+      expect(500 - c.hero.hp).toBe(hit);
+      expect(c.cardVals(card)[0]).toBe(hit + more);
+      c.belt.push({ card, pos: 0, row: 0 });
+      expect(c.playCard(card.uid)).toBe(false);
+      c.belt.length = 0;
+      c.belt.push({ card, pos: EXPIRE_POS, row: 0 });
+      run(c, CONFIG.fallGrace + 0.05);
+      expect(500 - c.hero.hp).toBe(hit + hit + more);
+    });
+  });
+
   it('Workaholic: Strength that lasts only for a while', () => {
     const { c, uid } = ready('stakhanov');
     const dmg = (): number => c.previewHeroDamage(10, CARDS.punch);

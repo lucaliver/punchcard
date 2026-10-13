@@ -69,7 +69,10 @@ const defs: EnemyDef[] = [
     art: 'snitch',
     main: atk('snitchesGetStitches', 6, 5),
     every: 2,
-    specials: [atk('ratOut', 14, 10, { intent: 'charge' })],
+    specials: [
+      atk('ratOut', 14, 10, { intent: 'charge' }),
+      { id: 'overheard', intent: 'curse', windup: 6, curse: [{ id: 'hotMic', n: 2, to: 'draw' }] },
+    ],
     // From half HP on, your belt is rushed for the rest of the fight.
     halfSpeech: true,
     halfArt: 'snitchAngry',
@@ -427,6 +430,7 @@ const defs: EnemyDef[] = [
           { id: 'strength', v: 2, target: 'enemy' },
         ],
       },
+      { id: 'stayLate', intent: 'curse', windup: 7, curse: [{ id: 'deathMarch', n: 1, to: 'draw' }] },
     ],
   },
   {
@@ -472,7 +476,18 @@ const defs: EnemyDef[] = [
     art: 'changeManager',
     main: atk('sprintBolt', 7, 7),
     every: 2,
-    specials: [{ id: 'pivotWard', intent: 'defend', windup: 6, block: 10, status: [gainStrength] }],
+    specials: [
+      { id: 'pivotWard', intent: 'defend', windup: 6, block: 10, status: [gainStrength] },
+      {
+        id: 'improvementPlan',
+        intent: 'curse',
+        windup: 7,
+        curse: [
+          { id: 'finalWarning', n: 1, to: 'draw' },
+          { id: 'pinkSlip', n: 1, to: 'draw' },
+        ],
+      },
+    ],
     halfSpeech: true,
     halfArt: 'changeManagerAngry',
     onHalf: (c) => c.closeBeltRows(1),
@@ -705,8 +720,11 @@ const defs: EnemyDef[] = [
     hp: 120,
     art: 'microwave',
     main: atk('beepBeepBeep', 5, 3),
-    every: 5,
-    specials: [{ id: 'leftoverFish', intent: 'debuff', windup: 6, status: [gainStrength, { id: 'poison', v: 3, target: 'hero' }] }],
+    every: 3,
+    specials: [
+      { id: 'leftoverFish', intent: 'debuff', windup: 6, status: [gainStrength, { id: 'poison', v: 3, target: 'hero' }] },
+      { id: 'stuckAtOneSecond', intent: 'curse', windup: 6, curse: [{ id: 'notResponding', n: 2, to: 'draw' }] },
+    ],
   },
   {
     // Every attack you land with a card stings back.
@@ -751,6 +769,7 @@ const defs: EnemyDef[] = [
         status: [{ id: 'stun', t: SIREN_SONG, target: 'hero' }, { id: 'autopilot', t: SIREN_SONG, target: 'hero' }, gainStrength],
       },
       atk('foghornBlast', 15, 9, { intent: 'charge' }),
+      { id: 'graveyardShift', intent: 'curse', windup: 6, curse: [{ id: 'outOfCoffee', n: 2, to: 'draw' }] },
     ],
   },
   {

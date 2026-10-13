@@ -274,6 +274,9 @@ export function bindCombatFx(v: CombatView, cards: CardLayer, onEnd: (result: 'w
       case 'sleeveGrew':
         sfx('stash');
         break;
+      case 'sleeveShrank':
+        sfx('curse');
+        break;
       case 'inflated': {
         const el = cards.elementOf(e.card.uid);
         if (el) v.retrigger(el, 'hex-in');

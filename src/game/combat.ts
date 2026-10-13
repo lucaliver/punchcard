@@ -1316,6 +1316,16 @@ export class Combat {
     this.events.emit({ type: 'sleeveGrew' });
   }
 
+  /** The sleeve loses its last slot for the rest of the fight (Pink Slip): a card in it moves to a free slot, or to the discard pile when none is left. It keeps at least one slot. */
+  dropSleeveSlot(): void {
+    if (this.sleeve.length <= 1) return;
+    const card = this.sleeve.pop();
+    const free = this.sleeve.indexOf(null);
+    if (card && free >= 0) this.sleeve[free] = card;
+    else if (card) this.discard.push(card);
+    this.events.emit({ type: 'sleeveShrank' });
+  }
+
   /** Every card in the sleeve costs `n` mana less until it is next played (never below 0). */
   cheapenSleeve(n: number, except?: number): void {
     if (n <= 0) return;

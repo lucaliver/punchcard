@@ -460,6 +460,13 @@ export function createCardLayer(v: CombatView): CardLayer {
   };
 
   const renderSleeve = (): void => {
+    // A slot lost for the fight (Pink Slip) takes its element with it; the card it held, if it moved, is drawn again in its new slot.
+    while (slotEls.length > combat.sleeve.length) {
+      const gone = sleeveEls.pop();
+      if (gone && drag?.uid === gone.card.uid) cancelDrag();
+      gone?.el.remove();
+      slotEls.pop()?.remove();
+    }
     while (slotEls.length < combat.sleeve.length) {
       addSlot();
       sleeveEls.push(null);
