@@ -1513,7 +1513,9 @@ test('raffle: the wheel stops on a slice that lands on three picked cards, or on
   const dayOff = /day off/i.test(await result.locator('b').innerText());
   if (dayOff) await page.getByRole('button', { name: /back to work/i }).click();
   else {
-    // The deck opens by itself once the wheel has been read; Apply waits for all three cards.
+    // The deck opens only when asked; Apply waits for all three cards.
+    await expect(page.locator('.modal')).toHaveCount(0);
+    await page.getByRole('button', { name: /choose 3 cards/i }).click();
     const apply = page.getByRole('button', { name: 'Apply', exact: true });
     await expect(apply).toBeDisabled({ timeout: 5000 });
     for (const i of [0, 1, 2]) await page.locator('.modal .deck-grid .card').nth(i).click();

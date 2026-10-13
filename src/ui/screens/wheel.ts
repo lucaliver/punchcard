@@ -25,8 +25,6 @@ const TURN_STEP = 3;
 const SLICE_INKS = ['--p', '--b'];
 /** How far from the middle of its slice the pointer may come to rest (degrees; a slice is 360 / slices wide). */
 const REST_SPREAD = 20;
-/** The wait between the wheel stopping and the deck opening to pick the cards (ms). */
-const PICK_DELAY = 1100;
 
 const hex = (css: string): [number, number, number] => {
   const n = Number.parseInt(css.replace('#', ''), 16);
@@ -137,7 +135,7 @@ export function wheelScreen(run: RunState, onDone: () => void): Screen {
     });
   }
 
-  /** The wheel has stopped: the slice is named, then the cards are picked. */
+  /** The wheel has stopped: the slice is named, and the button picks the cards. */
   function land(landed: WheelSlot): void {
     spinning = false;
     sfx(isBad(landed) ? 'debuff' : 'ding');
@@ -158,7 +156,6 @@ export function wheelScreen(run: RunState, onDone: () => void): Screen {
     }
     button.textContent = t('wheel.pick', { n: Math.min(CONFIG.wheelCards, wheelTargets(run, landed).length) });
     button.onclick = pickCards;
-    timers.push(window.setTimeout(pickCards, PICK_DELAY));
   }
 
   button.onclick = () => {
