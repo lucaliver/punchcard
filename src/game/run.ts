@@ -811,12 +811,12 @@ export function canWheel(card: CardInst, slot: WheelSlot): boolean {
 export const wheelTargets = (run: RunState, slot: WheelSlot): CardInst[] => run.deck.filter((c) => canWheel(c, slot));
 
 /**
- * The spin: where the wheel stops, as an index of `WHEEL`. A slice nobody in the deck could take is never dealt (a day off always is). The run's
- * generator is read but not advanced, so leaving and coming back lands on the same slice.
+ * The spin: where the wheel stops, as an index of `WHEEL`, dealt from `rng` (the screen brings a fresh one at every spin, so the same run state
+ * lands on a different slice each time). A slice nobody in the deck could take is never dealt (a day off always is).
  */
-export function spinWheel(run: RunState): number {
+export function spinWheel(run: RunState, rng: Rng): number {
   const open = WHEEL.flatMap((slot, i) => (slot.effect.kind === 'none' || wheelTargets(run, slot).length ? [i] : []));
-  return rngOf(run).pick(open);
+  return rng.pick(open);
 }
 
 /** The slice's effect lands on each deck card of `uids` it fits. Returns each card as it was and as it is now. */

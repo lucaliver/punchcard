@@ -1,4 +1,5 @@
 import { describe, expect, it } from 'vitest';
+import { Rng } from '../../src/core/rng';
 import { CONFIG, relicGuarantee, rewardOdds, rewardUpgradeChance } from '../../src/data/config';
 import { ENEMIES, enemiesFor } from '../../src/data/enemies';
 import { HEROES } from '../../src/data/heroes';
@@ -499,17 +500,17 @@ describe('the Copy Room', () => {
     expect(giftRelic(r)).not.toBe(id);
   });
 
-  it('the Raffle lands on the same slice every time the room is entered, and never on one nobody in the deck could take', () => {
+  it('the Raffle lands on any slice from one and the same run, and never on one nobody in the deck could take', () => {
     const r = newRun('warrior', 5);
-    expect(spinWheel(r)).toBe(spinWheel(r));
     const landed = new Set<number>();
-    for (let seed = 1; seed <= 80; seed++) landed.add(spinWheel(newRun('warrior', seed)));
-    expect(landed.size).toBeGreaterThan(2);
+    for (let seed = 1; seed <= 80; seed++) landed.add(spinWheel(r, new Rng(seed)));
+    expect(landed.size).toBe(WHEEL.length);
+    expect(spinWheel(r, new Rng(9))).toBe(spinWheel(r, new Rng(9)));
     // A deck of upgraded cards, none left to take a perk: only the day off can come up.
     for (let seed = 1; seed <= 20; seed++) {
       const run = newRun('warrior', seed);
       for (const c of run.deck) Object.assign(c, { up: true, perks: ['fastTrack', 'budgetCut', 'overtime', 'redTape'] });
-      expect(WHEEL[spinWheel(run)].effect.kind).toBe('none');
+      expect(WHEEL[spinWheel(run, new Rng(seed))].effect.kind).toBe('none');
     }
   });
 

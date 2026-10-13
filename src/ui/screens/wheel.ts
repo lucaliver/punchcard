@@ -1,5 +1,6 @@
 import { sfx } from '../../audio/sfx';
 import { t } from '../../core/i18n';
+import { Rng, randomSeed } from '../../core/rng';
 import { CONFIG } from '../../data/config';
 import { PERKS } from '../../data/perks';
 import { WHEEL, type WheelSlot } from '../../data/wheel';
@@ -81,7 +82,7 @@ function afterSlot(slot: WheelSlot, card: CardInst): CardInst {
 }
 
 /**
- * Raffle: a wheel of card modifiers. One spin (its slice is `spinWheel`'s: the run decides, the picture only follows), then the player picks
+ * Raffle: a wheel of card modifiers. One spin (its slice is `spinWheel`'s: the engine decides, the picture only follows), then the player picks
  * `wheelCards` deck cards for it to land on, whatever it is. A day off lands on nobody.
  */
 export function wheelScreen(run: RunState, onDone: () => void): Screen {
@@ -121,7 +122,11 @@ export function wheelScreen(run: RunState, onDone: () => void): Screen {
       previewSelected: (c) => afterSlot(landed, c),
       onPickMany: (cards) => {
         const sounds = { start: 'stamp', end: isBad(landed) ? 'debuff' : 'promoted' } as const;
-        const changed = applyWheel(run, landed, cards.map((c) => c.uid));
+        const changed = applyWheel(
+          run,
+          landed,
+          cards.map((c) => c.uid),
+        );
         changed.forEach(({ before, after }, i) => {
           const show = (): void => playCardChange(el, before, after, slotName(landed), sounds);
           if (i) timers.push(window.setTimeout(show, i * CARD_SHOW_MS));
@@ -159,7 +164,7 @@ export function wheelScreen(run: RunState, onDone: () => void): Screen {
   button.onclick = () => {
     sfx('tap');
     button.disabled = true;
-    const index = spinWheel(run);
+    const index = spinWheel(run, new Rng(randomSeed()));
     slot = WHEEL[index];
     // The pointer is on top: the landing slice has to come round to the angle 0, a little off its middle.
     const rest = (Math.random() * 2 - 1) * Math.min(REST_SPREAD, arc / 2 - 4);
