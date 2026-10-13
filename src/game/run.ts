@@ -21,7 +21,7 @@ import { MODIFIERS, resolveMods } from '../data/modifiers';
 import { ENEMIES, enemiesFor } from '../data/enemies';
 import { HERO_LIST, HEROES, starterCards } from '../data/heroes';
 import type { Combat, CombatSetup } from './combat';
-import { calm, clampLevel, learn, type Pressure, pressureScale } from './pressure';
+import { calm, clampLevel, fightFacts, learn, type Pressure, pressureScale } from './pressure';
 import { discover, heroHidden, heroUnlocked, logRun, progress, type RunRecord, recordFight, recordRun, seeRelics, stampAct } from './meta';
 import type { CardDef, CardInst, EnemyDef, HeroId, Rarity, RelicDef, RunLog } from './types';
 
@@ -492,7 +492,7 @@ export function applyCombat(run: RunState, combat: Combat): void {
   // The hero keeps at least one slot, wherever the slots come from.
   run.sleeveLost = Math.min(run.sleeveLost + combat.sleeveLost, HEROES[run.hero].sleeve - 1);
   if (combat.result === 'win') {
-    if (pressureLearns(run)) run.pressure = learn(run.pressure, combat.enemy.def.tier, combat.time, combat.stats.damageTaken, run.maxHp);
+    if (pressureLearns(run)) run.pressure = learn(run.pressure, fightFacts(combat, run.maxHp));
     run.stats.kills++;
     if (combat.enemy.def.tier === 'elite') run.stats.elites++;
     run.money += fightPay(combat.enemy.def.tier, combat.time);

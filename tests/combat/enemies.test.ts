@@ -474,6 +474,7 @@ describe('act 3 elites and boss', () => {
     expect(c.stacks('hero', 'strength')).toBe(CONFIG.beg.strength);
     expect(c.has('hero', 'dodge')).toBe(true);
     expect(flags.begToStay).toBe(1);
+    expect(c.begged).toBe(true);
     delete c.hero.statuses.dodge;
     c.damage('enemy', 'hero', 999, { raw: true, ignoreBlock: true }, 'enemy');
     expect(c.result).toBe('lose');
@@ -485,5 +486,6 @@ describe('act 3 elites and boss', () => {
     c.damage('enemy', 'hero', 999, { raw: true }, 'enemy');
     c.beg(false);
     expect(c.result).toBe('lose');
+    expect(c.begged).toBe(false);
   });
 });

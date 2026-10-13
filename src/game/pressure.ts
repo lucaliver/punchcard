@@ -1,9 +1,10 @@
 import { CONFIG } from '../data/config';
+import type { Combat } from './combat';
 import type { EnemyDef } from './types';
 
 /**
  * Adaptive difficulty: pure state of how hard the run leans on the player, never shown to them (`CONFIG.pressure`). Each field is a level from -1 (easing
- * off) to 1 (all the way up) for one thing the next enemies get: `hp` follows how fast the player kills, `dmg` follows how little HP they lose.
+ * off) to 1 (all the way up) for one thing the next enemies get: `hp` follows how hard the player hits, `dmg` follows how little HP they lose.
  * `Pressure` lives in the run (`RunState.pressure`), `applyCombat` feeds it and `enemyScale` turns it into multipliers.
  */
 export interface Pressure {
@@ -25,16 +26,47 @@ function signal(ratio: number, spread: number): number {
   return Math.sign(gap) * clamp((Math.abs(gap) - dead) / (spread - dead), 0, 1);
 }
 
-/** What one won fight says: `seconds` it took and `lost` HP it cost, against what a decent player spends at that tier. Positive = too easy. */
-export function fightSignals(tier: EnemyDef['tier'], seconds: number, lost: number, maxHp: number): Pressure {
-  const { par, spread } = CONFIG.pressure;
-  return { hp: signal(seconds / par[tier].time, spread.time), dmg: signal(lost / maxHp / par[tier].loss, spread.loss) };
+/** What a won fight says about the player. */
+export interface FightFacts {
+  tier: EnemyDef['tier'];
+  /** Damage the player put into the enemy: the HP it lost plus what its Block soaked up (a blocky enemy is not a slower kill). */
+  dealt: number;
+  /** Seconds the fight took. */
+  seconds: number;
+  /** HP the hero lost, against `maxHp`. */
+  lost: number;
+  maxHp: number;
+  /** The hero begged to stay in it. */
+  begged: boolean;
 }
 
-/** The levels after a won fight: each moves toward what the fight said, as far as its tier counts for. */
-export function learn(p: Pressure, tier: EnemyDef['tier'], seconds: number, lost: number, maxHp: number): Pressure {
-  const s = fightSignals(tier, seconds, lost, maxHp);
-  const rate = CONFIG.pressure.rate[tier];
+export const fightFacts = (c: Combat, maxHp: number): FightFacts => ({
+  tier: c.enemy.def.tier,
+  dealt: c.stats.damageDealt + c.stats.enemyBlocked,
+  seconds: c.time,
+  lost: c.stats.damageTaken,
+  maxHp,
+  begged: c.begged,
+});
+
+/**
+ * What one won fight says, against what a decent player does at that tier. Positive = too easy: `hp` for the damage the player dealt per second (so
+ * the enemy's size and the pressure's own HP don't count, only how hard the player hits), `dmg` for how little HP it cost them.
+ */
+export function fightSignals(f: FightFacts): Pressure {
+  const { par, spread } = CONFIG.pressure;
+  const dps = f.dealt / Math.max(f.seconds, 1);
+  return {
+    hp: signal(dps > 0 ? par[f.tier].dps / dps : Number.POSITIVE_INFINITY, spread.dps),
+    dmg: signal(f.lost / f.maxHp / par[f.tier].loss, spread.loss),
+  };
+}
+
+/** The levels after a won fight: each moves toward what the fight said, as far as its tier counts for; a hero who begged to stay sends both all the way down. */
+export function learn(p: Pressure, f: FightFacts): Pressure {
+  if (f.begged) return { hp: -1, dmg: -1 };
+  const s = fightSignals(f);
+  const rate = CONFIG.pressure.rate[f.tier];
   return { hp: p.hp + rate * (s.hp - p.hp), dmg: p.dmg + rate * (s.dmg - p.dmg) };
 }
 

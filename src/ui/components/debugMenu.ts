@@ -1,6 +1,6 @@
 import { t } from '../../core/i18n';
 import type { Combat } from '../../game/combat';
-import { fightSignals, learn, pressureScale } from '../../game/pressure';
+import { fightFacts, fightSignals, learn, pressureScale } from '../../game/pressure';
 import { pressureLearns, type RunState } from '../../game/run';
 import { sfx } from '../../audio/sfx';
 import { CARD_LIST, CARDS } from '../../data/cards';
@@ -349,8 +349,8 @@ export function openFightRecap(combat: Combat, run: RunState, onClose: () => voi
   const read =
     result === 'win' && pressureLearns(run)
       ? {
-          signals: fightSignals(enemy.def.tier, time, stats.damageTaken, run.maxHp),
-          next: learn(run.pressure, enemy.def.tier, time, stats.damageTaken, run.maxHp),
+          signals: fightSignals(fightFacts(combat, run.maxHp)),
+          next: learn(run.pressure, fightFacts(combat, run.maxHp)),
         }
       : null;
   const rows: [string, string][] = [

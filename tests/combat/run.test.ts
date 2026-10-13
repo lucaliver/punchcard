@@ -60,7 +60,7 @@ import {
   vendingCost,
 } from '../../src/game/run';
 import { Combat } from '../../src/game/combat';
-import { calm, fightSignals, learn, pressureScale } from '../../src/game/pressure';
+import { calm, type FightFacts, fightFacts, fightSignals, learn, pressureScale } from '../../src/game/pressure';
 import { run, setup } from './helpers';
 
 describe('the handbook bars at the end of a run', () => {
@@ -682,12 +682,14 @@ describe('adaptive difficulty', () => {
       configurable: true,
     });
   };
-  /** Wins the fight of the run's current node in `seconds`, having lost `lost` HP. */
-  const win = (r: ReturnType<typeof newRun>, seconds: number, lost: number): void => {
+  /** Wins the fight of the run's current node: `dealt` damage into the enemy over `seconds`, having lost `lost` HP. */
+  const win = (r: ReturnType<typeof newRun>, dealt: number, seconds: number, lost: number, begged = false): void => {
     const fight = new Combat(combatSetup(r));
     fight.result = 'win';
     fight.time = seconds;
+    fight.stats.damageDealt = dealt;
     fight.stats.damageTaken = lost;
+    fight.begged = begged;
     applyCombat(r, fight);
   };
   const fightRun = (): ReturnType<typeof newRun> => {
@@ -695,48 +697,74 @@ describe('adaptive difficulty', () => {
     r.current = r.nodes.find((n) => n.act === 1 && n.type === 'fight')!.id;
     return r;
   };
+  /** A fight of 50 s that dealt `dps` damage per second and cost `lost` HP of 80 (all at par unless told otherwise). */
+  const facts = (over: Partial<FightFacts> = {}): FightFacts => ({
+    tier: 'normal',
+    dealt: par.normal.dps * 50,
+    seconds: 50,
+    lost: par.normal.loss * 80,
+    maxHp: 80,
+    begged: false,
+    ...over,
+  });
 
   it('says nothing at par, and a full signal far from it, either way', () => {
-    const at = fightSignals('normal', par.normal.time, par.normal.loss * 80, 80);
-    expect(at).toEqual({ hp: 0, dmg: 0 });
-    const easy = fightSignals('normal', 1, 0, 80);
-    expect(easy).toEqual({ hp: 1, dmg: 1 });
-    const hard = fightSignals('normal', par.normal.time * 3, 80, 80);
-    expect(hard).toEqual({ hp: -1, dmg: -1 });
+    expect(fightSignals(facts())).toEqual({ hp: 0, dmg: 0 });
+    expect(fightSignals(facts({ dealt: par.normal.dps * 50 * 3, lost: 0 }))).toEqual({ hp: 1, dmg: 1 });
+    expect(fightSignals(facts({ dealt: par.normal.dps * 50 * 0.3, lost: 80 }))).toEqual({ hp: -1, dmg: -1 });
     // A bit better than par but inside the dead stretch around it: no signal either.
-    expect(fightSignals('boss', par.boss.time * 0.95, par.boss.loss * 80 * 0.95, 80)).toEqual({ hp: 0, dmg: 0 });
-    // Every tier has its own par: a normal fight's time is a fast boss kill.
-    expect(fightSignals('boss', par.normal.time, 0, 80).hp).toBeGreaterThan(0);
+    expect(fightSignals(facts({ tier: 'boss', dealt: par.boss.dps * 50 * 1.05, lost: par.boss.loss * 80 * 0.95 }))).toEqual({ hp: 0, dmg: 0 });
+    // Every tier has its own par: a normal fight's damage per second is a weak boss fight.
+    expect(fightSignals(facts({ tier: 'boss', dealt: par.normal.dps * 50 * 0.5 })).hp).toBeLessThan(0);
+  });
+
+  it('the speed is the damage dealt per second, Block soaked included, whatever the size of the enemy or the length of the fight', () => {
+    const quick = fightSignals(facts({ dealt: par.normal.dps * 20 * 2, seconds: 20 }));
+    const long = fightSignals(facts({ dealt: par.normal.dps * 200 * 2, seconds: 200 }));
+    expect(quick.hp).toBeCloseTo(long.hp);
+    expect(quick.hp).toBeGreaterThan(0);
+    // A fight that deals nothing (the enemy fell some other way) is a weak one, not a division by zero.
+    expect(fightSignals(facts({ dealt: 0 })).hp).toBe(-1);
+    const fight = new Combat(combatSetup(fightRun()));
+    fight.stats.damageDealt = 30;
+    fight.stats.enemyBlocked = 20;
+    expect(fightFacts(fight, 80).dealt).toBe(50);
   });
 
   it('each lever follows its own signal', () => {
-    const fastButHurt = fightSignals('normal', 10, 80, 80);
+    const fastButHurt = fightSignals(facts({ dealt: par.normal.dps * 50 * 2, lost: 80 }));
     expect(fastButHurt.hp).toBeGreaterThan(0);
     expect(fastButHurt.dmg).toBeLessThan(0);
-    const slowButUntouched = fightSignals('normal', 200, 0, 80);
+    const slowButUntouched = fightSignals(facts({ dealt: par.normal.dps * 50 * 0.5, lost: 0 }));
     expect(slowButUntouched.hp).toBeLessThan(0);
     expect(slowButUntouched.dmg).toBeGreaterThan(0);
   });
 
   it('moves toward the signal by the rate of the tier, stays inside -1..1 and eases back at par', () => {
-    const once = learn(calm(), 'normal', 1, 0, 80);
-    expect(once.hp).toBeCloseTo(rate.normal);
-    expect(learn(calm(), 'boss', 1, 0, 80).hp).toBeCloseTo(rate.boss);
+    const easy = facts({ dealt: 9999, lost: 0 });
+    expect(learn(calm(), easy).hp).toBeCloseTo(rate.normal);
+    expect(learn(calm(), { ...easy, tier: 'boss' }).hp).toBeCloseTo(rate.boss);
     let p = calm();
-    for (let i = 0; i < 40; i++) p = learn(p, 'elite', 1, 0, 80);
+    for (let i = 0; i < 40; i++) p = learn(p, { ...easy, tier: 'elite' });
     expect(p.hp).toBeLessThanOrEqual(1);
     expect(p.hp).toBeGreaterThan(0.99);
-    for (let i = 0; i < 40; i++) p = learn(p, 'normal', par.normal.time, par.normal.loss * 80, 80);
+    for (let i = 0; i < 40; i++) p = learn(p, facts());
     expect(Math.abs(p.hp)).toBeLessThan(0.01);
-    for (let i = 0; i < 40; i++) p = learn(p, 'normal', 999, 80, 80);
+    for (let i = 0; i < 40; i++) p = learn(p, facts({ dealt: 1, lost: 80 }));
     expect(p.hp).toBeGreaterThanOrEqual(-1);
     expect(p.dmg).toBeLessThan(-0.99);
   });
 
-  it('climbs far more than it eases, and less under memos', () => {
+  it('a hero who begged to stay sends both levels all the way down, which is the full ease-off', () => {
+    expect(learn({ hp: 0.8, dmg: 0.5 }, facts({ begged: true }))).toEqual({ hp: -1, dmg: -1 });
+    expect(pressureScale({ hp: -1, dmg: -1 }, false)).toEqual({ hp: 0.9, dmg: 0.9 });
+    expect(max.down).toBe(0.1);
+  });
+
+  it('climbs more than it eases, and less under memos', () => {
     expect(pressureScale(calm(), false)).toEqual({ hp: 1, dmg: 1 });
     expect(pressureScale({ hp: 1, dmg: -1 }, false)).toEqual({ hp: 1 + max.up, dmg: 1 - max.down });
-    expect(max.up).toBeGreaterThan(max.down * 2);
+    expect(max.up).toBeGreaterThan(max.down);
     expect(pressureScale({ hp: 1, dmg: 1 }, true).hp).toBe(1 + max.up * CONFIG.pressure.memoUp);
     expect(pressureScale({ hp: -1, dmg: 0 }, true).hp).toBe(1 - max.down);
   });
@@ -755,7 +783,7 @@ describe('adaptive difficulty', () => {
   it('reads every won fight from the first one, and never in the very first run', () => {
     const r = fightRun();
     expect(pressureLearns(r)).toBe(true);
-    win(r, 1, 0);
+    win(r, 9999, 50, 0);
     expect(r.pressure.hp).toBeCloseTo(rate.normal);
     expect(r.pressure.dmg).toBeCloseTo(rate.normal);
     const lost = new Combat(combatSetup(r));
@@ -767,6 +795,18 @@ describe('adaptive difficulty', () => {
     const first = newRun('warrior', 1, [1]);
     expect(isFirstRun(first)).toBe(true);
     expect(pressureLearns(first)).toBe(false);
+  });
+
+  it('begging to stay eases both levels off at the end of that fight, and the next fights go on from there', () => {
+    const r = fightRun();
+    win(r, 9999, 50, 0);
+    win(r, 9999, 50, 0);
+    expect(r.pressure.hp).toBeGreaterThan(0.5);
+    win(r, 1, 120, 80, true);
+    expect(r.pressure).toEqual({ hp: -1, dmg: -1 });
+    expect(enemyScale(currentNode(r), [], r.pressure).hp).toBeCloseTo(enemyScale(currentNode(r)).hp * 0.9);
+    win(r, 9999, 50, 0);
+    expect(r.pressure.hp).toBeCloseTo(-1 + rate.normal * 2);
   });
 
   it('is saved with the run, kept inside its range and dropped when it is missing', () => {

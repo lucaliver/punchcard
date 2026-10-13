@@ -236,23 +236,24 @@ export const CONFIG = {
   floorHp: 0.06,
   floorDmg: 0.04,
   /**
-   * Adaptive difficulty (`game/pressure.ts`), never shown to the player. After every won fight the run reads how it went: a kill much faster than `par.time`
-   * pushes the next enemies' HP up, HP lost far under `par.loss` (a share of max HP) pushes their damage up; a slow or costly fight eases the same level back.
-   * The numbers in `par` are what a decent player spends (`npm run sim`'s bot, median of won fights).
+   * Adaptive difficulty (`game/pressure.ts`), never shown to the player. After every won fight the run reads how it went: damage dealt per second far above
+   * `par.dps` (the enemy's HP and Block it got through, over the fight's time) pushes the next enemies' HP up, HP lost far under `par.loss` (a share of max HP)
+   * pushes their damage up; a weak or costly fight eases the same level back, and a hero who begs to stay sends both all the way down.
+   * The numbers in `par` are what a decent player does (`npm run sim`'s bot, median of won fights).
    */
   pressure: {
     par: {
-      normal: { time: 45, loss: 0.15 },
-      elite: { time: 55, loss: 0.2 },
-      boss: { time: 85, loss: 0.3 },
+      normal: { dps: 2, loss: 0.15 },
+      elite: { dps: 2.3, loss: 0.2 },
+      boss: { dps: 2.3, loss: 0.3 },
     },
     /** Distance from par (as a share of it) at which a signal is full, and the stretch around par that counts as on target. */
-    spread: { time: 0.5, loss: 1 },
+    spread: { dps: 0.5, loss: 1 },
     dead: 0.1,
     /** How far a fight pulls the level toward its signal, by tier (a boss or an elite says more than a normal fight). */
     rate: { normal: 0.4, elite: 0.6, boss: 0.6 },
     /** The most the multipliers rise or fall at a full level: it climbs much more than it eases, and a run under memos climbs `memoUp` times as far. */
-    max: { up: 0.2, down: 0.08 },
+    max: { up: 0.2, down: 0.1 },
     memoUp: 0.5,
   },
   /** Chance that a floor of the map swaps its two rooms between the lanes. */
