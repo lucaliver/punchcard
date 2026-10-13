@@ -785,6 +785,8 @@ const en = {
   'status.onEnemy': 'On the enemy',
   'status.timeLeft': '{s}s left',
   'status.stacks': 'Stacks: {v}',
+  'status.curses': 'Curses',
+  'status.curses.d': 'Curse cards you hold right now, in the draw pile, the discard pile, on the belt and in the sleeve: {n}.',
   'status.strength': 'Strength',
   'status.strength.d': 'Attacks deal +{v} damage.',
   'status.thorns': 'Thorns',

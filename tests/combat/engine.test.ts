@@ -1008,6 +1008,19 @@ describe('cards that change on the belt', () => {
   });
 });
 
+describe('the curse count', () => {
+  it('counts the curses in the piles, on the belt and in the sleeve, and nothing else', () => {
+    const c = setup();
+    expect(c.curseCount()).toBe(0);
+    c.addTempCard('gatekeeping', 'draw');
+    c.addTempCard('gatekeeping', 'discard');
+    c.addTempCard('gatekeeping', 'belt');
+    expect(c.curseCount()).toBe(3);
+    c.removeCurses();
+    expect(c.curseCount()).toBe(0);
+  });
+});
+
 describe('sleeve cards', () => {
   const held = (id: string): Combat => {
     const c = setup({ deck: deckOf(Array(6).fill('punch')) });

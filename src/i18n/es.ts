@@ -789,6 +789,8 @@ const es: Record<EnKey, string> = {
   'status.onEnemy': 'En el enemigo',
   'status.timeLeft': 'Quedan {s}s',
   'status.stacks': 'Acumulaciones: {v}',
+  'status.curses': 'Maldiciones',
+  'status.curses.d': 'Cartas de maldición que tienes ahora, entre el mazo de robo, el descarte, la cinta y la manga: {n}.',
   'status.strength': 'Fuerza',
   'status.strength.d': 'Los ataques hacen +{v} de daño.',
   'status.thorns': 'Espinas',

@@ -788,6 +788,8 @@ const it: Record<EnKey, string> = {
   'status.onEnemy': 'Sul nemico',
   'status.timeLeft': 'Restano {s}s',
   'status.stacks': 'Cariche: {v}',
+  'status.curses': 'Maledizioni',
+  'status.curses.d': 'Carte maledizione che hai adesso, tra mazzo di pesca, scarti, nastro e manica: {n}.',
   'status.strength': 'Forza',
   'status.strength.d': 'Gli attacchi fanno +{v} danni.',
   'status.thorns': 'Spine',

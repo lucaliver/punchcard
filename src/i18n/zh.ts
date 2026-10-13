@@ -780,6 +780,8 @@ const zh: Record<EnKey, string> = {
   'status.onEnemy': '在敌人身上',
   'status.timeLeft': '剩余 {s} 秒',
   'status.stacks': '层数：{v}',
+  'status.curses': '诅咒',
+  'status.curses.d': '你现在持有的诅咒牌，包括抽牌堆、弃牌堆、传送带和袖口里的：{n}。',
   'status.strength': '力量',
   'status.strength.d': '攻击造成 +{v} 点伤害。',
   'status.thorns': '荆棘',

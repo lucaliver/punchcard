@@ -229,6 +229,8 @@ export class Combat {
   mem: Record<string, number> = {};
   /** The hero is down and the fight waits for the answer to the offer to beg (`beg`). */
   begging = false;
+  /** The hero begged to stay in this fight and was taken back (the run's adaptive difficulty eases off for it). */
+  begged = false;
   private canBeg: boolean;
   private tempUid = 0;
 
@@ -658,6 +660,11 @@ export class Combat {
     const onBelt = deckOnly ? [] : this.rng.shuffle(this.belt.map((b) => b.card).filter(fits));
     const rest = this.rng.shuffle([...this.draw, ...this.discard].filter(fits));
     return [...onBelt, ...rest].slice(0, n);
+  }
+
+  /** The curses the hero holds now: in the draw and discard piles, on the belt and in the sleeve (the HUD's skull chip). */
+  curseCount(): number {
+    return [...this.draw, ...this.discard, ...this.belt.map((b) => b.card), ...this.sleeveCards()].filter(isCurse).length;
   }
 
   /** Every card of the fight, wherever it is: piles, belt and sleeve. */
@@ -1759,6 +1766,7 @@ export class Combat {
       return;
     }
     this.canBeg = false;
+    this.begged = true;
     this.relicFlags[BEG_FLAG] = 1;
     this.hero.hp = this.hero.maxHp;
     this.cleanse();

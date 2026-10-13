@@ -92,6 +92,33 @@ export function createHud(v: CombatView, onPassive: () => void): { render(): voi
     );
   };
 
+  /** The skull at the end of the hero's row: how many curses are in the draw pile, the discard pile, on the belt and in the sleeve. */
+  const cursesChip = (): HTMLElement => {
+    const b = h('button', {
+      class: 'status bad',
+      'data-curses': '1',
+      'data-tone': 'purple',
+      html: `${icon('skull')}<span></span>`,
+      'aria-label': t('status.curses'),
+    });
+    onPress(b, () => {
+      sfx('tap');
+      v.inspect(true);
+      openInfo(
+        {
+          icon: 'skull',
+          title: t('status.curses'),
+          tag: t('status.onYou'),
+          tagCls: 'bad',
+          desc: t('status.curses.d', { n: combat.curseCount() }),
+          ink: 'bad',
+        },
+        () => v.inspect(false),
+      );
+    });
+    return b;
+  };
+
   /** Status chips: rebuilt only when the set of statuses changes; values update in place (so presses aren't lost). */
   const renderStatuses = (side: Side, box: HTMLElement): void => {
     const f = combat.fighter(side);
@@ -101,7 +128,8 @@ export function createHud(v: CombatView, onPassive: () => void): { render(): voi
     const e = combat.enemy.def;
     // A secret half-HP trait only shows once it has kicked in.
     const secret = side === 'enemy' && !!e.halfSecret && !combat.enemy.halfTriggered;
-    const ids = `${list.join('|')}${secret ? '|secret' : ''}`;
+    const cursed = side === 'hero' && combat.curseCount() > 0;
+    const ids = `${list.join('|')}${secret ? '|secret' : ''}${cursed ? '|curses' : ''}`;
     if (ids !== statusSig[side]) {
       statusSig[side] = ids;
       // The hero's passive always leads the hero's row, like a permanent status; an enemy's half-HP trait leads its
@@ -177,6 +205,7 @@ export function createHud(v: CombatView, onPassive: () => void): { render(): voi
           onPress(b, () => showStatus(side, id));
           return b;
         }),
+        ...(cursed ? [cursesChip()] : []),
       );
     }
     if (side === 'enemy') {
@@ -192,6 +221,10 @@ export function createHud(v: CombatView, onPassive: () => void): { render(): voi
           b.querySelector<HTMLElement>('.drain')!.style.setProperty('--fill', String(fill));
         }
         if (armed) toggle(b, 'spent', !armed(combat));
+        continue;
+      }
+      if ((b as HTMLElement).dataset.curses) {
+        setText(b.querySelector('span')!, combat.curseCount());
         continue;
       }
       const id = (b as HTMLElement).dataset.status;
