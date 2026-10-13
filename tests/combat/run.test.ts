@@ -20,7 +20,7 @@ import {
   startingFirstRun,
   unlockAll,
 } from '../../src/game/meta';
-import { ACT_DEFS } from '../../src/data/acts';
+import { ACT_DEFS, MAIN_ACTS } from '../../src/data/acts';
 import {
   applyCombat,
   applyWheel,
@@ -54,7 +54,6 @@ import {
   skipReward,
   rollCrossTraining,
   crossTrain,
-  ACTS,
   SPECIALS,
   vend,
   vendingCost,
@@ -167,7 +166,7 @@ describe('run maps', () => {
 
   it('deal several specials per act, all different, and a rest on every road into the boss', () => {
     for (const nodes of maps)
-      for (let act = 1; act <= ACTS; act++) {
+      for (let act = 1; act <= MAIN_ACTS; act++) {
         const specials = nodes.filter((n) => n.act === act && SPECIALS.includes(n.type)).map((n) => n.type);
         expect(specials.length).toBeGreaterThanOrEqual(3);
         expect(new Set(specials).size).toBe(specials.length);
@@ -196,14 +195,14 @@ describe('run maps', () => {
       const before = newRun('warrior', seed).nodes;
       const avoid = [...new Set(before.flatMap((n) => (n.enemy ? [n.enemy] : [])))];
       const nodes = newRun('warrior', seed + 100, [], [], avoid).nodes;
-      for (let act = 1; act <= ACTS; act++)
+      for (let act = 1; act <= MAIN_ACTS; act++)
         for (const tier of ['elite', 'boss'] as const) {
           const pool = enemiesFor(act, tier);
           const dealt = nodes.filter((n) => n.act === act && n.type === tier).map((n) => n.enemy!);
           if (pool.some((e) => !avoid.includes(e.id))) for (const id of dealt) expect(avoid).not.toContain(id);
         }
       // Normal fights: the enemies new to this run all show up before one of the last run's comes back.
-      for (let act = 1; act <= ACTS; act++) {
+      for (let act = 1; act <= MAIN_ACTS; act++) {
         const fresh = enemiesFor(act, 'normal').filter((e) => !avoid.includes(e.id)).length;
         const fights = nodes.filter((n) => n.act === act && n.type === 'fight').map((n) => n.enemy!);
         // (act 2 opens on a rule-breaker even if the last run met every one of them)
@@ -239,10 +238,45 @@ describe('run maps', () => {
   });
 });
 
+describe('the weekend (the bonus act)', () => {
+  it('a run has the main acts, and the bonus ones too when asked; the last boss is the one with nothing after it', () => {
+    expect(Math.max(...newRun('warrior', 7).nodes.map((n) => n.act))).toBe(MAIN_ACTS);
+    const full = newRun('warrior', 7, [], [], [], ACT_DEFS.length);
+    expect(Math.max(...full.nodes.map((n) => n.act))).toBe(ACT_DEFS.length);
+    const bosses = full.nodes.filter((n) => n.type === 'boss');
+    expect(bosses.map((n) => n.act)).toEqual(Array.from({ length: ACT_DEFS.length }, (_, i) => i + 1));
+    expect(bosses.filter((n) => !n.next.length).map((n) => n.act)).toEqual([ACT_DEFS.length]);
+  });
+
+  it('its fights are of the weekend, and its elites and boss come from the shift before until it has its own', () => {
+    for (let seed = 1; seed <= 10; seed++) {
+      const nodes = newRun('mage', seed, [], [], [], ACT_DEFS.length).nodes.filter((n) => n.act === ACT_DEFS.length);
+      for (const n of nodes.filter((x) => x.type === 'fight')) expect(ENEMIES[n.enemy!].act).toBe(ACT_DEFS.length);
+      for (const n of nodes.filter((x) => x.type === 'elite' || x.type === 'boss')) expect(ENEMIES[n.enemy!].tier).toBe(n.type);
+    }
+  });
+
+  it('a saved run keeps its weekend', () => {
+    const store = new Map<string, string>();
+    Object.defineProperty(globalThis, 'localStorage', {
+      value: {
+        getItem: (k: string) => store.get(k) ?? null,
+        setItem: (k: string, v: string) => void store.set(k, v),
+        removeItem: (k: string) => void store.delete(k),
+      },
+      configurable: true,
+    });
+    const full = newRun('warrior', 7, [], [], [], ACT_DEFS.length);
+    store.set('cardstone+:run', JSON.stringify(full));
+    expect(loadRun()?.nodes).toHaveLength(full.nodes.length);
+    Reflect.deleteProperty(globalThis, 'localStorage');
+  });
+});
+
 describe('the very first run', () => {
   it('goes on through every act, the later ones dealt like any run', () => {
     const run = newRun('warrior', 1, [1]);
-    expect(new Set(run.nodes.map((n) => n.act)).size).toBe(ACTS);
+    expect(new Set(run.nodes.map((n) => n.act)).size).toBe(MAIN_ACTS);
     expect(run.nodes.some((n) => n.act > 1 && SPECIALS.includes(n.type))).toBe(true);
   });
 
@@ -297,7 +331,7 @@ describe('scripted acts', () => {
     const walk = (id: number, path: number[]): void => {
       seen.add(id);
       const options = all[id].next.filter((n) => !path.includes(n));
-      if (!options.length) expect(all[id], `#${id}`).toMatchObject({ type: 'boss', act: ACTS });
+      if (!options.length) expect(all[id], `#${id}`).toMatchObject({ type: 'boss', act: MAIN_ACTS });
       for (const n of options) walk(n, [...path, n]);
     };
     walk(0, [0]);
@@ -624,9 +658,9 @@ describe('the first run nudges to the sleeve', () => {
 describe('management memos', () => {
   it('open for a hero once the last act is stamped for them', () => {
     expect(memosOpen('necromancer')).toBe(false);
-    stampAct('necromancer', ACT_DEFS.length - 1);
+    stampAct('necromancer', MAIN_ACTS - 1);
     expect(memosOpen('necromancer')).toBe(false);
-    stampAct('necromancer', ACT_DEFS.length);
+    stampAct('necromancer', MAIN_ACTS);
     expect(memosOpen('necromancer')).toBe(true);
     expect(memosOpen('warrior')).toBe(false);
   });

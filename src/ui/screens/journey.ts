@@ -1,7 +1,7 @@
 import { t } from '../../core/i18n';
 import { sfx } from '../../audio/sfx';
 import { haptic } from '../fx/fx';
-import { actDef, isFinalAct } from '../../data/acts';
+import { actDef } from '../../data/acts';
 import { clockAt, currentNode, mapAct, saveRun, startShift, type RunNode, type RunState } from '../../game/run';
 import { openModal, type Screen } from '../app';
 import { ENEMIES } from '../../data/enemies';
@@ -34,7 +34,7 @@ export const NODE_ICON: Record<RunNode['type'], string> = {
   boss: 'tophat',
 };
 /** What a room is called on the map and in its info (the last act's boss is the final one). */
-const nodeKind = (n: RunNode): 'finalBoss' | RunNode['type'] => (n.type === 'boss' && isFinalAct(n.act) ? 'finalBoss' : n.type);
+const nodeKind = (n: RunNode): 'finalBoss' | RunNode['type'] => (n.type === 'boss' && !n.next.length ? 'finalBoss' : n.type);
 /** The icon of a room on the map: a boss wears the one of its act. */
 export const nodeIcon = (n: RunNode): string => (n.type === 'boss' ? (actDef(n.act).bossIcon ?? NODE_ICON.boss) : NODE_ICON[n.type]);
 /** Height of one floor on the map (px); a room takes most of it, the rest is corridor. */

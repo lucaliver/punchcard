@@ -200,6 +200,24 @@ test('a boss walks in with the lights out, and the curtain lifts by itself', asy
   expect(problems).toEqual([]);
 });
 
+test('after the last main boss a hero with the memos open chooses between the weekend and clocking out', async ({ page }) => {
+  const problems = await freshGame(page, { veteran: true, stamps: ['warrior:3'] });
+  await page.getByRole('button', { name: /new run/i }).click();
+  await page.getByRole('button', { name: /start shift/i }).click();
+  const fork =
+    "(() => { const g = window.__game; const n = g.run.nodes.find((x) => x.type === 'boss' && x.act === 3); g.run.current = n.id; g.run.cleared = true; g.run.path = [0, n.id]; g.goJourney(); })()";
+  await page.evaluate(fork);
+  const modal = page.locator('.modal.weekend-fork');
+  await expect(modal).toBeVisible();
+  await modal.getByRole('button', { name: /take the weekend/i }).click();
+  await expect(page.locator('.journey[data-act="4"]')).toBeVisible();
+  // The same choice, the other way: clocking out ends the run as a win.
+  await page.evaluate(fork);
+  await modal.getByRole('button', { name: /clock out for good/i }).click();
+  await expect(page.locator('.end.win')).toBeVisible({ timeout: 8000 });
+  expect(problems).toEqual([]);
+});
+
 test('the combat layout never moves when statuses appear', async ({ page }) => {
   await freshGame(page);
   await startFight(page);

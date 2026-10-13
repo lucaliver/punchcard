@@ -1654,6 +1654,27 @@ export const ICONS: Record<string, { el: Element; svg: string; wide?: boolean }>
     el: 'holy',
     svg: `<rect x="10" y="10" width="32" height="4"/><path d="M14 36V14h24v22z"/><rect x="18" y="18" width="16" height="12" fill="#16121f"/><rect x="6" y="36" width="52" height="14" rx="2"/><path d="M38 24h14v12H38z"/><circle cx="18" cy="50" r="8"/><circle cx="48" cy="50" r="8"/><circle cx="18" cy="50" r="3" fill="#16121f"/><circle cx="48" cy="50" r="3" fill="#16121f"/><rect x="2" y="59" width="60" height="4"/>`,
   },
+  // The Self-Checkout's groceries
+  groceryBread: {
+    el: 'fire',
+    svg: `<path d="M5 34c0-14 12-22 27-22s27 8 27 22v4c0 4-2 6-6 6H11c-4 0-6-2-6-6z"/><rect x="11" y="44" width="42" height="10" rx="3"/><path d="M18 22l6 10M31 19l6 11M44 22l5 9" stroke="#16121f" stroke-width="3.5" fill="none" stroke-linecap="round"/>`,
+  },
+  groceryMilk: {
+    el: 'ice',
+    svg: `<path d="M16 24L24 6h16l8 18v34H16z"/><path d="M24 6h16l-4 8H20z" fill="#16121f" opacity=".3"/><rect x="22" y="32" width="20" height="16" fill="#16121f"/><path d="M32 35c3 4 4 6 4 8a4 4 0 0 1-8 0c0-2 1-4 4-8z" fill="#fff"/>`,
+  },
+  groceryApple: {
+    el: 'nature',
+    svg: `<path d="M32 20C26 12 8 14 8 34c0 14 10 26 18 26 3 0 4-1 6-1s3 1 6 1c8 0 18-12 18-26 0-20-18-22-24-14z"/><path d="M32 22c0-8 3-14 9-17" stroke="#16121f" stroke-width="4" fill="none" stroke-linecap="round"/><path d="M38 12c6-4 12-2 14 2-6 3-11 2-14-2z" fill="#16121f" opacity=".45"/>`,
+  },
+  groceryCheese: {
+    el: 'holy',
+    svg: `<path d="M3 46L58 18v30H3z"/><path d="M3 46L58 18v8L3 52z" fill="#16121f" opacity=".25"/><circle cx="18" cy="42" r="4" fill="#16121f"/><circle cx="34" cy="34" r="5" fill="#16121f"/><circle cx="48" cy="38" r="3.5" fill="#16121f"/>`,
+  },
+  grocerySoup: {
+    el: 'blood',
+    svg: `<rect x="14" y="8" width="36" height="48" rx="4"/><rect x="14" y="24" width="36" height="18" fill="#16121f"/><circle cx="32" cy="33" r="6" fill="#fff"/><path d="M14 14h36M14 50h36" stroke="#16121f" stroke-width="3"/>`,
+  },
   scanner: {
     el: 'arcane',
     svg: `<rect x="4" y="30" width="56" height="26"/><rect x="10" y="36" width="44" height="6" fill="#16121f"/><path d="M4 26l8-18h40l8 18z"/><rect x="2" y="44" width="60" height="4"/>`,

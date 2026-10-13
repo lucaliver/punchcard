@@ -94,7 +94,34 @@ const factory = (): string => {
   );
 };
 
-const SCENES = [parking, office, factory];
+/** Act 4, the supermarket aisle: a back wall of shelves stacked with products, gondolas with more at either side, a hanging aisle sign and the strip lights. */
+// biome-ignore format: pixel rects read best in rows
+const aisle = (): string => {
+  // a shelf unit: its frame, three shelves and a row of products on each
+  const shelf = (x: number, w: number): string =>
+    parts('b', [[x, 12, w, 1], [x, 20, w, 1], [x, 28, w, 1], [x, 36, w, 4], [x, 12, 1, 28], [x + w - 1, 12, 1, 28]]) +
+    parts('a', [[x + 1, 14, w - 2, 6], [x + 1, 22, w - 2, 6], [x + 1, 30, w - 2, 6]]) +
+    parts('l', [3, 11, 19].map((dx): Rect => [x + dx - 2, 15, 3, 3]).filter(([px]) => px < x + w - 2)) +
+    parts('h', [6, 14].map((dx): Rect => [x + dx, 23, 3, 3]).filter(([px]) => px < x + w - 2)) +
+    parts('l', [4, 9, 15].map((dx): Rect => [x + dx, 31, 3, 3]).filter(([px]) => px < x + w - 2));
+  return (
+    shelf(0, 22) +
+    shelf(74, 22) +
+    // the far wall's shelves between them, lower and dimmer
+    parts('a', [[24, 20, 48, 20]]) +
+    parts('b', [[24, 20, 48, 1], [24, 28, 48, 1], [24, 36, 48, 1]]) +
+    parts('g', [30, 38, 46, 54, 62].map((x): Rect => [x, 22, 4, 4])) +
+    // the aisle sign, hanging from the ceiling
+    parts('b', [[47, 0, 1, 4], [49, 0, 1, 4], [38, 4, 20, 7]]) +
+    parts('l', [[40, 6, 16, 1], [40, 8, 10, 1]]) +
+    // strip lights, one of them flickering
+    parts('l', [[10, 2, 8, 1], [78, 2, 8, 1]]) +
+    twinkle(60, 2, 2.2, -0.6, 'l', 8, 1) +
+    twinkle(70, 12, 3.1, -1.4, 'h', 2, 2)
+  );
+};
+
+const SCENES = [parking, office, factory, aisle];
 
 /** The scene behind the enemy of an act (1-based; a later act takes the last scene, like `actDef`). */
 export const stageArt = (act: number): string =>

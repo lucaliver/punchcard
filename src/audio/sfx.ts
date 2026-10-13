@@ -295,6 +295,14 @@ const SOUNDS = {
     tone(60, 0.5, { type: 'sawtooth', vol: 0.06, to: 110, delay: 0.72, attack: 0.1 });
     for (let i = 0; i < 6; i++) noise(0.05, { freq: 1200, vol: 0.14, type: 'bandpass', q: 3, delay: 0.72 + i * 0.085 });
   },
+  /** The weekend's front door: a doorbell ding-dong, a latch, and the door swinging open. */
+  doorBell: () => {
+    tone(880, 0.35, { type: 'sine', vol: 0.12, to: 870 });
+    tone(660, 0.5, { type: 'sine', vol: 0.12, to: 650, delay: 0.3 });
+    tone(150, 0.05, { type: 'square', vol: 0.1, to: 100, delay: 0.85 });
+    noise(0.04, { freq: 2000, vol: 0.18, type: 'highpass', delay: 0.85 });
+    noise(0.4, { freq: 400, to: 900, q: 2, vol: 0.07, delay: 0.95 });
+  },
   /** Heavy machinery starting up (a belt row opening): a motor spinning up under a train of clunks, then a latch. */
   machinery: () => {
     tone(45, 2.2, { type: 'sawtooth', vol: 0.08, to: 75, attack: 0.3 });

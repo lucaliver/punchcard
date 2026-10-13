@@ -1,5 +1,5 @@
 import { load, store } from '../core/save';
-import { ACT_DEFS } from '../data/acts';
+import { ACT_DEFS, MAIN_ACTS } from '../data/acts';
 import { CARD_LIST, CARDS } from '../data/cards';
 import { ENEMIES, ENEMY_LIST } from '../data/enemies';
 import { HERO_LIST, HEROES } from '../data/heroes';
@@ -52,6 +52,7 @@ interface Meta {
 const NO_RECORDS: Records = {
   wins: 0,
   fullDays: 0,
+  weekends: 0,
   kills: 0,
   elites: 0,
   bosses: 0,
@@ -323,11 +324,21 @@ export type RunRecord = 'bestFloor' | 'bestKills' | 'bestCards' | 'bestPay';
  * A run ended (`fullDay`: won through every act). Returns the one-run records it beat; the very first value set
  * doesn't count, there was nothing to beat.
  */
-export function recordRun(f: { won: boolean; fullDay: boolean; act: number; floor: number; pay: number; kills: number; cards: number }): RunRecord[] {
+export function recordRun(f: {
+  won: boolean;
+  fullDay: boolean;
+  weekend: boolean;
+  act: number;
+  floor: number;
+  pay: number;
+  kills: number;
+  cards: number;
+}): RunRecord[] {
   const r = meta.records;
   const beaten: RunRecord[] = [];
   if (f.won) r.wins++;
   if (f.fullDay) r.fullDays++;
+  if (f.weekend) r.weekends++;
   if (f.act > r.bestAct || (f.act === r.bestAct && f.floor > r.bestFloor)) {
     if (r.bestAct) beaten.push('bestFloor');
     r.bestAct = f.act;
@@ -372,7 +383,7 @@ export function stampAct(hero: HeroId, act: number): void {
 export const hasStamp = (hero: HeroId, act: number): boolean => meta.stamps.includes(`${hero}:${act}`);
 
 /** A hero who has won a full day (beaten the last act's boss) may run under management memos. */
-export const memosOpen = (hero: HeroId): boolean => hasStamp(hero, ACT_DEFS.length);
+export const memosOpen = (hero: HeroId): boolean => hasStamp(hero, MAIN_ACTS);
 
 /** The memos switched on for the next run. */
 export const chosenMemos = (): string[] => [...meta.memos];

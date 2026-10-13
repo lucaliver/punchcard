@@ -5,7 +5,7 @@ import { CARD_LIST, CARDS, RARITY_ORDER, cardCostOf, cardKeywordsOf, rewardPool 
 import { PERKS } from '../data/perks';
 import { WHEEL, type WheelSlot } from '../data/wheel';
 import { RELIC_LIST, RELICS, relicSum } from '../data/relics';
-import { ACT_DEFS, actDef } from '../data/acts';
+import { ACT_DEFS, actDef, MAIN_ACTS } from '../data/acts';
 import {
   BEG_FLAG,
   CONFIG,
@@ -67,7 +67,7 @@ export interface RunStats {
 }
 
 /** Shape of the saved run; a save of another version is dropped. */
-const SAVE_VERSION = 15;
+const SAVE_VERSION = 16;
 
 export interface RunState {
   version: number;
@@ -126,7 +126,6 @@ const ONCE_PER_RUN: NodeType[] = ['tailor', 'restructuring'];
 const ACT1_OPENING = 3;
 /** Links between the lanes per act: diagonal (to the other lane one floor up) or flat (across the same floor, both ways). */
 const LINKS = 2;
-export const ACTS = ACT_DEFS.length;
 
 /** Seed of the very first run: its map is always the same, with the enemies in order of difficulty. */
 export const FIRST_RUN_SEED = 1;
@@ -209,14 +208,21 @@ export const ACT_SCRIPTS: Record<number, ScriptNode[]> = {
 
 /**
  * A new run; the acts in `scripted` have the rooms and enemies of `ACT_SCRIPTS` instead of shuffled ones (the first run's act 1, and every other act the
- * first time it is met), the rest are dealt as usual. `mods` are the memos it plays under.
+ * first time it is met), the rest are dealt as usual. `mods` are the memos it plays under; `acts` is how many acts the map has (the bonus ones follow the main ones).
  * `avoid` are the enemies of the last run: the dealt acts keep them out of the map when they can.
  */
-export function newRun(hero: HeroId, seed: number, scripted: readonly number[] = [], mods: string[] = [], avoid: readonly string[] = []): RunState {
+export function newRun(
+  hero: HeroId,
+  seed: number,
+  scripted: readonly number[] = [],
+  mods: string[] = [],
+  avoid: readonly string[] = [],
+  acts: number = MAIN_ACTS,
+): RunState {
   resetUid(0);
   const rng = new Rng(seed);
   const def = HEROES[hero];
-  const nodes = buildNodes(rng, scripted, avoid);
+  const nodes = buildNodes(rng, scripted, avoid, acts);
   discover(def.startDeck);
   const maxHp = Math.round(def.hp * resolveMods(mods).heroHp);
   return {
@@ -392,11 +398,11 @@ function addScripted(nodes: RunNode[], act: number, last: RunNode[]): RunNode[] 
   return [made[made.length - 1]];
 }
 
-function buildNodes(rng: Rng, scripted: readonly number[], avoid: readonly string[]): RunNode[] {
+function buildNodes(rng: Rng, scripted: readonly number[], avoid: readonly string[], acts: number): RunNode[] {
   const nodes: RunNode[] = [];
   let last: RunNode[] = [];
   const taken = ONCE_PER_RUN.filter((type) => scripted.some((act) => ACT_SCRIPTS[act].some((n) => n.type === type)));
-  for (let act = 1; act <= ACTS; act++) last = scripted.includes(act) ? addScripted(nodes, act, last) : addAct(nodes, rng, act, last, taken, avoid);
+  for (let act = 1; act <= acts; act++) last = scripted.includes(act) ? addScripted(nodes, act, last) : addAct(nodes, rng, act, last, taken, avoid);
   return nodes;
 }
 
@@ -919,7 +925,8 @@ export function finishRun(run: RunState, won: boolean): RunEnd {
   const node = currentNode(run);
   const beaten = recordRun({
     won,
-    fullDay: won && node.act === ACTS,
+    fullDay: won && node.act >= MAIN_ACTS,
+    weekend: won && node.act > MAIN_ACTS,
     act: node.act,
     floor: node.floor,
     pay: run.money,
@@ -950,7 +957,7 @@ const isCard = (c: unknown): c is CardInst =>
 const isNode = (n: unknown, i: number, len: number): n is RunNode => {
   if (!isObj(n) || n.id !== i || !isNum(n.lane) || !isIndexes(n.next, len)) return false;
   const { act, floor } = n;
-  if (!isNum(act) || !isNum(floor) || !Number.isInteger(act) || act < 1 || act > ACTS) return false;
+  if (!isNum(act) || !isNum(floor) || !Number.isInteger(act) || act < 1 || act > ACT_DEFS.length) return false;
   const type = NODE_TYPES.find((x) => x === n.type);
   // Fights, elites and bosses carry their enemy; rooms don't.
   return (
@@ -994,7 +1001,8 @@ function parseRun(raw: unknown): RunState | null {
   if (!isNum(current) || !isIndexes([current], nodes.length) || !isIndexes(path, nodes.length) || !isObj(stats)) return null;
   const { kills, elites, cardsPlayed, damageTaken, time } = stats;
   if (!isNum(kills) || !isNum(elites) || !isNum(cardsPlayed) || !isNum(damageTaken) || !isNum(time)) return null;
-  if (Math.max(...nodes.map((n) => n.act)) !== ACTS) return null;
+  // A run has the main acts, and the bonus ones too when its hero had them open.
+  if (![MAIN_ACTS, ACT_DEFS.length].includes(Math.max(...nodes.map((n) => n.act)))) return null;
   if (!isObj(pressure) || !isNum(pressure.hp) || !isNum(pressure.dmg)) return null;
   const offers = Array.isArray(reward)
     ? reward.filter((o): o is { id: string; up: boolean } => isObj(o) && typeof o.id === 'string' && !!CARDS[o.id] && typeof o.up === 'boolean')

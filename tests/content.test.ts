@@ -14,7 +14,7 @@ import { CARD_LIST, CARDS } from '../src/data/cards';
 import { cardHidden, heroHidden, heroUnlocked, progress, stampAct } from '../src/game/meta';
 import type { HeroId } from '../src/game/types';
 import { KEYWORD_LIST } from '../src/ui/components/cardView';
-import { ACT_DEFS } from '../src/data/acts';
+import { ACT_DEFS, MAIN_ACTS } from '../src/data/acts';
 import { rewardOdds, rewardUpgradeChance } from '../src/data/config';
 import { DIFFICULTY, ENEMY_LIST, enemyMoves } from '../src/data/enemies';
 import { HERO_LIST, HEROES, starterCards } from '../src/data/heroes';
@@ -431,14 +431,14 @@ describe('the Rogue', () => {
   });
 
   it('is hired once every other hero has beaten the last act', () => {
-    expect(HEROES.rogue.unlock).toEqual({ allStamped: ACT_DEFS.length });
+    expect(HEROES.rogue.unlock).toEqual({ allStamped: MAIN_ACTS });
     expect(heroHidden('rogue')).toBe(false);
     expect(heroUnlocked('rogue')).toBe(false);
     progress(() => false);
     expect(heroUnlocked('rogue')).toBe(false);
-    for (const hero of ['warrior', 'mage']) stampAct(hero as HeroId, ACT_DEFS.length);
+    for (const hero of ['warrior', 'mage']) stampAct(hero as HeroId, MAIN_ACTS);
     expect(progress(() => false)).toEqual([]);
-    stampAct('necromancer', ACT_DEFS.length);
+    stampAct('necromancer', MAIN_ACTS);
     expect(progress(() => false)).toEqual(['rogue']);
     expect(heroUnlocked('rogue')).toBe(true);
   });

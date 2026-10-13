@@ -362,8 +362,8 @@ export interface MoveDef {
   fx?: (c: Combat) => void;
 }
 
-/** The chores a move can set: the Boss's coffee, the Board's shell game with three covered cards, the Sushi Chef's order eaten off the belt, or the Punch Clock's badge swipe. */
-export type TaskId = 'coffee' | 'shells' | 'sushi' | 'badge';
+/** The chores a move can set: the Boss's coffee, the Board's shell game with three covered cards, the Sushi Chef's order eaten off the belt, the Punch Clock's badge swipe, or the Self-Checkout's scan and bag. */
+export type TaskId = 'coffee' | 'shells' | 'sushi' | 'badge' | 'checkout';
 
 /** The minigames an enemy can leave open to the hero (`EnemyDef.minigame`): a game of its own that hurts it, played in a window the hero opens and closes at will. */
 export type MinigameId = 'match3';
@@ -389,7 +389,7 @@ export interface EnemyPhase {
 
 export interface EnemyDef {
   id: string;
-  act: 1 | 2 | 3;
+  act: 1 | 2 | 3 | 4;
   tier: 'normal' | 'elite' | 'boss';
   hp: number;
   art: string;
@@ -455,6 +455,7 @@ export interface Records {
   /** Runs won (the trial shift too), and full workdays won (every act). */
   wins: number;
   fullDays: number;
+  weekends: number;
   kills: number;
   elites: number;
   bosses: number;

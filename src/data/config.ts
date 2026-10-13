@@ -196,6 +196,21 @@ export const CONFIG = {
     calm: 3,
   },
   /**
+   * The Self-Checkout's chore (`MoveDef.task` = 'checkout', `game/checkout.ts`): `items` groceries to scan and bag, one by one. After `trips` ([min, max]) of the scans the machine
+   * complains about an unexpected item in the bagging area: the last item has to be lifted out (it goes back in the basket), and the machine then asks for `assist` s of patience, in which
+   * touching anything is a mistake. A mistake takes `penalty` s off the move's countdown (`penaltyMax` s in all) and costs `wrongHp` HP; `doneHold` s the receipt is shown; done in time, the machine is stunned `calm` s.
+   */
+  checkout: {
+    items: 6,
+    trips: [2, 3],
+    assist: 1.6,
+    wrongHp: 2,
+    doneHold: 1.4,
+    penalty: 1.5,
+    penaltyMax: 6,
+    calm: 3,
+  },
+  /**
    * The Sushi Chef's chore (`MoveDef.task` = 'sushi', `game/sushi.ts`): `slips` orders of `length` pieces (a dish on a coloured plate) each, eaten off the belt in the order of their slip,
    * while the belt serves nothing but sushi and runs from `beltFrom` to `beltTo` times its speed as the pieces go. The chance a plate dealt is a random one instead of one the slips still want
    * starts at `decoy` and grows by `decoyRamp` for every piece eaten (up to `decoyMax`); `fugu` of those random ones are the trap, which hurts when eaten. A wrong plate, or a piece asked for
@@ -317,6 +332,11 @@ const REWARD_ODDS: Record<RewardKind, [Rarity, number][][]> = {
       ['rare', 44],
       ['epic', 18],
     ],
+    [
+      ['common', 28],
+      ['rare', 46],
+      ['epic', 26],
+    ],
   ],
   elite: [
     [
@@ -337,6 +357,12 @@ const REWARD_ODDS: Record<RewardKind, [Rarity, number][][]> = {
       ['epic', 38],
       ['legendary', 12],
     ],
+    [
+      ['common', 5],
+      ['rare', 35],
+      ['epic', 42],
+      ['legendary', 18],
+    ],
   ],
   boss: [[['legendary', 1]]],
 };
@@ -345,11 +371,11 @@ export const rewardOdds = (kind: RewardKind, act: number): [Rarity, number][] =>
 
 /** Chance, per rarity and act (later acts use the last), that a card of a reward offer comes already upgraded: the rarer, the less often. */
 const REWARD_UPGRADE_CHANCE: Record<Rarity, number[]> = {
-  common: [0.25, 0.4, 0.6],
-  rare: [0.2, 0.3, 0.5],
-  epic: [0.15, 0.25, 0.4],
-  legendary: [0.1, 0.15, 0.25],
-  special: [0, 0, 0],
+  common: [0.25, 0.4, 0.6, 0.75],
+  rare: [0.2, 0.3, 0.5, 0.65],
+  epic: [0.15, 0.25, 0.4, 0.55],
+  legendary: [0.1, 0.15, 0.25, 0.35],
+  special: [0, 0, 0, 0],
 };
 
 export const rewardUpgradeChance = (rarity: Rarity, act: number): number => {
@@ -387,12 +413,18 @@ const RELIC_ODDS: [Rarity, number][][] = [
     ['epic', 37],
     ['legendary', 8],
   ],
+  [
+    ['common', 8],
+    ['rare', 34],
+    ['epic', 42],
+    ['legendary', 16],
+  ],
 ];
 
 export const relicOdds = (act: number): [Rarity, number][] => RELIC_ODDS[Math.min(act, RELIC_ODDS.length) - 1];
 
 /** The rarity the Lost & Found box always holds at least one stationery of (or above), per act (later acts use the last). */
-const RELIC_GUARANTEE: Rarity[] = ['rare', 'rare', 'epic'];
+const RELIC_GUARANTEE: Rarity[] = ['rare', 'rare', 'epic', 'epic'];
 
 export const relicGuarantee = (act: number): Rarity => RELIC_GUARANTEE[Math.min(act, RELIC_GUARANTEE.length) - 1];
 

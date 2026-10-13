@@ -6,6 +6,7 @@ import { CARDS, CARD_LIST, CLASS_HIT, cardCostOf, cardKeywordsOf, cardValsOf, fu
 import { HEXES } from '../data/hexes';
 import { HEROES } from '../data/heroes';
 import { BadgeSwipe, type BadgeResult } from './badge';
+import { type CheckoutAction, CheckoutLane, type CheckoutResult } from './checkout';
 import { CHORES, type Chore } from './chore';
 import { CoffeeTask, type CoffeeAction, type CoffeeResult } from './coffee';
 import { MatchThree, type MoveResult } from './match3';
@@ -2384,6 +2385,18 @@ export class Combat {
     if (r !== 'ok' && r !== 'ignored') {
       this.fine(reader);
       this.loseHp(CONFIG.badge.wrongHp);
+    }
+    return r;
+  }
+
+  /** The hero's hand on the self-checkout (scan an item of the basket, or lift the one the machine objects to); a wrong one is fined and costs a little blood. Returns null when there is no checkout to use. */
+  checkout(action: CheckoutAction): CheckoutResult | null {
+    const lane = this.chore;
+    if (!(lane instanceof CheckoutLane) || this.result || this.begging) return null;
+    const r = action.kind === 'scan' ? lane.scan(action.item) : lane.lift();
+    if (r === 'wrong') {
+      this.fine(lane);
+      this.loseHp(CONFIG.checkout.wrongHp);
     }
     return r;
   }

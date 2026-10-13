@@ -1566,6 +1566,24 @@ const touristAngry = `${tourist}<g ${OUT}><rect x="66" y="56" width="26" height=
   },
 )}`;
 
+/** The Self-Checkout: a supermarket till on two stubby legs, a screen for a face with furious yellow eyes, a laser scanner for a mouth, a card reader, a bag on the bagging scale and a red lamp on a stalk that never stops flashing. */
+const selfCheckout = `
+<defs>${rg('sk-b', '#f6f0e4', '#b8c0d0')}${rg('sk-s', '#2a8ae8', '#12286a')}${glow('sk-g', '#ffd900')}${glow('sk-l', '#ff3b3b')}</defs>
+${shadow}
+<path d="M52 174l-6 16h28l-4-16zM130 174l-4 16h28l-6-16z" fill="#3a3450" ${OUT}/>
+<rect x="94" y="22" width="12" height="16" fill="#8a94a8" ${OUT}/>
+<g class="eye"><circle cx="100" cy="16" r="22" fill="url(#sk-l)"/><circle cx="100" cy="16" r="10" fill="#ff3b3b" ${OUT}/><circle cx="96" cy="12" r="3" fill="#fff"/></g>
+<rect x="28" y="36" width="144" height="142" rx="14" fill="url(#sk-b)" ${OUT}/>
+<rect x="42" y="48" width="116" height="66" rx="8" fill="#120e18" ${OUT}/><rect x="47" y="53" width="106" height="56" rx="5" fill="url(#sk-s)"/>
+${eyes(76, 124, 76, 9, '#ffd900', 'sk-g')}
+<path d="M58 62l28 12M142 62l-28 12" stroke="#120e18" stroke-width="6" stroke-linecap="round"/>
+<path d="M70 98h60" stroke="#f6f0e4" stroke-width="5" stroke-dasharray="9 5"/>
+<rect x="42" y="124" width="72" height="22" rx="4" fill="#120e18" ${OUT}/><path class="eye" d="M48 135h60" stroke="#ff3b3b" stroke-width="4"/>
+<rect x="124" y="122" width="34" height="42" rx="4" fill="#c8c0d8" ${OUT}/>
+<g ${OUT}><rect x="129" y="128" width="9" height="8" fill="#ffd900"/><rect x="144" y="128" width="9" height="8" fill="#ffd900"/><rect x="129" y="141" width="9" height="8" fill="#ff3d9a"/><rect x="144" y="141" width="9" height="8" fill="#ff3d9a"/></g>
+<rect x="36" y="156" width="82" height="10" fill="#8a94a8" ${OUT}/>
+<g class="limb"><path d="M50 156l4-22h30l4 22z" fill="#ffd900" ${OUT}/><path d="M60 134c0-9 18-9 18 0" fill="none" stroke="#120e18" stroke-width="3"/><path d="M62 142h12" stroke="#120e18" stroke-width="3"/></g>`;
+
 export const CREATURES: Record<string, string> = {
   debugEnemy,
   leaver,
@@ -1617,6 +1635,7 @@ export const CREATURES: Record<string, string> = {
   smokeDetector,
   microwave,
   witheredFicus,
+  selfCheckout,
   factorySiren,
   sushiChef,
   graveyardIntern,

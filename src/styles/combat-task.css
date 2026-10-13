@@ -758,3 +758,89 @@
 @keyframes m3-hp {
   to { margin-top: -28px; opacity: 0; }
 }
+
+/* The Self-Checkout's till: the machine's voice over a basket of groceries to scan, a wait bar for the assistance, and the bagging area they land in */
+.ck-stage {
+  flex-direction: column;
+  align-items: stretch;
+  justify-content: space-between;
+  gap: 6px;
+}
+.ck-alert {
+  flex: none;
+  padding: 4px 8px;
+  font-family: var(--font-ui);
+  font-size: 16px;
+  line-height: 1.1;
+  text-align: center;
+  color: var(--mint);
+  background: var(--k);
+  border: var(--line) solid var(--mint);
+}
+.checkout-window[data-phase='unexpected'] .ck-alert {
+  color: var(--paper);
+  background: var(--red);
+  border-color: var(--paper);
+  animation: ck-alarm 0.8s step-end infinite;
+}
+.checkout-window[data-phase='assist'] .ck-alert { color: var(--y); border-color: var(--y); }
+@keyframes ck-alarm {
+  50% { color: var(--red); background: var(--paper); }
+}
+@keyframes ck-blink {
+  50% { opacity: 0.5; }
+}
+.ck-basket {
+  flex: 1;
+  min-height: 0;
+  display: flex;
+  flex-wrap: wrap;
+  align-content: center;
+  justify-content: center;
+  gap: 6px;
+}
+.ck-item {
+  width: 46px;
+  height: 46px;
+  padding: 5px;
+  color: var(--k);
+  background: var(--paper);
+  border: var(--line) solid var(--k);
+  box-shadow: 3px 3px 0 var(--shadow);
+}
+.ck-item:active { translate: 2px 2px; box-shadow: 1px 1px 0 var(--shadow); }
+.ck-item .pico { width: 100%; height: 100%; color: var(--k); --ink2: var(--y); }
+/* the assistance coming: a bar (`--wait`, the share of the wait left) that shrinks to nothing */
+.ck-wait {
+  flex: none;
+  height: 6px;
+  width: calc(var(--wait, 0) * 100%);
+  max-width: 100%;
+  background: var(--y);
+}
+.ck-bag {
+  flex: none;
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 52px;
+  padding: 14px 6px 4px;
+  color: var(--fg);
+  background: transparent;
+  border: var(--line) dashed var(--muted);
+}
+.ck-bag small {
+  position: absolute;
+  left: 6px;
+  top: 1px;
+  font-family: var(--font-ui);
+  font-size: 12px;
+  text-transform: uppercase;
+  opacity: 0.7;
+}
+.ck-bag.lift { border-color: var(--red); border-style: solid; }
+.ck-bagged { display: flex; flex-wrap: wrap; justify-content: center; gap: 4px; }
+.ck-in { width: 26px; height: 26px; }
+.ck-in .pico { width: 100%; height: 100%; color: var(--paper); --ink2: var(--y); }
+.ck-in.flag { outline: var(--line) solid var(--red); animation: ck-blink 0.8s step-end infinite; }

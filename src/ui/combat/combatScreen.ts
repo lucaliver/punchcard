@@ -25,6 +25,7 @@ import { realClockText } from '../screens/journey';
 import { createCardLayer } from './cardLayer';
 import { bindCombatFx } from './combatFx';
 import { createBadgeWindow } from './badgeWindow';
+import { createCheckoutWindow } from './checkoutWindow';
 import { createTaskWindow } from './coffeeWindow';
 import { createShellWindow } from './shellWindow';
 import { createMatch3Window } from './match3Window';
@@ -97,6 +98,7 @@ export function combatScreen(run: RunState, combat: Combat, cb: CombatCallbacks)
   const taskWindow = createTaskWindow(v);
   const shellWindow = createShellWindow(v);
   const badgeWindow = createBadgeWindow(v);
+  const checkoutWindow = createCheckoutWindow(v);
   const sushiSlip = createSushiSlip(v);
   const match3Window = createMatch3Window(v);
 
@@ -595,6 +597,7 @@ export function combatScreen(run: RunState, combat: Combat, cb: CombatCallbacks)
     taskWindow.render();
     shellWindow.render();
     badgeWindow.render();
+    checkoutWindow.render();
     sushiSlip.render();
     match3Window.render();
     cards.render();

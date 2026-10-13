@@ -7,7 +7,7 @@ import { Rng } from '../../src/core/rng';
 import { CONFIG } from '../../src/data/config';
 import { ENEMIES } from '../../src/data/enemies';
 import { CARDS } from '../../src/data/cards';
-import { setup, run, coffeeOf, shellsOf, sushiOf, badgeOf } from './helpers';
+import { setup, run, coffeeOf, shellsOf, sushiOf, badgeOf, checkoutOf } from './helpers';
 
 const COFFEE_MOVE = ENEMIES.slavesCeo.specials.find((m) => m.task === 'coffee')!;
 
@@ -540,5 +540,119 @@ describe("the Punch Clock's badge reader", () => {
     expect(d.hero.hp).toBeLessThan(80);
     expect(d.chore).toBeNull();
     expect(d.swipeBadge(1)).toBeNull();
+  });
+});
+
+describe("the Self-Checkout's till", () => {
+  const scanMove = ENEMIES.selfCheckout.specials.find((m) => m.task === 'checkout')!;
+  /** The unexpected-item move is up first, then the till idles for good. */
+  const tillFight = (move = scanMove, seed = 42): Combat => {
+    const c = setup({
+      enemy: { ...ENEMIES.selfCheckout, start: [], main: { id: 'wait', intent: 'idle', windup: 9999 }, specials: [move], every: 1 },
+      hp: 80,
+      maxHp: 80,
+      seed,
+    });
+    c.skipEnemyMove();
+    return c;
+  };
+  /** Scans, lifts and waits like a patient customer until the basket is empty. */
+  const bagEverything = (c: Combat): void => {
+    const lane = checkoutOf(c);
+    for (let i = 0; i < 200 && lane.phase !== 'done'; i++) {
+      if (lane.phase === 'scan') c.checkout({ kind: 'scan', item: 0 });
+      else if (lane.phase === 'unexpected') c.checkout({ kind: 'lift' });
+      else run(c, 0.2);
+    }
+  };
+
+  it('a window covers the belt and the sleeve; the move is a chore of the Self-Checkout', () => {
+    const c = tillFight();
+    const said: string[] = [];
+    c.events.on((e) => {
+      if (e.type === 'speech') said.push(e.key);
+    });
+    run(c, CONFIG.introTime + 0.1);
+    const lane = checkoutOf(c);
+    expect(lane.basket).toHaveLength(CONFIG.checkout.items);
+    expect(c.isCovered(c.belt[0].card.uid)).toBe(true);
+    expect(said).toEqual(['enemy.selfCheckout.order']);
+  });
+
+  it('a scan bags the item; the machine objects to one of them, which has to be lifted out, and then asks for patience', () => {
+    for (let seed = 1; seed <= 20; seed++) {
+      const c = tillFight(scanMove, seed);
+      run(c, CONFIG.introTime + 0.1);
+      const lane = checkoutOf(c);
+      let objections = 0;
+      for (let i = 0; i < 100 && lane.phase !== 'done'; i++) {
+        if (lane.phase === 'scan') {
+          expect(c.checkout({ kind: 'scan', item: 0 })).toBe('ok');
+          if (checkoutOf(c).phase === 'unexpected') {
+            objections++;
+            const flagged = lane.bagged[lane.bagged.length - 1];
+            // Nothing can be scanned until the item is out; lifting it puts it back in the basket and calls for the assistance.
+            expect(c.checkout({ kind: 'scan', item: 0 })).toBe('wrong');
+            expect(c.checkout({ kind: 'lift' })).toBe('ok');
+            expect(lane.basket).toContain(flagged);
+            expect(lane.phase).toBe('assist');
+            // Touching anything while it thinks is a mistake; waiting out the assistance is not.
+            expect(c.checkout({ kind: 'scan', item: 0 })).toBe('wrong');
+            run(c, CONFIG.checkout.assist + 0.1);
+            expect(lane.phase).toBe('scan');
+          }
+        }
+      }
+      expect(lane.phase).toBe('done');
+      expect(objections).toBeGreaterThanOrEqual(CONFIG.checkout.trips[0]);
+      expect(objections).toBeLessThanOrEqual(CONFIG.checkout.trips[1]);
+    }
+  });
+
+  it('lifting with nothing wrong, or scanning an empty place, is ignored and costs nothing', () => {
+    const c = tillFight();
+    run(c, CONFIG.introTime + 0.1);
+    const lane = checkoutOf(c);
+    expect(c.checkout({ kind: 'lift' })).toBe('ignored');
+    expect(c.checkout({ kind: 'scan', item: 99 })).toBe('ignored');
+    expect(lane.errors).toBe(0);
+    expect(c.hero.hp).toBe(80);
+  });
+
+  it('an empty basket ends the chore with a celebration and stuns the till; only the mistakes hurt', () => {
+    const c = tillFight();
+    run(c, CONFIG.introTime + 0.1);
+    const lane = checkoutOf(c);
+    c.checkout({ kind: 'lift' });
+    bagEverything(c);
+    expect(lane.phase).toBe('done');
+    expect(lane.bagged).toHaveLength(CONFIG.checkout.items);
+    expect(c.checkout({ kind: 'scan', item: 0 })).toBe('ignored');
+    run(c, CONFIG.checkout.doneHold + 0.1);
+    expect(c.chore).toBeNull();
+    expect(c.hero.hp).toBe(80 - lane.errors * CONFIG.checkout.wrongHp);
+    expect(c.has('enemy', 'stun')).toBe(true);
+  });
+
+  it('a mistake costs seconds, up to a cap, and a little blood; when the countdown runs out the hit lands', () => {
+    const c = tillFight({ ...scanMove, windup: 999 });
+    run(c, CONFIG.introTime + 0.1);
+    const lane = checkoutOf(c);
+    const t0 = c.enemy.timer;
+    // A lift when nothing is wrong is ignored, so make a real mistake: scan while the machine is waiting for assistance.
+    for (let i = 0; i < 3 && lane.phase === 'scan'; i++) c.checkout({ kind: 'scan', item: 0 });
+    while (lane.phase === 'scan') c.checkout({ kind: 'scan', item: 0 });
+    expect(lane.phase).toBe('unexpected');
+    const before = c.hero.hp;
+    expect(c.checkout({ kind: 'scan', item: 0 })).toBe('wrong');
+    expect(c.hero.hp).toBe(before - CONFIG.checkout.wrongHp);
+    expect(c.enemy.timer).toBeCloseTo(t0 + CONFIG.checkout.penalty, 5);
+    for (let i = 0; i < 10; i++) c.checkout({ kind: 'scan', item: 0 });
+    expect(lane.fined).toBe(CONFIG.checkout.penaltyMax);
+    const d = tillFight();
+    run(d, CONFIG.introTime + scanMove.windup + 0.1);
+    expect(d.hero.hp).toBeLessThan(80);
+    expect(d.chore).toBeNull();
+    expect(d.checkout({ kind: 'lift' })).toBeNull();
   });
 });

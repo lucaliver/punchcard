@@ -195,6 +195,21 @@ const bat = (y: number, dur: number, delay: number): string =>
     116,
   );
 
+/** Act 4: the weekend's suburb: a couple of houses, the supermarket with its sign and awning, a tree, the sun out. */
+// biome-ignore format: pixel rects read best in rows
+const suburb = (): string =>
+  parts('a', [
+    [0, 21, 96, 3],
+    [3, 14, 12, 7], [5, 12, 8, 2], [7, 10, 4, 2],
+    [18, 16, 10, 5], [20, 14, 6, 2], [22, 13, 2, 1],
+    [34, 12, 30, 9], [58, 4, 3, 8],
+    [70, 15, 2, 6], [66, 8, 10, 7], [68, 6, 6, 2],
+    [80, 15, 13, 6], [82, 13, 9, 2], [84, 11, 5, 2],
+  ]) +
+  parts('w', [[34, 10, 30, 2], [54, 3, 10, 3]]) +
+  parts('b', [[10, 8, 1, 2]]) +
+  parts('l', [[6, 16, 2, 2], [11, 16, 2, 2], [20, 17, 2, 2], [37, 15, 5, 4], [46, 15, 5, 4], [83, 17, 2, 2], [89, 17, 2, 2]]);
+
 /** The life of a scene that belongs to its buildings (smoke, steam, windows going dark): it moves on the map's banner and on the act intro alike, over the scene. */
 const LIFE = [
   bat(4, 11, -5) + bat(8, 14, -9),
@@ -213,6 +228,7 @@ const LIFE = [
     lightsOut(7, 18, 8, 0) +
     lightsOut(17, 15, 12, -5) +
     lightsOut(90, 16, 10, -3),
+  puff(10, 7, 0) + lightsOut(20, 17, 9, -3) + lightsOut(46, 15, 12, -6) + lightsOut(83, 17, 10, -1),
 ];
 
 /** What moves over each scene on the map's banner (the act intro has its own sky, below). */
@@ -229,6 +245,7 @@ const MOVERS = [
     plane(6, 80, -30) +
     cloud(10, 90, -45, true) +
     LIFE[2],
+  cloud(2, 60, 0, true) + cloud(8, 80, -20) + bird(3, 16, -4) + bird(7, 20, -11) + LIFE[3],
 ];
 
 /** A pixel crescent: the disc at (cx, cy) with another one, centred (cx2, cy2), cut out of it. */
@@ -262,9 +279,10 @@ const SKIES = [
       .map(([x, y], i) => twinkle(x, y, 1.4 + (i % 3) * 0.5, -i * 0.7))
       .join('') +
     twinkle(2, 2, 1.8, 0) + twinkle(26, 3, 2.1, -1) + twinkle(52, 3, 1.6, -0.5) + twinkle(76, 1, 2.4, -1.4) + plane(-9, 40, -14),
+  parts('w', disc(74, -7, 6)) + cloud(-13, 40, -12, true) + cloud(-8, 30, -22) + bird(-11, 14, -2) + bird(-6, 18, -9),
 ];
 
-const SCENES = [crypt, office, factory];
+const SCENES = [crypt, office, factory, suburb];
 
 /** The scene of an act (1-based; later acts fall back to the last one, like `actDef`); `tall` adds its sky, for the act intro. */
 export const actArt = (act: number, tall = false): string => {

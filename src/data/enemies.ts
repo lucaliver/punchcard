@@ -23,6 +23,9 @@ const GET_COFFEE = 26;
 /** Seconds the Punch Clock's badge swipe takes to land: a refusal or two (it never reads the first) and a few tries at the right speed fit in it. */
 const BADGE_SWIPE = 16;
 
+/** Seconds the Self-Checkout's unexpected item takes to land: a basket of groceries, a couple of lifts and the assistance's wait fit in it with a little to spare. */
+const CHECKOUT = 26;
+
 /** The Board's belt multipliers: phase 1 crawls (with a third row), phase 2 runs. */
 const BOARD_SLOW = 0.7;
 const BOARD_FAST = 1.5;
@@ -860,6 +863,21 @@ const defs: EnemyDef[] = [
     ],
     start: [{ id: 'strength', v: 2 }],
   },
+  {
+    // The weekend's first stop: the groceries. It objects to what you bag, and a till is never a quick thing.
+    id: 'selfCheckout',
+    act: 4,
+    tier: 'normal',
+    hp: 150,
+    block: 20,
+    art: 'selfCheckout',
+    main: atk('scanAndBag', 9, 6),
+    every: 2,
+    specials: [
+      { id: 'assistanceNeeded', intent: 'debuff', windup: 5, status: [gainStrength, { id: 'slowdown', t: 6, target: 'hero' }] },
+      { id: 'unexpectedItem', intent: 'charge', windup: CHECKOUT, dmg: 20, task: 'checkout' },
+    ],
+  },
 ];
 
 /** The handbook lists the enemies in this order: the very first run's enemies first, in the order it meets them. */
@@ -913,6 +931,7 @@ export const DIFFICULTY = [
   'tourist',
   'conveyorSis',
   'theBoard',
+  'selfCheckout',
 ];
 
 /** A dummy for tests in the debug fight menu (200 HP, 10 damage every 10 s): in `ENEMIES` so a fight can load it, but in no list, map, handbook or reward. */
@@ -933,6 +952,8 @@ export const ENEMY_LIST: readonly EnemyDef[] = [...defs].sort((a, b) => DIFFICUL
 /** Main attack followed by the specials (then those of each later phase), for lists such as the compendium. */
 export const enemyMoves = (e: EnemyDef): MoveDef[] => [e.main, ...e.specials, ...(e.phases ?? []).flatMap((p) => [p.main, ...p.specials])];
 
-/** Enemies of an act and tier, easiest first. */
-export const enemiesFor = (act: number, tier: EnemyDef['tier']): EnemyDef[] =>
-  ENEMY_LIST.filter((e) => e.act === act && e.tier === tier && !e.firstRunOnly);
+/** Enemies of an act and tier, easiest first. An act that has none of a tier yet (the weekend's elites and boss) deals the one before's. */
+export const enemiesFor = (act: number, tier: EnemyDef['tier']): EnemyDef[] => {
+  const own = ENEMY_LIST.filter((e) => e.act === act && e.tier === tier && !e.firstRunOnly);
+  return own.length || act <= 1 ? own : enemiesFor(act - 1, tier);
+};

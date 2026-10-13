@@ -10,7 +10,7 @@ import { setSfxVolume, unlockAudio } from './audio/sfx';
 import { musicTrack, playMusic, setMusicVolume, suspendMusic } from './audio/music';
 import { trackFight, trackRun } from './analytics';
 import { sendCrash } from './feedback/firebase';
-import { actDef } from './data/acts';
+import { ACT_DEFS, actDef, MAIN_ACTS } from './data/acts';
 import { CONFIG, type RewardKind } from './data/config';
 import { ENEMIES } from './data/enemies';
 import { VALUES } from './data/values';
@@ -28,7 +28,6 @@ import {
   SCRIPTED_ACTS,
   finishRun,
   loadRun,
-  ACTS,
   mapAct,
   newRun,
   type NodeType,
@@ -134,7 +133,9 @@ function startRun(hero: HeroId): void {
   // The first time an act is met its rooms and enemies are always the same (and the very first run too: seed, no memos).
   const first = startingFirstRun();
   const scripted = unmetActs(SCRIPTED_ACTS);
-  run = newRun(hero, first ? FIRST_RUN_SEED : randomSeed(), scripted, !first && memosOpen(hero) ? chosenMemos() : [], lastEnemies());
+  // A hero with the memos open also has the bonus acts (the weekend) after the main ones.
+  const open = !first && memosOpen(hero);
+  run = newRun(hero, first ? FIRST_RUN_SEED : randomSeed(), scripted, open ? chosenMemos() : [], lastEnemies(), open ? ACT_DEFS.length : MAIN_ACTS);
   setLastEnemies(run.nodes.flatMap((n) => (n.enemy ? [n.enemy] : [])));
   resetFightLog();
   goJourney();
@@ -150,9 +151,29 @@ function debugFight(hero: HeroId, enemy: string, cards: string[], bigHp: boolean
   enterNode();
 }
 
-function goJourney(): void {
+/** At the foot of the last main act's boss, in a run that has the weekend: the choice between going on and clocking out with the win. */
+function atWeekendFork(r: RunState): boolean {
+  const node = currentNode(r);
+  return r.cleared && node.type === 'boss' && node.act === MAIN_ACTS && node.next.length > 0;
+}
+
+function goJourney(weekend = false): void {
   if (!run) {
     goTitle();
+    return;
+  }
+  if (!weekend && atWeekendFork(run)) {
+    const r = run;
+    openModal({
+      title: t('weekend.title'),
+      cls: 'weekend-fork',
+      body: t('weekend.body'),
+      dismissable: false,
+      actions: [
+        { label: t('weekend.go'), onClick: () => goJourney(true) },
+        { label: t('weekend.stop'), cls: 'secondary', onClick: () => endRun(r, true) },
+      ],
+    });
     return;
   }
   playMusic(actDef(mapAct(run)).mapMusic);
@@ -195,7 +216,8 @@ function debugMap(): void {
       }
     : null;
   // In the last act: end the run as a win right away.
-  const victory = mapAct(r) === ACTS ? { label: t('debug.victory'), icon: 'medal', run: () => endRun(r, true) } : null;
+  const victory =
+    mapAct(r) === Math.max(...r.nodes.map((n) => n.act)) ? { label: t('debug.victory'), icon: 'medal', run: () => endRun(r, true) } : null;
   openDebugMenu(
     t('debug.mapMenu'),
     [

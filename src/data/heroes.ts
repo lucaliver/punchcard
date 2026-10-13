@@ -1,4 +1,4 @@
-import { ACT_DEFS } from './acts';
+import { MAIN_ACTS } from './acts';
 import { CONFIG } from './config';
 import type { HeroDef, HeroId } from '../game/types';
 
@@ -116,7 +116,7 @@ const necromancer: HeroDef = {
 
 const rogue: HeroDef = {
   id: 'rogue',
-  unlock: { allStamped: ACT_DEFS.length },
+  unlock: { allStamped: MAIN_ACTS },
   hp: 60,
   maxMana: 3,
   regen: CONFIG.manaRegen,

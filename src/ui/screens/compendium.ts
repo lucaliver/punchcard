@@ -166,6 +166,7 @@ function recordSlip(): HTMLElement {
     row('records.runs', r.runs),
     row('records.wins', r.wins),
     row('records.fullDays', r.fullDays),
+    row('records.weekends', r.weekends),
     row('records.furthest', r.bestAct ? t('records.furthestValue', { a: r.bestAct, n: r.bestFloor }) : none),
     row('records.kills', r.kills),
     row('records.elites', r.elites),

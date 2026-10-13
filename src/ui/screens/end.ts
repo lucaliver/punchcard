@@ -3,7 +3,8 @@ import { BEG_FLAG } from '../../data/config';
 import { sfx } from '../../audio/sfx';
 import type { HeroId } from '../../game/types';
 import { collection, type RunRecord } from '../../game/meta';
-import { ACTS, currentNode, type RunEnd, type RunState } from '../../game/run';
+import { MAIN_ACTS } from '../../data/acts';
+import { currentNode, type RunEnd, type RunState } from '../../game/run';
 import type { Screen } from '../app';
 import type { Section } from './compendium';
 import { collectionBars } from '../components/collectionBars';
@@ -109,7 +110,7 @@ export function endScreen(
       ),
       h('p', { class: 'sub' }, won ? t('end.victoryDesc') : t('end.defeatDesc', { n: node.floor })),
       // Shown after a full day: tapping it opens the hire screen on this hero, where the memos are pinned up.
-      won && node.act === ACTS
+      won && node.act >= MAIN_ACTS
         ? h('button', {
             class: 'new-hire memo-note',
             html: `<i class="lead">${icon('clipboard')}</i><div><b>${t('end.memosTitle')}</b><span>${t('end.memosOpen', { hero: t(`hero.${run.hero}.name`) })}</span></div><i class="go">${icon('left')}</i>`,

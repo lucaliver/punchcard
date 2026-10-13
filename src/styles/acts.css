@@ -105,6 +105,42 @@
   --stage-lit: #e8c440;
   --stage-hot: var(--red);
 }
+/* the weekend: a bright, too-cheerful green, nothing like the three shifts' darks */
+[data-act='4'] {
+  --stamp-ink: var(--tc-accent);
+  --bg: #0d6b33;
+  --bg2: #095326;
+  --bg-dot: #128244;
+  --night-dot: #1a9a54;
+  --belt: #0b5a2c;
+  --belt-dot: #137a40;
+  /* the belt's red warning would vanish on this green belt */
+  --belt-alarm: var(--y);
+  --foe-bg: #d4f5c8;
+  --map-wall: #9dff7a77;
+  --map-hall: #0f6a36;
+  --map-trod: #1b9a50;
+  --map-mid: #5fe08a;
+  --map-warm: var(--y);
+  --map-fog-a: #0c5a2d;
+  --map-fog-b: #107a3c;
+  --map-done: #a8d8b4;
+  --map-done-ink: #12502a;
+  --map-missed: #0d6232;
+  --map-missed-line: #3bb870;
+  --map-missed-ink: #58d88a;
+  --tc-paper: #d4f5c8;
+  --tc-muted: #1f6a38;
+  --tc-accent: #148a3c;
+  --door-wood: #b8793d;
+  --door-panel: #cc8d4e;
+  --door-shade: #6e4220;
+  --door-hi: #e3aa6b;
+  --stage-far: #118042;
+  --stage-near: #16a152;
+  --stage-lit: var(--y);
+  --stage-hot: var(--p);
+}
 /* the first act's map is a brighter violet than its other screens: the morning shift starts at dawn */
 .journey[data-act='1'] {
   --bg: #2e2060;

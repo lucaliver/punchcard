@@ -50,6 +50,7 @@
   flex-direction: column;
   gap: 12px;
 }
+.modal.weekend-fork p { white-space: pre-line; }
 .modal p {
   margin: 0;
   font-size: 18px;

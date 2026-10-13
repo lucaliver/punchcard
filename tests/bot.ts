@@ -3,6 +3,7 @@ import { CARDS } from '../src/data/cards';
 import { COFFEE_SERVICE } from '../src/data/coffee';
 import { CoffeeTask } from '../src/game/coffee';
 import { BadgeSwipe } from '../src/game/badge';
+import { CheckoutLane } from '../src/game/checkout';
 import { MatchThree } from '../src/game/match3';
 import { ShellGame } from '../src/game/shells';
 import { SushiOrder } from '../src/game/sushi';
@@ -105,6 +106,12 @@ export function botDecide(c: Combat, rnd: () => number, opts: BotOpts): void {
   // The badge reader: a swipe at the middle of the zone each decision (the reader refuses the first good ones anyway).
   if (c.chore instanceof BadgeSwipe) {
     c.swipeBadge((c.chore.min + c.chore.max) / 2);
+    return;
+  }
+  // The self-checkout: scan what is in the basket, lift out what the machine objects to, and wait for the assistance (cards are out of reach meanwhile).
+  if (c.chore instanceof CheckoutLane) {
+    if (c.chore.phase === 'scan') c.checkout({ kind: 'scan', item: 0 });
+    else if (c.chore.phase === 'unexpected') c.checkout({ kind: 'lift' });
     return;
   }
   // The coffee chore: one right move per decision (a person takes a moment for each), cards are out of reach meanwhile.

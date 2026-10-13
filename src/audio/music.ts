@@ -13,8 +13,10 @@ export type TrackId =
   | 'combat'
   | 'combat2'
   | 'combat3'
+  | 'combat4'
   | 'map2'
   | 'map3'
+  | 'map4'
   | 'elite'
   | 'boss'
   | 'rest'
@@ -427,6 +429,84 @@ const TRACKS: Record<TrackId, Track> = {
     drums: ['k.......k.......', '....h.......h...'],
     pad: true,
     gain: 0.75,
+  },
+  // The weekend: bright C major with a bouncy bass and a bell, a little too cheerful to trust.
+  combat4: {
+    bpm: 124,
+    chords: [
+      { root: 36, tones: MAJ7 }, // Cmaj7
+      { root: 33, tones: MIN7 }, // Am7
+      { root: 41, tones: MAJ7 }, // Fmaj7
+      { root: 43, tones: DOM7 }, // G7
+    ],
+    bass: [0, _, 12, _, 0, _, 7, _, 0, _, 12, _, 7, _, 5, _],
+    bassWave: 'pulse',
+    arp: [0, _, 1, _, 2, _, 3, _, 2, _, 1, _, 2, _, 1, _],
+    arpOctave: 4,
+    lead: [
+      [
+        [0, E5, 6],
+        [8, G5, 4],
+        [12, E5, 4],
+      ],
+      [
+        [0, C5, 6],
+        [8, E5, 8],
+      ],
+      [
+        [0, F5, 6],
+        [8, A5, 4],
+        [12, G5, 4],
+      ],
+      [
+        [0, D5, 6],
+        [8, B4, 4],
+        [12, D5, 4],
+      ],
+    ],
+    leadOn: (p) => p % 2 === 1,
+    leadVoice: 'bell',
+    drums: ['k...k...k...k...', '....s.......s...', 'h.h.h.h.h.h.h.h.'],
+    pad: true,
+    gain: 0.75,
+  },
+  // The weekend's map: a slow Saturday morning, a bell over a warm drone.
+  map4: {
+    bpm: 80,
+    chords: [
+      { root: 36, tones: MAJ7 }, // Cmaj7
+      { root: 33, tones: MIN7 }, // Am7
+      { root: 41, tones: MAJ7 }, // Fmaj7
+      { root: 43, tones: DOM7 }, // G7
+    ],
+    bass: [0, _, _, _, 7, _, _, _, 0, _, _, 7, _, _, 12, _],
+    bassWave: 'triangle',
+    arp: [0, _, 1, _, 2, _, 3, _, 2, _, 1, _, 2, _, 1, _],
+    arpOctave: 4,
+    lead: [
+      [
+        [0, E5, 6],
+        [8, C5, 8],
+      ],
+      [
+        [0, A4, 4],
+        [4, C5, 4],
+        [8, E5, 8],
+      ],
+      [
+        [0, F5, 6],
+        [8, A4 + 12, 8],
+      ],
+      [
+        [0, D5, 6],
+        [8, G5, 8],
+      ],
+    ],
+    leadOn: (p) => p % 2 === 1,
+    leadVoice: 'bell',
+    drums: ['k...............', '..........h.....'],
+    pad: true,
+    gain: 0.8,
   },
   // The night map: empty corridors under emergency lights, a slow bell over a low drone.
   map3: {
