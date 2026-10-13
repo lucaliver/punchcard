@@ -19,7 +19,7 @@ import {
   TABS_EVERY,
   UNION_HP,
 } from '../../src/data/statuses';
-import { CARDS, cardValsOf } from '../../src/data/cards';
+import { CARD_LIST, CARDS, cardValsOf } from '../../src/data/cards';
 import { applyCombat, combatSetup, newRun } from '../../src/game/run';
 import type { CardInst, CombatCard } from '../../src/game/types';
 import { deckOf, setup, run } from './helpers';
@@ -2246,5 +2246,20 @@ describe('upgrading cards in a fight', () => {
     for (const card of [...c.draw, ...c.discard]) card.up = true;
     c.upgradeRandom(2);
     expect(seen).toEqual([n]);
+  });
+});
+
+describe('live card faces', () => {
+  it('a card whose face is read live (`shown`) still has every value its face prints', () => {
+    const c = setup({ deck: deckOf(HEROES.warrior.startDeck) });
+    for (const def of CARD_LIST.filter((d) => d.shown)) {
+      const card = c.addTempCard(def.id, 'belt');
+      const shown = c.shownVals(card);
+      // `{kind:i}` prints value i, and so does a bare `{i}`.
+      const printed = [...def.face.matchAll(/\{[?*!]?([\w+]+)(?::(\d))?\}/g)].map((m) => m[2] ?? (/^\d$/.test(m[1]) ? m[1] : undefined));
+      for (const idx of printed.filter((n) => n !== undefined).map(Number)) {
+        expect(shown[idx], `${def.id} prints value ${idx}`).toBeTypeOf('number');
+      }
+    }
   });
 });

@@ -196,7 +196,7 @@ export const rogueCards: CardDef[] = [
     upVals: [1, 3],
     art: 'cutTheWire',
     // The face shows the damage the cards at the front are worth right now (their cost without the sleeve's discount, times `v[0]`).
-    shown: (c, v) => [v[0] * c.frontWorth(v[1])],
+    shown: (c, v) => [v[0] * c.frontWorth(v[1]), v[1]],
     play: (c, v) => {
       const worth = c.dropFront(v[1]);
       if (!c.result && worth > 0) c.hit(v[0] * worth);
