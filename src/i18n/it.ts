@@ -1959,7 +1959,7 @@ const it: Record<EnKey, string> = {
   'card.vibeCoding.name': 'Vibe Coding',
   'card.vibeCoding.desc': 'Gioca gratis {0} carte a caso dal tuo mazzo di pesca. Rimescola una [curse] comune a caso per ogni carta giocata.',
   'card.forkBomb.name': 'Fork Bomb',
-  'card.forkBomb.desc': 'Fai {0} [damage]. Aggiungi {1} copie [fleeting] di questa carta al nastro.',
+  'card.forkBomb.desc': 'Fai {0} [damage]. Mescola {1} copie [fleeting] di questa carta nel mazzo di pesca.',
   'card.icebreaker.name': 'Rompighiaccio',
   'card.icebreaker.desc': 'Rimuovi il [chill] dal nemico. Fai {0} [damage] per ogni secondo rimosso.',
   'card.cronJob.name': 'Cron Job',

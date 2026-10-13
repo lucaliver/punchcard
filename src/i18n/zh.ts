@@ -1932,7 +1932,7 @@ const zh: Record<EnKey, string> = {
   'card.vibeCoding.name': '氛围编程',
   'card.vibeCoding.desc': '免费打出你抽牌堆里随机 {0} 张牌。每打出一张，就把一张随机的普通[curse]洗入抽牌堆。',
   'card.forkBomb.name': '分叉炸弹',
-  'card.forkBomb.desc': '造成 {0} 点[damage]。把 {1} 张这张牌的[fleeting]复制品加到传送带上。',
+  'card.forkBomb.desc': '造成 {0} 点[damage]。把 {1} 张这张牌的[fleeting]复制品洗入你的抽牌堆。',
   'card.icebreaker.name': '破冰游戏',
   'card.icebreaker.desc': '移除敌人的[chill]。每移除 1 秒，造成 {0} 点[damage]。',
   'card.cronJob.name': '定时任务',

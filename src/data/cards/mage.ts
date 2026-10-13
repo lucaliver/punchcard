@@ -1,6 +1,5 @@
 import type { Combat } from '../../game/combat';
 import type { CardDef } from '../../game/types';
-import { CONFIG } from '../config';
 import { WHEN } from './conditions';
 
 /** Whole seconds of Rush the belt has left (Any% Speedrun). */
@@ -842,7 +841,7 @@ export const mageCards: CardDef[] = [
     // The copies queue up at the entry of the belt (what finds no room goes to the draw pile) and burn out when they ride off it.
     play: (c, v, card) => {
       c.hit(v[0]);
-      for (let i = 0; i < v[1]; i++) c.addTempCard('forkBomb', 'belt', card.up, (-i * CONFIG.spacing) / c.rowsOpen, { fleeting: true });
+      for (let i = 0; i < v[1]; i++) c.addTempCard('forkBomb', 'draw', card.up, 0, { fleeting: true });
     },
   },
   {

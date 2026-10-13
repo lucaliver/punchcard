@@ -1977,10 +1977,11 @@ describe('the office batch: streaks, clocks, piles, curses and corporate speak',
     expect(c.draw.some((x) => x.id === 'forklift')).toBe(true);
   });
 
-  it('Fork Bomb copies itself onto the belt as Fleeting cards', () => {
+  it('Fork Bomb shuffles copies of itself into the draw pile as Fleeting cards', () => {
     const c = still('mage');
     expect(play(c, 'forkBomb')).toBe(true);
-    const copies = c.belt.filter((b) => b.card.id === 'forkBomb');
+    expect(c.belt.some((b) => b.card.id === 'forkBomb')).toBe(false);
+    const copies = c.draw.filter((x) => x.id === 'forkBomb');
     expect(copies).toHaveLength(CARDS.forkBomb.vals[1]);
     expect(copies.every((b) => b.card.fleeting)).toBe(true);
   });

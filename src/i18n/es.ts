@@ -1959,7 +1959,7 @@ const es: Record<EnKey, string> = {
   'card.vibeCoding.name': 'Vibe Coding',
   'card.vibeCoding.desc': 'Juega gratis {0} cartas al azar de tu mazo de robo. Baraja una [curse] común al azar por cada carta jugada.',
   'card.forkBomb.name': 'Bomba Fork',
-  'card.forkBomb.desc': 'Haz {0} de [damage]. Añade {1} copias [fleeting] de esta carta a la cinta.',
+  'card.forkBomb.desc': 'Haz {0} de [damage]. Baraja {1} copias [fleeting] de esta carta en tu mazo de robo.',
   'card.icebreaker.name': 'Rompehielos',
   'card.icebreaker.desc': 'Quita el [chill] al enemigo. Haz {0} de [damage] por cada segundo que quites.',
   'card.cronJob.name': 'Tarea Cron',

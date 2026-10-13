@@ -1945,7 +1945,7 @@ const en = {
   'card.vibeCoding.name': 'Vibe Coding',
   'card.vibeCoding.desc': 'Play {0} random cards from your draw pile for free. Shuffle a random common [curse] into it for every card played.',
   'card.forkBomb.name': 'Fork Bomb',
-  'card.forkBomb.desc': 'Deal {0} [damage]. Add {1} [fleeting] copies of this card to the belt.',
+  'card.forkBomb.desc': 'Deal {0} [damage]. Shuffle {1} [fleeting] copies of this card into your draw pile.',
   'card.icebreaker.name': 'Icebreaker',
   'card.icebreaker.desc': 'Remove [chill] from the enemy. Deal {0} [damage] for every second of it removed.',
   'card.cronJob.name': 'Cron Job',
