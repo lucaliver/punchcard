@@ -23,6 +23,12 @@ export const TAG_ICON: Record<string, string> = {
   anchor: 'anchor',
 };
 
+/** A cost moved by perks wears the colour of the move: yellow when cheaper (Budget Cut), red when dearer (Overtime). */
+const perkCostClass = (card: CardLike): string => {
+  const delta = (card.perks ?? []).reduce((d, p) => d + (PERKS[p]?.costDelta ?? 0), 0);
+  return delta < 0 ? 'cheap' : delta > 0 ? 'dear' : '';
+};
+
 /** Glyph kind → icon and the unit shown after its value. */
 /** A glyph's `tone` is the one of the status or keyword it stands for (the text names it in the same ink: `StatusDef.tone`, `KEYWORD_TONE`). */
 export const GLYPHS: Record<string, { icon: string; unit?: string; sign?: string; tone?: Tone }> = {
@@ -365,7 +371,7 @@ export function cardView(card: CardLike, opts: CardViewOpts = {}): HTMLDivElemen
   const lines = def.face.split('|').length;
   const pic = cardScene(def.id);
   el.innerHTML = `
-    <div class="c-top"><div class="c-cost ${card.perks?.some((p) => PERKS[p]?.costDelta) ? 'cheap' : ''}">${cardCostLabel(card)}</div><div class="c-name ${nameFit(cardName(card))}">${cardName(card)}</div></div>
+    <div class="c-top"><div class="c-cost ${perkCostClass(card)}">${cardCostLabel(card)}</div><div class="c-name ${nameFit(cardName(card))}">${cardName(card)}</div></div>
     <div class="c-art"${pic ? ' data-pic' : ''}>${icon(def.art)}${pic}</div>
     <div class="c-face ${lines > 1 ? 'two' : ''}">${echo ? `<i class="c-wave l">${icon('echoWave')}</i><i class="c-wave r">${icon('echoWave')}</i>` : ''}<div class="c-body">${cardFace(card, opts.combat)}</div></div>
     ${tags ? `<div class="c-tags">${tags}</div>` : ''}
