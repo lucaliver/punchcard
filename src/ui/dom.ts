@@ -45,8 +45,7 @@ export function toggle(el: Element, cls: string, on: boolean): void {
 /** A little longer than an animation, so its last frame is shown before the element is removed or the next step begins. */
 export const SLACK_MS = 60;
 
-/** A duration token of the stylesheet (`--dur-fly`) in milliseconds, so what waits for an animation to end waits as long as the CSS plays it. */
-/** The production build writes `700ms` as `.7s`: both units are read. */
+/** A duration token of the stylesheet (`--dur-fly`) in milliseconds, so what waits for an animation to end waits as long as the CSS plays it. The production build writes `700ms` as `.7s`: both units are read. */
 export const cssMs = (token: string): number => {
   const value = cssColor(token);
   return (Number.parseFloat(value) || 0) * (value.endsWith('ms') ? 1 : 1000);
@@ -54,6 +53,9 @@ export const cssMs = (token: string): number => {
 
 /** A colour token of the stylesheet (`--shield`), so scripts paint with the same inks as the CSS. */
 export const cssColor = (token: string): string => getComputedStyle(document.documentElement).getPropertyValue(token).trim();
+
+/** A plain number token of the stylesheet (`--enter-land`, the share of an animation at which something happens). */
+export const cssNumber = (token: string): number => Number.parseFloat(cssColor(token));
 
 /** Center of an element in viewport coordinates. */
 export function centerOf(el: Element): { x: number; y: number } {

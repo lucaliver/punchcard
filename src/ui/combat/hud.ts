@@ -15,7 +15,6 @@ import { HALF_ICON, moveIcon, moveTone } from '../components/moveText';
 import { h, onPress, setHtml, setText, toggle } from '../dom';
 import { type CombatView, PASSIVE_ICON } from './view';
 
-/** Everything around the cards: HP bars, statuses, the threat bar, mana and hero extras. `onPassive` explains the hero passive. */
 /** A draining status bar moves in this many steps, and blinks once this share is left. */
 const BAR_STEPS = 10;
 const BAR_LOW = 0.3;
@@ -31,6 +30,7 @@ const BELT_ALARM_STEPS = 8;
 /** The filling mana pip shows its progress in this many steps. */
 const PIP_STEPS = 8;
 
+/** Everything around the cards: HP bars, statuses, the threat bar, mana and hero extras. `onPassive` explains the hero passive. */
 export function createHud(v: CombatView, onPassive: () => void): { render(): void } {
   const { combat, r } = v;
   /** Last rendered status set per side (null = never rendered, so the hero passive shows from the first frame). */
@@ -480,7 +480,7 @@ export function createHud(v: CombatView, onPassive: () => void): { render(): voi
     lastMana = hs.mana;
     // Full: nothing more to gain by waiting, so the bar blinks to invite a play (once the fight has started).
     toggle(r.manaRow, 'full', !v.state.waiting && hs.mana >= hs.maxMana);
-    r.manaNum.innerHTML = `${hs.mana}<small>/${hs.maxMana}</small>`;
+    setHtml(r.manaNum, `${hs.mana}<small>/${hs.maxMana}</small>`);
   };
 
   /** Sparks above and below the belt: two for every stack of a status with `beltSparks` (made as they are needed, each in its own spot). */

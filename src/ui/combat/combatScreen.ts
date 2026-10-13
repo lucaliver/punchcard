@@ -17,7 +17,7 @@ import { spriteBox } from '../art/riso';
 import { icon } from '../art/icons';
 import { coach } from '../components/coach';
 import { bindMoveDetails, enemyTraits, moveEffect, moveIcon, movePattern } from '../components/moveText';
-import { $, SLACK_MS, cssMs, h, onPress, onTapOrHold } from '../dom';
+import { $, SLACK_MS, cssMs, cssNumber, h, onPress, onTapOrHold } from '../dom';
 import { burst, haptic, shake } from '../fx/fx';
 import { bindCrank } from './crank';
 import { bindMop } from './mop';
@@ -240,7 +240,6 @@ export function combatScreen(run: RunState, combat: Combat, cb: CombatCallbacks)
 
   v.relayout = layout;
 
-  // ------------------------------------------------------------------ controls
   // ------------------------------------------------------------------ inspectables (hold to learn)
   const info = (opts: InfoOpts): ModalHandle => {
     sfx('tap');
@@ -484,13 +483,10 @@ export function combatScreen(run: RunState, combat: Combat, cb: CombatCallbacks)
       },
       { once: true },
     );
-    later(
-      () => {
-        shake('small');
-        sfx('blunt');
-      },
-      cssMs('--dur-enter') * Number.parseFloat(getComputedStyle(document.documentElement).getPropertyValue('--enter-land')),
-    );
+    later(() => {
+      shake('small');
+      sfx('blunt');
+    }, cssMs('--dur-enter') * cssNumber('--enter-land'));
   };
 
   /**
@@ -525,10 +521,7 @@ export function combatScreen(run: RunState, combat: Combat, cb: CombatCallbacks)
       },
       { once: true },
     );
-    later(
-      () => dark.isConnected && lightsOn(),
-      cssMs('--dur-boss-intro') * Number.parseFloat(getComputedStyle(document.documentElement).getPropertyValue('--boss-lights')),
-    );
+    later(() => dark.isConnected && lightsOn(), cssMs('--dur-boss-intro') * cssNumber('--boss-lights'));
     sfx('machinery');
   };
 

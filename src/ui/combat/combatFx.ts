@@ -10,7 +10,7 @@ import type { CardType, CombatEvent } from '../../game/types';
 import { creature } from '../art/creatures';
 import { relicArt } from '../art/relics';
 import { icon } from '../art/icons';
-import { centerOf, cssMs, h } from '../dom';
+import { centerOf, cssMs, cssNumber, h } from '../dom';
 import { burst, floatText, haptic, shake } from '../fx/fx';
 import { keywordText, statusName } from '../components/cardView';
 import type { CardLayer } from './cardLayer';
@@ -378,14 +378,11 @@ export function bindCombatFx(v: CombatView, cards: CardLayer, onEnd: (result: 'w
         sfx('enemyDown');
         shake('big');
         haptic('kill');
-        setTimeout(
-          () => {
-            haptic('heavy');
-            burst('heal', p.x, p.y, 24, 1.4);
-            sfx('levelUp');
-          },
-          cssMs('--dur-revive') * Number.parseFloat(getComputedStyle(document.documentElement).getPropertyValue('--revive-rise')),
-        );
+        setTimeout(() => {
+          haptic('heavy');
+          burst('heal', p.x, p.y, 24, 1.4);
+          sfx('levelUp');
+        }, cssMs('--dur-revive') * cssNumber('--revive-rise'));
         break;
       }
       case 'speech':
