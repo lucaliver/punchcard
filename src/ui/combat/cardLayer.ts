@@ -434,8 +434,12 @@ export function createCardLayer(v: CombatView): CardLayer {
         ce.stealEl.remove();
         ce.stealEl = undefined;
       }
-      // Blink on the way out only when leaving the belt does something (curses that explode, drain…).
-      toggle(ce.el, 'leaving', !b.pinned && b.pos > 0.86 && !!CARDS[b.card.id].onExpire);
+      // Blink on the way out only when leaving the belt does something (curses that explode, drain…); a card that would be lost for the fight
+      // (Fleeting, and one that can still be played) shakes as well: this is its last chance.
+      const lastChance = combat.keywords(b.card).includes('fleeting') && combat.isPlayable(b.card);
+      const exiting = !b.pinned && b.pos > 0.86;
+      toggle(ce.el, 'leaving', exiting && (!!CARDS[b.card.id].onExpire || lastChance));
+      toggle(ce.el, 'last-chance', exiting && lastChance);
       if (refreshFaces) setHtml(ce.face, cardFace(b.card, combat));
       // Slipping off the end: it tips over (the CSS animation) but can still be grabbed.
       toggle(ce.el, 'falling', b.falling !== undefined);

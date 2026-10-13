@@ -1376,6 +1376,23 @@ test('the first Kamikaze on the belt stops the fight to say where it is safe', a
   expect(problems).toEqual([]);
 });
 
+test('a Fleeting card trembles and blinks in its last stretch of the belt, but only while it can still be played', async ({ page }) => {
+  const problems = await freshGame(page);
+  await startFight(page);
+  await combat(page, "c.applyStatus('hero', 'stalled', 1, 600);");
+  for (const [id, shakes] of [
+    ['itsAMe', true],
+    ['intern', false],
+  ] as const) {
+    await combat(page, `c.belt.length = 0; c.addTempCard('${id}', 'belt'); c.belt[0].pos = 0.5;`);
+    await expect(page.locator('.belt-cards .card')).toHaveCount(1);
+    await expect(page.locator('.belt-cards .card.last-chance')).toHaveCount(0);
+    await combat(page, 'c.belt[0].pos = 0.9;');
+    await expect(page.locator('.belt-cards .card.last-chance')).toHaveCount(shakes ? 1 : 0);
+  }
+  expect(problems).toEqual([]);
+});
+
 test('releasing the hold that opened a card does not press Close underneath', async ({ page }) => {
   await freshGame(page);
   await page.getByRole('button', { name: 'Handbook' }).click();
