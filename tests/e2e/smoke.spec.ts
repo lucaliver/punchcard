@@ -567,6 +567,9 @@ test('debug menus: the fight menu kills the enemy, the map menu opens rooms and 
   await freshGame(page);
   await startFight(page);
   await page.locator('.combat .debug-fab').click();
+  // The adaptive difficulty is invisible in play, and shown here: the state and the levels it gives the enemies.
+  await expect(page.locator('.debug-info')).toContainText('Adaptive difficulty');
+  await expect(page.locator('.debug-info')).toContainText('Enemy HP');
   await page.getByRole('button', { name: 'Restore my HP' }).click();
   // Block 50 for the hero, and the enemy drops the move it was charging.
   await page.locator('.combat .debug-fab').click();
@@ -615,6 +618,7 @@ test('debug menus: the fight menu kills the enemy, the map menu opens rooms and 
     await expect(page.locator('.path .step.lamp')).toHaveCount(0);
   }
   await map.locator('.debug-fab').click();
+  await expect(page.locator('.debug-info')).toContainText('Enemy damage');
   await expect(page.getByRole('button', { name: 'Skip to next act' })).toBeHidden();
 });
 

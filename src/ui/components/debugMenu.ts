@@ -1,5 +1,7 @@
 import { t } from '../../core/i18n';
 import type { Combat } from '../../game/combat';
+import { fightSignals, learn, pressureScale } from '../../game/pressure';
+import { isFirstRun, pressureLearns, type RunState } from '../../game/run';
 import { sfx } from '../../audio/sfx';
 import { CARD_LIST, CARDS } from '../../data/cards';
 import { CONFIG } from '../../data/config';
@@ -114,18 +116,36 @@ export function debugButton(label: string, onClick: () => void): HTMLButtonEleme
   });
 }
 
-/** Temporary debug tool: a window of cheat buttons; a tap closes the window, then does it. */
+const signed = (x: number): string => `${x >= 0 ? '+' : ''}${x.toFixed(2)}`;
+
+/** Temporary debug tool: what the adaptive difficulty has learned so far (the levels of `run.pressure` and the multipliers they give the next enemies). */
+export function pressureInfo(run: RunState): HTMLElement {
+  const scale = pressureScale(run.pressure, run.mods.length > 0);
+  const state = isFirstRun(run)
+    ? t('debug.pressure.off')
+    : pressureLearns(run)
+      ? t('debug.pressure.on')
+      : t('debug.pressure.warmup', { n: CONFIG.pressure.warmup - run.stats.kills });
+  const rows: [string, string][] = [
+    [t('debug.pressure.state'), state],
+    [t('debug.pressure.hp'), t('debug.pressure.value', { level: signed(run.pressure.hp), mult: scale.hp.toFixed(2) })],
+    [t('debug.pressure.dmg'), t('debug.pressure.value', { level: signed(run.pressure.dmg), mult: scale.dmg.toFixed(2) })],
+  ];
+  return h('dl', { class: 'debug-info' }, ...rows.flatMap(([k, v]) => [h('dt', null, k), h('dd', null, v)]));
+}
+
+/** Temporary debug tool: a window of cheat buttons; a tap closes the window, then does it. `info` sits above the buttons. */
 export function openDebugMenu(
   title: string,
   items: { label: string; icon: string; run: () => void }[],
-  onClose?: () => void,
-  onPace?: () => void,
+  { onClose, onPace, info }: { onClose?: () => void; onPace?: () => void; info?: HTMLElement } = {},
 ): ModalHandle {
   const handle = openModal({
     title,
     body: h(
       'div',
       { class: 'debug-menu' },
+      ...(info ? [info] : []),
       ...items.map((it) =>
         h(
           'button',
@@ -326,9 +346,17 @@ export function openDebugFight(onPick: (hero: HeroId, enemy: string, cards: stri
 }
 
 /** Temporary debug tool: after a fight (debug menus on) a recap of its numbers, to compare and balance enemies. */
-export function openFightRecap(combat: Combat, onClose: () => void): ModalHandle {
+export function openFightRecap(combat: Combat, run: RunState, onClose: () => void): ModalHandle {
   const { stats, time, enemy, hero, result } = combat;
   const n = (x: number): string => String(Math.round(x));
+  // What the adaptive difficulty takes from this fight (only a won fight it reads), and the levels it moves to.
+  const read =
+    result === 'win' && pressureLearns(run)
+      ? {
+          signals: fightSignals(enemy.def.tier, time, stats.damageTaken, run.maxHp),
+          next: learn(run.pressure, enemy.def.tier, time, stats.damageTaken, run.maxHp),
+        }
+      : null;
   const rows: [string, string][] = [
     [t('debug.recap.time'), `${time.toFixed(1)}s`],
     [t('debug.recap.dealt'), n(stats.damageDealt)],
@@ -345,6 +373,12 @@ export function openFightRecap(combat: Combat, onClose: () => void): ModalHandle
     [t('debug.recap.hp'), `${n(Math.max(0, hero.hp))}/${n(hero.maxHp)}`],
     [t('debug.recap.ehp'), `${n(Math.max(0, enemy.hp))}/${n(enemy.maxHp)}`],
   ];
+  if (read) {
+    rows.push(
+      [t('debug.recap.signalHp'), t('debug.recap.signal', { signal: signed(read.signals.hp), level: signed(read.next.hp) })],
+      [t('debug.recap.signalDmg'), t('debug.recap.signal', { signal: signed(read.signals.dmg), level: signed(read.next.dmg) })],
+    );
+  }
   return openModal({
     title: t('debug.recap.title', { result: t(result === 'win' ? 'debug.recap.win' : 'debug.recap.lose'), enemy: t(`enemy.${enemy.def.id}.name`) }),
     body: h('dl', { class: 'recap' }, ...rows.flatMap(([k, v]) => [h('dt', null, k), h('dd', null, v)])),

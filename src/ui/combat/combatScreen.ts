@@ -10,7 +10,7 @@ import { currentNode, isFirstRun, type RunState, totalFloors } from '../../game/
 import { meetEnemy } from '../../game/meta';
 import { saveSettings, settings } from '../../game/settings';
 import { type ModalHandle, openModal, type Screen } from '../app';
-import { debugButton, openDebugMenu, openFightRecap } from '../components/debugMenu';
+import { debugButton, openDebugMenu, openFightRecap, pressureInfo } from '../components/debugMenu';
 import { type InfoOpts, openDeck, openInfo, openSettings } from '../components/modals';
 import { creature } from '../art/creatures';
 import { spriteBox } from '../art/riso';
@@ -174,7 +174,7 @@ export function combatScreen(run: RunState, combat: Combat, cb: CombatCallbacks)
     }
     // A win waits for the enemy to finish dying (longer for a boss).
     later(
-      () => (settings.debugMenus ? openFightRecap(combat, () => cb.onEnd(combat)) : cb.onEnd(combat)),
+      () => (settings.debugMenus ? openFightRecap(combat, run, () => cb.onEnd(combat)) : cb.onEnd(combat)),
       result === 'lose' ? CONFIG.endMs.lose : boss ? CONFIG.endMs.boss : CONFIG.endMs.win,
     );
   };
@@ -466,8 +466,7 @@ export function combatScreen(run: RunState, combat: Combat, cb: CombatCallbacks)
         { label: t('debug.crystals'), icon: 'crystalSlot', run: () => combat.addManaCrystals(2) },
         { label: t('debug.lose'), icon: 'ko', run: () => combat.loseHp(combat.hero.hp) },
       ],
-      () => v.inspect(false),
-      () => combat.setDebugPace(settings.debugRegen, settings.debugBelt),
+      { onClose: () => v.inspect(false), onPace: () => combat.setDebugPace(settings.debugRegen, settings.debugBelt), info: pressureInfo(run) },
     );
   };
   el.append(debugButton(t('debug.menu'), openDebug));

@@ -46,6 +46,7 @@ import {
   gainRelic,
   loadRun,
   newRun,
+  pressureLearns,
   photocopyCard,
   rollRelics,
   shredCard,
@@ -59,6 +60,7 @@ import {
   vendingCost,
 } from '../../src/game/run';
 import { Combat } from '../../src/game/combat';
+import { calm, fightSignals, learn, pressureScale } from '../../src/game/pressure';
 import { run, setup } from './helpers';
 
 describe('the handbook bars at the end of a run', () => {
@@ -664,6 +666,128 @@ describe('management memos', () => {
     expect(loadRun()?.mods).toEqual(['quotas']);
     store.set('cardstone+:run', JSON.stringify({ ...run, mods: undefined }));
     expect(loadRun()?.mods).toEqual([]);
+    Reflect.deleteProperty(globalThis, 'localStorage');
+  });
+});
+
+describe('adaptive difficulty', () => {
+  const { par, max, rate, warmup } = CONFIG.pressure;
+  const stubStorage = (store: Map<string, string>): void => {
+    Object.defineProperty(globalThis, 'localStorage', {
+      value: {
+        getItem: (k: string) => store.get(k) ?? null,
+        setItem: (k: string, v: string) => void store.set(k, v),
+        removeItem: (k: string) => void store.delete(k),
+      },
+      configurable: true,
+    });
+  };
+  /** Wins the fight of the run's current node in `seconds`, having lost `lost` HP. */
+  const win = (r: ReturnType<typeof newRun>, seconds: number, lost: number): void => {
+    const fight = new Combat(combatSetup(r));
+    fight.result = 'win';
+    fight.time = seconds;
+    fight.stats.damageTaken = lost;
+    applyCombat(r, fight);
+  };
+  const fightRun = (): ReturnType<typeof newRun> => {
+    const r = newRun('warrior', 5);
+    r.current = r.nodes.find((n) => n.act === 1 && n.type === 'fight')!.id;
+    return r;
+  };
+
+  it('says nothing at par, and a full signal far from it, either way', () => {
+    const at = fightSignals('normal', par.normal.time, par.normal.loss * 80, 80);
+    expect(at).toEqual({ hp: 0, dmg: 0 });
+    const easy = fightSignals('normal', 1, 0, 80);
+    expect(easy).toEqual({ hp: 1, dmg: 1 });
+    const hard = fightSignals('normal', par.normal.time * 3, 80, 80);
+    expect(hard).toEqual({ hp: -1, dmg: -1 });
+    // A bit better than par but inside the dead stretch around it: no signal either.
+    expect(fightSignals('boss', par.boss.time * 0.95, par.boss.loss * 80 * 0.95, 80)).toEqual({ hp: 0, dmg: 0 });
+    // Every tier has its own par: a normal fight's time is a fast boss kill.
+    expect(fightSignals('boss', par.normal.time, 0, 80).hp).toBeGreaterThan(0);
+  });
+
+  it('each lever follows its own signal', () => {
+    const fastButHurt = fightSignals('normal', 10, 80, 80);
+    expect(fastButHurt.hp).toBeGreaterThan(0);
+    expect(fastButHurt.dmg).toBeLessThan(0);
+    const slowButUntouched = fightSignals('normal', 200, 0, 80);
+    expect(slowButUntouched.hp).toBeLessThan(0);
+    expect(slowButUntouched.dmg).toBeGreaterThan(0);
+  });
+
+  it('moves toward the signal by the rate of the tier, stays inside -1..1 and eases back at par', () => {
+    const once = learn(calm(), 'normal', 1, 0, 80);
+    expect(once.hp).toBeCloseTo(rate.normal);
+    expect(learn(calm(), 'boss', 1, 0, 80).hp).toBeCloseTo(rate.boss);
+    let p = calm();
+    for (let i = 0; i < 40; i++) p = learn(p, 'elite', 1, 0, 80);
+    expect(p.hp).toBeLessThanOrEqual(1);
+    expect(p.hp).toBeGreaterThan(0.99);
+    for (let i = 0; i < 40; i++) p = learn(p, 'normal', par.normal.time, par.normal.loss * 80, 80);
+    expect(Math.abs(p.hp)).toBeLessThan(0.01);
+    for (let i = 0; i < 40; i++) p = learn(p, 'normal', 999, 80, 80);
+    expect(p.hp).toBeGreaterThanOrEqual(-1);
+    expect(p.dmg).toBeLessThan(-0.99);
+  });
+
+  it('climbs far more than it eases, and less under memos', () => {
+    expect(pressureScale(calm(), false)).toEqual({ hp: 1, dmg: 1 });
+    expect(pressureScale({ hp: 1, dmg: -1 }, false)).toEqual({ hp: 1 + max.up, dmg: 1 - max.down });
+    expect(max.up).toBeGreaterThan(max.down * 2);
+    expect(pressureScale({ hp: 1, dmg: 1 }, true).hp).toBe(1 + max.up * CONFIG.pressure.memoUp);
+    expect(pressureScale({ hp: -1, dmg: 0 }, true).hp).toBe(1 - max.down);
+  });
+
+  it('scales the enemies of the next fight, boss and elite included', () => {
+    const r = fightRun();
+    const high = { hp: 1, dmg: -1 };
+    for (const node of [currentNode(r), ...r.nodes.filter((n) => n.type === 'elite' || n.type === 'boss')]) {
+      expect(enemyScale(node, [], high).hp).toBeCloseTo(enemyScale(node).hp * (1 + max.up));
+      expect(enemyScale(node, [], high).dmg).toBeCloseTo(enemyScale(node).dmg * (1 - max.down));
+    }
+    r.pressure = high;
+    expect(combatSetup(r).scale).toEqual(enemyScale(currentNode(r), [], high));
+  });
+
+  it('reads only won fights, after the warm-up, and never in the very first run', () => {
+    const r = fightRun();
+    for (let i = 0; i < warmup; i++) {
+      expect(pressureLearns(r)).toBe(false);
+      win(r, 1, 0);
+      expect(r.pressure).toEqual(calm());
+    }
+    expect(pressureLearns(r)).toBe(true);
+    win(r, 1, 0);
+    expect(r.pressure.hp).toBeCloseTo(rate.normal);
+    expect(r.pressure.dmg).toBeCloseTo(rate.normal);
+    const lost = new Combat(combatSetup(r));
+    lost.result = 'lose';
+    lost.time = 1;
+    const before = { ...r.pressure };
+    applyCombat(r, lost);
+    expect(r.pressure).toEqual(before);
+    const first = newRun('warrior', 1, [1]);
+    first.stats.kills = warmup + 5;
+    expect(isFirstRun(first)).toBe(true);
+    expect(pressureLearns(first)).toBe(false);
+  });
+
+  it('is saved with the run, kept inside its range and dropped when it is missing', () => {
+    const store = new Map<string, string>();
+    stubStorage(store);
+    const good = newRun('mage', 3);
+    good.pressure = { hp: 0.4, dmg: -0.2 };
+    const loadWith = (patch: Record<string, unknown>) => {
+      store.set('cardstone+:run', JSON.stringify({ ...good, ...patch }));
+      return loadRun();
+    };
+    expect(loadWith({})?.pressure).toEqual({ hp: 0.4, dmg: -0.2 });
+    expect(loadWith({ pressure: { hp: 9, dmg: -9 } })?.pressure).toEqual({ hp: 1, dmg: -1 });
+    expect(loadWith({ pressure: undefined })).toBeNull();
+    expect(loadWith({ pressure: { hp: 'high', dmg: 0 } })).toBeNull();
     Reflect.deleteProperty(globalThis, 'localStorage');
   });
 });

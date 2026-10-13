@@ -21,6 +21,7 @@ import { MODIFIERS, resolveMods } from '../data/modifiers';
 import { ENEMIES, enemiesFor } from '../data/enemies';
 import { HERO_LIST, HEROES, starterCards } from '../data/heroes';
 import type { Combat, CombatSetup } from './combat';
+import { calm, clampLevel, learn, type Pressure, pressureScale } from './pressure';
 import { discover, heroHidden, heroUnlocked, logRun, progress, type RunRecord, recordFight, recordRun, seeRelics, stampAct } from './meta';
 import type { CardDef, CardInst, EnemyDef, HeroId, Rarity, RelicDef, RunLog } from './types';
 
@@ -66,7 +67,7 @@ export interface RunStats {
 }
 
 /** Shape of the saved run; a save of another version is dropped. */
-const SAVE_VERSION = 14;
+const SAVE_VERSION = 15;
 
 export interface RunState {
   version: number;
@@ -101,6 +102,8 @@ export interface RunState {
   uid: number;
   /** Management memos active for this run (`MODIFIERS` ids). */
   mods: string[];
+  /** Adaptive difficulty: how far the next enemies are pushed up or eased off, learned from the fights won so far (`game/pressure.ts`). */
+  pressure: Pressure;
   /** The card reward on offer after a fight, until it is taken or skipped: kept in the save so closing the game on that screen doesn't lose it. */
   reward?: { id: string; up: boolean }[];
 }
@@ -234,6 +237,7 @@ export function newRun(hero: HeroId, seed: number, scripted: readonly number[] =
     money: 0,
     uid: peekUid(),
     mods,
+    pressure: calm(),
     crystals: 0,
     sleeveLost: 0,
     abilityAct: 0,
@@ -420,11 +424,12 @@ function rngOf(run: RunState): Rng {
   return new Rng(run.rng);
 }
 
-/** Enemy scaling: normal enemies get tougher as the act goes on, and every enemy under the run's memos. */
-export function enemyScale(node: RunNode, mods: string[] = []): { hp: number; dmg: number } {
+/** Enemy scaling: normal enemies get tougher as the act goes on, and every enemy under the run's memos and the run's adaptive pressure. */
+export function enemyScale(node: RunNode, mods: string[] = [], pressure: Pressure = calm()): { hp: number; dmg: number } {
   const f = node.type === 'fight' ? node.floor - 1 : 0;
   const m = resolveMods(mods);
-  return { hp: (1 + CONFIG.floorHp * f) * CONFIG.enemyHp * m.enemyHp, dmg: (1 + CONFIG.floorDmg * f) * CONFIG.enemyDmg * m.enemyDmg };
+  const p = pressureScale(pressure, mods.length > 0);
+  return { hp: (1 + CONFIG.floorHp * f) * CONFIG.enemyHp * m.enemyHp * p.hp, dmg: (1 + CONFIG.floorDmg * f) * CONFIG.enemyDmg * m.enemyDmg * p.dmg };
 }
 
 export function combatSetup(run: RunState): CombatSetup {
@@ -440,7 +445,7 @@ export function combatSetup(run: RunState): CombatSetup {
     relics: run.relics,
     relicFlags: run.relicFlags,
     enemy: ENEMIES[node.enemy!],
-    scale: enemyScale(node, run.mods),
+    scale: enemyScale(node, run.mods, run.pressure),
     beltMul: resolveMods(run.mods).beltMul,
     canBeg: true,
     bonusMaxMana: run.crystals,
@@ -459,6 +464,9 @@ export function fightPay(tier: EnemyDef['tier'], seconds: number): number {
 
 /** Whether this is the run with the scripted first fight (the one that teaches the game). */
 export const isFirstRun = (run: RunState): boolean => run.nodes.some((n) => !!n.enemy && !!ENEMIES[n.enemy]?.firstRunOnly);
+
+/** Whether the run reads its won fights for the adaptive pressure: not in the teaching run, and not before the warm-up fights are won. */
+export const pressureLearns = (run: RunState): boolean => !isFirstRun(run) && run.stats.kills >= CONFIG.pressure.warmup;
 
 /** Copies the combat outcome back into the run. */
 export function applyCombat(run: RunState, combat: Combat): void {
@@ -484,6 +492,7 @@ export function applyCombat(run: RunState, combat: Combat): void {
   // The hero keeps at least one slot, wherever the slots come from.
   run.sleeveLost = Math.min(run.sleeveLost + combat.sleeveLost, HEROES[run.hero].sleeve - 1);
   if (combat.result === 'win') {
+    if (pressureLearns(run)) run.pressure = learn(run.pressure, combat.enemy.def.tier, combat.time, combat.stats.damageTaken, run.maxHp);
     run.stats.kills++;
     if (combat.enemy.def.tier === 'elite') run.stats.elites++;
     run.money += fightPay(combat.enemy.def.tier, combat.time);
@@ -969,6 +978,7 @@ function parseRun(raw: unknown): RunState | null {
     stats,
     money,
     mods,
+    pressure,
     crystals,
     sleeveLost,
     abilityAct,
@@ -985,6 +995,7 @@ function parseRun(raw: unknown): RunState | null {
   const { kills, elites, cardsPlayed, damageTaken, time } = stats;
   if (!isNum(kills) || !isNum(elites) || !isNum(cardsPlayed) || !isNum(damageTaken) || !isNum(time)) return null;
   if (Math.max(...nodes.map((n) => n.act)) !== ACTS) return null;
+  if (!isObj(pressure) || !isNum(pressure.hp) || !isNum(pressure.dmg)) return null;
   const offers = Array.isArray(reward)
     ? reward.filter((o): o is { id: string; up: boolean } => isObj(o) && typeof o.id === 'string' && !!CARDS[o.id] && typeof o.up === 'boolean')
     : [];
@@ -1006,6 +1017,7 @@ function parseRun(raw: unknown): RunState | null {
     money: isNum(money) ? money : 0,
     uid,
     mods: isStrings(mods) ? mods.filter((id) => id in MODIFIERS) : [],
+    pressure: { hp: clampLevel(pressure.hp), dmg: clampLevel(pressure.dmg) },
     crystals: isNum(crystals) ? Math.max(0, crystals) : 0,
     sleeveLost: isNum(sleeveLost) ? Math.max(0, sleeveLost) : 0,
     abilityAct: isNum(abilityAct) ? Math.max(0, abilityAct) : 0,

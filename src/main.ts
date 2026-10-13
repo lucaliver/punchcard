@@ -47,7 +47,7 @@ import type { HeroId } from './game/types';
 import { confirmModal, initApp, openModal, type Screen, show } from './ui/app';
 import { fitFaces } from './ui/components/fitFace';
 import { h, keepPressedClicks } from './ui/dom';
-import { applyCardArt, openDebugFight, openDebugMenu } from './ui/components/debugMenu';
+import { applyCardArt, openDebugFight, openDebugMenu, pressureInfo } from './ui/components/debugMenu';
 import { initFx } from './ui/fx/fx';
 import { initRotateBanner } from './ui/components/rotateBanner';
 import { initWings } from './ui/components/wings';
@@ -196,31 +196,35 @@ function debugMap(): void {
     : null;
   // In the last act: end the run as a win right away.
   const victory = mapAct(r) === ACTS ? { label: t('debug.victory'), icon: 'medal', run: () => endRun(r, true) } : null;
-  openDebugMenu(t('debug.mapMenu'), [
-    { label: t('debug.rewardFight'), icon: 'cards', run: reward('fight') },
-    { label: t('debug.rewardElite'), icon: 'medal', run: reward('elite') },
-    { label: t('debug.rewardBoss'), icon: 'tophat', run: reward('boss') },
-    ...rooms,
-    {
-      label: t('debug.heal'),
-      icon: 'heart',
-      run: () => {
-        r.hp = r.maxHp;
-        goJourney();
+  openDebugMenu(
+    t('debug.mapMenu'),
+    [
+      { label: t('debug.rewardFight'), icon: 'cards', run: reward('fight') },
+      { label: t('debug.rewardElite'), icon: 'medal', run: reward('elite') },
+      { label: t('debug.rewardBoss'), icon: 'tophat', run: reward('boss') },
+      ...rooms,
+      {
+        label: t('debug.heal'),
+        icon: 'heart',
+        run: () => {
+          r.hp = r.maxHp;
+          goJourney();
+        },
       },
-    },
-    { label: t('debug.skipRoom'), icon: 'check', run: nextNode },
-    {
-      label: t(revealMap ? 'debug.hideRooms' : 'debug.revealRooms'),
-      icon: 'watchEye',
-      run: () => {
-        revealMap = !revealMap;
-        goJourney();
+      { label: t('debug.skipRoom'), icon: 'check', run: nextNode },
+      {
+        label: t(revealMap ? 'debug.hideRooms' : 'debug.revealRooms'),
+        icon: 'watchEye',
+        run: () => {
+          revealMap = !revealMap;
+          goJourney();
+        },
       },
-    },
-    ...(nextAct ? [nextAct] : []),
-    ...(victory ? [victory] : []),
-  ]);
+      ...(nextAct ? [nextAct] : []),
+      ...(victory ? [victory] : []),
+    ],
+    { info: pressureInfo(r) },
+  );
 }
 
 /** Enters the current node, or first moves to `to` when the current one is already cleared. */

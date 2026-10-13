@@ -235,6 +235,28 @@ export const CONFIG = {
   /** Each floor of an act makes normal enemies this much tougher (HP, damage). */
   floorHp: 0.06,
   floorDmg: 0.04,
+  /**
+   * Adaptive difficulty (`game/pressure.ts`), never shown to the player. After every won fight the run reads how it went: a kill much faster than `par.time`
+   * pushes the next enemies' HP up, HP lost far under `par.loss` (a share of max HP) pushes their damage up; a slow or costly fight eases the same level back.
+   * The numbers in `par` are what a decent player spends (`npm run sim`'s bot, median of won fights).
+   */
+  pressure: {
+    /** Won fights before the run starts reading (the first rooms say nothing about the player). */
+    warmup: 3,
+    par: {
+      normal: { time: 45, loss: 0.15 },
+      elite: { time: 55, loss: 0.2 },
+      boss: { time: 85, loss: 0.3 },
+    },
+    /** Distance from par (as a share of it) at which a signal is full, and the stretch around par that counts as on target. */
+    spread: { time: 0.5, loss: 1 },
+    dead: 0.1,
+    /** How far a fight pulls the level toward its signal, by tier (a boss or an elite says more than a normal fight). */
+    rate: { normal: 0.25, elite: 0.4, boss: 0.4 },
+    /** The most the multipliers rise or fall at a full level: it climbs much more than it eases, and a run under memos climbs `memoUp` times as far. */
+    max: { up: 0.2, down: 0.08 },
+    memoUp: 0.5,
+  },
   /** Chance that a floor of the map swaps its two rooms between the lanes. */
   laneSwap: 0.3,
   /** Chance that an act's map has one road between two floors cut, so that lane is crossed to the other and back. */
