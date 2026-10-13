@@ -419,7 +419,7 @@ const defs: EnemyDef[] = [
     main: atk('swivel', 6, 6),
     every: 2,
     specials: [
-      atk('beybladeChair', 3, 9, { hits: 6, intent: 'charge' }),
+      atk('beybladeChair', 3, 4, { hits: 6, intent: 'charge' }),
       // Slows your belt and strengthens him.
       {
         id: 'adjustSeat',
