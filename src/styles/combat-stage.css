@@ -122,9 +122,10 @@
   90% { opacity: 0.9; }
   100% { transform: translate(var(--dx, 10px), -140px); opacity: 0; }
 }
+/* right under the pause button (same right edge as the topbar's), clear of the pay chip */
 .combat .debug-fab {
-  top: calc(var(--safe-t) + 12px);
-  right: 68px;
+  top: calc(var(--safe-t) + 62px);
+  right: 12px;
 }
 .dark-eyes {
   position: absolute;
