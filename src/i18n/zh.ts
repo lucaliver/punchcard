@@ -186,7 +186,6 @@ const zh: Record<EnKey, string> = {
   'debug.recap.signal': '{signal} → {level}',
   'debug.pressure.state': '自适应难度',
   'debug.pressure.on': '学习中',
-  'debug.pressure.warmup': '再赢 {n} {n|场|场}后',
   'debug.pressure.off': '关闭（首次游戏）',
   'debug.pressure.hp': '敌人生命',
   'debug.pressure.dmg': '敌人伤害',

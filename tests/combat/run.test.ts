@@ -671,7 +671,7 @@ describe('management memos', () => {
 });
 
 describe('adaptive difficulty', () => {
-  const { par, max, rate, warmup } = CONFIG.pressure;
+  const { par, max, rate } = CONFIG.pressure;
   const stubStorage = (store: Map<string, string>): void => {
     Object.defineProperty(globalThis, 'localStorage', {
       value: {
@@ -752,13 +752,8 @@ describe('adaptive difficulty', () => {
     expect(combatSetup(r).scale).toEqual(enemyScale(currentNode(r), [], high));
   });
 
-  it('reads only won fights, after the warm-up, and never in the very first run', () => {
+  it('reads every won fight from the first one, and never in the very first run', () => {
     const r = fightRun();
-    for (let i = 0; i < warmup; i++) {
-      expect(pressureLearns(r)).toBe(false);
-      win(r, 1, 0);
-      expect(r.pressure).toEqual(calm());
-    }
     expect(pressureLearns(r)).toBe(true);
     win(r, 1, 0);
     expect(r.pressure.hp).toBeCloseTo(rate.normal);
@@ -770,7 +765,6 @@ describe('adaptive difficulty', () => {
     applyCombat(r, lost);
     expect(r.pressure).toEqual(before);
     const first = newRun('warrior', 1, [1]);
-    first.stats.kills = warmup + 5;
     expect(isFirstRun(first)).toBe(true);
     expect(pressureLearns(first)).toBe(false);
   });

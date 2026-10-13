@@ -241,8 +241,6 @@ export const CONFIG = {
    * The numbers in `par` are what a decent player spends (`npm run sim`'s bot, median of won fights).
    */
   pressure: {
-    /** Won fights before the run starts reading (the first rooms say nothing about the player). */
-    warmup: 3,
     par: {
       normal: { time: 45, loss: 0.15 },
       elite: { time: 55, loss: 0.2 },
@@ -252,7 +250,7 @@ export const CONFIG = {
     spread: { time: 0.5, loss: 1 },
     dead: 0.1,
     /** How far a fight pulls the level toward its signal, by tier (a boss or an elite says more than a normal fight). */
-    rate: { normal: 0.25, elite: 0.4, boss: 0.4 },
+    rate: { normal: 0.4, elite: 0.6, boss: 0.6 },
     /** The most the multipliers rise or fall at a full level: it climbs much more than it eases, and a run under memos climbs `memoUp` times as far. */
     max: { up: 0.2, down: 0.08 },
     memoUp: 0.5,

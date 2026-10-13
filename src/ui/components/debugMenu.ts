@@ -1,7 +1,7 @@
 import { t } from '../../core/i18n';
 import type { Combat } from '../../game/combat';
 import { fightSignals, learn, pressureScale } from '../../game/pressure';
-import { isFirstRun, pressureLearns, type RunState } from '../../game/run';
+import { pressureLearns, type RunState } from '../../game/run';
 import { sfx } from '../../audio/sfx';
 import { CARD_LIST, CARDS } from '../../data/cards';
 import { CONFIG } from '../../data/config';
@@ -121,11 +121,7 @@ const signed = (x: number): string => `${x >= 0 ? '+' : ''}${x.toFixed(2)}`;
 /** Temporary debug tool: what the adaptive difficulty has learned so far (the levels of `run.pressure` and the multipliers they give the next enemies). */
 export function pressureInfo(run: RunState): HTMLElement {
   const scale = pressureScale(run.pressure, run.mods.length > 0);
-  const state = isFirstRun(run)
-    ? t('debug.pressure.off')
-    : pressureLearns(run)
-      ? t('debug.pressure.on')
-      : t('debug.pressure.warmup', { n: CONFIG.pressure.warmup - run.stats.kills });
+  const state = t(pressureLearns(run) ? 'debug.pressure.on' : 'debug.pressure.off');
   const rows: [string, string][] = [
     [t('debug.pressure.state'), state],
     [t('debug.pressure.hp'), t('debug.pressure.value', { level: signed(run.pressure.hp), mult: scale.hp.toFixed(2) })],

@@ -188,7 +188,6 @@ const it: Record<EnKey, string> = {
   'debug.recap.signal': '{signal} → {level}',
   'debug.pressure.state': 'Difficoltà adattiva',
   'debug.pressure.on': 'in apprendimento',
-  'debug.pressure.warmup': 'dopo altre {n} {n|vittoria|vittorie}',
   'debug.pressure.off': 'spenta (prima run)',
   'debug.pressure.hp': 'HP nemico',
   'debug.pressure.dmg': 'Danno nemico',

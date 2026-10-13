@@ -465,8 +465,8 @@ export function fightPay(tier: EnemyDef['tier'], seconds: number): number {
 /** Whether this is the run with the scripted first fight (the one that teaches the game). */
 export const isFirstRun = (run: RunState): boolean => run.nodes.some((n) => !!n.enemy && !!ENEMIES[n.enemy]?.firstRunOnly);
 
-/** Whether the run reads its won fights for the adaptive pressure: not in the teaching run, and not before the warm-up fights are won. */
-export const pressureLearns = (run: RunState): boolean => !isFirstRun(run) && run.stats.kills >= CONFIG.pressure.warmup;
+/** Whether the run reads its won fights for the adaptive pressure: every fight counts, except in the teaching run. */
+export const pressureLearns = (run: RunState): boolean => !isFirstRun(run);
 
 /** Copies the combat outcome back into the run. */
 export function applyCombat(run: RunState, combat: Combat): void {

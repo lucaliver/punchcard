@@ -187,7 +187,6 @@ const en = {
   'debug.recap.signal': '{signal} → {level}',
   'debug.pressure.state': 'Adaptive difficulty',
   'debug.pressure.on': 'learning',
-  'debug.pressure.warmup': 'after {n} more {n|win|wins}',
   'debug.pressure.off': 'off (first run)',
   'debug.pressure.hp': 'Enemy HP',
   'debug.pressure.dmg': 'Enemy damage',

@@ -188,7 +188,6 @@ const es: Record<EnKey, string> = {
   'debug.recap.signal': '{signal} → {level}',
   'debug.pressure.state': 'Dificultad adaptativa',
   'debug.pressure.on': 'aprendiendo',
-  'debug.pressure.warmup': 'tras {n} {n|victoria|victorias} más',
   'debug.pressure.off': 'desactivada (primera partida)',
   'debug.pressure.hp': 'PV del enemigo',
   'debug.pressure.dmg': 'Daño del enemigo',
