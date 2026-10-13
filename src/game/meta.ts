@@ -274,10 +274,11 @@ export function seeRelics(ids: Iterable<string>): void {
 }
 export const relicSeen = (id: string): boolean => meta.relics.includes(id);
 
-/** Debug: every hero hired, every card discovered, every enemy met and every relic seen. */
+/** Debug: every hero hired and stamped for every act (the memos and the weekend are open to all), every card discovered, every enemy met and every relic seen. */
 export function unlockAll(cards: Iterable<string>, enemies: Iterable<string>, relics: Iterable<string>): void {
   meta.heroes = HERO_LIST.filter((hd) => hd.unlock).map((hd) => hd.id);
   meta.fresh = [];
+  meta.stamps = HERO_LIST.flatMap((hd) => ACT_DEFS.map((_, i) => `${hd.id}:${i + 1}`));
   meta.met = [...enemies];
   meta.relics = [...relics];
   for (const id of cards) discovered.add(id);

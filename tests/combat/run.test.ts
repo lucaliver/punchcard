@@ -596,24 +596,6 @@ describe('the Copy Room', () => {
   });
 });
 
-describe('cross-training', () => {
-  it("offers two cards of each class but the hero's own, and taking one grows the deck", () => {
-    const r = newRun('warrior', 5);
-    const offer = rollCrossTraining(r);
-    // A hero not hired yet (the Rogue) has no card on offer.
-    expect(offer.some((c) => c.cls === 'rogue')).toBe(false);
-    unlockAll([], [], []);
-    const hired = rollCrossTraining(newRun('warrior', 5));
-    expect(hired).toHaveLength(3 * 2);
-    expect(new Set(hired.map((c) => c.id)).size).toBe(hired.length);
-    for (const cls of ['mage', 'necromancer', 'rogue']) expect(hired.filter((c) => c.cls === cls)).toHaveLength(CONFIG.crossTrainPerClass);
-    const deck = r.deck.length;
-    crossTrain(r, hired[0].id);
-    expect(r.deck).toHaveLength(deck + 1);
-    expect(r.cleared).toBe(true);
-  });
-});
-
 describe('rating', () => {
   it('is asked for once enough runs are over, and never again after it is sent', () => {
     expect(ratingDue()).toBe(runHistory().length >= CONFIG.ratingAfterRuns);
@@ -857,5 +839,34 @@ describe('adaptive difficulty', () => {
     expect(loadWith({ pressure: undefined })).toBeNull();
     expect(loadWith({ pressure: { hp: 'high', dmg: 0 } })).toBeNull();
     Reflect.deleteProperty(globalThis, 'localStorage');
+  });
+});
+
+// The debug unlock-all changes the progress for good (the rest of the file counts on a fresh one): its tests come last.
+describe('cross-training', () => {
+  it("offers two cards of each class but the hero's own, and taking one grows the deck", () => {
+    const r = newRun('warrior', 5);
+    const offer = rollCrossTraining(r);
+    // A hero not hired yet (the Rogue) has no card on offer.
+    expect(offer.some((c) => c.cls === 'rogue')).toBe(false);
+    unlockAll([], [], []);
+    const hired = rollCrossTraining(newRun('warrior', 5));
+    expect(hired).toHaveLength(3 * 2);
+    expect(new Set(hired.map((c) => c.id)).size).toBe(hired.length);
+    for (const cls of ['mage', 'necromancer', 'rogue']) expect(hired.filter((c) => c.cls === cls)).toHaveLength(CONFIG.crossTrainPerClass);
+    const deck = r.deck.length;
+    crossTrain(r, hired[0].id);
+    expect(r.deck).toHaveLength(deck + 1);
+    expect(r.cleared).toBe(true);
+  });
+});
+
+describe('the debug unlock-all', () => {
+  it('opens the memos and every act, the weekend too, to every hero', () => {
+    unlockAll([], [], []);
+    for (const hd of Object.values(HEROES)) {
+      expect(memosOpen(hd.id), hd.id).toBe(true);
+      for (let act = 1; act <= ACT_DEFS.length; act++) expect(hasStamp(hd.id, act), `${hd.id} ${act}`).toBe(true);
+    }
   });
 });
