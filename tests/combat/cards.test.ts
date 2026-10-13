@@ -1983,7 +1983,7 @@ describe('the office batch: streaks, clocks, piles, curses and corporate speak',
     expect(c.belt.some((b) => b.card.id === 'forkBomb')).toBe(false);
     const copies = c.draw.filter((x) => x.id === 'forkBomb');
     expect(copies).toHaveLength(CARDS.forkBomb.vals[1]);
-    expect(copies.every((b) => b.card.fleeting)).toBe(true);
+    expect(copies.every((x) => x.fleeting)).toBe(true);
   });
 
   it("Icebreaker removes the enemy's Chill and deals damage for every second of it", () => {

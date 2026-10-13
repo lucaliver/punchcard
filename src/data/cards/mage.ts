@@ -358,7 +358,7 @@ export const mageCards: CardDef[] = [
     face: '{multi:0}',
     cls: 'mage',
     type: 'skill',
-    rarity: 'rare',
+    rarity: 'epic',
     cost: 2,
     vals: [8],
     upVals: [12],
@@ -838,7 +838,7 @@ export const mageCards: CardDef[] = [
     vals: [4, 2],
     upVals: [8, 2],
     art: 'forkBomb',
-    // The copies queue up at the entry of the belt (what finds no room goes to the draw pile) and burn out when they ride off it.
+    // The copies are shuffled into the draw pile and burn out when they ride off the belt.
     play: (c, v, card) => {
       c.hit(v[0]);
       for (let i = 0; i < v[1]; i++) c.addTempCard('forkBomb', 'draw', card.up, 0, { fleeting: true });
