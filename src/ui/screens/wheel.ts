@@ -74,14 +74,12 @@ function afterSlot(slot: WheelSlot, card: CardInst): CardInst {
       return { ...card, up: true };
     case 'perk':
       return { ...card, perks: [...(card.perks ?? []), slot.effect.perk] };
-    case 'none':
-      return card;
   }
 }
 
 /**
  * Raffle: a wheel of card modifiers. One spin (its slice is `spinWheel`'s: the engine decides, the picture only follows), then the player picks
- * `wheelCards` deck cards for it to land on, whatever it is. A day off lands on nobody.
+ * `wheelCards` deck cards for it to land on, whatever it is.
  */
 export function wheelScreen(run: RunState, onDone: () => void): Screen {
   const timers: number[] = [];
@@ -145,7 +143,8 @@ export function wheelScreen(run: RunState, onDone: () => void): Screen {
     retrigger(result, 'land');
     disc.children[WHEEL.indexOf(landed) + 1]?.classList.add('hit');
     button.disabled = false;
-    if (landed.effect.kind === 'none') {
+    // Nothing in the deck takes it (a deck that has everything already): there is nothing to pick, the room is over.
+    if (!wheelTargets(run, landed).length) {
       button.textContent = t('wheel.leave');
       button.onclick = () => {
         sfx('tap');

@@ -3,7 +3,7 @@ import { Rng } from '../../src/core/rng';
 import { CONFIG, relicGuarantee, rewardOdds, rewardUpgradeChance } from '../../src/data/config';
 import { ENEMIES, enemiesFor } from '../../src/data/enemies';
 import { HEROES } from '../../src/data/heroes';
-import { CARD_LIST, CARDS, RARITY_ORDER, cardCostOf } from '../../src/data/cards';
+import { CARD_LIST, CARDS, RARITY_ORDER, cardCostOf, cardKeywordsOf } from '../../src/data/cards';
 import { RELICS } from '../../src/data/relics';
 import { WHEEL } from '../../src/data/wheel';
 import {
@@ -506,15 +506,15 @@ describe('the Copy Room', () => {
     for (let seed = 1; seed <= 80; seed++) landed.add(spinWheel(r, new Rng(seed)));
     expect(landed.size).toBe(WHEEL.length);
     expect(spinWheel(r, new Rng(9))).toBe(spinWheel(r, new Rng(9)));
-    // A deck of upgraded cards, none left to take a perk: only the day off can come up.
+    // A deck where every card is upgraded and has every perk but one: only that slice can come up.
     for (let seed = 1; seed <= 20; seed++) {
       const run = newRun('warrior', seed);
       for (const c of run.deck) Object.assign(c, { up: true, perks: ['fastTrack', 'budgetCut', 'overtime', 'redTape'] });
-      expect(WHEEL[spinWheel(run, new Rng(seed))].effect.kind).toBe('none');
+      expect(WHEEL[spinWheel(run, new Rng(seed))].id).toBe('tempContract');
     }
   });
 
-  it('the Raffle puts its slice on the picked cards only: an upgrade, a perk that moves the cost either way, or nothing', () => {
+  it('the Raffle puts its slice on the picked cards only: an upgrade, a perk that moves the cost either way, or a keyword', () => {
     const r = newRun('warrior', 5);
     const slot = (id: string) => WHEEL.find((s) => s.id === id)!;
     const [a, b, c] = r.deck.filter((x) => canWheel(x, slot('overtime')));
@@ -530,7 +530,9 @@ describe('the Copy Room', () => {
     const trained = applyWheel(r, slot('training'), [c.uid]);
     expect(trained[0].before.up).toBe(false);
     expect(c.up).toBe(true);
-    expect(applyWheel(r, slot('dayOff'), [])).toEqual([]);
+    const fleeting = applyWheel(r, slot('tempContract'), [c.uid]);
+    expect(fleeting[0].after.perks).toEqual(['tempContract']);
+    expect(cardKeywordsOf(c)).toContain('fleeting');
     expect(r.cleared).toBe(true);
   });
 

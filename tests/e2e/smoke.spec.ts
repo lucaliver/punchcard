@@ -1498,7 +1498,7 @@ test('restructuring: the other way gives a random stationery and leaves the deck
   expect(await page.evaluate('window.__game.run.relics.length')).toBe(1);
 });
 
-test('raffle: the wheel stops on a slice that lands on three picked cards, or on nobody on a day off', async ({ page }) => {
+test('raffle: the wheel stops on a slice that lands on three picked cards', async ({ page }) => {
   const problems = await freshGame(page, { veteran: true });
   await page.getByRole('button', { name: /new run/i }).click();
   await page.getByRole('button', { name: /start shift/i }).click();
@@ -1508,22 +1508,17 @@ test('raffle: the wheel stops on a slice that lands on three picked cards, or on
   const state = (): Promise<string> => page.evaluate('JSON.stringify(window.__game.run.deck.map((c) => [c.up, c.perks ?? []]))');
   const before = await state();
   await page.getByRole('button', { name: /spin the wheel/i }).click();
-  const result = page.locator('.wheel-result[data-luck]');
-  await expect(result).toBeVisible({ timeout: 10_000 });
-  const dayOff = /day off/i.test(await result.locator('b').innerText());
-  if (dayOff) await page.getByRole('button', { name: /back to work/i }).click();
-  else {
-    // The deck opens only when asked; Apply waits for all three cards.
-    await expect(page.locator('.modal')).toHaveCount(0);
-    await page.getByRole('button', { name: /choose 3 cards/i }).click();
-    const apply = page.getByRole('button', { name: 'Apply', exact: true });
-    await expect(apply).toBeDisabled({ timeout: 5000 });
-    for (const i of [0, 1, 2]) await page.locator('.modal .deck-grid .card').nth(i).click();
-    await apply.click();
-  }
+  await expect(page.locator('.wheel-result[data-luck]')).toBeVisible({ timeout: 10_000 });
+  // The deck opens only when asked; Apply waits for all three cards.
+  await expect(page.locator('.modal')).toHaveCount(0);
+  await page.getByRole('button', { name: /choose 3 cards/i }).click();
+  const apply = page.getByRole('button', { name: 'Apply', exact: true });
+  await expect(apply).toBeDisabled({ timeout: 5000 });
+  for (const i of [0, 1, 2]) await page.locator('.modal .deck-grid .card').nth(i).click();
+  await apply.click();
   await expect(page.locator('.node.open').first()).toBeVisible({ timeout: 10_000 });
   const [was, now] = [JSON.parse(before), JSON.parse(await state())] as [unknown[], unknown[]][];
-  expect(now.filter((c, i) => JSON.stringify(c) !== JSON.stringify(was[i]))).toHaveLength(dayOff ? 0 : 3);
+  expect(now.filter((c, i) => JSON.stringify(c) !== JSON.stringify(was[i]))).toHaveLength(3);
   expect(problems).toEqual([]);
 });
 

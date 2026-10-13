@@ -795,15 +795,13 @@ export function giftRelic(run: RunState): string | undefined {
   return id;
 }
 
-/** Whether a slice of the Raffle's wheel does something to this card (a day off does nothing to anyone). */
+/** Whether a slice of the Raffle's wheel would change this card. */
 export function canWheel(card: CardInst, slot: WheelSlot): boolean {
   switch (slot.effect.kind) {
     case 'upgrade':
       return canUpgrade(card);
     case 'perk':
       return canPerk(card, slot.effect.perk);
-    case 'none':
-      return false;
   }
 }
 
@@ -812,11 +810,12 @@ export const wheelTargets = (run: RunState, slot: WheelSlot): CardInst[] => run.
 
 /**
  * The spin: where the wheel stops, as an index of `WHEEL`, dealt from `rng` (the screen brings a fresh one at every spin, so the same run state
- * lands on a different slice each time). A slice nobody in the deck could take is never dealt (a day off always is).
+ * lands on a different slice each time). A slice nobody in the deck could take is never dealt (unless
+ * there is none that can be, which only a deck with every card upgraded and perked would come to).
  */
 export function spinWheel(run: RunState, rng: Rng): number {
-  const open = WHEEL.flatMap((slot, i) => (slot.effect.kind === 'none' || wheelTargets(run, slot).length ? [i] : []));
-  return rng.pick(open);
+  const open = WHEEL.flatMap((slot, i) => (wheelTargets(run, slot).length ? [i] : []));
+  return rng.pick(open.length ? open : WHEEL.map((_, i) => i));
 }
 
 /** The slice's effect lands on each deck card of `uids` it fits. Returns each card as it was and as it is now. */

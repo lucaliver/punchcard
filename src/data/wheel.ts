@@ -1,9 +1,9 @@
 import { PERKS } from './perks';
 
 /** What a slice of the Raffle's wheel does to the cards the player picks after the spin. */
-export type WheelEffect = { kind: 'upgrade' } | { kind: 'perk'; perk: string } | { kind: 'none' };
+export type WheelEffect = { kind: 'upgrade' } | { kind: 'perk'; perk: string };
 
-/** A slice of the Raffle's wheel. A perk slice reads its name and text from `perk.<id>`, the others from `wheel.<id>` and `wheel.<id>.d`. */
+/** A slice of the Raffle's wheel. A perk slice reads its name and text from `perk.<id>`, the upgrade from `wheel.<id>` and `wheel.<id>.d`. */
 export interface WheelSlot {
   id: string;
   icon: string;
@@ -19,5 +19,5 @@ export const WHEEL: readonly WheelSlot[] = [
   perkSlot('fastTrack'),
   perkSlot('redTape'),
   perkSlot('budgetCut'),
-  { id: 'dayOff', icon: 'hammock', effect: { kind: 'none' } },
+  perkSlot('tempContract'),
 ];

@@ -6,6 +6,7 @@ const defs: PerkDef[] = [
   { id: 'budgetCut', icon: 'priceTag', costDelta: -1 },
   { id: 'overtime', icon: 'shiftClock', costDelta: 1, bad: true },
   { id: 'redTape', icon: 'pending', keywords: ['pending'], bad: true },
+  { id: 'tempContract', icon: 'mouse', keywords: ['fleeting'], bad: true },
 ];
 
 export const PERKS: Record<string, PerkDef> = Object.fromEntries(defs.map((d) => [d.id, d]));
