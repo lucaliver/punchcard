@@ -548,6 +548,16 @@
   text-shadow: 3px 3px 0 var(--p);
   animation: stamp-in 0.2s steps(2) 0.75s backwards;
 }
+/* what a relic does, under its name */
+.show-desc {
+  max-width: min(86vw, 340px);
+  margin: -6px 0 0;
+  text-align: center;
+  font-family: var(--font-ui);
+  font-size: 20px;
+  color: var(--paper);
+  animation: stamp-in 0.2s steps(2) 0.75s backwards;
+}
 /* upgrade and promotion: the old card takes a blow and shakes, a flash, the new one stamps in */
 .show-old { animation: show-hit 0.48s steps(1) forwards; }
 @keyframes show-hit {

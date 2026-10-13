@@ -1,5 +1,6 @@
 import { type SoundId, sfx } from '../../audio/sfx';
 import { t } from '../../core/i18n';
+import { RELICS } from '../../data/relics';
 import type { CardInst } from '../../game/types';
 import { icon } from '../art/icons';
 import { relicArt } from '../art/relics';
@@ -81,11 +82,12 @@ export function playPhotocopy(screen: HTMLElement, card: CardInst, word: string)
   sparkAt(copy, 'paper', 18, 520, 'cardPlay');
 }
 
-/** A relic is handed over: its badge stamps in with a flash, and its name is stamped last. */
+/** A relic is handed over: its badge stamps in with a flash, its name is stamped last, and what it does is written under the name. */
 export function playRelic(screen: HTMLElement, id: string, sounds: ShowSounds): void {
   const badge = h('div', { class: 'relic-badge show-new', html: relicArt(id) });
   const stage = h('div', { class: 'show-stage' }, badge, h('i', { class: 'show-flash' }));
-  showOver(screen, 'relic', stage, t(`relic.${id}.name`));
+  const layer = showOver(screen, 'relic', stage, t(`relic.${id}.name`));
+  layer.append(h('p', { class: 'show-desc' }, t(`relic.${id}.d`, { n: RELICS[id].n })));
   sfx(sounds.start);
   haptic('tap');
   sparkAt(badge, 'gold', 34, 480, sounds.end);
