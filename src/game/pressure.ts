@@ -33,8 +33,9 @@ export interface FightFacts {
   dealt: number;
   /** Seconds the fight took. */
   seconds: number;
-  /** HP the hero lost, against `maxHp`. */
+  /** HP the hero lost, against `maxHp`, and what it had left at the end. */
   lost: number;
+  left: number;
   maxHp: number;
   /** The hero begged to stay in it. */
   begged: boolean;
@@ -45,9 +46,13 @@ export const fightFacts = (c: Combat, maxHp: number): FightFacts => ({
   dealt: c.stats.damageDealt + c.stats.enemyBlocked,
   seconds: c.time,
   lost: c.stats.damageTaken,
+  left: Math.min(Math.max(0, c.hero.hp), maxHp),
   maxHp,
   begged: c.begged,
 });
+
+/** The hero won on its last legs: too close to dying to say the fight was easy, whatever par says about the HP it lost. */
+const closeCall = (f: FightFacts): boolean => f.left < f.maxHp * CONFIG.pressure.closeCall;
 
 /**
  * What one won fight says, against what a decent player does at that tier. Positive = too easy: `hp` for the damage the player dealt per second (so
@@ -58,16 +63,19 @@ export function fightSignals(f: FightFacts): Pressure {
   const dps = f.dealt / Math.max(f.seconds, 1);
   return {
     hp: signal(dps > 0 ? par[f.tier].dps / dps : Number.POSITIVE_INFINITY, spread.dps),
-    dmg: signal(f.lost / f.maxHp / par[f.tier].loss, spread.loss),
+    dmg: closeCall(f) ? -1 : signal(f.lost / f.maxHp / par[f.tier].loss, spread.loss),
   };
 }
 
-/** The levels after a won fight: each moves toward what the fight said, as far as its tier counts for; a hero who begged to stay sends both all the way down. */
+/**
+ * The levels after a won fight: each moves toward what the fight said, as far as its tier counts for; a hero who begged to stay sends both all the way down,
+ * and one who won on its last legs sends the damage level all the way down.
+ */
 export function learn(p: Pressure, f: FightFacts): Pressure {
   if (f.begged) return { hp: -1, dmg: -1 };
   const s = fightSignals(f);
   const rate = CONFIG.pressure.rate[f.tier];
-  return { hp: p.hp + rate * (s.hp - p.hp), dmg: p.dmg + rate * (s.dmg - p.dmg) };
+  return { hp: p.hp + rate * (s.hp - p.hp), dmg: closeCall(f) ? -1 : p.dmg + rate * (s.dmg - p.dmg) };
 }
 
 /** The multipliers on the enemies' HP and damage (1 = none); `memos` says the run plays under management memos, which already ask more of the player. */

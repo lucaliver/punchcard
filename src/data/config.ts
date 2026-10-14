@@ -253,7 +253,7 @@ export const CONFIG = {
   /**
    * Adaptive difficulty (`game/pressure.ts`), never shown to the player. After every won fight the run reads how it went: damage dealt per second far above
    * `par.dps` (the enemy's HP and Block it got through, over the fight's time) pushes the next enemies' HP up, HP lost far under `par.loss` (a share of max HP)
-   * pushes their damage up; a weak or costly fight eases the same level back, and a hero who begs to stay sends both all the way down.
+   * pushes their damage up; a weak or costly fight eases the same level back, a hero who begs to stay sends both all the way down, and a win on the last legs (`closeCall`) does the same to the damage level.
    * The numbers in `par` are what a decent player does (`npm run sim`'s bot, median of won fights).
    */
   pressure: {
@@ -265,8 +265,10 @@ export const CONFIG = {
     /** Distance from par (as a share of it) at which a signal is full, and the stretch around par that counts as on target. */
     spread: { dps: 0.5, loss: 1 },
     dead: 0.1,
+    /** A won fight that leaves the hero under this share of its max HP is a close call: the damage level goes all the way down, as if it had begged. */
+    closeCall: 0.15,
     /** How far a fight pulls the level toward its signal, by tier (a boss or an elite says more than a normal fight). */
-    rate: { normal: 0.4, elite: 0.6, boss: 0.6 },
+    rate: { normal: 0.25, elite: 0.6, boss: 0.6 },
     /** The most the multipliers rise or fall at a full level: it climbs much more than it eases, and a run under memos climbs `memoUp` times as far. */
     max: { up: 0.2, down: 0.1 },
     memoUp: 0.5,
@@ -275,11 +277,10 @@ export const CONFIG = {
   laneSwap: 0.3,
   /** Chance that an act's map has one road between two floors cut, so that lane is crossed to the other and back. */
   roadCut: 0.5,
-  /** Break Room: a rest heals this share of max HP plus this share of the HP missing. Skipping a card reward: the max HP it pays. */
+  /** Break Room: a rest heals this share of max HP plus this share of the HP missing. */
   restHeal: 0.9,
-  skipMaxHp: 3,
-  /** Skipping pays one more max HP every this many rooms walked in the run. */
-  skipMaxHpRooms: 3,
+  /** Skipping a card reward: the max HP the first skip of the run pays (every skip after it pays one less, down to 1). */
+  skipMaxHp: 6,
   /** Copy Room: a card can't be shredded below this many deck cards; a photocopy costs this much HP (and needs more left). */
   shredMinDeck: 10,
   copyHpCost: 8,

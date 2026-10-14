@@ -1,4 +1,5 @@
 import { expect, type Page, test } from '@playwright/test';
+import { CONFIG } from '../../src/data/config';
 import { ENEMY_LIST } from '../../src/data/enemies';
 import { combat, freshGame, signAndStart, startFight } from './helpers';
 
@@ -751,7 +752,7 @@ test('skipping a reward adds max HP', async ({ page }) => {
   const max = (await page.evaluate('window.__game.run.maxHp')) as number;
   await page.locator('.skip-btn').click();
   await expect(page.locator('.journey')).toBeVisible();
-  expect(await page.evaluate('window.__game.run.maxHp')).toBe(max + 3);
+  expect(await page.evaluate('window.__game.run.maxHp')).toBe(max + CONFIG.skipMaxHp);
 });
 
 test('closing the game on the reward screen keeps the same offers for Continue, and taking one clears them', async ({ page }) => {

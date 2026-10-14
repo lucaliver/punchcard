@@ -234,6 +234,25 @@ describe('combat engine', () => {
     expect(c.hero.hp).toBe(80 - ENEMIES.snitch.main.dmg!);
   });
 
+  it('the fight notes what hurt the hero (hits, own HP prices), what each card did and the HP every few seconds', () => {
+    const c = setup({ enemy: ENEMIES.snitch, deck: deckOf(['punch', 'punch']) });
+    run(c, CONFIG.introTime + 0.01);
+    c.gainMana(3);
+    const card = c.belt[0].card;
+    c.playCard(card.uid);
+    expect(c.stats.cards.punch).toEqual({ plays: 1, dmg: 6, block: 0 });
+    c.loseHp(2);
+    expect(c.stats.takenBy).toEqual({ hit: 0, dot: 0, self: 2, chore: 0 });
+    expect(c.stats.lastHurtBy).toBe('self');
+    run(c, ENEMIES.snitch.main.windup + CONFIG.enemyDelay + 0.1);
+    const dmg = ENEMIES.snitch.main.dmg!;
+    expect(c.stats.takenBy.hit).toBe(dmg);
+    expect([c.stats.hitsTaken, c.stats.biggestHit, c.stats.lastHurtBy]).toEqual([1, dmg, ENEMIES.snitch.main.id]);
+    expect(c.stats.damageTaken).toBe(dmg + 2);
+    // Sampled at 10 s, before the hit lands.
+    expect(c.stats.hpTrail).toEqual([80 - 2]);
+  });
+
   it('warrior Picket Line gives Block that does not fade', () => {
     const c = setup({ deck: deckOf(['punch', 'punch']) });
     run(c, CONFIG.introTime + 0.01);

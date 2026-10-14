@@ -37,6 +37,11 @@ import type {
 
 const isCurse = (c: CardInst): boolean => CARDS[c.id].type === 'curse';
 
+/** What took the hero's HP (`Combat.stats.takenBy`). */
+type HurtKind = 'hit' | 'dot' | 'self' | 'chore';
+/** Seconds between the HP samples of `Combat.stats.hpTrail`. */
+const HP_TRAIL_EVERY = 10;
+
 export interface Fighter {
   hp: number;
   maxHp: number;
@@ -129,8 +134,20 @@ export class Combat {
     /** Damage the enemy's Block soaked up / the hero's Block soaked up. */
     enemyBlocked: 0,
     heroBlocked: 0,
-    /** HP the hero lost to damage. */
+    /** HP the hero lost to damage, and to what: the enemy's hits, damage over time, the HP price of its own cards and the mistakes of a chore. */
     damageTaken: 0,
+    takenBy: { hit: 0, dot: 0, self: 0, chore: 0 } satisfies Record<HurtKind, number>,
+    /** Enemy hits that took HP, and the biggest one. */
+    hitsTaken: 0,
+    biggestHit: 0,
+    /** What hurt the hero last: the id of the enemy's move, or a `HurtKind`. */
+    lastHurtBy: '',
+    /** The hero's HP every `HP_TRAIL_EVERY` s of the fight. */
+    hpTrail: [] as number[],
+    /** Every chore the fight asked for: done in time or not, its mistakes and the seconds they cost. */
+    chores: [] as { id: string; done: boolean; errors: number; fined: number }[],
+    /** What each card did in the fight, by card id. */
+    cards: {} as Record<string, { plays: number; dmg: number; block: number }>,
     blockGained: 0,
     healed: 0,
     cardsLost: 0,
@@ -579,6 +596,7 @@ export class Combat {
       return;
     }
     this.time += dt;
+    if (this.time >= (this.stats.hpTrail.length + 1) * HP_TRAIL_EVERY) this.stats.hpTrail.push(Math.round(this.hero.hp));
     this.second += dt;
     if (this.second >= 1) {
       this.second -= 1;
@@ -1167,7 +1185,7 @@ export class Combat {
       this.fine(order);
       // A trap is swallowed: it bites, and it is gone. Any other wrong plate stays where it is, and costs a little blood.
       if (def.sushi !== 'trap') {
-        this.loseHp(CONFIG.sushi.wrongHp);
+        this.loseHp(CONFIG.sushi.wrongHp, 'chore');
         return false;
       }
       this.withCard(card, def, () => def.play?.(this, this.cardVals(card), card));
@@ -1214,6 +1232,7 @@ export class Combat {
     }
 
     this.cardsPlayed++;
+    this.tally(card.id).plays++;
     if (sleeveIdx >= 0) this.sleeveUses++;
     this.fightPlayed.add(card.id);
     this.runPlayed.add(card.id);
@@ -1599,6 +1618,25 @@ export class Combat {
     return cap;
   }
 
+  /** The hero lost `lost` HP to `kind`: the totals and the recent losses (`hurtLog`) take note. */
+  private hurtHero(kind: HurtKind, lost: number): void {
+    const s = this.stats;
+    s.damageTaken += lost;
+    s.takenBy[kind] += lost;
+    s.lastHurtBy = kind === 'hit' ? this.enemy.move.id : kind;
+    if (kind === 'hit') {
+      s.hitsTaken++;
+      s.biggestHit = Math.max(s.biggestHit, lost);
+    }
+    this.hurtLog.push({ t: this.time, n: lost });
+  }
+
+  private tally(id: string): { plays: number; dmg: number; block: number } {
+    const tally = this.stats.cards[id] ?? { plays: 0, dmg: 0, block: 0 };
+    this.stats.cards[id] = tally;
+    return tally;
+  }
+
   /** Core damage routine. Returns HP actually lost. */
   damage(from: Side, to: Side, base: number, opts: DamageOpts, source: Side | 'dot', hitIndex = 0): number {
     if (this.result) return 0;
@@ -1635,6 +1673,7 @@ export class Combat {
     target.hp -= lost;
     if (to === 'enemy') {
       this.stats.damageDealt += lost;
+      if (this.current) this.tally(this.current.def.id).dmg += lost;
       if (source === 'dot') this.stats.damageDot += lost;
       this.stats.enemyBlocked += blocked;
     } else this.stats.heroBlocked += blocked;
@@ -1642,10 +1681,7 @@ export class Combat {
     if (dmg > 0 && source !== 'dot')
       for (const [id, s] of Object.entries(target.statuses)) if (this.has(to, id)) STATUSES[id].onStruck?.(this, to, s);
     if (lost > 0) for (const [id, s] of Object.entries(target.statuses)) if (this.has(to, id)) STATUSES[id].onHurt?.(this, to, s, lost);
-    if (lost > 0 && to === 'hero') {
-      this.stats.damageTaken += lost;
-      this.hurtLog.push({ t: this.time, n: lost });
-    }
+    if (lost > 0 && to === 'hero') this.hurtHero(source === 'enemy' ? 'hit' : 'dot', lost);
 
     if (source === 'enemy' && to === 'hero') {
       this.heroDef.hooks.onHeroHit?.(this, lost);
@@ -1791,7 +1827,10 @@ export class Combat {
     if (n <= 0 || this.result) return;
     const f = this.fighter(side);
     f.block += n;
-    if (side === 'hero') this.stats.blockGained += n;
+    if (side === 'hero') {
+      this.stats.blockGained += n;
+      if (this.current) this.tally(this.current.def.id).block += n;
+    }
     f.blockTimer = 0;
     this.events.emit({ type: 'block', target: side, amount: n });
     if (side === 'hero') {
@@ -1825,13 +1864,11 @@ export class Combat {
     this.events.emit({ type: 'heal', target: 'hero', amount: n });
   }
 
-  loseHp(n: number): void {
+  /** The hero pays HP: its own card's price (`self`) or the mistake of a chore (`chore`). */
+  loseHp(n: number, why: 'self' | 'chore' = 'self'): void {
     const lost = Math.min(this.hero.hp, n);
     this.hero.hp -= lost;
-    if (lost > 0) {
-      this.stats.damageTaken += lost;
-      this.hurtLog.push({ t: this.time, n: lost });
-    }
+    if (lost > 0) this.hurtHero(why, lost);
     this.events.emit({ type: 'damage', target: 'hero', amount: lost, blocked: 0, source: 'dot', hitIndex: 0, kind: 'blood' });
     this.checkDeaths();
   }
@@ -2342,6 +2379,7 @@ export class Combat {
 
   /** Closes the chore (`phase` tells the UI why: the move landed, or was dropped). */
   private endTask(phase?: 'close'): void {
+    if (this.chore) this.stats.chores.push({ id: this.chore.id, done: !phase, errors: this.chore.errors, fined: this.chore.fined });
     this.clearSushi();
     this.chore = null;
     this.taskSeen = false;
@@ -2386,7 +2424,7 @@ export class Combat {
     const r = reader.swipe(speed);
     if (r !== 'ok' && r !== 'ignored') {
       this.fine(reader);
-      this.loseHp(CONFIG.badge.wrongHp);
+      this.loseHp(CONFIG.badge.wrongHp, 'chore');
     }
     return r;
   }
@@ -2398,7 +2436,7 @@ export class Combat {
     const r = action.kind === 'scan' ? lane.scan(action.item) : lane.lift();
     if (r === 'wrong') {
       this.fine(lane);
-      this.loseHp(CONFIG.checkout.wrongHp);
+      this.loseHp(CONFIG.checkout.wrongHp, 'chore');
     }
     return r;
   }

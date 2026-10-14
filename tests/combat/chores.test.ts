@@ -612,6 +612,22 @@ describe("the Self-Checkout's till", () => {
     }
   });
 
+  it('the fight notes every till it asked for: done in time or dropped, with its mistakes and what they cost', () => {
+    const c = tillFight();
+    run(c, CONFIG.introTime + 0.1);
+    const lane = checkoutOf(c);
+    while (lane.phase === 'scan') c.checkout({ kind: 'scan', item: 0 });
+    expect(c.checkout({ kind: 'scan', item: 0 })).toBe('wrong');
+    bagEverything(c);
+    run(c, CONFIG.checkout.doneHold + 0.1);
+    expect(c.stats.chores).toEqual([{ id: 'checkout', done: true, errors: 1, fined: CONFIG.checkout.penalty }]);
+    expect(c.stats.takenBy.chore).toBe(CONFIG.checkout.wrongHp);
+    expect(c.stats.lastHurtBy).toBe('chore');
+    const late = tillFight();
+    run(late, CONFIG.introTime + scanMove.windup + 0.1);
+    expect(late.stats.chores).toEqual([{ id: 'checkout', done: false, errors: 0, fined: 0 }]);
+  });
+
   it('lifting with nothing wrong, or scanning an empty place, is ignored and costs nothing', () => {
     const c = tillFight();
     run(c, CONFIG.introTime + 0.1);

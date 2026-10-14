@@ -272,11 +272,11 @@ function enterNode(to?: number): void {
 function afterCombat(combat: Combat): void {
   if (!run) return;
   const r = run;
+  logFight(r, combat);
   applyCombat(r, combat);
   playMusic('menu');
   const node = currentNode(r);
   trackFight(r, combat.enemy.def.id, combat.result === 'win');
-  logFight(r, combat);
   if (combat.result === 'lose' || (combat.result === 'win' && node.next.length === 0)) {
     endRun(r, combat.result === 'win');
     return;

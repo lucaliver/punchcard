@@ -67,7 +67,7 @@ export interface RunStats {
 }
 
 /** Shape of the saved run; a save of another version is dropped. */
-const SAVE_VERSION = 16;
+const SAVE_VERSION = 17;
 
 export interface RunState {
   version: number;
@@ -94,6 +94,8 @@ export interface RunState {
   playedIds: string[];
   /** Fights in a row (so far) that never touched the sleeve. */
   sleeveIdle: number;
+  /** Card rewards skipped so far: every one pays a little less max HP (`skipPay`). */
+  skips: number;
   /** True once the current node has been completed. */
   cleared: boolean;
   stats: RunStats;
@@ -248,6 +250,7 @@ export function newRun(
     sleeveLost: 0,
     abilityAct: 0,
     sleeveIdle: 0,
+    skips: 0,
     playedIds: [],
   };
 }
@@ -582,12 +585,13 @@ function newCard(run: RunState, id: string): CardInst {
   return card;
 }
 
-/** Skipping a card reward pays max HP (so passing on a weak offer still pays), one more every few rooms of the run. */
-export const skipPay = (run: RunState): number => CONFIG.skipMaxHp + Math.floor(run.path.length / CONFIG.skipMaxHpRooms);
+/** Skipping a card reward pays max HP (so passing on a weak offer still pays): `CONFIG.skipMaxHp` the first time, one less for every skip after it, never under 1. */
+export const skipPay = (run: RunState): number => Math.max(1, CONFIG.skipMaxHp - run.skips);
 
 /** Skipping also pays one more card, as rare as the rarest one just shown (of the hero's class or neutral) but never one of them. */
 export function skipReward(run: RunState, shown: string[]): CardInst | null {
   const pay = skipPay(run);
+  run.skips++;
   run.maxHp += pay;
   run.hp += pay;
   const rng = rngOf(run);
@@ -990,6 +994,7 @@ function parseRun(raw: unknown): RunState | null {
     sleeveLost,
     abilityAct,
     sleeveIdle,
+    skips,
     playedIds,
     reward,
   } = raw;
@@ -1030,6 +1035,7 @@ function parseRun(raw: unknown): RunState | null {
     sleeveLost: isNum(sleeveLost) ? Math.max(0, sleeveLost) : 0,
     abilityAct: isNum(abilityAct) ? Math.max(0, abilityAct) : 0,
     sleeveIdle: isNum(sleeveIdle) ? Math.max(0, sleeveIdle) : 0,
+    skips: isNum(skips) ? Math.max(0, Math.floor(skips)) : 0,
     playedIds: isStrings(playedIds) ? playedIds.filter((id) => !!CARDS[id]) : [],
     reward: cleared && offers.length ? offers.map(({ id, up }) => ({ id, up })) : undefined,
   };

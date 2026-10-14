@@ -60,6 +60,8 @@ import {
 } from '../../src/game/run';
 import { Combat } from '../../src/game/combat';
 import { calm, type FightFacts, fightFacts, fightSignals, learn, pressureScale } from '../../src/game/pressure';
+import { settings } from '../../src/game/settings';
+import { fightLogText, logFight, resetFightLog } from '../../src/ui/components/debugLog';
 import { run, setup } from './helpers';
 
 describe('the handbook bars at the end of a run', () => {
@@ -457,7 +459,7 @@ describe('the Copy Room', () => {
     expect(canCopy(r)).toBe(false);
   });
 
-  it('skipping a card reward pays max HP (one more every few rooms) and a card not on offer, as rare as the rarest shown', () => {
+  it('skipping a card reward pays max HP (less with every skip, never under 1) and a card not on offer, as rare as the rarest shown', () => {
     const r = newRun('warrior', 5);
     const hp = r.maxHp;
     const decked = r.deck.length;
@@ -469,8 +471,9 @@ describe('the Copy Room', () => {
     expect(bonus && RARITY_ORDER.indexOf(CARDS[bonus.id].rarity)).toBe(top);
     expect(r.deck.length).toBe(decked + 1);
     expect(r.maxHp).toBe(hp + CONFIG.skipMaxHp);
-    r.path.length = CONFIG.skipMaxHpRooms;
-    expect(skipPay(r)).toBe(CONFIG.skipMaxHp + 1);
+    expect(skipPay(r)).toBe(CONFIG.skipMaxHp - 1);
+    for (let i = 0; i < CONFIG.skipMaxHp + 2; i++) skipReward(r, shown);
+    expect(skipPay(r)).toBe(1);
   });
 
   it('opens on two fights and a Lost and Found, then splits in two lanes', () => {
@@ -719,6 +722,7 @@ describe('adaptive difficulty', () => {
     dealt: par.normal.dps * 50,
     seconds: 50,
     lost: par.normal.loss * 80,
+    left: 60,
     maxHp: 80,
     begged: false,
     ...over,
@@ -771,6 +775,13 @@ describe('adaptive difficulty', () => {
     expect(p.dmg).toBeLessThan(-0.99);
   });
 
+  it('a win on the last legs says the fight was not easy, whatever it cost on paper: the damage level goes all the way down', () => {
+    const easy = facts({ dealt: 9999, lost: 0 });
+    expect(fightSignals({ ...easy, left: 80 * CONFIG.pressure.closeCall - 1 }).dmg).toBe(-1);
+    expect(fightSignals({ ...easy, left: 80 * CONFIG.pressure.closeCall }).dmg).toBe(1);
+    expect(learn({ hp: 0.8, dmg: 0.5 }, { ...easy, left: 2 })).toEqual({ hp: 0.8 + rate.normal * (1 - 0.8), dmg: -1 });
+  });
+
   it('a hero who begged to stay sends both levels all the way down, which is the full ease-off', () => {
     expect(learn({ hp: 0.8, dmg: 0.5 }, facts({ begged: true }))).toEqual({ hp: -1, dmg: -1 });
     expect(pressureScale({ hp: -1, dmg: -1 }, false)).toEqual({ hp: 0.9, dmg: 0.9 });
@@ -817,12 +828,48 @@ describe('adaptive difficulty', () => {
     const r = fightRun();
     win(r, 9999, 50, 0);
     win(r, 9999, 50, 0);
-    expect(r.pressure.hp).toBeGreaterThan(0.5);
+    expect(r.pressure.hp).toBeGreaterThan(0.4);
     win(r, 1, 120, 80, true);
     expect(r.pressure).toEqual({ hp: -1, dmg: -1 });
     expect(enemyScale(currentNode(r), [], r.pressure).hp).toBeCloseTo(enemyScale(currentNode(r)).hp * 0.9);
     win(r, 9999, 50, 0);
     expect(r.pressure.hp).toBeCloseTo(-1 + rate.normal * 2);
+  });
+
+  it('the debug fight log has a JSON line per fight (where, how it went, what the pressure read and moved, the build) and a last line with the run', () => {
+    settings.debugMenus = true;
+    resetFightLog();
+    const r = fightRun();
+    const fight = new Combat(combatSetup(r));
+    fight.result = 'win';
+    fight.time = 50;
+    fight.stats.damageDealt = 100;
+    fight.stats.damageTaken = 12;
+    fight.stats.takenBy.hit = 12;
+    fight.stats.cards.punch = { plays: 3, dmg: 18, block: 0 };
+    logFight(r, fight);
+    logFight(r, fight);
+    settings.debugMenus = false;
+    const [first, , end] = fightLogText('won')
+      .trim()
+      .split('\n')
+      .map((l): unknown => JSON.parse(l));
+    expect(first).toMatchObject({
+      fight: 1,
+      hero: 'warrior',
+      enemy: currentNode(r).enemy,
+      floor: currentNode(r).floor,
+      result: 'win',
+      dealt: 100,
+      dps: 2,
+      takenBy: { hit: 12, dot: 0, self: 0, chore: 0 },
+      hp: { start: r.hp, max: r.maxHp },
+      pressure: { before: { hp: 0, dmg: 0 }, signals: expect.any(Object), after: expect.any(Object) },
+      build: { skips: 0, relics: r.relics },
+    });
+    // The card totals add up over the run's fights.
+    expect(end).toEqual({ run: 'won', cards: { punch: { plays: 6, dmg: 36, block: 0 } } });
+    resetFightLog();
   });
 
   it('is saved with the run, kept inside its range and dropped when it is missing', () => {
