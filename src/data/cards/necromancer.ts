@@ -766,10 +766,10 @@ export const necromancerCards: CardDef[] = [
     face: '{dmg:0}|{exhaust}{pile}',
     cls: 'necromancer',
     type: 'attack',
-    rarity: 'common',
+    rarity: 'rare',
     cost: 2,
-    vals: [6],
-    upVals: [9],
+    vals: [4],
+    upVals: [8],
     art: 'lazarus',
     // Back from the exhaust pile, into the draw pile (never a consumed or temporary card).
     play: (c, v) => {

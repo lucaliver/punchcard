@@ -273,9 +273,9 @@ export const mageCards: CardDef[] = [
     face: '{rush:0}|{mana:1}',
     cls: 'mage',
     type: 'skill',
-    rarity: 'rare',
-    cost: 2,
-    vals: [4, 2],
+    rarity: 'epic',
+    cost: 4,
+    vals: [4, 4],
     upVals: [7, 4],
     art: 'kanban',
     play: (c, v) => {
@@ -309,6 +309,7 @@ export const mageCards: CardDef[] = [
     cost: 5,
     vals: [4, 1],
     upVals: [7, 2],
+    keywords: ['exhaust'],
     art: 'floppy',
     inSleeve: {
       onCardPlayed: (_c, v, card, played) => {
@@ -586,6 +587,7 @@ export const mageCards: CardDef[] = [
     cost: 2,
     vals: [2, 3],
     upVals: [3, 4],
+    keywords: ['exhaust'],
     art: 'matador',
     play: (c, v) => {
       c.applyStatus('hero', 'dodge', 1, v[0]);
@@ -642,7 +644,7 @@ export const mageCards: CardDef[] = [
     cls: 'mage',
     type: 'skill',
     rarity: 'epic',
-    cost: 1,
+    cost: 3,
     vals: [],
     keywords: ['pending'],
     art: 'crunchTime',
@@ -868,7 +870,7 @@ export const mageCards: CardDef[] = [
     cls: 'mage',
     type: 'power',
     rarity: 'epic',
-    cost: 2,
+    cost: 3,
     upCost: 1,
     vals: [1],
     art: 'cronJob',
@@ -883,7 +885,7 @@ export const mageCards: CardDef[] = [
     type: 'skill',
     rarity: 'special',
     cost: 0,
-    vals: [4],
+    vals: [6],
     art: 'powerOn',
     play: (c, v) => c.gainMana(v[0]),
   },

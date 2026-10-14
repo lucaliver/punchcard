@@ -509,7 +509,7 @@ const defs: EnemyDef[] = [
     tier: 'normal',
     hp: 100,
     art: 'overthinker',
-    main: atk('bigIdea', 28, 14, { intent: 'charge' }),
+    main: atk('bigIdea', 25, 14, { intent: 'charge' }),
     every: 0,
     specials: [],
     start: [{ id: 'secondThoughts', v: 1 }],

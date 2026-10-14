@@ -571,7 +571,7 @@ const es: Record<EnKey, string> = {
   'restructure.title': 'Reestructuración',
   'restructure.desc': 'No te estamos despidiendo.\nTe estamos reubicando.',
   'restructure.lateral': 'Movimiento lateral',
-  'restructure.lateralDesc': 'Elige {n} {n|carta|cartas}: se convierten en cartas aleatorias de cualquier rareza',
+  'restructure.lateralDesc': 'Elige {n} {n|carta|cartas}: se convierten en cartas aleatorias',
   'restructure.none': 'Nada que mover',
   'restructure.gift': 'Paquete de salida',
   'restructure.giftDesc': 'Un artículo de papelería al azar. Tus cartas se quedan como están',

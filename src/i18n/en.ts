@@ -340,7 +340,7 @@ const en = {
   'journey.info.vending': 'A vending machine that takes blood: pay HP for random rare or epic cards.',
   'journey.info.crossTraining': 'A seminar run by the other departments: pick one card from another class.',
   'journey.info.restructuring':
-    'Management is repositioning you: pick cards of your deck to turn into random cards of any rarity, or leave with a random stationery.',
+    'Management is repositioning you: pick cards of your deck to turn into random cards, or leave with a random stationery.',
   'journey.info.wheel': 'The office raffle: spin the wheel, and whatever it lands on goes to {$wheelCards} cards of your deck, for better or worse.',
   'journey.info.boss': 'The boss of the shift. Beat it to clock out.',
   'journey.info.finalBoss': 'The last boss of the workday. Beat it to clock out for good.',
@@ -569,7 +569,7 @@ const en = {
   'restructure.title': 'Restructuring',
   'restructure.desc': "We're not firing you.\nWe're repositioning you.",
   'restructure.lateral': 'Lateral Move',
-  'restructure.lateralDesc': 'Pick {n} {n|card|cards}: they turn into random cards of any rarity',
+  'restructure.lateralDesc': 'Pick {n} {n|card|cards}: they turn into random cards',
   'restructure.none': 'Nothing to move',
   'restructure.gift': 'Exit Package',
   'restructure.giftDesc': 'A random stationery. Your cards stay where they are',
