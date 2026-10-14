@@ -47,9 +47,11 @@ export interface Fighter {
   maxHp: number;
   block: number;
   statuses: Statuses;
+  /** Seconds since Block was last gained (it holds for `CONFIG.blockGrace`), and the part of a point the decay has taken so far. */
   blockTimer: number;
+  blockLoss: number;
   dotTimer: number;
-  /** Seconds per decay step of Block. */
+  /** Pace of Block decay (see `CONFIG.blockGrace`). */
   blockDecay: number;
   /** Block below `below` decays `mul` times slower (the hero's passive). */
   slowBlock?: { below: number; mul: number };
@@ -289,6 +291,7 @@ export class Combat {
       block: 0,
       statuses: {},
       blockTimer: 0,
+      blockLoss: 0,
       dotTimer: 0,
       blockDecay: h.blockDecay,
       slowBlock: h.slowBlock,
@@ -309,6 +312,7 @@ export class Combat {
       block: e.block ?? 0,
       statuses: {},
       blockTimer: 0,
+      blockLoss: 0,
       dotTimer: 0,
       blockDecay: CONFIG.enemyBlockDecay,
       move: e.main,
@@ -691,22 +695,29 @@ export class Combat {
     return [...this.draw, ...this.discard, ...this.exhaust, ...this.belt.map((b) => b.card), ...this.sleeve.filter((c) => c !== null)];
   }
 
-  /** Seconds until Block next decays: a hero with a slow-fade passive keeps a small Block longer. */
-  private blockStep(f: Fighter): number {
-    return f.slowBlock && f.block < f.slowBlock.below ? f.blockDecay * f.slowBlock.mul : f.blockDecay;
+  /** Points of Block a fighter loses per second once the grace is over: a flat minimum, then in step with what it holds, then faster for a big wall; a hero with a slow-fade passive keeps a small Block longer. */
+  blockRate(f: Fighter): number {
+    const over = Math.max(0, f.block - CONFIG.blockDecayKnee);
+    const rate = Math.max(CONFIG.blockDecayMin, CONFIG.blockDecayLin * f.block + CONFIG.blockDecayQuad * over * over);
+    const slow = f.slowBlock && f.block < f.slowBlock.below ? f.slowBlock.mul : 1;
+    return (rate * CONFIG.heroBlockDecay) / (f.blockDecay * slow);
   }
 
   private tickFighter(side: Side, dt: number): void {
     const f = this.fighter(side);
-    // Block decays in steps: a share of the current block (at least 1) per interval, unless a status holds it.
+    // Block holds for a moment after it is gained, then decays whole points at a time (`blockRate`), unless a status holds it.
     if (f.block > 0 && !this.flag(side, 'holdsBlock')) {
       f.blockTimer += dt;
-      for (let step = this.blockStep(f); f.blockTimer >= step && f.block > 0; step = this.blockStep(f)) {
-        f.blockTimer -= step;
-        f.block = Math.max(0, f.block - Math.max(1, Math.ceil(f.block * CONFIG.blockDecayShare)));
+      const live = Math.min(dt, f.blockTimer - CONFIG.blockGrace);
+      if (live > 0) {
+        f.blockLoss += this.blockRate(f) * live;
+        const whole = Math.floor(f.blockLoss + 1e-9);
+        f.blockLoss -= whole;
+        f.block = Math.max(0, f.block - whole);
       }
     } else {
       f.blockTimer = 0;
+      f.blockLoss = 0;
     }
 
     let hasDot = false;

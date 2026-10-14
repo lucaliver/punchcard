@@ -531,7 +531,7 @@ export interface HeroDef {
   maxMana: number;
   /** Seconds per mana point. */
   regen: number;
-  /** Seconds per point of Block lost. */
+  /** Pace of Block decay: seconds it takes to lose what the reference pace (`CONFIG.heroBlockDecay`) loses in one. */
   blockDecay: number;
   /** Block below `below` fades `mul` times slower (Thick Skin). */
   slowBlock?: { below: number; mul: number };

@@ -249,6 +249,7 @@ describe('Factory Siren', () => {
     const span = CONFIG.beltTime / c.beltRate() + 0.3;
     c.applyStatus('hero', 'stun', 1, span);
     c.applyStatus('hero', 'autopilot', 1, span);
+    c.enemy.block = 0;
     const first = c.belt[0].card.uid;
     expect(c.playCard(first)).toBe(false);
     expect(c.stash(c.belt[c.belt.length - 1].card.uid, 0)).toBe(true);

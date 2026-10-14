@@ -132,10 +132,17 @@ export const CONFIG = {
   musicFollowsBelt: 1,
   /** Pay for a won fight (the run's score): a base by enemy tier, plus `perSecond` for every second under `par`. */
   pay: { normal: 10, elite: 25, boss: 50, par: 60, perSecond: 1 },
-  /** Share of a fighter's current Block lost per decay step (at least 1), and the seconds between steps for an enemy (the hero's is on its `HeroDef`). */
-  blockDecayShare: 0.1,
+  /**
+   * Block decay: it holds for `blockGrace` s after Block is gained, then loses points per second: `blockDecayMin`, or `blockDecayLin` per point held if that is more,
+   * plus `blockDecayQuad` times the square of what is held above `blockDecayKnee` (so a big wall falls ever faster). A fighter's pace (`blockDecay`: `enemyBlockDecay` for an enemy, the hero's on its
+   * `HeroDef`) is how many seconds it takes to lose what the reference pace (`heroBlockDecay`) loses in one.
+   */
+  blockGrace: 0.5,
+  blockDecayMin: 1,
+  blockDecayLin: 0.08,
+  blockDecayKnee: 30,
+  blockDecayQuad: 0.0004,
   enemyBlockDecay: 0.6,
-  /** The seconds between Block decay steps a hero starts from: a hero's own pace (`HeroDef.blockDecay`) starts from it. */
   heroBlockDecay: 1,
   /** Mana more a card costs for each Inflation it carries, and while it is infected with a Virus. */
   inflationCost: 1,

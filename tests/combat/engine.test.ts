@@ -1100,19 +1100,41 @@ describe('sleeve cards', () => {
 });
 
 describe('assorted rules and cards', () => {
+  /** Block lost over `secs` seconds by a hero holding `block` (nothing else going on), the Block just gained. */
+  const faded = (block: number, secs: number, hero = HEROES.warrior): number => {
+    const c = setup({ hero });
+    c.enemy.move = { id: 'wait', intent: 'defend', windup: 999 };
+    run(c, CONFIG.introTime + 0.01);
+    c.gainBlock('hero', block);
+    run(c, secs);
+    return block - c.hero.block;
+  };
+
+  it('Block holds for a moment after it is gained, and gaining more holds it again', () => {
+    expect(faded(40, CONFIG.blockGrace - 0.05)).toBe(0);
+    expect(faded(40, CONFIG.blockGrace + 1)).toBeGreaterThan(0);
+    const c = setup();
+    c.enemy.move = { id: 'wait', intent: 'defend', windup: 999 };
+    run(c, CONFIG.introTime + 0.01);
+    c.gainBlock('hero', 40);
+    run(c, CONFIG.blockGrace + 1);
+    const before = c.hero.block;
+    c.gainBlock('hero', 1);
+    run(c, CONFIG.blockGrace - 0.05);
+    expect(c.hero.block).toBe(before + 1);
+  });
+
+  it('Block fades at a flat pace when small, in step with what is held after that, and faster for a big wall', () => {
+    const per = (block: number): number => faded(block, CONFIG.blockGrace + 5, HEROES.mage) / 5;
+    expect(per(8)).toBeCloseTo(CONFIG.blockDecayMin, 0);
+    expect(per(30)).toBeGreaterThan(per(20));
+    expect(per(100) / per(50)).toBeGreaterThan(2);
+  });
+
   it('Thick Skin: Block under the threshold fades slower, a bigger one at the normal pace', () => {
-    const fade = (block: number, hero = HEROES.warrior): number => {
-      const c = setup({ hero });
-      c.enemy.move = { id: 'wait', intent: 'defend', windup: 999 };
-      run(c, CONFIG.introTime + 0.01);
-      c.hero.block = block;
-      c.hero.blockTimer = 0;
-      run(c, hero.blockDecay * 1.1);
-      return block - c.hero.block;
-    };
-    // Under the threshold the first step takes longer than the base pace; over it, not.
-    expect(fade(5)).toBe(0);
-    expect(fade(40)).toBeGreaterThan(0);
+    const [low, high] = [10, 40];
+    expect(faded(low, CONFIG.blockGrace + 5, HEROES.mage)).toBeGreaterThan(faded(low, CONFIG.blockGrace + 5, HEROES.warrior));
+    expect(faded(high, CONFIG.blockGrace + 2, HEROES.warrior)).toBe(faded(high, CONFIG.blockGrace + 2, HEROES.mage));
   });
 
   it('Voodoo Pin petrifies cards of the piles, never one on the belt', () => {
