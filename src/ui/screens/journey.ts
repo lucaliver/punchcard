@@ -7,7 +7,7 @@ import { openModal, type Screen } from '../app';
 import { ENEMIES } from '../../data/enemies';
 import { settings } from '../../game/settings';
 import { foeView } from '../components/moveText';
-import { h, onPress, onTapOrHold, setText } from '../dom';
+import { $, h, onPress, onTapOrHold, setText } from '../dom';
 import { playHealing } from './rest';
 import { icon } from '../art/icons';
 import { debugButton } from '../components/debugMenu';
@@ -45,11 +45,20 @@ const VISION = 1;
 /** Footsteps along a walked corridor: one every so many px. The map is about this wide (px), to measure the turns. */
 const STEP_PX = 12;
 const MAP_W = 350;
+/** Seconds the map takes to glide from the act's boss down to its first room when a new shift begins (ms). */
+const GLIDE_MS = 900;
 /** Delay between the steps of the newest walked stretch (ms), and between the lamps that light up the roads just opened. */
 const LAMP_MS = 45;
 
 /** A point on the map: x in % of its width, y in px. */
 type Pt = [number, number];
+
+/** Where the map has to be scrolled to bring a room to its middle. */
+const scrollToCentre = (scroll: HTMLElement, room: HTMLElement): number => {
+  const [s, r] = [scroll.getBoundingClientRect(), room.getBoundingClientRect()];
+  return scroll.scrollTop + r.top - s.top - (s.height - r.height) / 2;
+};
+const easeInOut = (x: number): number => (x < 0.5 ? 4 * x ** 3 : 1 - (-2 * x + 2) ** 3 / 2);
 
 /** The player's own clock, as text (e.g. 14:05): what the time card is stamped with, whatever hour the game's workday is at. */
 export function realClockText(): string {
@@ -362,14 +371,51 @@ export function journeyScreen(run: RunState, onEnter: (to?: number) => void, onH
     haptic('ability');
   };
 
+  /** A new shift opens on the boss, at the far end of the map, then glides down to the first room (the map is scrolled by hand, so the glide stops at a touch). */
+  const scroll = $('.scroll', el);
+  const first = (): HTMLElement | null => el.querySelector<HTMLElement>('.node.current, .node.open');
+  let glideId = 0;
+  const glide = (): void => {
+    const room = first();
+    if (!room) return;
+    const [from, to, t0] = [scroll.scrollTop, scrollToCentre(scroll, room), performance.now()];
+    if (settings.reduceMotion) {
+      scroll.scrollTop = to;
+      return;
+    }
+    scroll.classList.add('gliding');
+    const stop = (): void => {
+      scroll.classList.remove('gliding');
+      cancelAnimationFrame(glideId);
+      scroll.removeEventListener('pointerdown', stop);
+      scroll.removeEventListener('wheel', stop);
+    };
+    const step = (now: number): void => {
+      const k = Math.min(1, (now - t0) / GLIDE_MS);
+      scroll.scrollTop = from + (to - from) * easeInOut(k);
+      if (k < 1) glideId = requestAnimationFrame(step);
+      else stop();
+    };
+    scroll.addEventListener('pointerdown', stop);
+    scroll.addEventListener('wheel', stop, { passive: true });
+    glideId = requestAnimationFrame(step);
+  };
+  const frameBoss = (): void => {
+    const boss = nodeEls.get(nodes.reduce((a, b) => (b.floor > a.floor ? b : a)).id);
+    if (boss && !settings.reduceMotion) scroll.scrollTop = scrollToCentre(scroll, boss);
+  };
+
   let revealTimer = 0;
   return {
     el,
     leave() {
       clearTimeout(revealTimer);
+      cancelAnimationFrame(glideId);
     },
     enter() {
-      el.querySelector('.node.current, .node.open')?.scrollIntoView({ block: 'center' });
+      const newShift = act !== cur.act || (run.path.length === 1 && !run.cleared);
+      if (newShift) frameBoss();
+      else first()?.scrollIntoView({ block: 'center' });
       // The new rooms come out of the fog with a chime.
       if (revealMs) revealTimer = window.setTimeout(() => sfx('ding'), revealMs);
       // A new shift: after an act's boss, or on the first floor of the run.
@@ -378,11 +424,12 @@ export function journeyScreen(run: RunState, onEnter: (to?: number) => void, onH
         const healed = startShift(run);
         saveRun(run);
         actIntro(() => {
+          glide();
           if (healed <= 0) return;
           setText(el.querySelector('.chip.hp span')!, `${run.hp}/${run.maxHp}`);
           playHealing(el, healed);
         });
-      } else if (run.path.length === 1 && !run.cleared) actIntro(() => {});
+      } else if (run.path.length === 1 && !run.cleared) actIntro(glide);
     },
   };
 }

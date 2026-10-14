@@ -92,7 +92,7 @@ function relicView(r: RelicDef): HTMLElement {
   return h('article', {
     class: `relic-line${seen ? '' : ' undiscovered'}`,
     'data-rarity': r.rarity,
-    html: `<i class="relic-gem"></i>${relicArt(r.id)}<div><b>${seen ? t(`relic.${r.id}.name`) : UNKNOWN}</b>${seen ? t(`relic.${r.id}.d`, { n: r.n }) : UNKNOWN}</div>`,
+    html: `<i class="relic-gem"></i>${relicArt(r.id)}<div><b>${seen ? t(`relic.${r.id}.name`) : UNKNOWN}</b>${seen ? keywordHtml(t(`relic.${r.id}.d`, { n: r.n })) : UNKNOWN}</div>`,
   });
 }
 

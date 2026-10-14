@@ -66,8 +66,9 @@ export const LEARN_EVERY = 3;
 export const FLICKER_EVERY = 16;
 export const FLICKER_TIME = 8;
 const FLICKER_WARN = 3;
-/** Forced Smile: HP it heals every second. */
-export const SMILE_HEAL = 1;
+/** Forced Smile: HP it heals every `SMILE_EVERY` seconds. */
+export const SMILE_HEAL = 2;
+export const SMILE_EVERY = 2;
 /** Paradigm Shift: the belt turns around each time the enemy loses another 1/this of its max HP. */
 export const PARADIGM_TURNS = 4;
 
@@ -967,7 +968,7 @@ const defs: StatusDef[] = [
       return left < FLICKER_WARN ? 1 - left / FLICKER_WARN : 0;
     },
   },
-  // Forced smile: `v` HP back every second, for good.
+  // Forced smile: a few HP back every couple of seconds, for good.
   {
     id: 'forcedSmile',
     tone: 'green',
@@ -975,7 +976,10 @@ const defs: StatusDef[] = [
     good: true,
     passive: true,
     icon: 'leaf',
-    tick: everySecond((c, side, _n, s) => c.heal(side, s.v * SMILE_HEAL)),
+    progress: cycle(SMILE_EVERY),
+    tick: everySecond((c, side, n) => {
+      if (n % SMILE_EVERY === 0) c.heal(side, SMILE_HEAL);
+    }),
   },
   // Machine learning: `e` counts the cards you let slip.
   {

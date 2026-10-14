@@ -2,7 +2,7 @@ import { describe, expect, it } from 'vitest';
 import type { Combat } from '../../src/game/combat';
 import { CONFIG } from '../../src/data/config';
 import { ENEMIES } from '../../src/data/enemies';
-import { FLICKER_EVERY, SMILE_HEAL, STATUSES } from '../../src/data/statuses';
+import { FLICKER_EVERY, SMILE_EVERY, SMILE_HEAL, STATUSES } from '../../src/data/statuses';
 import { CARDS, cardKeywordsOf } from '../../src/data/cards';
 import { HEXES } from '../../src/data/hexes';
 import { deckOf, plainBoomer, setup, run } from './helpers';
@@ -280,6 +280,20 @@ describe('act 3 rules', () => {
     expect(c.previewHeroDamage(3, null)).toBe(3);
   });
 
+  it('Rate Limit also caps Poison, Burn and thorns', () => {
+    const c = setup({ enemy: { ...ENEMIES.rateLimiter, block: 0 }, hp: 999, maxHp: 999 });
+    c.enemy.move = { id: 'wait', intent: 'defend', windup: 999 };
+    run(c, CONFIG.introTime + 0.01);
+    const cap = c.stacks('enemy', 'rateLimit');
+    const hp = c.enemy.hp;
+    c.applyStatus('enemy', 'poison', 40);
+    run(c, CONFIG.dotInterval + 0.05);
+    expect(hp - c.enemy.hp).toBe(cap);
+    const now = c.enemy.hp;
+    c.damage('hero', 'enemy', 30, { raw: true, kind: 'thorns' }, 'hero');
+    expect(now - c.enemy.hp).toBe(cap);
+  });
+
   it('Microsleep: the enemy dozes off after its awake spell, stunned and vulnerable', () => {
     const c = setup({ enemy: { ...ENEMIES.graveyardIntern, main: { ...ENEMIES.graveyardIntern.main, windup: 999 } } });
     run(c, CONFIG.introTime + 3);
@@ -351,12 +365,12 @@ describe('act 3 rules, second batch', () => {
     expect(c.has('hero', 'blackout')).toBe(true);
   });
 
-  it('Forced Smile heals the enemy every second', () => {
+  it('Forced Smile heals the enemy every couple of seconds', () => {
     const c = setup({ enemy: { ...ENEMIES.happinessOfficer, main: { ...ENEMIES.happinessOfficer.main, windup: 999 } } });
     c.enemy.hp -= 10;
     const hp = c.enemy.hp;
-    run(c, CONFIG.introTime + 3.5);
-    expect(c.enemy.hp).toBe(hp + 3 * SMILE_HEAL);
+    run(c, CONFIG.introTime + SMILE_EVERY * 2 + 0.5);
+    expect(c.enemy.hp).toBe(hp + 2 * SMILE_HEAL);
   });
 
   it('the Withered Ficus stings back when an attack card hits it', () => {

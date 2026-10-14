@@ -224,8 +224,8 @@ export function openInfo(opts: InfoOpts, onClose?: () => void): ModalHandle {
       class: 'info-head',
       html: `<span class="info-ico">${opts.art ?? icon(opts.icon ?? 'question')}</span><div><h3>${opts.title}</h3>${opts.tag ? `<span class="ftag ${opts.tagCls ?? ''}">${opts.tag}</span>` : ''}</div>`,
     }),
-    h('p', { class: 'info-desc', html: opts.desc }),
-    ...(opts.extra ?? []).map((x) => h('div', { class: 'info-extra', html: x })),
+    h('p', { class: 'info-desc', html: keywordHtml(opts.desc) }),
+    ...(opts.extra ?? []).map((x) => h('div', { class: 'info-extra', html: keywordHtml(x) })),
   );
   return openModal({ body, actions: [{ label: t('common.close'), cls: 'secondary' }], onClose });
 }

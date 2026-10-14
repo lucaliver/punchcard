@@ -682,6 +682,9 @@ test('map: holding a node explains it, even one out of reach, without picking it
   const problems = await freshGame(page);
   await page.getByRole('button', { name: /new run/i }).click();
   await page.getByRole('button', { name: /start shift/i }).click();
+  // The new shift's map opens on the boss and glides down to the first room: wait until it has settled.
+  await expect(page.locator('.act-intro')).toHaveCount(0, { timeout: 15_000 });
+  await expect(page.locator('.scroll.gliding')).toHaveCount(0);
   const boss = page.locator('.node.boss .dot');
   await boss.scrollIntoViewIfNeeded();
   await boss.hover();
@@ -1086,7 +1089,7 @@ test('the Board: a head lost at each third of its HP changes the belt, and the a
   await expect.poll(rows).toBe('2');
   expect(await face()).not.toBe(first);
   // Phase 3: the audit covers the belt with three covered cards; the right one ends it.
-  await combat(page, "c.damage('hero', 'enemy', c.enemy.hp - 100, { raw: true }, 'hero');");
+  await combat(page, "c.enemy.block = 0; c.damage('hero', 'enemy', c.enemy.hp - 100, { raw: true }, 'hero');");
   await combat(page, 'while (!c.enemy.move.task) c.skipEnemyMove();');
   const win = page.locator('.shell-window.on');
   await expect(win).toBeVisible();
@@ -1544,7 +1547,7 @@ test('raffle: the wheel stops on a slice that lands on three picked cards', asyn
   expect(problems).toEqual([]);
 });
 
-test('the enemy walks in as the door opens, and its passive is on a slip under Clock in', async ({ page }) => {
+test('the enemy walks in as the door opens, and its passive is on a slip above Clock in', async ({ page }) => {
   const problems = await freshGame(page, { veteran: true });
   await page.getByRole('button', { name: /new run/i }).click();
   await page.getByRole('button', { name: /start shift/i }).click();
@@ -1558,8 +1561,8 @@ test('the enemy walks in as the door opens, and its passive is on a slip under C
   await expect(slip.locator('.trait-head')).toContainText(/enemy passive/i);
   // Past the very first fight, nothing is written under the button but its name.
   await expect(page.locator('.start-btn small')).toHaveCount(0);
-  const [button, under] = await Promise.all([page.locator('.js-start').boundingBox(), slip.boundingBox()]);
-  expect(under!.y).toBeGreaterThanOrEqual(button!.y + button!.height - 1);
+  const [button, above] = await Promise.all([page.locator('.js-start').boundingBox(), slip.boundingBox()]);
+  expect(above!.y + above!.height).toBeLessThanOrEqual(button!.y + 1);
   // The belt and its cards are dark until the clock-in.
   await expect(page.locator('.combat.waiting')).toHaveCount(1);
   await page.locator('.js-start').click();

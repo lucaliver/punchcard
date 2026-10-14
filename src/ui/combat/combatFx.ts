@@ -17,6 +17,7 @@ import type { CardLayer } from './cardLayer';
 import { CONFIG } from '../../data/config';
 import { type Bubble, say } from './speech';
 import type { CombatView } from './view';
+import { keywordHtml } from '../components/cardView';
 
 const SOUND_FOR_KIND: Record<string, SoundId> = {
   slash: 'slash',
@@ -494,7 +495,7 @@ export function bindCombatFx(v: CombatView, cards: CardLayer, onEnd: (result: 'w
         v.inspect(true);
         const ask = openModal({
           title: t('beg.title'),
-          body: h('p', null, t('beg.body')),
+          body: h('p', { html: keywordHtml(t('beg.body')) }),
           dismissable: false,
           actions: [
             { label: t('beg.yes'), icon: 'heart', cls: 'cta', onClick: () => v.combat.beg(true) },

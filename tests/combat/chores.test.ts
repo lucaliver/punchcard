@@ -5,7 +5,7 @@ import { CoffeeTask } from '../../src/game/coffee';
 import { SushiOrder } from '../../src/game/sushi';
 import { Rng } from '../../src/core/rng';
 import { CONFIG } from '../../src/data/config';
-import { ENEMIES } from '../../src/data/enemies';
+import { BOARD_BLOCK, ENEMIES } from '../../src/data/enemies';
 import { CARDS } from '../../src/data/cards';
 import { setup, run, coffeeOf, shellsOf, sushiOf, badgeOf, checkoutOf } from './helpers';
 
@@ -163,10 +163,13 @@ describe('the Board', () => {
     expect(c.belt.every((b) => b.row < 2)).toBe(true);
     expect(c.beltRate()).toBeGreaterThan(slow);
     expect(c.foe).toBe(c.enemy.def.phases![0]);
+    expect(c.enemy.block).toBe(BOARD_BLOCK);
+    c.enemy.block = 0;
     hit(c, 100);
     expect(c.enemy.phase).toBe(2);
     expect(c.beltRows).toBe(2);
     expect(c.foe).toBe(c.enemy.def.phases![1]);
+    expect(c.enemy.block).toBe(BOARD_BLOCK);
     expect(seen).toEqual([1, 2]);
   });
 

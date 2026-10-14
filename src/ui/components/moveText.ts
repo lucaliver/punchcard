@@ -146,6 +146,7 @@ export function enemyTraits(e: EnemyDef, inFight = false): { icon: string; name:
   const traits = (e.start ?? [])
     .filter((s) => STATUSES[s.id].passive && !(inFight && STATUSES[s.id].hidden))
     .map((s) => ({ icon: STATUSES[s.id].icon, name: t(`status.${s.id}`), desc: keywordHtml(t(`status.${s.id}.d`, { v: s.v ?? 1 })) }));
+  if (e.note) traits.push({ icon: e.note, name: '', desc: keywordHtml(t(`enemy.${e.id}.note`)) });
   if (e.fillSleeve) traits.push({ icon: 'hand', name: t(`card.${e.fillSleeve}.name`), desc: t('enemy.fillSleeve') });
   if (e.startHex) {
     const { id, share } = e.startHex;

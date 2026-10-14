@@ -23,7 +23,7 @@ import { PERK_LIST, PERKS } from '../src/data/perks';
 import { WHEEL } from '../src/data/wheel';
 import { STATUS_ORDER, STATUSES } from '../src/data/statuses';
 import { cardText, GLYPHS, TAG_ICON } from '../src/ui/components/cardView';
-import { RULES, moveTone } from '../src/ui/components/moveText';
+import { RULES, enemyTraits, moveTone } from '../src/ui/components/moveText';
 import { ICONS, INTENT_ICON } from '../src/ui/art/icons';
 import { CARD_ART } from '../src/ui/art/cardArt';
 import { RELIC_SPRITES } from '../src/ui/art/relics';
@@ -138,6 +138,25 @@ describe('content integrity', () => {
     }
     expect(KIND_ICONS).toHaveLength(CONFIG.match3.kinds);
     for (const id of [...KIND_ICONS, 'copy', 'kanban']) expect(ICONS[id], id).toBeTruthy();
+  });
+
+  it('every enemy tells something about itself before the fight, unless its trait is a surprise, and a note has its icon and texts in every language', () => {
+    for (const e of ENEMY_LIST) {
+      const surprise =
+        e.halfSecret || e.deepBelt !== undefined || e.beltOff !== undefined || e.manaTap !== undefined || e.start?.some((s) => STATUSES[s.id].hidden);
+      if (!surprise && !e.firstRunOnly) expect(enemyTraits(e, true).length, e.id).toBeGreaterThan(0);
+      if (!e.note) continue;
+      expect(ICONS[e.note], e.id).toBeTruthy();
+      for (const strings of [enStrings, itStrings, esStrings, zhStrings] as Record<string, string>[])
+        expect(strings[`enemy.${e.id}.note`], e.id).toBeTruthy();
+    }
+  });
+
+  it('rules texts mark every keyword they name, so every place that shows them highlights it alike', () => {
+    const rules =
+      /^(card\.\w+\.(desc|tip)|status\.\w+(\.self)?\.d|relic\.\w+\.d|perk\.\w+\.d|hero\.\w+\.(passive|ability)Short|kw\.\w+\.d|rule\.\w+\.d|enemy\.\w+\.(half|note|game|deep|off|tap|phase\d\.d)|beg\.body)$/;
+    const bare = /\b(Block|Poison|Strength|Burn|Dodge|Vulnerable|Weak|Stun|Chill|Thorns|Parry|Fleeting|Innate)\b/;
+    for (const [key, text] of Object.entries(en)) if (rules.test(key)) expect(text.replace(/\[\w+\]/g, ''), key).not.toMatch(bare);
   });
 
   it('the handbook lists every keyword the game explains', () => {

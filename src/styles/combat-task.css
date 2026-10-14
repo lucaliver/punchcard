@@ -375,6 +375,7 @@
 
 /* The Sushi Chef's slips: pinned over the stage's top corners (the chef stands between them), the pieces to eat in turn, a dish on a coloured plate (the belt and the sleeve stay in reach) */
 .sushi-slip {
+  --ss-piece: 42px;
   display: none;
   position: absolute;
   top: 8px;
@@ -383,7 +384,7 @@
   justify-content: center;
   /* two pieces a row, whatever the border is */
   box-sizing: content-box;
-  width: calc(2 * 33px);
+  width: calc(2 * var(--ss-piece));
   padding: 3px 3px 5px;
   color: var(--k);
   background: var(--paper);
@@ -396,20 +397,13 @@
 .sushi-slip.entering { animation: stamp-in 0.15s steps(2); }
 .sushi-slip.served { animation: task-served 0.4s steps(2) 3; }
 .sushi-slip.jolt { animation: task-jolt 0.3s steps(3); }
-.ss-bar {
-  width: 100%;
-  margin-bottom: 2px;
-  text-align: center;
-  font-family: var(--font-display);
-  font-size: 11px;
-}
 .ss-piece {
   position: relative;
   display: grid;
   place-items: center;
-  width: 33px;
-  height: 33px;
-  font-size: 26px;
+  width: var(--ss-piece);
+  height: var(--ss-piece);
+  font-size: 34px;
   color: var(--k);
   --ink2: var(--paper);
 }

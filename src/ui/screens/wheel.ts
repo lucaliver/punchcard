@@ -16,6 +16,7 @@ import { openDeck } from '../components/modals';
 import { closeRoom } from '../components/room';
 import { haptic } from '../fx/fx';
 import { runHud } from './journey';
+import { keywordHtml } from '../components/cardView';
 
 /** Pixels the wheel's picture is drawn on (it is shown many times bigger, so it stays chunky). */
 const DISC_PX = 64;
@@ -139,7 +140,7 @@ export function wheelScreen(run: RunState, onDone: () => void): Screen {
     sfx(isBad(landed) ? 'debuff' : 'ding');
     haptic('tap');
     result.dataset.luck = isBad(landed) ? 'bad' : 'good';
-    result.innerHTML = `${icon(landed.icon)}<div><b>${slotName(landed)}</b><span>${slotDesc(landed)}</span></div>`;
+    result.innerHTML = `${icon(landed.icon)}<div><b>${slotName(landed)}</b><span>${keywordHtml(slotDesc(landed))}</span></div>`;
     retrigger(result, 'land');
     disc.children[WHEEL.indexOf(landed) + 1]?.classList.add('hit');
     button.disabled = false;

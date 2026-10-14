@@ -94,6 +94,8 @@ function markup(run: RunState, combat: Combat): string {
           <div class="t-track"><div class="t-fill"></div><span class="t-lbl"></span></div>
           <div class="t-time"></div>
         </div>
+        <!-- your Block against the hit being charged: the bar is the damage, the teal is what Block covers of it -->
+        <div class="guard off" aria-hidden="true"><div class="g-fill"></div><span class="g-lbl">${icon('shield')}<b></b></span></div>
       </div>
     </section>
     <!-- right above the belt: your HP, Block and statuses stay in view while you play -->
@@ -162,6 +164,9 @@ function queryRefs(el: HTMLElement) {
     timer: $('.threat .t-fill', el),
     intentTime: $('.threat .t-time', el),
     intentNext: $('.t-next', el),
+    guard: $('.guard', el),
+    guardFill: $('.guard .g-fill', el),
+    guardTxt: $('.guard b', el),
     incoming: $('.js-hhp .incoming', el),
     eHp: $('.js-ehp', el),
     eBlock: $('.js-eblock', el),

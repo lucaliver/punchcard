@@ -217,7 +217,7 @@ export interface StatusDef {
   signed?: true;
   /** While active on the enemy, its amount (`v`) is taken off every hit of the hero's cards (Fine Print); Poison, Burn and thorns slip through. */
   cutsHits?: true;
-  /** While active on the enemy, no hit of the hero's cards deals more than its amount (`v`); Poison, Burn and thorns slip through (Rate Limit). */
+  /** While active on the enemy, no hit on it deals more than its amount (`v`): cards, and Poison, Burn and thorns ticks too (Rate Limit). */
   capsHits?: true;
   /** While active on the hero, the sleeve is out of reach: no card can be played from it or put into it (Batch Processing). */
   barsSleeve?: true;
@@ -385,6 +385,8 @@ export interface EnemyPhase {
   specials: MoveDef[];
   every: number;
   belt: BeltSetting;
+  /** Block it gains the moment it enters the phase. */
+  block?: number;
 }
 
 export interface EnemyDef {
@@ -402,6 +404,8 @@ export interface EnemyDef {
   block?: number;
   /** Statuses the enemy starts with. */
   start?: { id: string; v?: number; t?: number }[];
+  /** Icon of a line spelled out before the fight (`enemy.<id>.note`, with its passives) for what it does that no status, hex or sleeve fill tells; a surprise has none. */
+  note?: string;
   /** Curse card that fills every sleeve slot at the start of the fight. */
   fillSleeve?: string;
   /** Hex cast on a `share` (0–1) of your cards at the start of the fight. */

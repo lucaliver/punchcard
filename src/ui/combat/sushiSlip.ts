@@ -5,8 +5,8 @@ import { icon } from '../art/icons';
 import { h, retrigger, toggle } from '../dom';
 import type { CombatView } from './view';
 
-/** The letter on top of each slip: one per corner of the stage (`CONFIG.sushi.slips` is two). */
-const SLIP_NAMES = ['A', 'B'];
+/** One slip per corner of the stage (`CONFIG.sushi.slips` is two). */
+const SLIP_CORNERS = 2;
 
 /**
  * The Sushi Chef's chore (`MoveDef.task` = 'sushi'): his slips pinned over the stage's corners, each with the pieces (a dish on a coloured plate) to eat, in turn. Unlike the other chores
@@ -14,8 +14,8 @@ const SLIP_NAMES = ['A', 'B'];
  */
 export function createSushiSlip(v: CombatView): { render(): void } {
   const { combat, r } = v;
-  const slips: HTMLElement[] = SLIP_NAMES.map((name, i) =>
-    h('div', { class: `sushi-slip s${i}`, role: 'status', 'aria-label': t('task.sushi.title') }, h('b', { class: 'ss-bar' }, name)),
+  const slips: HTMLElement[] = Array.from({ length: SLIP_CORNERS }, (_, i) =>
+    h('div', { class: `sushi-slip s${i}`, role: 'status', 'aria-label': t('task.sushi.title') }),
   );
   r.stage.append(...slips);
 
@@ -32,7 +32,7 @@ export function createSushiSlip(v: CombatView): { render(): void } {
     );
     slips.forEach((el, i) => {
       if (pieces[i]) {
-        el.replaceChildren(el.firstElementChild!, ...pieces[i]);
+        el.replaceChildren(...pieces[i]);
         retrigger(el, 'entering');
       }
     });

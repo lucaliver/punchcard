@@ -348,6 +348,14 @@ export function createHud(v: CombatView, onPassive: () => void): { render(): voi
       warned = e.moveCount;
       sfx(incoming > 0 ? 'incoming' : 'incomingSafe');
     }
+    // Block against the hit: the bar stands for the whole hit, the teal for the share of it Block takes.
+    const hit = hostile ? combat.intentDamage(m) * (m.hits ?? 1) : 0;
+    toggle(r.guard, 'off', hit <= 0);
+    if (hit > 0) {
+      const covered = `scaleX(${Math.min(1, hs.block / hit).toFixed(3)})`;
+      if (r.guardFill.style.transform !== covered) r.guardFill.style.transform = covered;
+      setText(r.guardTxt, `${hs.block} / ${hit}`);
+    }
     const shown = incoming > 0 && left < 2.2;
     const lost = Math.min(hs.hp, incoming);
     r.incoming.style.left = `${((hs.hp - lost) / hs.maxHp) * 100}%`;

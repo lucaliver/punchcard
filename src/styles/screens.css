@@ -394,6 +394,21 @@
   animation: slip-line 0.1s steps(1) var(--coll-wait) both;
 }
 .collect.still { width: 100%; margin: 0 0 12px; animation: none; }
+/* the end screen's title over the bars: what the run unlocked, with an arrow nudging toward the pages */
+.coll-head {
+  grid-column: 1 / -1;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 4px;
+  padding-bottom: 4px;
+  font-family: var(--font-display);
+  font-size: 13px;
+  text-transform: uppercase;
+  border-bottom: 2px dashed var(--paper-rule);
+}
+.coll-head .go { flex: none; font-size: 22px; --dir: -1; --ink2: var(--p); animation: nudge 0.8s steps(2) infinite; }
+.coll-head .go .pico { transform: scaleX(-1); }
 .collect.still .coll-fill { animation: none; }
 .coll-row {
   display: grid;

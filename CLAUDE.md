@@ -100,7 +100,7 @@ dev/           art.html, og.html, map-editor.html (dev server only)
   - A card's `type` is the colour of its background: attack pink, defense blue, skill yellow, power grey, curse green (`--cat-*`, `data-type`). There are no other types: rules name a type ("every attack") and the player sees it on the card.
   - Cost, keywords and values of a copy always come from `cardCostOf`/`cardKeywordsOf`/`cardValsOf`; set `dmg: []` only for raw damage that ignores modifiers.
   - Rarities: common, rare, epic, legendary (`special` only for cards a fight generates). Basic cards of the starter decks are common with `starterOnly` (never a reward, a vending drop or a cross-training offer).
-- **Enemy** (`enemies.ts`): `EnemyDef` + a sprite in `creatures.ts` (with `onHalf`: also `<id>Angry`) + `enemy.<id>.name`, `move.<id>` per move, `enemy.<id>.half`; a move with a `task` also needs `enemy.<id>.order`/`.calm`. Fields are documented on the type.
+- **Enemy** (`enemies.ts`): `EnemyDef` + a sprite in `creatures.ts` (with `onHalf`: also `<id>Angry`) + `enemy.<id>.name`, `move.<id>` per move, `enemy.<id>.half`, `enemy.<id>.note` (+ `note` icon) when it has no passive status to tell what it does; a move with a `task` also needs `enemy.<id>.order`/`.calm`. Fields are documented on the type.
 - **Hero** (`heroes.ts`): `HeroDef`, a card file, a sprite and its face coordinates in `FACES` (`art/heroMoods.ts`), `hero.<id>.*` strings, `ABILITY_ICON`/`PASSIVE_ICON` (`ui/combat/view.ts`), `ink`.
 - **Status** (`statuses.ts`): `StatusDef` with its required `tone` + `status.<id>` and `.d` (`{v}` = amount); `selfName`/`.self` when the hero's side reads differently.
 - **Relic** (`relics.ts`): `RelicDef` + a sprite in `art/relics.ts` + `relic.<id>.name`/`.d` (`{n}`); a non-instant trigger needs `progress` or `armed`.
@@ -110,6 +110,8 @@ dev/           art.html, og.html, map-editor.html (dev server only)
 ## i18n
 
 `t(key)` is typed: literal ids must exist in `en.ts`. Runtime-built keys use known prefixes (`card.`, `enemy.`, `move.`, `status.`, `kw.`, `hero.`…), covered by the content test. Plurals: `{n|one|other}`. Languages: `en` (default), `it`, `es` and `zh` (Simplified Chinese: no plural forms, `{n|a|a}` repeats one; its text falls back on the system CJK font, `--font-cjk`), picked in Settings (`settings.locale`, reloads the page) or on the language screen of a first launch (`settings.localeChosen`). A new string goes in **all** the language files (a test checks same keys and placeholders: `{n}`, `{$name}`, `[kw]`); a new language: copy `en.ts`, register in `core/i18n.ts`. Italian keeps game words translated (Blocco, Veleno, Forza…) and the workplace-satire tone; it need not be literal and may keep the international term.
+
+**Name a keyword with `[kw]`, never bare** (`[block]`, `[poison]`, `[strength]`…) in every rules text (cards, statuses, relics, perks, hero and enemy lines, glossary): every place that shows one runs it through `keywordHtml` (`openInfo` and `roomOption` do it themselves), so the keyword is highlighted alike everywhere. A test checks the English texts.
 
 **Never type a game number in a string.** A number rules text quotes (a duration, a percentage, a threshold) goes in as `{$name}`, read from `VALUES` in `data/values.ts`, which takes it from the constant, status or record that makes the rule work (export the constant, don't copy it). Card values stay `{0}`/`{1}`, relic/perk numbers `{n}`. A test checks every `{$name}` has a value and every value is used.
 

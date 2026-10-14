@@ -18,8 +18,8 @@ const COLLECTION_PAGES: [CollectionKind, string, TKey, Section][] = [
 const COLL_STEPS = 12;
 
 /**
- * The handbook's pages as filling bars; tapping one opens that page. With `animate` each bar climbs from where it stood (after the
- * `rows` lines of the payslip have printed), ticking into `ticks`, which the screen clears when it leaves; without it they are still.
+ * The handbook's pages as filling bars; tapping one opens that page. With `animate` (the end of a run) each bar climbs from where it stood (after the
+ * `rows` lines of the payslip have printed), ticking into `ticks`, which the screen clears when it leaves, and a heading with an arrow invites to open them; without it they are still.
  */
 export function collectionBars(
   filled: ReturnType<typeof collection>,
@@ -29,6 +29,7 @@ export function collectionBars(
   return h(
     'div',
     { class: `collect${animate ? '' : ' still'}`, style: { '--rows': String(animate?.rows ?? 0) } },
+    animate ? h('div', { class: 'coll-head', html: `<span>${t('end.collectTitle')}</span><i class="go">${icon('left')}</i>` }) : null,
     ...COLLECTION_PAGES.map(([kind, ico, label, section], i) => {
       const { from, n, total } = filled[kind];
       return h(

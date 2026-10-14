@@ -29,6 +29,8 @@ const CHECKOUT = 26;
 /** The Board's belt multipliers: phase 1 crawls (with a third row), phase 2 runs. */
 const BOARD_SLOW = 0.7;
 const BOARD_FAST = 1.5;
+/** Block the Board gains each time a head is lost (the phase it enters). */
+export const BOARD_BLOCK = 50;
 /** Seconds the Board's audit takes to land: a couple of rounds of the shell game fit in it. */
 const AUDIT = 18;
 
@@ -102,6 +104,7 @@ const defs: EnemyDef[] = [
     tier: 'normal',
     hp: 70,
     art: 'toxicCoworker',
+    note: 'lips',
     // Toxic: gossip is the usual move; the snark doesn't hit, it poisons (and Block can't stop it).
     main: { id: 'spreadGossip', intent: 'curse', windup: 5, curse: [{ id: 'gossip', n: 2, to: 'draw' }] },
     every: 2,
@@ -116,6 +119,7 @@ const defs: EnemyDef[] = [
     tier: 'normal',
     hp: 70,
     art: 'teamLeader',
+    note: 'meeting',
     main: atk('buzzword', 4, 4),
     every: 2,
     specials: [
@@ -199,6 +203,7 @@ const defs: EnemyDef[] = [
     tier: 'normal',
     hp: 70,
     art: 'sickCoworker',
+    note: 'virus',
     main: atk('cough', 3, 3),
     every: 4,
     specials: [
@@ -311,6 +316,7 @@ const defs: EnemyDef[] = [
     hp: 90,
     block: 20,
     art: 'dave',
+    note: 'hammock',
     main: { id: 'scrolling', intent: 'idle', windup: 4 },
     every: 3,
     specials: [
@@ -419,6 +425,7 @@ const defs: EnemyDef[] = [
     tier: 'normal',
     hp: 90,
     art: 'officeChair',
+    note: 'gears',
     main: atk('swivel', 6, 6),
     every: 2,
     specials: [
@@ -514,6 +521,7 @@ const defs: EnemyDef[] = [
     tier: 'normal',
     hp: 90,
     art: 'leaver',
+    note: 'bomb',
     main: atk('clearTheDesk', 7, 6),
     every: 2,
     specials: [
@@ -529,6 +537,7 @@ const defs: EnemyDef[] = [
     hp: 110,
     block: 15,
     art: 'printer',
+    note: 'scanner',
     main: { id: 'scan', intent: 'absorb', windup: 8, absorb: true },
     every: 1,
     specials: [atk('printOut', 5, 8, { intent: 'charge', release: true, ...ramp })],
@@ -556,6 +565,7 @@ const defs: EnemyDef[] = [
     hp: 30,
     block: 90,
     art: 'veteran',
+    note: 'fortress',
     main: atk('grumble', 9, 7, ramp),
     every: 2,
     specials: [
@@ -722,6 +732,7 @@ const defs: EnemyDef[] = [
     tier: 'normal',
     hp: 120,
     art: 'microwave',
+    note: 'blastFurnace',
     main: atk('beepBeepBeep', 5, 3),
     every: 3,
     specials: [
@@ -736,6 +747,7 @@ const defs: EnemyDef[] = [
     tier: 'normal',
     hp: 120,
     art: 'witheredFicus',
+    note: 'thorns',
     main: atk('droppedLeaf', 6, 6),
     every: 2,
     specials: [{ id: 'photosynthesis', intent: 'heal', windup: 6, heal: 10, status: [gainStrength] }, atk('overgrowth', 15, 9, { intent: 'charge' })],
@@ -749,6 +761,7 @@ const defs: EnemyDef[] = [
     hp: 100,
     block: 25,
     art: 'sushiChef',
+    note: 'sushiPlate',
     main: atk('knifeWork', 7, 6, ramp),
     every: 4,
     specials: [{ id: 'omakase', intent: 'charge', windup: OMAKASE, dmg: 15, task: 'sushi' }],
@@ -762,6 +775,7 @@ const defs: EnemyDef[] = [
     hp: 110,
     block: 25,
     art: 'factorySiren',
+    note: 'megaphone',
     main: atk('shiftWhistle', 7, 6),
     every: 2,
     specials: [
@@ -830,6 +844,7 @@ const defs: EnemyDef[] = [
     hp: 300,
     block: 70,
     art: 'theBoard',
+    note: 'gavel',
     main: atk('gavel', 9, 6, ramp),
     every: 2,
     specials: [
@@ -848,6 +863,7 @@ const defs: EnemyDef[] = [
           atk('liquidation', 26, 12, { intent: 'charge' }),
         ],
         belt: { rows: 2, mul: BOARD_FAST },
+        block: BOARD_BLOCK,
       },
       {
         at: 1 / 3,
@@ -859,6 +875,7 @@ const defs: EnemyDef[] = [
           atk('liquidation', 26, 12, { intent: 'charge' }),
         ],
         belt: { rows: 2, mul: 1 },
+        block: BOARD_BLOCK,
       },
     ],
     start: [{ id: 'strength', v: 2 }],
@@ -871,6 +888,7 @@ const defs: EnemyDef[] = [
     hp: 150,
     block: 20,
     art: 'selfCheckout',
+    note: 'cart',
     main: atk('scanAndBag', 9, 6),
     every: 2,
     specials: [

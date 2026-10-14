@@ -1,4 +1,4 @@
-import { ENEMIES, HALF } from './enemies';
+import { BOARD_BLOCK, ENEMIES, HALF } from './enemies';
 import { CONFIG } from './config';
 import { CARDS } from './cards';
 import { HARDSHIP_HP, JUST_CAUSE_HP } from './cards/conditions';
@@ -25,6 +25,8 @@ import {
   FORKLIFT_BLOCK,
   HIRING_EVERY,
   CREEP_EVERY,
+  SMILE_EVERY,
+  SMILE_HEAL,
   FLICKER_EVERY,
   FLICKER_TIME,
   IDLE_LIMIT,
@@ -74,6 +76,8 @@ export const VALUES = {
   flickerEvery: FLICKER_EVERY,
   flickerTime: FLICKER_TIME,
   chirpEvery: CHIRP_EVERY,
+  smileEvery: SMILE_EVERY,
+  smileHeal: SMILE_HEAL,
   tabsEvery: TABS_EVERY,
   coffeeEvery: COFFEE_EVERY,
   cleanGetawayEvery: CLEAN_GETAWAY_EVERY,
@@ -129,6 +133,8 @@ export const VALUES = {
   securityBlock: HALF.securityBlock,
   slavesStall: HALF.slavesStall,
   complianceSlow: HALF.complianceSlow,
+  boardBlock: BOARD_BLOCK,
+  sushiSlips: CONFIG.sushi.slips,
   // Heroes
   thickSkinPct: pct(THICK_SKIN.mul - 1),
   picketTime: PICKET_TIME,

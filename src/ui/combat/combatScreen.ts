@@ -222,7 +222,10 @@ export function combatScreen(run: RunState, combat: Combat, cb: CombatCallbacks)
       const wrap = r.enemyWrap.getBoundingClientRect();
       const shade = $('.shade', el).getBoundingClientRect();
       const ground = shade.top + shade.height / 2;
-      const size = Math.max(72, Math.min(ENEMY_MAX, ground - wrap.top));
+      // The sprite may stand over the top bar's text (name, pay, pause): on a short screen the stage alone leaves it tiny.
+      const bar = $('.topbar', el);
+      const top = bar.getBoundingClientRect().top + Number.parseFloat(getComputedStyle(bar).paddingTop);
+      const size = Math.max(72, Math.min(ENEMY_MAX, ground - Math.min(wrap.top, top)));
       // The room grew (a boss's belt lost a row): the enemy grows into it, from the size it had.
       const before = Number.parseFloat(el.style.getPropertyValue('--enemy-size'));
       if (before && size > before * 1.08 && !state.waiting) {
@@ -693,10 +696,10 @@ export function combatScreen(run: RunState, combat: Combat, cb: CombatCallbacks)
       );
       // In the very first fight Clock in stays hidden until the tour's last step (`firstFightTour`): pressed earlier, it would pull the tour's targets away.
       startWrap.hidden = !settings.seenTutorial && combat.enemy.def.tier !== 'boss';
-      // Before the fight, the enemy's passives are spelled out under the button, on a slip headed with the enemy's face, so the player knows what they're facing.
+      // Before the fight, the enemy's passives are spelled out above the button, on a slip headed with the enemy's face, so the player knows what they're facing.
       const traits = enemyTraits(combat.enemy.def, true);
       if (traits.length)
-        startWrap.append(
+        startWrap.prepend(
           h(
             'div',
             { class: 'foe-traits' },

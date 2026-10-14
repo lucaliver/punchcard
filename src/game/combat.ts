@@ -1592,7 +1592,7 @@ export class Combat {
     return n;
   }
 
-  /** The most one hit of the hero's cards can deal now (Rate Limit), if anything caps it. */
+  /** The most one hit on the enemy can deal now (Rate Limit), if anything caps it. */
   private hitCap(): number {
     let cap = Infinity;
     for (const [id, s] of Object.entries(this.enemy.statuses)) if (STATUSES[id].capsHits && this.has('enemy', id)) cap = Math.min(cap, s.v);
@@ -1603,7 +1603,8 @@ export class Combat {
   damage(from: Side, to: Side, base: number, opts: DamageOpts, source: Side | 'dot', hitIndex = 0): number {
     if (this.result) return 0;
     const target = this.fighter(to);
-    const dmg = opts.raw ? base : this.computeDamage(from, to, base, this.current?.def ?? null);
+    // Raw damage skips the modifiers, but a cap on the enemy (Rate Limit) holds for everything that reaches it: Poison, Burn and thorns too.
+    const dmg = opts.raw ? Math.min(base, to === 'enemy' ? this.hitCap() : Infinity) : this.computeDamage(from, to, base, this.current?.def ?? null);
 
     // Dodge: immune to every kind of damage while it lasts.
     if (this.flag(to, 'immune')) {
@@ -1709,6 +1710,7 @@ export class Combat {
     this.phaseBeltMul = p.belt.mul;
     this.setBeltRows(p.belt.rows);
     this.skipEnemyMove();
+    if (p.block) this.gainBlock('enemy', p.block);
     this.events.emit({ type: 'phase', index });
   }
 

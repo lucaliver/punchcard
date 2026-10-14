@@ -9,6 +9,7 @@ import { CARD_SHOW_MS, playRelic } from '../components/cardShow';
 import { openInfo } from '../components/modals';
 import { closeRoom, roomScene } from '../components/room';
 import { runHud } from './journey';
+import { keywordHtml } from '../components/cardView';
 
 /** Lost & Found: three relics; the player keeps one. */
 export function lostFoundScreen(run: RunState, onDone: () => void): Screen {
@@ -27,7 +28,7 @@ export function lostFoundScreen(run: RunState, onDone: () => void): Screen {
         const card = h('button', {
           class: `relic-card ${RELICS[id].rarity}`,
           'data-rarity': RELICS[id].rarity,
-          html: `<i class="relic-gem"></i><b>${t(`relic.${id}.name`)}</b>${relicArt(id)}<span>${text}</span>`,
+          html: `<i class="relic-gem"></i><b>${t(`relic.${id}.name`)}</b>${relicArt(id)}<span>${keywordHtml(text)}</span>`,
         });
         // Tap = keep it, hold = read all of it (the card shows only the first lines).
         onTapOrHold(

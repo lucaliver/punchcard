@@ -49,7 +49,7 @@ export function openHeroSheet(run: RunState): void {
   const relics = run.relics.map((id) =>
     h('div', {
       class: 'hero-feature',
-      html: `${relicArt(id)}<div><b>${t(`relic.${id}.name`)}</b>${t(`relic.${id}.d`, { n: RELICS[id].n })}</div>`,
+      html: `${relicArt(id)}<div><b>${t(`relic.${id}.name`)}</b>${keywordHtml(t(`relic.${id}.d`, { n: RELICS[id].n }))}</div>`,
     }),
   );
   const body = h(

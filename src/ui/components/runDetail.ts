@@ -11,6 +11,7 @@ import { cardView } from './cardView';
 import { groupCopies, openCardDetail, sortCards } from './modals';
 import { icon } from '../art/icons';
 import { payslipImage, type ShareSlip, shareImage, slipRows } from './shareSlip';
+import { keywordHtml } from './cardView';
 
 /** A run of the handbook's history, opened: its payslip, the stationery it had and the deck it ended with. */
 export function openRunDetail(r: RunLog): ModalHandle {
@@ -52,7 +53,10 @@ export function openRunDetail(r: RunLog): ModalHandle {
     },
   });
   const relics = r.relics.map((id) =>
-    h('div', { class: 'hero-feature', html: `${relicArt(id)}<div><b>${t(`relic.${id}.name`)}</b>${t(`relic.${id}.d`, { n: RELICS[id].n })}</div>` }),
+    h('div', {
+      class: 'hero-feature',
+      html: `${relicArt(id)}<div><b>${t(`relic.${id}.name`)}</b>${keywordHtml(t(`relic.${id}.d`, { n: RELICS[id].n }))}</div>`,
+    }),
   );
   const deck = groupCopies(sortCards(r.deck.map((c, i) => ({ ...c, uid: i }))));
   const grid = h(

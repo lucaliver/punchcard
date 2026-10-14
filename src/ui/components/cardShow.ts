@@ -6,7 +6,7 @@ import { icon } from '../art/icons';
 import { relicArt } from '../art/relics';
 import { h } from '../dom';
 import { burst, haptic } from '../fx/fx';
-import { cardView } from './cardView';
+import { cardView, keywordHtml } from './cardView';
 
 /** How long a card show runs before the room moves on (the overlay fades out at 1.5 s). */
 export const CARD_SHOW_MS = 1700;
@@ -87,7 +87,7 @@ export function playRelic(screen: HTMLElement, id: string, sounds: ShowSounds): 
   const badge = h('div', { class: 'relic-badge show-new', html: relicArt(id) });
   const stage = h('div', { class: 'show-stage' }, badge, h('i', { class: 'show-flash' }));
   const layer = showOver(screen, 'relic', stage, t(`relic.${id}.name`));
-  layer.append(h('p', { class: 'show-desc' }, t(`relic.${id}.d`, { n: RELICS[id].n })));
+  layer.append(h('p', { class: 'show-desc', html: keywordHtml(t(`relic.${id}.d`, { n: RELICS[id].n })) }));
   sfx(sounds.start);
   haptic('tap');
   sparkAt(badge, 'gold', 34, 480, sounds.end);
