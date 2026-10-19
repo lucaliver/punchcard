@@ -42,3 +42,6 @@ Before: one enemy of its own (the Self-Checkout) dealt for every fight, elites a
 - **Act intro line**: the weekend's intro says *Two days off. Allegedly.* under its name (`ActDef.tagline`).
 - **Own win**: beating Monday ends the run on its own title and text (*Monday snoozed*), not the workday's *Shift over*.
 - **Music**: the weekend's elites and Monday have tracks of their own (`elite4`, a funky A minor shuffle; `boss4`, an alarm clock that learnt the trumpet: beeps over a C that slides up a semitone and into the tritone). `ActDef.eliteMusic` / `bossMusic` pick them; the soundtrack page lists them.
+
+## Batch 8: stationery
+- **Five weekend-only relics** (`RelicDef.weekend`, only dealt in the weekend): *Garden Gnome* (rare, Thorns each fight), *Reserved Sunbed* (epic, Block that doesn't fade for 10 s), *Lottery Ticket* (epic, 12% of the cards played refund their mana), *Doggy Bag* (rare, heal 25% after an elite or a boss), *Remote Control* (epic, once a fight under 40% HP: pause, the move is cancelled and the enemy stunned for 5 s). Sprites, chip icons, texts in four languages, tests.

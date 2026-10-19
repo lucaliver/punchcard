@@ -8,6 +8,8 @@ import { PERKS } from './perks';
 import { PLAN_CAP } from './statuses';
 import {
   BELL_STUN,
+  REMOTE_STUN,
+  SUNBED_TIME,
   CLOCK_BLOCK,
   MUG_MANA,
   NAME_TAG_TIME,
@@ -192,6 +194,8 @@ export const VALUES = {
   punchDamage: PUNCH_DAMAGE,
   nameTagTime: NAME_TAG_TIME,
   bellStun: BELL_STUN,
+  sunbedTime: SUNBED_TIME,
+  remoteStun: REMOTE_STUN,
   budgetCut: -(PERKS.budgetCut.costDelta ?? 0),
   overtime: PERKS.overtime.costDelta ?? 0,
   wheelCards: CONFIG.wheelCards,

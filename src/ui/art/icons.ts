@@ -2416,6 +2416,27 @@ export const ICONS: Record<string, { el: Element; svg: string; wide?: boolean }>
     el: 'steel',
     svg: `<rect x="4" y="8" width="56" height="48" rx="2"/><path fill="none" stroke="#16121f" stroke-width="3" d="M12 16h24v14H12zM36 16h16v10H36zM36 26h16v20H36zM12 30h16v18H12z"/>`,
   },
+  // The weekend's stationery.
+  'relic.gardenGnome': {
+    el: 'nature',
+    svg: `<path d="M32 2L12 34h40z"/><rect x="8" y="34" width="48" height="6" rx="3"/><circle cx="32" cy="44" r="10" fill="#16121f"/><path d="M14 44c0 14 8 20 18 20s18-6 18-20c-6 5-12 7-18 7s-12-2-18-7z"/><circle cx="32" cy="47" r="3.5"/>`,
+  },
+  'relic.reservedSunbed': {
+    el: 'holy',
+    svg: `<circle cx="48" cy="14" r="9"/><path d="M4 42l34-22 12 10-34 22z"/><path fill="#16121f" d="M10 40l8-5M18 34l8-5M26 28l8-5"/><path d="M12 48l-6 12M44 40l8 20M30 52l-3 8" stroke="currentColor" stroke-width="4" stroke-linecap="round"/>`,
+  },
+  'relic.lotteryTicket': {
+    el: 'holy',
+    svg: `<rect x="4" y="12" width="56" height="42" rx="4"/><rect x="10" y="18" width="44" height="8" fill="#16121f"/><rect x="10" y="30" width="44" height="18" fill="#16121f"/><path d="M26 44c-5 0-6-5-2-6 0-4 6-4 6 0 4 1 3 6-2 6z" fill="currentColor"/><circle cx="44" cy="39" r="5" fill="currentColor"/>`,
+  },
+  'relic.doggyBag': {
+    el: 'nature',
+    svg: `<path d="M14 18h36l5 40c0 3-2 5-5 5H14c-3 0-5-2-5-5z"/><path d="M12 18l-2-8h44l-2 8" fill="currentColor"/><circle cx="32" cy="42" r="10" fill="#16121f"/><circle cx="28" cy="40" r="2" fill="currentColor"/><circle cx="36" cy="40" r="2" fill="currentColor"/><path d="M50 4l-8 12" stroke="currentColor" stroke-width="5" stroke-linecap="round"/>`,
+  },
+  'relic.remoteControl': {
+    el: 'steel',
+    svg: `<rect x="18" y="2" width="28" height="60" rx="8"/><circle cx="32" cy="14" r="6" fill="#16121f"/><path d="M29 11v6M35 11v6" stroke="currentColor" stroke-width="2.5"/><rect x="24" y="26" width="16" height="14" rx="3" fill="#16121f"/><circle cx="26" cy="50" r="3" fill="#16121f"/><circle cx="38" cy="50" r="3" fill="#16121f"/><circle cx="32" cy="56" r="3" fill="#16121f"/>`,
+  },
 };
 
 export const INTENT_ICON: Record<string, string> = {

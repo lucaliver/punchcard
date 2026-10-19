@@ -390,6 +390,66 @@ const floorPlan = `
 <path d="M60 160h8M132 160h8" stroke="#b9b09a" stroke-width="3" stroke-linecap="round"/>
 ${face(100, 128, 22, 5)}`;
 
+/** The weekend's stationery. A garden gnome: a pointed red hat, a white beard down to his belt, a fishing rod he has never used. */
+const gardenGnome = `
+<path d="M100 14l-44 74h88z" fill="#ff3b3b" ${OUT}/><path d="M100 14l-14 26" stroke="#ff8a8a" stroke-width="6" stroke-linecap="round"/>
+<circle cx="100" cy="16" r="9" fill="${PAPER}" ${OUT}/>
+<rect x="50" y="82" width="100" height="14" rx="7" fill="#1c5fd0" ${OUT}/>
+<circle cx="100" cy="112" r="34" fill="#ffc8a0" ${OUT}/>
+<path d="M60 112c0 40 16 64 40 64s40-24 40-64c-14 14-26 18-40 18s-26-4-40-18z" fill="${PAPER}" ${OUT}/>
+<path d="M76 70v-8M124 70v-8" stroke="${INK}" stroke-width="0"/>
+<ellipse cx="100" cy="106" rx="9" ry="7" fill="#ff8a8a" ${OUT}/>
+${face(100, 92, 18, 5)}
+<path d="M52 168h96v16H52z" fill="#2a8a58" ${OUT}/><path d="M156 100v80" stroke="#8a5a2a" stroke-width="6" stroke-linecap="round"/>
+<path d="M156 100c14 0 18 12 12 20" stroke="${INK}" stroke-width="2.5" fill="none"/>`;
+
+/** The Reserved Sunbed: a towel laid over a lounger with a book on it, a sunhat, a pair of sunglasses, and a face on the towel that dares you. */
+const reservedSunbed = `
+<circle cx="150" cy="40" r="22" fill="#ffd900" ${OUT}/><path d="M150 4v10M150 76v10M114 40h10M176 40h10M124 14l7 7M170 60l7 7M176 14l-7 7M124 66l7-7" stroke="#ffd900" stroke-width="5" stroke-linecap="round"/>
+<path d="M30 140l90-60 26 22-84 52z" fill="#8ad0f8" ${OUT}/>
+<path d="M36 124l86-52 28 24-86 48z" fill="#ff3d9a" ${OUT}/>
+<path d="M50 118l18-10M72 104l18-10M94 90l18-10M116 76l18-10" stroke="${PAPER}" stroke-width="6" stroke-linecap="round" opacity=".8"/>
+<path d="M44 158l-12 22M120 130l16 50M92 152l-6 28" stroke="#120e18" stroke-width="8" stroke-linecap="round"/><path d="M44 158l-12 22M120 130l16 50M92 152l-6 28" stroke="#c8c0d8" stroke-width="4" stroke-linecap="round"/>
+<rect x="70" y="86" width="26" height="18" rx="2" fill="${PAPER}" ${OUT}/><path d="M76 92h14M76 97h10" stroke="#1c5fd0" stroke-width="3"/>
+<g ${OUT}><ellipse cx="124" cy="96" rx="14" ry="6" fill="#ffe08a"/><path d="M112 94c4-10 20-10 24 0z" fill="#ffe08a"/></g>
+${face(94, 130, 14, 4)}`;
+
+/** The Lottery Ticket: a scratch card with a clover under the silver, a coin to scratch it with and a very hopeful face. */
+const lotteryTicket = `
+<rect x="26" y="40" width="148" height="116" rx="8" fill="#ffd900" ${OUT} transform="rotate(-6 100 100)"/>
+<g transform="rotate(-6 100 100)">
+<rect x="38" y="50" width="124" height="22" rx="3" fill="#ff3d9a" ${OUT}/><path d="M48 61h60" stroke="${PAPER}" stroke-width="5" stroke-linecap="round"/>
+<rect x="38" y="80" width="124" height="56" rx="4" fill="#c8c0d8" ${OUT}/>
+<path d="M44 86l12 10M64 86l12 10M84 86l12 10M104 86l12 10M124 86l12 10M44 106l12 10M64 106l12 10M84 106l12 10M104 106l12 10M124 106l12 10" stroke="#9a94b8" stroke-width="3"/>
+<path d="M78 128c-12 0-14-14-4-16 0-10 14-10 14 0 10 2 8 16-4 16 0 4-2 8-4 10 0-2-2-6-2-10z" fill="#2a8a58" ${OUT}/>
+<circle cx="146" cy="116" r="12" fill="${PAPER}" ${OUT}/><path d="M142 116h8" stroke="${INK}" stroke-width="3"/>
+</g>
+${face(100, 150, 22, 5)}`;
+
+/** The Doggy Bag: a paper takeaway bag, folded over at the top and stained, a bone sticking out of it and a dog's hopeful face drawn on in marker. */
+const doggyBag = `
+<path d="M58 66h84l12 108c1 6-3 10-9 10H55c-6 0-10-4-9-10z" fill="#d8a868" ${OUT}/>
+<path d="M58 66l-4-18h92l-4 18" fill="#e8c488" ${OUT}/><path d="M54 48l-2-12h96l-2 12" fill="#e8c488" ${OUT}/>
+<path d="M66 80l-8 96M134 80l8 96" stroke="#b8884a" stroke-width="4" opacity=".7"/>
+<path d="M144 14c0-6 8-8 12-4 6-2 10 6 6 10 2 6-4 10-10 8-4 4-12 2-12-4z" fill="${PAPER}" ${OUT} transform="rotate(25 150 20)"/>
+<path d="M148 24L120 52" stroke="${PAPER}" stroke-width="10" stroke-linecap="round"/><path d="M148 24L120 52" stroke="#120e18" stroke-width="14" stroke-linecap="round" opacity=".0"/>
+<path d="M88 118l-6-20M112 118l6-20" stroke="${INK}" stroke-width="0"/>
+<ellipse cx="82" cy="102" rx="10" ry="16" fill="#8a5a2a" ${OUT}/><ellipse cx="118" cy="102" rx="10" ry="16" fill="#8a5a2a" ${OUT}/>
+<circle cx="100" cy="110" r="26" fill="#f6e0b8" ${OUT}/>
+${face(100, 108, 12, 4)}
+<ellipse cx="100" cy="122" rx="6" ry="4" fill="${INK}"/>
+<path d="M60 160c20 10 60 10 80 0" stroke="#c85a1a" stroke-width="5" fill="none" stroke-linecap="round" stroke-dasharray="2 9"/>`;
+
+/** The Remote Control: a long black remote with a big red pause button, a worn-out mute, and a face squashed in the middle. */
+const remoteControl = `
+<rect x="62" y="12" width="76" height="176" rx="22" fill="#3a3450" ${OUT}/>
+<path d="M72 22c-4 8-4 40-2 60" stroke="#6a6488" stroke-width="6" fill="none" stroke-linecap="round"/>
+<circle cx="100" cy="40" r="14" fill="#ff3b3b" ${OUT}/><path d="M94 33v14M106 33v14" stroke="${PAPER}" stroke-width="5" stroke-linecap="round"/>
+<g fill="${PAPER}" ${OUT}><circle cx="80" cy="66" r="7"/><circle cx="100" cy="66" r="7"/><circle cx="120" cy="66" r="7"/></g>
+<rect x="76" y="82" width="48" height="52" rx="8" fill="#ffd900" ${OUT}/>
+${face(100, 106, 12, 4)}
+<g fill="#6a98ea" ${OUT}><circle cx="82" cy="152" r="8"/><circle cx="118" cy="152" r="8"/></g><circle cx="100" cy="166" r="8" fill="#ff3d9a" ${OUT}/>`;
+
 /** Sprite sources by relic id, as the renderer wants them (`relic.` keeps them apart from creature ids). */
 export const RELIC_SPRITES: Record<string, string> = Object.fromEntries(
   Object.entries({
@@ -433,6 +493,11 @@ export const RELIC_SPRITES: Record<string, string> = Object.fromEntries(
     assortedBiscuitTin,
     goldWatch,
     floorPlan,
+    gardenGnome,
+    reservedSunbed,
+    lotteryTicket,
+    doggyBag,
+    remoteControl,
   }).map(([id, svg]) => [`relic.${id}`, svg]),
 );
 

@@ -573,6 +573,8 @@ export interface RelicDef {
   cls?: HeroId;
   /** The number its text shows (`{n}`). */
   n: number;
+  /** Only dealt (Lost & Found, gifts, prizes) in the weekend. */
+  weekend?: true;
   /** Card rewards (and the other card offers) draw from every class, each class and the neutral cards equally likely. */
   openPool?: boolean;
   /** A Break Room gives both the nap and the training, not one of them. */

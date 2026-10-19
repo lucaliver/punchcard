@@ -54,6 +54,18 @@ const CARDIGAN_MANA = 2;
 export const REVENGE_MAX = 5;
 /** Rooms more the Floor Plan lets you see on the map. */
 const PLAN_VISION = 2;
+/** The weekend's stationery. Garden Gnome: Thorns at the start of a fight. */
+const GNOME_THORNS = 3;
+/** Reserved Sunbed: the Block it starts a fight with, and how long (s) it does not fade. */
+const SUNBED_BLOCK = 18;
+export const SUNBED_TIME = 10;
+/** Lottery Ticket: the share of the cards played that give their mana back. */
+const TICKET_CHANCE = 0.12;
+/** Doggy Bag: the share of max HP healed after an elite or a boss. */
+const BAG_HEAL = 0.25;
+/** Remote Control: the share of max HP under which it presses pause, and for how long (s) the enemy is stunned. */
+const REMOTE_HP = 0.4;
+export const REMOTE_STUN = 5;
 
 /**
  * Relics found in the Lost & Found (and one sold by the Tailor). `n` is the number their text shows (`{n}`); the hooks and
@@ -444,6 +456,76 @@ const defs: RelicDef[] = [
         c.mem.biscuits = 1;
         c.damage('hero', 'enemy', c.deckSize(), { raw: true, kind: 'blunt' }, 'hero');
         proc(c, 'assortedBiscuitTin');
+      },
+    },
+  },
+  // The weekend's own stationery: only dealt in the weekend (`weekend`).
+  {
+    id: 'gardenGnome',
+    rarity: 'rare',
+    n: GNOME_THORNS,
+    weekend: true,
+    hooks: {
+      onCombatStart: (c) => {
+        c.applyStatus('hero', 'thorns', GNOME_THORNS);
+        proc(c, 'gardenGnome');
+      },
+    },
+  },
+  {
+    id: 'reservedSunbed',
+    rarity: 'epic',
+    n: SUNBED_BLOCK,
+    weekend: true,
+    hooks: {
+      onCombatStart: (c) => {
+        c.gainBlock('hero', SUNBED_BLOCK);
+        c.applyStatus('hero', 'fortified', 1, SUNBED_TIME);
+        proc(c, 'reservedSunbed');
+      },
+    },
+  },
+  {
+    id: 'lotteryTicket',
+    rarity: 'epic',
+    n: Math.round(TICKET_CHANCE * 100),
+    weekend: true,
+    hooks: {
+      onCardPlayed: (c, card) => {
+        const cost = cardCostOf(card);
+        if (cost <= 0 || c.rng.next() >= TICKET_CHANCE) return;
+        c.gainMana(cost);
+        proc(c, 'lotteryTicket');
+      },
+    },
+  },
+  {
+    id: 'doggyBag',
+    rarity: 'rare',
+    n: Math.round(BAG_HEAL * 100),
+    weekend: true,
+    hooks: {
+      onCombatEnd: (c) => {
+        if (c.result !== 'win' || c.enemy.def.tier === 'normal') return;
+        c.heal('hero', Math.round(c.hero.maxHp * BAG_HEAL));
+        proc(c, 'doggyBag');
+      },
+    },
+  },
+  {
+    id: 'remoteControl',
+    rarity: 'epic',
+    n: Math.round(REMOTE_HP * 100),
+    weekend: true,
+    armed: (c) => !c.mem.remote,
+    hooks: {
+      // Once per fight, the first time the hero is under the line: pause. The enemy's move is cancelled and it is stunned.
+      tick: (c) => {
+        if (c.mem.remote || c.hero.hp > c.hero.maxHp * REMOTE_HP) return;
+        c.mem.remote = 1;
+        c.skipEnemyMove();
+        c.applyStatus('enemy', 'stun', 1, REMOTE_STUN);
+        proc(c, 'remoteControl');
       },
     },
   },

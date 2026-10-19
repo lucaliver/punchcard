@@ -1,10 +1,11 @@
 import { describe, expect, it } from 'vitest';
 import { CONFIG } from '../../src/data/config';
-import { ENEMIES, HALF, MONDAY_BLOCK } from '../../src/data/enemies';
+import { ENEMIES, ENEMY_LIST, HALF, MONDAY_BLOCK } from '../../src/data/enemies';
 import { BLOW_EVERY, PANEL_EVERY, PLATE_HEAL, POSE_EVERY, POSE_TIME, STATUSES } from '../../src/data/statuses';
 import { CARDS } from '../../src/data/cards';
-import { ENEMY_LIST } from '../../src/data/enemies';
 import { STAGE_IDS, stageArt } from '../../src/ui/art/stageArt';
+import { RELIC_LIST, RELICS, REMOTE_STUN } from '../../src/data/relics';
+import { canGiftRelic, giftRelic, newRun, rollRelics } from '../../src/game/run';
 import { coffeeOf, badgeOf, run, setup } from './helpers';
 
 /** The weekend (act 4): its enemies and what each one does. A fight with the enemy's own moves out of the way (its attack never lands), to look at its passives alone. */
@@ -201,5 +202,72 @@ describe('the weekend: where the jobs are met', () => {
 
   it('the boss is met in the bedroom, in the small hours', () => {
     expect(ENEMIES.monday.stage).toBe('bedroom');
+  });
+});
+
+describe("the weekend's stationery", () => {
+  const weekendIds = RELIC_LIST.filter((r) => r.weekend).map((r) => r.id);
+
+  it('five of them, dealt only in the weekend (Lost & Found, gifts, prizes) and never before it', () => {
+    expect(weekendIds).toHaveLength(5);
+    for (let seed = 1; seed <= 15; seed++) {
+      const early = newRun('warrior', seed);
+      for (let i = 0; i < 60 && canGiftRelic(early); i++) giftRelic(early);
+      for (const id of weekendIds) expect(early.relics, `${id}, seed ${seed}`).not.toContain(id);
+    }
+    const dealt = new Set<string>();
+    for (let seed = 1; seed <= 40; seed++) {
+      const r = newRun('warrior', seed, [], [], 4);
+      r.current = r.nodes.find((n) => n.act === 4)!.id;
+      for (const id of rollRelics(r, 40)) dealt.add(id);
+    }
+    for (const id of weekendIds) expect(dealt, id).toContain(id);
+  });
+
+  it('the Garden Gnome and the Reserved Sunbed open the fight with Thorns and with Block that does not fade', () => {
+    const gnome = setup({ relics: ['gardenGnome'] });
+    expect(gnome.stacks('hero', 'thorns')).toBe(RELICS.gardenGnome.n);
+    const sunbed = setup({ relics: ['reservedSunbed'] });
+    expect(sunbed.hero.block).toBe(RELICS.reservedSunbed.n);
+    expect(sunbed.has('hero', 'fortified')).toBe(true);
+  });
+
+  it('the Doggy Bag heals after an elite or a boss, not after a plain job', () => {
+    const fight = (id: string) => {
+      const c = setup({ relics: ['doggyBag'], enemy: { ...ENEMIES[id], block: 0 }, hp: 40, maxHp: 80 });
+      run(c, CONFIG.introTime);
+      c.hit(9999);
+      return c;
+    };
+    expect(fight('weddingDj').hero.hp).toBe(40 + Math.round((80 * RELICS.doggyBag.n) / 100));
+    expect(fight('monday').hero.hp).toBe(40 + Math.round((80 * RELICS.doggyBag.n) / 100));
+    expect(fight('theCouch').hero.hp).toBe(40);
+  });
+
+  it('the Remote Control presses pause once a fight when you drop under the line: the move is cancelled and the enemy stunned', () => {
+    const c = setup({ relics: ['remoteControl'], hp: 80, maxHp: 80 });
+    run(c, CONFIG.introTime + 0.5);
+    expect(c.has('enemy', 'stun')).toBe(false);
+    c.hero.hp = Math.floor(80 * (RELICS.remoteControl.n / 100)) - 1;
+    run(c, 0.1);
+    expect(c.has('enemy', 'stun')).toBe(true);
+    expect(c.enemy.statuses.stun.t).toBeGreaterThan(REMOTE_STUN - 1);
+    c.removeStatus('enemy', 'stun');
+    c.hero.hp = 5;
+    run(c, 0.2);
+    expect(c.has('enemy', 'stun')).toBe(false);
+  });
+
+  it('the Lottery Ticket gives some of the mana back now and then, and never costs anything', () => {
+    const c = setup({ relics: ['lotteryTicket'] });
+    c.hero.maxMana = 10;
+    let refunds = 0;
+    c.events.on((e) => {
+      if (e.type === 'relic' && e.id === 'lotteryTicket') refunds++;
+    });
+    const { card } = c.belt[0];
+    for (let i = 0; i < 400; i++) RELICS.lotteryTicket.hooks?.onCardPlayed?.(c, { ...card, id: 'punch' }, CARDS.punch);
+    expect(refunds).toBeGreaterThan(20);
+    expect(refunds).toBeLessThan(90);
   });
 });

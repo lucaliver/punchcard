@@ -897,7 +897,8 @@ export function restructure(run: RunState, uids: number[]): { before: CardInst; 
 }
 
 /** The relics the run doesn't hold yet (no special one). */
-const unownedRelics = (run: RunState): RelicDef[] => RELIC_LIST.filter((r) => r.rarity !== 'special' && !hasRelic(run, r.id));
+const unownedRelics = (run: RunState): RelicDef[] =>
+  RELIC_LIST.filter((r) => r.rarity !== 'special' && !hasRelic(run, r.id) && (!r.weekend || currentNode(run).act > MAIN_ACTS));
 
 /** Whether the Restructuring's other way, a random stationery, has anything left to give. */
 export const canGiftRelic = (run: RunState): boolean => unownedRelics(run).length > 0;
