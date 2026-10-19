@@ -1894,6 +1894,16 @@ export const ICONS: Record<string, { el: Element; svg: string; wide?: boolean }>
     el: 'arcane',
     svg: `<rect x="14" y="14" width="36" height="36" rx="3"/><path d="M20 4h4v10h-4zM30 4h4v10h-4zM40 4h4v10h-4zM20 50h4v10h-4zM30 50h4v10h-4zM40 50h4v10h-4zM4 20h10v4H4zM4 30h10v4H4zM4 40h10v4H4zM50 20h10v4H50zM50 30h10v4H50zM50 40h10v4H50z"/><path d="M32 22c-6 0-9 4-9 8 0 3 2 5 3 6-1 3 1 6 4 6h4c3 0 5-3 4-6 1-1 3-3 3-6 0-4-3-8-9-8z" fill="#16121f"/><path d="M32 24v18M27 30h5M32 34h5" stroke="#fff" stroke-width="2" opacity=".7"/>`,
   },
+  // The Neighbour's blower: a long nozzle, the motor with its handle, and the gust it throws.
+  leafBlower: {
+    el: 'nature',
+    svg: `<path d="M2 22h24l8-4v28l-8-4H2z"/><rect x="34" y="16" width="26" height="30" rx="7"/><path d="M40 16v-8h14v8" fill="none" stroke="currentColor" stroke-width="5" stroke-linejoin="round"/><path fill="#16121f" opacity=".4" d="M42 24h10v4H42z"/><path d="M4 52h22M10 58h26" fill="none" stroke="currentColor" stroke-width="4" stroke-linecap="round"/>`,
+  },
+  // A phone held up to take a picture.
+  selfie: {
+    el: 'holy',
+    svg: `<rect x="16" y="3" width="32" height="58" rx="6"/><rect x="21" y="10" width="22" height="38" rx="2" fill="#16121f"/><circle cx="32" cy="29" r="8" fill="currentColor"/><circle cx="32" cy="29" r="4" fill="#16121f"/><circle cx="32" cy="55" r="2.5" fill="#16121f"/>`,
+  },
   gavel: {
     el: 'steel',
     svg: `<g transform="rotate(-35 32 32)"><rect x="8" y="8" width="38" height="18" rx="3"/><rect x="12" y="8" width="6" height="18" fill="#16121f" opacity=".4"/><rect x="34" y="8" width="6" height="18" fill="#16121f" opacity=".4"/><rect x="24" y="24" width="7" height="34" rx="2"/></g><path d="M34 54h28v8H34z"/>`,

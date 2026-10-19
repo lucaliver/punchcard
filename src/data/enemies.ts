@@ -38,7 +38,7 @@ const AUDIT = 18;
 const OMAKASE = 32;
 
 /** What the half-HP moves bring (their texts quote these, see `data/values.ts`). */
-export const HALF = { securityBlock: 30, slavesStall: 8, complianceSlow: 20 } as const;
+export const HALF = { securityBlock: 30, slavesStall: 8, complianceSlow: 20, squirrelStun: 5 } as const;
 
 /**
  * Every enemy has one steady main attack and, every `every` main attacks, a special move
@@ -880,6 +880,7 @@ const defs: EnemyDef[] = [
     ],
     start: [{ id: 'strength', v: 2 }],
   },
+  // ------------------------------------------------------------- Act 4: the weekend
   {
     // The weekend's first stop: the groceries. It objects to what you bag, and a till is never a quick thing.
     id: 'selfCheckout',
@@ -895,6 +896,88 @@ const defs: EnemyDef[] = [
       { id: 'assistanceNeeded', intent: 'debuff', windup: 5, status: [gainStrength, { id: 'slowdown', t: 6, target: 'hero' }] },
       { id: 'unexpectedItem', intent: 'charge', windup: CHECKOUT, dmg: 20, task: 'checkout' },
     ],
+  },
+  {
+    // Twice as fast as anything else and he steals your cards for sport; at half HP a squirrel goes by.
+    id: 'offLeashDog',
+    act: 4,
+    tier: 'normal',
+    hp: 120,
+    art: 'offLeashDog',
+    note: 'gauge',
+    main: atk('zoomies', 3, 3),
+    every: 2,
+    specials: [{ id: 'fetch', intent: 'steal', windup: 4, steal: 2, status: [gainStrength] }, atk('maulOfLove', 3, 9, { intent: 'charge', hits: 4 })],
+    start: [{ id: 'haste', t: 9999 }],
+    halfSpeech: true,
+    halfArt: 'offLeashDogDistracted',
+    onHalf: (c) => c.applyStatus('enemy', 'stun', 1, HALF.squirrelStun),
+  },
+  {
+    // Strikes a pose now and then, and nothing touches a pose.
+    id: 'brunchInfluencer',
+    act: 4,
+    tier: 'normal',
+    hp: 130,
+    art: 'brunchInfluencer',
+    main: atk('hashtag', 6, 5),
+    every: 2,
+    specials: [
+      { id: 'sponsoredContent', intent: 'curse', windup: 6, curse: [{ id: 'mandatoryFun', n: 3, to: 'draw' }], status: [gainStrength] },
+      { id: 'unfollow', intent: 'debuff', windup: 6, drainMana: 1, status: [{ id: 'weak', t: 10, target: 'hero' }] },
+      atk('goingLive', 14, 9, { intent: 'charge' }),
+    ],
+    start: [{ id: 'photoOp' }],
+  },
+  {
+    // Every so often the belt is blown back the other way.
+    id: 'leafBlowerNeighbour',
+    act: 4,
+    tier: 'normal',
+    hp: 130,
+    block: 10,
+    art: 'leafBlowerNeighbour',
+    main: atk('hedgeTrimmer', 6, 5),
+    every: 2,
+    specials: [
+      { id: 'eightAmSunday', intent: 'debuff', windup: 5, status: [gainStrength, { id: 'crunch', t: 8, target: 'hero' }] },
+      { id: 'petrolFumes', intent: 'debuff', windup: 6, status: [gainStrength, { id: 'poison', v: 3, target: 'hero' }] },
+      atk('boundaryDispute', 15, 9, { intent: 'charge' }),
+    ],
+    start: [{ id: 'leafBlower' }],
+  },
+  {
+    // Skin like a block of marble: the small hits do nothing, and his sets come in rapid fire.
+    id: 'gymBro',
+    act: 4,
+    tier: 'normal',
+    hp: 150,
+    block: 15,
+    art: 'gymBro',
+    main: atk('rep', 0, 4, { hits: 3 }),
+    every: 2,
+    specials: [
+      { id: 'proteinShake', intent: 'buff', windup: 5, block: 15, status: [{ id: 'strength', v: 2, target: 'enemy' }] },
+      atk('oneMoreSet', 2, 10, { intent: 'charge', hits: 4 }),
+    ],
+    start: [{ id: 'swole', v: 3 }],
+  },
+  {
+    // A wall of cushions: its Block never fades and it settles back in whenever you wear it down.
+    id: 'theCouch',
+    act: 4,
+    tier: 'normal',
+    hp: 80,
+    block: 70,
+    art: 'theCouch',
+    note: 'fortress',
+    main: atk('cushionSlam', 7, 8),
+    every: 2,
+    specials: [
+      { id: 'settleIn', intent: 'defend', windup: 6, block: 35, heal: 8, status: [gainStrength] },
+      { id: 'justOneMoreEpisode', intent: 'debuff', windup: 5, status: [gainStrength, { id: 'stalled', t: 4, target: 'hero' }] },
+    ],
+    start: [{ id: 'fortified', t: 9999 }],
   },
 ];
 
@@ -949,7 +1032,12 @@ export const DIFFICULTY = [
   'tourist',
   'conveyorSis',
   'theBoard',
+  'brunchInfluencer',
+  'leafBlowerNeighbour',
+  'offLeashDog',
   'selfCheckout',
+  'gymBro',
+  'theCouch',
 ];
 
 /** A dummy for tests in the debug fight menu (200 HP, 10 damage every 10 s): in `ENEMIES` so a fight can load it, but in no list, map, handbook or reward. */

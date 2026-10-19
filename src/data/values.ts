@@ -21,6 +21,9 @@ import {
 import {
   ASLEEP,
   AWAKE,
+  BLOW_EVERY,
+  POSE_EVERY,
+  POSE_TIME,
   CHILL_GAP,
   CHIRP_EVERY,
   CLEAN_GETAWAY_EVERY,
@@ -87,6 +90,9 @@ export const VALUES = {
   flickerEvery: FLICKER_EVERY,
   flickerTime: FLICKER_TIME,
   chirpEvery: CHIRP_EVERY,
+  poseEvery: POSE_EVERY,
+  poseTime: POSE_TIME,
+  blowEvery: BLOW_EVERY,
   smileEvery: SMILE_EVERY,
   smileHeal: SMILE_HEAL,
   tabsEvery: TABS_EVERY,
@@ -144,6 +150,7 @@ export const VALUES = {
   securityBlock: HALF.securityBlock,
   slavesStall: HALF.slavesStall,
   complianceSlow: HALF.complianceSlow,
+  squirrelStun: HALF.squirrelStun,
   boardBlock: BOARD_BLOCK,
   sushiSlips: CONFIG.sushi.slips,
   // Heroes

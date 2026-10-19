@@ -72,6 +72,13 @@ export const SMILE_EVERY = 2;
 /** Paradigm Shift: the belt turns around each time the enemy loses another 1/this of its max HP. */
 export const PARADIGM_TURNS = 4;
 
+/** Photo Op: she poses this often (s) and nothing touches her for `POSE_TIME` seconds. */
+export const POSE_EVERY = 14;
+export const POSE_TIME = 3;
+/** Leaf Blower: the belt is blown back the other way this often (s), the belt reddens for the last `BLOW_WARN` seconds before. */
+export const BLOW_EVERY = 20;
+const BLOW_WARN = 3;
+
 /** Forty Tabs Open: seconds between two Multitasking charges. */
 export const TABS_EVERY = 4;
 /** Free Coffee: seconds between two cups (each one gives its stacks in mana). */
@@ -1009,6 +1016,44 @@ const defs: StatusDef[] = [
       if (side === 'enemy') c.hurryEnemy(WAKE_PER_CARD);
     },
   },
+  // Photo op: every so often she strikes a pose, and a pose can't be interrupted.
+  {
+    id: 'photoOp',
+    tone: 'teal',
+    kind: 'stacks',
+    good: true,
+    passive: true,
+    icon: 'selfie',
+    progress: cycle(POSE_EVERY),
+    cue: 'shutter',
+    tick: everySecond((c, side, n) => {
+      if (n % POSE_EVERY !== 0) return;
+      c.cue(side, 'photoOp');
+      c.applyStatus(side, 'dodge', 1, POSE_TIME);
+    }),
+  },
+  // Leaf blower: the belt is blown back the other way now and then, with a little warning.
+  {
+    id: 'leafBlower',
+    tone: 'purple',
+    kind: 'stacks',
+    good: true,
+    passive: true,
+    icon: 'leafBlower',
+    progress: cycle(BLOW_EVERY),
+    cue: 'gust',
+    tick: everySecond((c, side, n) => {
+      if (n % BLOW_EVERY !== 0) return;
+      c.cue(side, 'leafBlower');
+      c.reverseBelt();
+    }),
+    warning: (_c, s) => {
+      const left = BLOW_EVERY - ((s.e ?? 0) % BLOW_EVERY);
+      return left < BLOW_WARN ? 1 - left / BLOW_WARN : 0;
+    },
+  },
+  // Swole: thick muscle shrugs off the small stuff, `v` off every hit of your cards.
+  { id: 'swole', tone: 'teal', kind: 'stacks', good: true, passive: true, icon: 'muscle', cutsHits: true },
 ];
 
 export const STATUSES: Record<string, StatusDef> = Object.fromEntries(defs.map((d) => [d.id, d]));

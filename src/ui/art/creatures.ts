@@ -1584,6 +1584,120 @@ ${eyes(76, 124, 76, 9, '#ffd900', 'sk-g')}
 <rect x="36" y="156" width="82" height="10" fill="#8a94a8" ${OUT}/>
 <g class="limb"><path d="M50 156l4-22h30l4 22z" fill="#ffd900" ${OUT}/><path d="M60 134c0-9 18-9 18 0" fill="none" stroke="#120e18" stroke-width="3"/><path d="M62 142h12" stroke="#120e18" stroke-width="3"/></g>`;
 
+/** The Off-Leash Dog: a golden retriever the size of a sofa, tongue out, wild-eyed, a torn leash still on his collar and a slobbery tennis ball at his paws. */
+const offLeashDog = `
+<defs>${rg('dg-b', '#ffd88a', '#c8842a')}${rg('dg-e', '#b8742a', '#6a3a12')}${rg('dg-t', '#ff8ac8', '#d4287a')}</defs>
+${shadow}
+<path class="limb" d="M146 150c30 4 46-14 38-40-2-8-12-6-10 2 4 14-4 28-30 28" fill="url(#dg-b)" ${OUT}/>
+<ellipse cx="100" cy="146" rx="46" ry="38" fill="url(#dg-b)" ${OUT}/>
+<ellipse cx="70" cy="182" rx="17" ry="8" fill="url(#dg-b)" ${OUT}/><ellipse cx="130" cy="182" rx="17" ry="8" fill="url(#dg-b)" ${OUT}/>
+<path d="M62 176l2 6M72 176l2 6M126 176l2 6M136 176l2 6" stroke="#120e18" stroke-width="2.5" stroke-linecap="round"/>
+<ellipse cx="100" cy="164" rx="22" ry="20" fill="#ffe8b8" ${OUT}/>
+<g class="limb"><path d="M64 48C38 42 22 62 26 98c2 14 14 22 24 14 8-10 10-30 20-52z" fill="url(#dg-e)" ${OUT}/><path d="M136 48c26-6 42 14 38 50-2 14-14 22-24 14-8-10-10-30-20-52z" fill="url(#dg-e)" ${OUT}/></g>
+<circle cx="100" cy="84" r="46" fill="url(#dg-b)" ${OUT}/>
+<ellipse cx="100" cy="100" rx="26" ry="20" fill="#ffe8b8" ${OUT}/>
+<ellipse cx="100" cy="90" rx="11" ry="8" fill="#120e18" ${OUT}/><circle cx="96" cy="87" r="2.5" fill="#fff"/>
+<path d="M88 108c4 6 20 6 24 0" fill="#120e18" stroke="#120e18" stroke-width="3" stroke-linecap="round"/>
+<path class="limb" d="M92 110h16v22c0 8-16 8-16 0z" fill="url(#dg-t)" ${OUT}/><path d="M100 112v16" stroke="#d4287a" stroke-width="2.5"/>
+<g class="eye"><circle cx="76" cy="70" r="13" fill="#fff" ${OUT}/><circle cx="124" cy="70" r="13" fill="#fff" ${OUT}/><circle cx="80" cy="73" r="5" fill="#120e18"/><circle cx="118" cy="66" r="5" fill="#120e18"/></g>
+<path d="M62 52l22 6M138 52l-22 6" stroke="#120e18" stroke-width="5" stroke-linecap="round"/>
+<rect x="64" y="124" width="72" height="12" rx="6" fill="#ff3b3b" ${OUT}/><circle cx="100" cy="142" r="8" fill="#ffd900" ${OUT}/><path d="M97 142h6" stroke="#120e18" stroke-width="2"/>
+<path d="M64 130C30 130 14 146 10 170" fill="none" stroke="#120e18" stroke-width="7" stroke-linecap="round"/><path d="M64 130C30 130 14 146 10 170" fill="none" stroke="#ff3b3b" stroke-width="3.5" stroke-linecap="round"/>
+<circle cx="150" cy="176" r="13" fill="#d8f040" ${OUT}/><path d="M139 172c6 4 16 4 22 0M141 181c6-3 14-3 20 0" stroke="#fff" stroke-width="2.5" fill="none" opacity=".8"/>`;
+
+/** The dog once a squirrel has gone by: eyes fixed on a thought bubble with the squirrel in it, tongue right out. */
+const offLeashDogDistracted = `${offLeashDog}
+<g ${OUT}><circle cx="172" cy="52" r="5" fill="#fff"/><circle cx="160" cy="68" r="3" fill="#fff"/><ellipse cx="164" cy="26" rx="30" ry="24" fill="#fff"/></g>
+<g ${OUT} transform="translate(-66 -10) scale(1.4)"><path d="M154 34c-6-6-6-16 2-18l2 8z" fill="#c8842a"/><ellipse cx="166" cy="26" rx="10" ry="8" fill="#c8842a"/><circle cx="173" cy="20" r="5" fill="#c8842a"/><circle cx="175" cy="19" r="1.5" fill="#120e18"/></g>
+<g class="eye"><circle cx="80" cy="64" r="5" fill="#120e18"/><circle cx="124" cy="62" r="5" fill="#120e18"/></g>`;
+
+/** The Couch: an overstuffed corner sofa in mustard, sunk in the middle, a crumpled blanket, a remote and pizza crumbs, two sleepy eyes in the dark gap between the cushions. */
+const theCouch = `
+<defs>${rg('co-b', '#ffd04a', '#b87a10')}${rg('co-c', '#ffe08a', '#d89a20')}${rg('co-r', '#ff8ac8', '#d4287a')}${glow('co-g', '#ffd900')}</defs>
+${shadow}
+<path d="M20 178l-4 12h18l2-12zM166 178l2 12h18l-4-12z" fill="#5a3a1a" ${OUT}/>
+<rect x="18" y="56" width="164" height="96" rx="26" fill="url(#co-b)" ${OUT}/>
+<rect x="6" y="94" width="38" height="84" rx="16" fill="url(#co-b)" ${OUT}/><rect x="156" y="94" width="38" height="84" rx="16" fill="url(#co-b)" ${OUT}/>
+<path d="M44 96h112v66H44z" fill="#6a3a08" ${OUT}/>
+<rect x="44" y="132" width="56" height="42" rx="12" fill="url(#co-c)" ${OUT}/><rect x="100" y="132" width="56" height="42" rx="12" fill="url(#co-c)" ${OUT}/>
+<path d="M54 142c10 6 30 6 40 0M110 142c10 6 30 6 40 0" stroke="#b87a10" stroke-width="3" fill="none" stroke-linecap="round"/>
+<g fill="#6a3a08" opacity=".85"><circle cx="72" cy="86" r="3"/><circle cx="128" cy="86" r="3"/><circle cx="100" cy="76" r="3"/></g>
+<g class="eye"><ellipse cx="78" cy="112" rx="14" ry="12" fill="url(#co-g)"/><ellipse cx="122" cy="112" rx="14" ry="12" fill="url(#co-g)"/><path d="M66 114h24M110 114h24" stroke="#120e18" stroke-width="5" stroke-linecap="round"/></g>
+<path d="M60 100l30 8M140 100l-30 8" stroke="#120e18" stroke-width="5" stroke-linecap="round"/>
+<path class="limb" d="M118 138c14-10 34-8 40 6l-4 28c-20 4-34 0-40-8z" fill="url(#co-r)" ${OUT}/><path d="M126 148c8-3 18-3 26 2M124 160c8-3 20-2 28 2" stroke="#fff" stroke-width="3" opacity=".5" fill="none"/>
+<rect x="24" y="148" width="26" height="12" rx="3" transform="rotate(-18 36 154)" fill="#2a2a3a" ${OUT}/><g fill="#ff3b3b"><circle cx="32" cy="154" r="2"/></g><g fill="#ffd900"><circle cx="40" cy="150" r="2"/></g>
+<g fill="#ffb86a" ${OUT}><path d="M146 66l12 4-6 10z"/><circle cx="60" cy="168" r="3"/></g>
+<path d="M22 70c4-14 14-18 24-12M178 70c-4-14-14-18-24-12" fill="none" stroke="#fff" stroke-width="3" opacity=".35" stroke-linecap="round"/>`;
+
+/** The Brunch Influencer: a smiling girl in a sage-green set with an enormous ring light for a halo, a phone on a selfie stick held out at arm's length, an avocado toast on a plate and a latte-art cup. */
+const brunchInfluencer = `
+<defs>${rg('in-s', '#ffd9b8', '#d8946a')}${rg('in-d', '#c8f0a8', '#58a838')}${rg('in-h', '#ffd900', '#c88a00')}${glow('in-g', '#fff6c0')}</defs>
+${shadow}
+<circle cx="100" cy="64" r="58" fill="url(#in-g)"/>
+<circle cx="100" cy="64" r="52" fill="none" stroke="#120e18" stroke-width="14"/><circle cx="100" cy="64" r="52" fill="none" stroke="#fff" stroke-width="8"/>
+<path d="M70 178l-2 12h24l2-12zM110 178l2 12h24l-2-12z" fill="#f6f0e4" ${OUT}/>
+<path d="M72 120h56l8 60H64z" fill="url(#in-d)" ${OUT}/>
+<path d="M74 122h52l-2 18H76z" fill="#fff" opacity=".35"/>
+<path d="M84 124l4 54M116 124l-4 54" stroke="#58a838" stroke-width="3" opacity=".6"/>
+<path d="M72 126L48 150l10 8 26-18zM128 126l26-14 18-34" fill="#ffd9b8" stroke="none"/>
+<path d="M76 126L52 148" stroke="#120e18" stroke-width="13" stroke-linecap="round"/><path d="M76 126L52 148" stroke="#ffd9b8" stroke-width="7" stroke-linecap="round"/>
+<g class="limb"><path d="M124 126l32-16 16-40" stroke="#120e18" stroke-width="13" fill="none" stroke-linecap="round" stroke-linejoin="round"/><path d="M124 126l32-16 16-40" stroke="#ffd9b8" stroke-width="7" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+<rect x="164" y="28" width="22" height="38" rx="4" fill="#2a2a3a" ${OUT}/><rect x="167" y="33" width="16" height="26" rx="2" fill="#6ab8f8"/><circle cx="175" cy="30.5" r="1.5" fill="#6ab8f8"/></g>
+<g ${OUT}><ellipse cx="62" cy="168" rx="26" ry="8" fill="#fff"/><path d="M46 164c0-8 10-12 18-12s18 4 18 12z" fill="#e8c88a"/><ellipse cx="64" cy="158" rx="12" ry="6" fill="url(#in-d)"/><circle cx="64" cy="156" r="3" fill="#ff8a5a"/></g>
+<g ${OUT}><path d="M138 170h24l-3 14h-18z" fill="#fff"/><ellipse cx="150" cy="170" rx="12" ry="4" fill="#c89a6a"/><path d="M144 170c3-3 9-3 12 0" stroke="#fff" stroke-width="2" fill="none"/></g>
+<path d="M62 62c-6-26 12-44 38-44s46 16 38 44c0 26-8 30-12 30H74c-4 0-12-4-12-30z" fill="url(#in-h)" ${OUT}/>
+<ellipse cx="100" cy="72" rx="30" ry="34" fill="url(#in-s)" ${OUT}/>
+<path d="M68 52c12-6 24-20 28-30 4 10 14 20 36 30-4-14-14-26-32-26s-30 12-32 26z" fill="url(#in-h)" ${OUT}/>
+<g class="eye"><ellipse cx="86" cy="72" rx="6" ry="8" fill="#fff" ${OUT}/><ellipse cx="114" cy="72" rx="6" ry="8" fill="#fff" ${OUT}/><circle cx="87" cy="73" r="3.5" fill="#2a8a58"/><circle cx="115" cy="73" r="3.5" fill="#2a8a58"/></g>
+<path d="M78 60h14M108 60h14" stroke="#120e18" stroke-width="3.5" stroke-linecap="round"/>
+<path d="M82 90c8 12 28 12 36 0z" fill="#fff" ${OUT}/><path d="M86 90v5M92 90v6M100 90v6M108 90v6M114 90v5" stroke="#120e18" stroke-width="1.5" opacity=".5"/>
+<circle cx="78" cy="84" r="5" fill="#ff8ac8" opacity=".7"/><circle cx="122" cy="84" r="5" fill="#ff8ac8" opacity=".7"/>
+<path d="M30 60l-6-6M24 74h-8M32 88l-6 6" stroke="#ffd900" stroke-width="3.5" stroke-linecap="round"/>`;
+
+/** The Neighbour with the Leaf Blower: a red-faced man in a vest and ear defenders, a huge petrol blower pointed at you and a cloud of leaves and a flat cap on the wind. */
+const leafBlowerNeighbour = `
+<defs>${rg('lb-s', '#ffc8a0', '#c8785a')}${rg('lb-v', '#ff9a1e', '#c85a00')}${rg('lb-m', '#8ae848', '#3a8a18')}</defs>
+${shadow}
+<g fill="#ff9a1e" ${OUT}><path d="M18 40c14-6 26 0 22 12-10 2-20-2-22-12z"/><path d="M44 20c12 0 18 10 12 18-10-2-14-8-12-18z" fill="#ffd900"/><path d="M26 72c10-8 24-6 24 4-8 6-20 6-24-4z" fill="#ff3d9a"/><path d="M60 52c8-6 18-2 16 8-8 4-14 0-16-8z" fill="#8ac848"/></g>
+<path d="M70 176l-4 12h26l2-12zM108 176l2 12h26l-4-12z" fill="#3a3450" ${OUT}/>
+<path d="M72 130h56l-2 48H76z" fill="#4a6aa8" ${OUT}/>
+<path d="M62 92h76l8 50H54z" fill="url(#lb-v)" ${OUT}/>
+<path d="M100 92v50" stroke="#120e18" stroke-width="3"/><path d="M62 118h76" stroke="#ffd900" stroke-width="6"/>
+<g class="limb"><path d="M62 98l-26 26 14 18 28-18z" fill="url(#lb-v)" ${OUT}/>
+<rect x="8" y="100" width="48" height="26" rx="8" fill="url(#lb-m)" ${OUT}/><path d="M8 108h36M8 118h36" stroke="#2a6a10" stroke-width="3"/>
+<path d="M0 104h10v18H0z" fill="#8a94a8" ${OUT}/><path d="M-4 98l8 6M-4 128l8-6" stroke="#fff" stroke-width="3" opacity=".6"/></g>
+<rect x="46" y="124" width="40" height="30" rx="6" fill="url(#lb-m)" ${OUT}/><path d="M56 130h20M56 138h20" stroke="#2a6a10" stroke-width="3"/><circle cx="76" cy="146" r="3.5" fill="#ff3b3b"/>
+<path d="M130 100l18 26-18 12-8-14z" fill="url(#lb-v)" ${OUT}/><circle cx="132" cy="140" r="9" fill="#ffc8a0" ${OUT}/>
+<circle cx="100" cy="64" r="36" fill="url(#lb-s)" ${OUT}/>
+<path d="M66 52c4-26 64-26 68 0-14-8-54-8-68 0z" fill="#d8d0c0" ${OUT}/>
+<g ${OUT}><rect x="52" y="48" width="18" height="34" rx="8" fill="#ff3b3b"/><rect x="130" y="48" width="18" height="34" rx="8" fill="#ff3b3b"/><path d="M60 50c12-26 68-26 80 0" fill="none" stroke="#2a2a3a" stroke-width="7"/></g>
+<path d="M84 56l12 6M116 56l-12 6" stroke="#120e18" stroke-width="6" stroke-linecap="round"/>
+<g class="eye"><circle cx="86" cy="66" r="6" fill="#fff" ${OUT}/><circle cx="114" cy="66" r="6" fill="#fff" ${OUT}/><circle cx="88" cy="67" r="2.5" fill="#120e18"/><circle cx="112" cy="67" r="2.5" fill="#120e18"/></g>
+<path d="M78 82c8 4 36 4 44 0l-4 14c-12 4-24 4-36 0z" fill="#d8d0c0" ${OUT}/>
+<path d="M88 96h24v8c-8 4-16 4-24 0z" fill="#120e18" ${OUT}/>`;
+
+/** The Gym Bro: a tank top about to burst, a thick neck and a very small head, a shaker in one fist and a dumbbell in the other, a towel on the shoulder and one sock pulled up. */
+const gymBro = `
+<defs>${rg('gb-s', '#ffc090', '#c8704a')}${rg('gb-t', '#6ae8ff', '#1a88c8')}${rg('gb-h', '#4a3018', '#1a1008')}</defs>
+${shadow}
+<path d="M64 176l-2 12h30l2-12zM108 176l2 12h30l-2-12z" fill="#f6f0e4" ${OUT}/><path d="M66 176h26M110 176h26" stroke="#ff3d9a" stroke-width="4"/>
+<path d="M72 138h22v40H72zM106 138h22v40h-22z" fill="url(#gb-s)" ${OUT}/>
+<path d="M66 128h68l-2 22H68z" fill="#2a2a3a" ${OUT}/><path d="M66 134h68" stroke="#ff3d9a" stroke-width="4"/>
+<path d="M62 60h76l14 36-8 44H56l-8-44z" fill="url(#gb-s)" ${OUT}/>
+<path d="M70 62l30 36 30-36 4 74H66z" fill="url(#gb-t)" ${OUT}/><path d="M92 62l8 12 8-12" fill="url(#gb-s)" ${OUT}/>
+<path d="M96 110h8v8h-8z" fill="#fff" opacity=".5"/><path d="M80 112c6 4 14 4 20 0M100 112c6 4 14 4 20 0" stroke="#1a88c8" stroke-width="3" fill="none" opacity=".6"/>
+<circle cx="40" cy="92" r="24" fill="url(#gb-s)" ${OUT}/><circle cx="160" cy="92" r="24" fill="url(#gb-s)" ${OUT}/>
+<g class="limb"><path d="M32 106l-8 34h28l-6-30z" fill="url(#gb-s)" ${OUT}/><g transform="rotate(-10 38 150)"><rect x="12" y="144" width="52" height="10" rx="4" fill="#8a94a8" ${OUT}/><rect x="10" y="132" width="12" height="34" rx="4" fill="#2a2a3a" ${OUT}/><rect x="54" y="132" width="12" height="34" rx="4" fill="#2a2a3a" ${OUT}/></g></g>
+<g class="limb"><path d="M168 106l8 34h-26l6-30z" fill="url(#gb-s)" ${OUT}/><rect x="152" y="130" width="26" height="42" rx="8" fill="#ff3d9a" ${OUT}/><rect x="152" y="130" width="26" height="9" rx="3" fill="#fff" ${OUT}/><path d="M158 150h14M158 158h8" stroke="#fff" stroke-width="3"/></g>
+<path d="M52 52c4-8 20-10 26-4l-4 22c-12 0-20-6-22-18z" fill="#fff" ${OUT}/>
+<rect x="82" y="46" width="36" height="22" fill="url(#gb-s)" ${OUT}/>
+<circle cx="100" cy="36" r="24" fill="url(#gb-s)" ${OUT}/>
+<path d="M76 30c0-18 48-18 48 0-10-6-38-6-48 0z" fill="url(#gb-h)" ${OUT}/>
+<g class="eye"><circle cx="91" cy="38" r="4.5" fill="#fff" ${OUT}/><circle cx="109" cy="38" r="4.5" fill="#fff" ${OUT}/><circle cx="92" cy="39" r="2" fill="#120e18"/><circle cx="108" cy="39" r="2" fill="#120e18"/></g>
+<path d="M84 31l12 4M116 31l-12 4" stroke="#120e18" stroke-width="4" stroke-linecap="round"/>
+<path d="M92 49c5 4 11 4 16 0" stroke="#120e18" stroke-width="3" fill="#fff" stroke-linecap="round"/>
+<path d="M84 142h32" stroke="#fff" stroke-width="3" opacity="0"/>`;
+
 export const CREATURES: Record<string, string> = {
   debugEnemy,
   leaver,
@@ -1636,6 +1750,12 @@ export const CREATURES: Record<string, string> = {
   microwave,
   witheredFicus,
   selfCheckout,
+  offLeashDog,
+  offLeashDogDistracted,
+  theCouch,
+  brunchInfluencer,
+  leafBlowerNeighbour,
+  gymBro,
   factorySiren,
   sushiChef,
   graveyardIntern,

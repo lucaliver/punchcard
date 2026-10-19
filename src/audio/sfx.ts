@@ -467,6 +467,17 @@ const SOUNDS = {
     tone(80, 0.6, { type: 'sawtooth', vol: 0.15, to: 160 });
     noise(0.5, { freq: 400, vol: 0.2, type: 'lowpass' });
   },
+  /** A petrol leaf blower: a roar that swells and drops, with a two-stroke rattle under it. */
+  gust: () => {
+    noise(0.9, { freq: 500, to: 2600, q: 0.7, vol: 0.2, attack: 0.15 });
+    tone(110, 0.9, { type: 'sawtooth', vol: 0.05, to: 150, attack: 0.1 });
+    for (let i = 0; i < 8; i++) tone(95, 0.04, { type: 'square', vol: 0.05, delay: i * 0.1 });
+  },
+  /** A phone's camera: a fake shutter click. */
+  shutter: () => {
+    noise(0.03, { freq: 3500, vol: 0.22, type: 'highpass' });
+    noise(0.05, { freq: 1800, vol: 0.16, type: 'bandpass', q: 2, delay: 0.07 });
+  },
 };
 
 export type SoundId = keyof typeof SOUNDS;
