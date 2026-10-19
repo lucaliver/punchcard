@@ -767,6 +767,11 @@ export const ICONS: Record<string, { el: Element; svg: string; wide?: boolean }>
     el: 'necro',
     svg: `<rect x="10" y="12" width="44" height="48" rx="3"/><rect x="26" y="4" width="12" height="12"/><g fill="#16121f"><circle cx="32" cy="30" r="7"/><path d="M19 50c2-9 7-11 13-11s11 2 13 11z"/></g>`,
   },
+  // The Water Cooler room's mark: a jug on its cabinet, two taps and a bubble of gossip.
+  cooler: {
+    el: 'ice',
+    svg: `<path d="M16 3h26c3 0 5 2 5 5v17c0 3-2 5-5 5H16c-3 0-5-2-5-5V8c0-3 2-5 5-5z"/><path fill="#16121f" opacity=".35" d="M11 17h36v8c0 3-2 5-5 5H16c-3 0-5-2-5-5z"/><circle cx="20" cy="11" r="2.5" fill="#16121f" opacity=".5"/><circle cx="32" cy="22" r="2" fill="#16121f" opacity=".5"/><rect x="21" y="30" width="16" height="5"/><rect x="9" y="35" width="40" height="25" rx="2"/><rect x="17" y="40" width="9" height="6" fill="#16121f"/><rect x="32" y="40" width="9" height="6" fill="#16121f"/><rect x="18" y="52" width="22" height="4" fill="#16121f"/><path d="M47 2h14a3 3 0 0 1 3 3v8a3 3 0 0 1-3 3h-4l-5 5v-5h-5a3 3 0 0 1-3-3V5a3 3 0 0 1 3-3z"/><circle cx="50" cy="9" r="1.6" fill="#16121f"/><circle cx="55" cy="9" r="1.6" fill="#16121f"/><circle cx="60" cy="9" r="1.6" fill="#16121f"/>`,
+  },
   waterCooler: {
     el: 'necro',
     svg: `<path d="M22 2h20c4 4 6 10 6 16s-2 10-6 12H22c-4-2-6-6-6-12s2-12 6-16z"/><circle cx="27" cy="14" r="3" fill="#16121f" opacity=".5"/><circle cx="37" cy="22" r="2.5" fill="#16121f" opacity=".5"/><rect x="14" y="33" width="36" height="28" rx="2"/><rect x="21" y="39" width="22" height="14" fill="#16121f"/><rect x="29" y="39" width="6" height="7"/><rect x="26" y="57" width="12" height="3" fill="#16121f"/>`,

@@ -260,6 +260,28 @@ ${shadow}
 <rect x="40" y="168" width="40" height="18" fill="#f6f0e4" ${OUT}/><path d="M46 174h28M46 180h18" stroke="#120e18" stroke-width="3"/>
 <g ${OUT}><path d="M150 172l8-6 8 6v14h-16z" fill="#ffd900"/></g>`;
 
+/** The Water Cooler: a jug upside down on a blue cabinet that has heard everything, a red tap and a blue one, a tube of paper cups, and two speech bubbles of things said in whispers. */
+const waterCooler = `
+<defs>${lg('wc-b', '#9ab8f0', '#2c58b8')}${lg('wc-w', '#c8ecff', '#2f8fe8')}${lg('wc-g', '#ffe45a', '#d09a20')}</defs>
+${shadow}
+<path d="M62 20c0-8 8-12 38-12s38 4 38 12v46c0 8-8 16-38 16S62 74 62 66z" fill="url(#wc-w)" ${OUT}/>
+<path d="M62 46c14 8 62 8 76 0v20c0 8-8 16-38 16S62 74 62 66z" fill="#2c8ae0" opacity=".55"/>
+<path d="M72 24c0-4 4-6 12-6" stroke="#fff" stroke-width="5" stroke-linecap="round" opacity=".8" fill="none"/>
+<circle cx="86" cy="56" r="4" fill="#fff" opacity=".8"/><circle cx="108" cy="64" r="3" fill="#fff" opacity=".8"/><circle cx="98" cy="72" r="2.5" fill="#fff" opacity=".8"/>
+<path d="M84 80h32v12H84z" fill="url(#wc-g)" ${OUT}/>
+<path d="M54 90h92v90H54z" fill="url(#wc-b)" ${OUT}/>
+<path d="M54 90h92v10H54z" fill="#fff" opacity=".25"/>
+<g ${OUT}><rect x="74" y="106" width="16" height="12" fill="#3a8ae8"/><rect x="110" y="106" width="16" height="12" fill="#ff3d5a"/><rect x="78" y="118" width="8" height="8" fill="#6a6a8a"/><rect x="114" y="118" width="8" height="8" fill="#6a6a8a"/></g>
+<g class="eye"><circle cx="82" cy="142" r="8" fill="#fff" ${OUT}/><circle cx="118" cy="142" r="8" fill="#fff" ${OUT}/><circle cx="84" cy="144" r="3.5" fill="#120e18"/><circle cx="120" cy="144" r="3.5" fill="#120e18"/></g>
+<path d="M90 160q10 6 20 0" stroke="#120e18" stroke-width="3.5" fill="none" stroke-linecap="round"/>
+<path d="M64 166h72v8H64z" fill="#120e18"/><path d="M68 169h64" stroke="#6a9af8" stroke-width="2" stroke-dasharray="6 5"/>
+<g ${OUT}><rect x="152" y="66" width="18" height="58" rx="3" fill="#f6f0e4"/><path d="M152 78h18M152 90h18M152 102h18M152 114h18" stroke="#120e18" stroke-width="2"/></g>
+<path d="M150 124h22l-4 22h-14z" fill="#f6f0e4" ${OUT}/>
+<g ${OUT}><path d="M14 36h40a6 6 0 0 1 6 6v16a6 6 0 0 1-6 6H36l-10 10v-10H14a6 6 0 0 1-6-6V42a6 6 0 0 1 6-6z" fill="#ff3d9a"/></g>
+<g fill="#f6f0e4"><circle cx="22" cy="50" r="3.5"/><circle cx="34" cy="50" r="3.5"/><circle cx="46" cy="50" r="3.5"/></g>
+<g ${OUT}><path d="M146 20h38a6 6 0 0 1 6 6v14a6 6 0 0 1-6 6h-8v10l-10-10h-20a6 6 0 0 1-6-6V26a6 6 0 0 1 6-6z" fill="#ffd900"/></g>
+<path d="M150 29h30M150 37h18" stroke="#120e18" stroke-width="3" stroke-linecap="round"/>`;
+
 /** Sprite sources by room type, as the renderer wants them (`room.` keeps them apart from creature ids). */
 export const ROOM_SPRITES: Record<string, string> = {
   'room.rest': coffeeMachine,
@@ -273,6 +295,7 @@ export const ROOM_SPRITES: Record<string, string> = {
   'room.restructuring.open': orgChart(true),
   'room.lunch': sundayLunch,
   'room.lottery': lotteryStand,
+  'room.event': waterCooler,
 };
 
 /** The studio's mark: a ring, a blue L behind the Aries glyph (a pink ram's horns over a V), the horns ribbed like the studio's old sketch. */

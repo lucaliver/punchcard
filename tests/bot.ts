@@ -3,6 +3,7 @@ import { MAIN_ACTS } from '../src/data/acts';
 import { CARDS } from '../src/data/cards';
 import { COFFEE_SERVICE } from '../src/data/coffee';
 import { CoffeeTask } from '../src/game/coffee';
+import { applyFx, choicePossible, finishEvent, pickShred, pickUpgrade, rollEvent, rollResult } from '../src/game/events';
 import { BadgeSwipe } from '../src/game/badge';
 import { CheckoutLane } from '../src/game/checkout';
 import { GrillLine } from '../src/game/grill';
@@ -284,6 +285,24 @@ export function simulateRun(hero: HeroId, seed: number, opts: BotOpts): RunOutco
     } else if (node.type === 'crossTraining' || node.type === 'restructuring' || node.type === 'wheel' || node.type === 'lottery') {
       // Off-class cards, a reshuffled deck and a raffle's luck don't help the bot's plan: it walks past.
       run.cleared = true;
+    } else if (node.type === 'event') {
+      // Heals when hurt, otherwise the first choice it can afford (a pick of the hand is the first card that fits).
+      const event = rollEvent(run);
+      const doable = event.choices.filter((c) => choicePossible(run, c));
+      const heals = (c: (typeof doable)[number]): boolean => c.results.every((r) => r.fx.some((fx) => fx.kind === 'heal'));
+      const choice = (run.hp < run.maxHp * 0.6 && doable.find(heals)) || doable[0];
+      if (choice) {
+        for (const fx of rollResult(run, choice).fx) {
+          if (fx.kind === 'upgrade') {
+            const up = run.deck.find(canUpgrade);
+            if (up) pickUpgrade(run, up.uid);
+          } else if (fx.kind === 'shred') {
+            const weak = run.deck.find((c) => CARDS[c.id].starterOnly);
+            if (weak && canShred(run)) pickShred(run, weak.uid);
+          } else applyFx(run, fx);
+        }
+      }
+      finishEvent(run, event.id);
     } else if (node.type === 'copy') {
       // Thin the deck: shred a plain starter card (never a mana crystal).
       const weak = run.deck.find((c) => CARDS[c.id].starterOnly);

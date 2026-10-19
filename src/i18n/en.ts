@@ -1,3 +1,5 @@
+import { eventsEn } from './events/en';
+
 /**
  * English strings. Card descriptions use:
  *  - `{0}`, `{1}`… for the card's values (damage values get live previews in combat);
@@ -2315,6 +2317,7 @@ const en = {
   'card.synergy.desc': 'Whenever you play a card of a different type than the one before it, deal {0} [damage].',
   'status.synergy': 'Synergy',
   'status.synergy.d': 'Whenever you play a card of a different type than the one before it, deal {v} damage.',
+  ...eventsEn,
 } satisfies Record<string, string>;
 
 export default en;

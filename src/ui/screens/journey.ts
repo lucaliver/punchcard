@@ -34,6 +34,7 @@ export const NODE_ICON: Record<RunNode['type'], string> = {
   wheel: 'luckyWheel',
   lunch: 'lasagna',
   lottery: 'scratchCard',
+  event: 'cooler',
   boss: 'tophat',
 };
 /** What a room is called on the map and in its info (the last act's boss is the final one). */

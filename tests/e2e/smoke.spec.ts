@@ -2080,3 +2080,29 @@ test('Corner Shop: the first scratch card is free, and the shop can be left', as
   await expect(page.locator('.node.open, .node.current').first()).toBeVisible({ timeout: 10_000 });
   expect(problems).toEqual([]);
 });
+
+test('Water Cooler: the note is typed, the choices show their price tags, and the room ends on its button', async ({ page }) => {
+  const problems = await freshGame(page, { veteran: true });
+  await enterWeekendRoom(page, 'event');
+  await expect(page.locator('.event-slip')).toBeVisible();
+  // A tap on the note shows it whole at once; the choices follow.
+  await page.locator('.event-slip').click();
+  const choices = page.locator('.option.choice');
+  await expect(choices.first()).toBeVisible();
+  expect(await choices.count()).toBeGreaterThanOrEqual(2);
+  await expect(page.locator('.option.choice .fx-chip').first()).toBeVisible();
+  const first = choices.first();
+  await first.click();
+  // A choice that asks for a card of the hand opens the deck: pick the first one.
+  const confirm = page.locator('.modal .deck-confirm, .modal button:has-text("Upgrade"), .modal button:has-text("Shred")');
+  for (let i = 0; i < 80 && !(await page.getByRole('button', { name: /back to work/i }).isVisible()); i++) {
+    if (await confirm.first().isVisible()) {
+      await page.locator('.modal .card').first().click();
+      await confirm.first().click();
+    }
+    await page.waitForTimeout(250);
+  }
+  await page.getByRole('button', { name: /back to work/i }).click();
+  await expect(page.locator('.node.open, .node.current').first()).toBeVisible({ timeout: 10_000 });
+  expect(problems).toEqual([]);
+});

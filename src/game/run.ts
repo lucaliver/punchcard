@@ -51,6 +51,7 @@ export const NODE_TYPES = [
   'wheel',
   'lunch',
   'lottery',
+  'event',
   'boss',
 ] as const;
 export type NodeType = (typeof NODE_TYPES)[number];
@@ -131,8 +132,8 @@ const SAVE_KEY = 'run';
  * lanes end on a rest before the boss.
  */
 const LANES: Slot[][] = [
-  ['fight', 'special', 'rest', 'fight', 'elite', 'special', 'fight', 'rest'],
-  ['promotion', 'fight', 'special', 'fight', 'rest', 'special', 'fight', 'rest'],
+  ['fight', 'special', 'rest', 'event', 'elite', 'special', 'fight', 'rest'],
+  ['promotion', 'fight', 'special', 'event', 'rest', 'special', 'fight', 'rest'],
 ];
 /** A `special` slot of a lane becomes one of these when the act is built; one act never deals the same room twice. */
 export const SPECIALS: NodeType[] = ['copy', 'tailor', 'lostFound', 'vending', 'crossTraining', 'restructuring', 'wheel'];
@@ -515,7 +516,7 @@ export function clockAt(run: RunState, node: RunNode): number {
 }
 export const totalFloors = (run: RunState): number => Math.max(...run.nodes.map((n) => n.floor));
 
-function rngOf(run: RunState): Rng {
+export function rngOf(run: RunState): Rng {
   return new Rng(run.rng);
 }
 
@@ -894,6 +895,20 @@ export function restructure(run: RunState, uids: number[]): { before: CardInst; 
   run.rng = rng.state;
   run.cleared = true;
   return moved;
+}
+
+/** A random card of this rarity, from the hero's pool (every class's with `cross`, like the Rolodex), goes into the deck. Returns it, or nothing when the pool has none. */
+export function giftCard(run: RunState, rarity: Rarity, cross = false): CardInst | undefined {
+  const rng = rngOf(run);
+  const pool = rewardPool(run.hero, rarity, cross || openPool(run));
+  const def = pool.length ? pickReward(rng, run, pool) : undefined;
+  run.rng = rng.state;
+  if (!def) return undefined;
+  discover([def.id]);
+  const card = newCard(run, def.id);
+  run.deck.push(card);
+  run.cleared = true;
+  return card;
 }
 
 /** The relics the run doesn't hold yet (no special one). */

@@ -71,6 +71,7 @@ import { restructuringScreen } from './ui/screens/restructuring';
 import { wheelScreen } from './ui/screens/wheel';
 import { lunchScreen } from './ui/screens/lunch';
 import { lotteryScreen } from './ui/screens/lottery';
+import { eventScreen } from './ui/screens/event';
 import { rewardScreen } from './ui/screens/reward';
 import { studioScreen } from './ui/screens/studio';
 import { languageScreen } from './ui/screens/language';
@@ -100,6 +101,7 @@ const ROOMS: Partial<Record<NodeType, (run: RunState, onDone: () => void) => Scr
   wheel: wheelScreen,
   lunch: lunchScreen,
   lottery: lotteryScreen,
+  event: eventScreen,
 };
 
 function goTitle(): void {
