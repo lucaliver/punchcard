@@ -86,3 +86,16 @@
 
 /* a choice that can't be paid: dimmed, but still answers a hold (a disabled button would swallow it) */
 .option.choice.locked { opacity: 0.4; box-shadow: none; }
+
+/* a short phone (375x620): a smaller note and tighter choices, so a long scene and its three choices still fit under the HUD */
+@media (max-height: 700px) {
+  .screen.event { gap: 6px; }
+  .screen.event .h1 { margin-top: 2px; font-size: clamp(16px, 4.8vw, 20px); }
+  .event-slip { padding: 12px 10px 8px; font-size: 13px; line-height: 1.25; }
+  .event-name { font-size: 14px; }
+  .option.choice { gap: 3px; padding: 6px 9px; }
+  .choice-text { font-size: 13px; line-height: 1.2; }
+  .fx-chip { font-size: 15px; }
+  .option .fx-chip .pico,
+  .fx-chip .pico { font-size: 17px; }
+}
