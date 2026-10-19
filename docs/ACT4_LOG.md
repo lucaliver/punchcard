@@ -45,3 +45,7 @@ Before: one enemy of its own (the Self-Checkout) dealt for every fight, elites a
 
 ## Batch 8: stationery
 - **Five weekend-only relics** (`RelicDef.weekend`, only dealt in the weekend): *Garden Gnome* (rare, Thorns each fight), *Reserved Sunbed* (epic, Block that doesn't fade for 10 s), *Lottery Ticket* (epic, 12% of the cards played refund their mana), *Doggy Bag* (rare, heal 25% after an elite or a boss), *Remote Control* (epic, once a fight under 40% HP: pause, the move is cancelled and the enemy stunned for 5 s). Sprites, chip icons, texts in four languages, tests.
+
+## Batch 9: polish and tests
+- Monday and two elites got more HP (400, 175, 170) and Monday's third phase hits harder; the dance pad fits a 375×620 phone.
+- e2e smoke tests for the barbecue window, the dance floor, the Sunday Lunch and the Corner Shop.

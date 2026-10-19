@@ -868,14 +868,14 @@
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  min-height: 46px;
+  min-height: 40px;
   padding: 2px 8px;
   text-align: center;
   color: var(--y);
   background: var(--k);
   border: var(--line) solid var(--y);
 }
-.sl-call b { font-family: var(--font-display); font-size: 20px; font-weight: 400; letter-spacing: 0.04em; line-height: 1.1; }
+.sl-call b { font-family: var(--font-display); font-size: 17px; font-weight: 400; letter-spacing: 0.04em; line-height: 1.1; }
 .sl-call small { font-family: var(--font-ui); font-size: 14px; color: var(--mint); }
 .sl-call b.shout { animation: sl-shout 0.25s steps(3); }
 @keyframes sl-shout {
@@ -896,8 +896,8 @@
   min-height: 0;
   display: grid;
   grid-template-columns: repeat(3, 1fr);
-  grid-template-rows: repeat(3, 1fr);
-  gap: 4px;
+  grid-template-rows: repeat(3, minmax(34px, 1fr));
+  gap: 3px;
   justify-items: center;
   align-items: stretch;
 }
@@ -905,7 +905,7 @@
   position: relative;
   width: 100%;
   max-width: 76px;
-  min-height: 40px;
+  min-height: 34px;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -916,7 +916,7 @@
   box-shadow: 3px 3px 0 var(--shadow);
 }
 .sl-btn:active { translate: 2px 2px; box-shadow: 1px 1px 0 var(--shadow); }
-.sl-btn .pico { width: 26px; height: 26px; color: var(--k); --ink2: var(--y); }
+.sl-btn .pico { width: 22px; height: 22px; color: var(--k); --ink2: var(--y); }
 .sl-btn small { font-family: var(--font-ui); font-size: 13px; line-height: 1; text-transform: uppercase; }
 .sl-btn[data-step='hop'] { grid-column: 2; grid-row: 1; }
 .sl-btn[data-step='left'] { grid-column: 1; grid-row: 2; }

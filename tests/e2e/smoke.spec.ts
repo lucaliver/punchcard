@@ -1969,3 +1969,111 @@ test("the Supervisor's backlog: a button beside him opens a match-3 over the bel
   expect(await combat(page, 'return c.minigameOpen;')).toBe(false);
   expect(problems).toEqual([]);
 });
+
+/** A fight against this enemy from the debug menu, started, with its first task move up and waiting (the windup is made long). */
+async function chorePending(page: Page, enemy: string): Promise<void> {
+  await page.getByRole('button', { name: /debug/i }).click();
+  await page.locator('.debug-tabs button').last().click();
+  await page.locator(`.debug-foe[data-enemy="${enemy}"]`).click();
+  await expect(page.locator('.combat')).toBeVisible();
+  const start = page.locator('.js-start');
+  if (await start.count()) await start.click();
+  await expect.poll(() => combat(page, 'return c.intro <= 0;')).toBe(true);
+  await combat(page, 'while (!c.enemy.move.task) c.skipEnemyMove();');
+  await combat(page, 'c.enemy.move = { ...c.enemy.move, windup: 999 };');
+}
+
+test("the Barbecue Dad's grill: a window covers the belt, a ready patty is flipped and then served, a raw one costs blood", async ({ page }) => {
+  const problems = await freshGame(page);
+  await chorePending(page, 'grillDad');
+  const win = page.locator('.grill-window.on');
+  await expect(win).toBeVisible();
+  await expect(page.locator('.gr-slot')).toHaveCount(3);
+  // Nothing is ready yet: a tap on a raw patty is a mistake.
+  await combat(page, 'c.chore.slots[0].t = 0;');
+  const hp = (await combat(page, 'return c.hero.hp;')) as number;
+  await page.locator('.gr-slot').first().click();
+  expect(await combat(page, 'return c.chore.errors;')).toBe(1);
+  expect((await combat(page, 'return c.hero.hp;')) as number).toBeLessThan(hp);
+  // A ready side is flipped, and its other side served once it is ready too.
+  await combat(page, 'const p = c.chore.slots[0]; p.t = p.cook + 0.2;');
+  await expect(page.locator('.gr-slot').first()).toHaveAttribute('data-state', 'ready');
+  await page.locator('.gr-slot').first().click();
+  expect(await combat(page, 'return c.chore.slots[0].side;')).toBe(1);
+  await combat(page, 'const p = c.chore.slots[0]; p.t = p.cook + 0.2;');
+  await page.locator('.gr-slot').first().click();
+  expect(await combat(page, 'return c.chore.served;')).toBe(1);
+  await expect(page.locator('.gr-done')).toHaveCount(1);
+  expect(problems).toEqual([]);
+});
+
+test("the Wedding DJ's dance floor: the call is answered on the pad, a wrong button costs blood, and the dance goes on", async ({ page }) => {
+  const problems = await freshGame(page);
+  await chorePending(page, 'weddingDj');
+  const win = page.locator('.slide-window.on');
+  await expect(win).toBeVisible();
+  await expect(page.locator('.sl-btn')).toHaveCount(4);
+  await combat(page, 'c.chore.gap = 0; c.chore.t = 0;');
+  const call = (await combat(page, 'return c.chore.call;')) as string;
+  expect(['left', 'right', 'back', 'hop']).toContain(call);
+  await expect(page.locator('.sl-call b')).not.toBeEmpty();
+  const other = ['left', 'right', 'back', 'hop'].find((s) => s !== call)!;
+  const hp = (await combat(page, 'return c.hero.hp;')) as number;
+  await page.locator(`.sl-btn[data-step="${other}"]`).click();
+  expect((await combat(page, 'return c.hero.hp;')) as number).toBeLessThan(hp);
+  await page.locator(`.sl-btn[data-step="${call}"]`).click();
+  expect(await combat(page, 'return c.chore.answered;')).toBe(1);
+  expect(problems).toEqual([]);
+});
+
+/** The first room of a fresh run turned into a weekend room, and entered. */
+async function enterWeekendRoom(page: Page, type: string): Promise<void> {
+  await page.getByRole('button', { name: /new run/i }).click();
+  await page.getByRole('button', { name: /start shift/i }).click();
+  await page.evaluate((ty) => {
+    const g = (
+      window as unknown as {
+        __game: { run: { nodes: { type: string; act: number }[]; current: number; hp: number; maxHp: number }; goJourney(): void };
+      }
+    ).__game;
+    g.run.nodes[g.run.current].type = ty;
+    g.run.nodes[g.run.current].act = 4;
+    g.run.hp = Math.floor(g.run.maxHp / 2);
+    g.goJourney();
+  }, type);
+  await page.getByRole('button', { name: /enter floor 1$/i }).last().click();
+}
+
+test('Sunday Lunch: two of the three dishes, and the room closes after the second', async ({ page }) => {
+  const problems = await freshGame(page, { veteran: true });
+  await enterWeekendRoom(page, 'lunch');
+  await expect(page.locator('.rest-options .option')).toHaveCount(3);
+  const stats = (): Promise<[number, number]> =>
+    page.evaluate('(() => { const r = window.__game.run; return [r.hp, r.maxHp]; })()') as Promise<[number, number]>;
+  const [hp, max] = await stats();
+  await page.locator('.rest-options .option').nth(0).click();
+  expect((await stats())[0]).toBeGreaterThan(hp);
+  // One dish eaten: it is disabled, the room is still open.
+  await expect(page.locator('.rest-options .option').nth(0)).toBeDisabled();
+  await expect(page.locator('.lunch-left')).toContainText('1');
+  await page.locator('.rest-options .option').nth(1).click();
+  expect((await stats())[1]).toBe(max + 8);
+  await expect(page.locator('.node.open, .node.current').first()).toBeVisible({ timeout: 10_000 });
+  expect(problems).toEqual([]);
+});
+
+test('Corner Shop: the first scratch card is free, and the shop can be left', async ({ page }) => {
+  const problems = await freshGame(page, { veteran: true });
+  await enterWeekendRoom(page, 'lottery');
+  const hp = (await page.evaluate('window.__game.run.hp')) as number;
+  await expect(page.locator('.sc-cell')).toHaveCount(3);
+  await page.locator('.rest-options .option').click();
+  // The three cells are scratched off one after the other, then the card says what it was.
+  await expect(page.locator('.sc-cell.covered')).toHaveCount(0, { timeout: 5000 });
+  await expect(page.locator('.sc-verdict')).not.toContainText('Scratching');
+  expect((await page.evaluate('window.__game.run.hp')) as number).toBeGreaterThanOrEqual(hp);
+  await expect(page.locator('.rest-options .option')).toBeEnabled({ timeout: 10_000 });
+  await page.getByRole('button', { name: /leave the shop/i }).click();
+  await expect(page.locator('.node.open, .node.current').first()).toBeVisible({ timeout: 10_000 });
+  expect(problems).toEqual([]);
+});
