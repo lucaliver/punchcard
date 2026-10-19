@@ -21,3 +21,6 @@ The game was already polished in look and sound, but poor in three places: **nar
 ## Step 3: epilogues
 - The end screen now has a note under the verdict (`data/epilogue.ts`, `epilogue.*`): a line about the hero (eight, win and loss for each) and one about the story the run told, if any (the Night Janitor's truth, the New Hire's postcard, a key ring on the desk). 28 lines in four languages.
 - The janitor's last chapter now sets a story flag, so the ending can answer it.
+
+## Step 4: each hero's own scene
+- Four events only one hero meets (`EventDef.hero`): the Warrior's arm claim, the Mage's password reset, the Necromancer's union meeting, the Rogue's stapler heist. Weighed above the common ones, so every run of a hero tells at least one scene about who they are. 24 scenes in all.

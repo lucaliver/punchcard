@@ -1,4 +1,4 @@
-import type { Rarity } from '../game/types';
+import type { HeroId, Rarity } from '../game/types';
 
 /**
  * Events: the Water Cooler's little stories. Each one is a scene with a speaker, a few lines and two or three choices; a choice
@@ -47,6 +47,8 @@ export interface EventDef {
   speaker?: string;
   /** Odds weight among the events that fit (a follow-up to a story the run already started is heavier). */
   weight: number;
+  /** Only this hero meets it: a scene about who they are. */
+  hero?: HeroId;
   /** A story flag the run must hold / must not hold. */
   needs?: string;
   unless?: string;
@@ -219,6 +221,55 @@ export const EVENT_LIST: EventDef[] = [
       gamble('eat', [2, { kind: 'heal', pct: 0.3 }], [1, { kind: 'hp', n: -14 }]),
       sure('tag', { kind: 'pay', n: 30 }),
       sure('bin', { kind: 'maxHp', n: 3 }),
+    ],
+  },
+  // ---- each hero's own scene
+  {
+    id: 'armClaim',
+    hero: 'warrior',
+    acts: [1, 2],
+    speaker: 'hrBitch',
+    weight: 4,
+    choices: [
+      sure('claim', { kind: 'hp', n: -6 }, { kind: 'pay', n: 120 }),
+      sure('prosthetic', { kind: 'hp', n: -10 }, { kind: 'relic' }),
+      sure('wave', { kind: 'maxHp', n: 5 }),
+    ],
+  },
+  {
+    id: 'passwordReset',
+    hero: 'mage',
+    acts: [1, 3],
+    speaker: 'theNerd',
+    weight: 4,
+    choices: [
+      sure('help', { kind: 'hp', n: -4 }, { kind: 'upgradeRandom' }),
+      gamble('snoop', [1, { kind: 'relic' }], [1, { kind: 'hp', n: -10 }]),
+      sure('hunter2', { kind: 'pay', n: 100 }),
+    ],
+  },
+  {
+    id: 'unionMeeting',
+    hero: 'necromancer',
+    acts: [1, 3],
+    speaker: 'veteran',
+    weight: 4,
+    choices: [
+      sure('oath', { kind: 'hp', n: -6 }, { kind: 'maxHp', n: 6 }),
+      sure('dues', { kind: 'pay', n: 100 }),
+      gamble('dead', [1, { kind: 'relic' }], [1, { kind: 'hp', n: -12 }]),
+    ],
+  },
+  {
+    id: 'staplerHeist',
+    hero: 'rogue',
+    acts: [1, 3],
+    speaker: 'micromanager',
+    weight: 4,
+    choices: [
+      gamble('steal', [2, { kind: 'relic' }], [1, { kind: 'hp', n: -10 }]),
+      sure('swap', { kind: 'hp', n: -4 }, { kind: 'card', rarity: 'common' }),
+      sure('guard', { kind: 'pay', n: 80 }),
     ],
   },
   // ---- the night shift

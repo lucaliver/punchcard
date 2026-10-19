@@ -299,4 +299,48 @@ export const storyEs: Record<keyof typeof storyEn, string> = {
   'epilogue.newHire.lose': 'El Nuevo Empleado está al fondo de tu despedida. No sabía qué decir, así que dijo "sinergia".',
   'epilogue.janitorFriend.win': 'Un llavero queda sobre tu mesa. Sin nota.',
   'epilogue.janitorFriend.lose': 'Alguien ha puesto un cartel de SUELO MOJADO donde caíste. Es una cortesía.',
+  'event.armClaim.title': 'El expediente del brazo',
+  'event.armClaim.text':
+    'Recursos Humanos tiene tu expediente. En "causa de la lesión" pone "hora punta". En "compensación" pone "véase: hora punta". "Sentimos mucho lo de su brazo", dice. "Técnicamente no era nuestro."',
+  'event.armClaim.claim': 'Presenta la reclamación, por triplicado.',
+  'event.armClaim.claim.0':
+    'Cuarenta minutos de cola, tres copias, cuatro sellos, una lágrima. Llega un cheque de una cuenta que ya no existe. Lo cobras igualmente.',
+  'event.armClaim.prosthetic': 'Exige la prótesis.',
+  'event.armClaim.prosthetic.0': 'Hay presupuesto para una prótesis, dicen. Es un perchero. Lo coges y, en efecto, es útil.',
+  'event.armClaim.wave': 'Déjalo estar, con el otro brazo.',
+  'event.armClaim.wave.0': 'Saludas con el que tienes. Por un momento te sientes, inesperadamente, entero.',
+  'event.passwordReset.title': 'Restablecer contraseña',
+  'event.passwordReset.text':
+    'Un compañero se ha quedado fuera y llama a la única persona que conoce las contraseñas de todos: tú. Su mesa es un campo de notas adhesivas. Una dice "NO MIRAR".',
+  'event.passwordReset.help': 'Restablécela, como es debido.',
+  'event.passwordReset.help.0':
+    'La restableces como es debido y de paso lees doce notas adhesivas. Aprendes sorprendentemente mucho sobre cómo hacer tu trabajo.',
+  'event.passwordReset.snoop': 'Ya que estás, lee sus correos.',
+  'event.passwordReset.snoop.0': 'En un borrador nunca enviado: algo destinado a alguien como tú. Nunca lo echará en falta.',
+  'event.passwordReset.snoop.1': 'Te mira por encima del monitor. La conversación que sigue es educada y acaba en un moratón.',
+  'event.passwordReset.hunter2': 'Cambia la contraseña de todos a hunter2.',
+  'event.passwordReset.hunter2.0': 'Caos. Luego un ascenso por "iniciativa" y, una semana después, una bonificación por arreglarlo.',
+  'event.unionMeeting.title': 'Reunión sindical',
+  'event.unionMeeting.text':
+    'El culto (perdón, el sindicato) celebra una reunión en el armario de papelería. Tres afiliados, dos velas, un punto en el orden del día: tú. "Hermano", dice el Veterano. "Hermana. Lo que seas. Siéntate."',
+  'event.unionMeeting.oath': 'Recita el juramento.',
+  'event.unionMeeting.oath.0':
+    'El juramento es largo y una línea pide sangre. Poca. La das y, a cambio, algo antiguo acepta cargar con un poco más de ti.',
+  'event.unionMeeting.dues': 'Cobra las cuotas.',
+  'event.unionMeeting.dues.0': 'Pagan todos. Nadie está contento. Se llama, te recuerdan, solidaridad.',
+  'event.unionMeeting.dead': 'Pídele un favor a los muertos.',
+  'event.unionMeeting.dead.0':
+    'Un susurro desde el archivador. Luego, del tercer cajón, algo que perteneció a un trabajador que ya no es un trabajador.',
+  'event.unionMeeting.dead.1': 'Los muertos están en una reunión y no se les puede molestar. Te molestan ellos a ti.',
+  'event.staplerHeist.title': 'El golpe a la grapadora',
+  'event.staplerHeist.text':
+    'En la mesa del jefe, la Grapadora Roja, la que lleva un nombre. Nadie mira. Todos miran, pero nadie ve. El Microgestor ha ido a por un café. Para un café, tarda once minutos.',
+  'event.staplerHeist.steal': 'Cógela. Sal.',
+  'event.staplerHeist.steal.0': 'Sales con la grapadora y una sonrisa perfecta. De su bandeja cae algo que él escondía detrás.',
+  'event.staplerHeist.steal.1': 'Estás a tres pasos de la puerta cuando vuelve. No dice nada. Su silencio pesa, y te cae encima.',
+  'event.staplerHeist.swap': 'Cámbiala por una copia.',
+  'event.staplerHeist.swap.0':
+    'Dejas una falsificación perfecta y una nota amable. La nota te cuesta, al final, más que la grapadora. Pero en el cajón que abriste había algo.',
+  'event.staplerHeist.guard': 'Haz de vigía en el golpe de otro.',
+  'event.staplerHeist.guard.0': 'El mejor golpe es el que te pagan por vigilar. No pasa nada, ruidosamente. Te dan propina.',
 };

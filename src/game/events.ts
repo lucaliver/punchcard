@@ -19,6 +19,7 @@ export function eligibleEvents(run: RunState): EventDef[] {
   const { act } = currentNode(run);
   return EVENT_LIST.filter(
     (e) =>
+      (!e.hero || e.hero === run.hero) &&
       e.acts[0] <= act &&
       act <= e.acts[1] &&
       !eventDone(run, e.id) &&

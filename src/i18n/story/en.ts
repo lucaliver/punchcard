@@ -302,4 +302,49 @@ export const storyEn = {
   'epilogue.newHire.lose': 'The New Hire stands at the back of your leaving party. He did not know what to say, so he said "synergy".',
   'epilogue.janitorFriend.win': 'A key ring is left on your desk. No note.',
   'epilogue.janitorFriend.lose': 'Someone has put a WET FLOOR sign where you fell. It is a courtesy.',
+  'event.armClaim.title': 'The Arm Claim',
+  'event.armClaim.text':
+    'HR has your file. Under "cause of injury" it says "rush hour". Under "compensation" it says "see: rush hour". "We are so sorry about your arm," she says. "Technically, it was not our arm."',
+  'event.armClaim.claim': 'File the claim, in triplicate.',
+  'event.armClaim.claim.0':
+    'Forty minutes in a queue, three copies, four stamps, one tear. A cheque arrives, drawn on an account that no longer exists. You cash it anyway.',
+  'event.armClaim.prosthetic': 'Demand the prosthetic.',
+  'event.armClaim.prosthetic.0': 'A prosthetic is in the budget, they say. It is a coat hook. You take it, and it is, in fact, useful.',
+  'event.armClaim.wave': 'Wave it off, with the other arm.',
+  'event.armClaim.wave.0': 'You wave with the one you have. For a moment you feel, unexpectedly, whole.',
+  'event.passwordReset.title': 'Password Reset',
+  'event.passwordReset.text':
+    'A colleague has locked himself out and calls the one person who knows everyone\'s password: you. His desk is a field of sticky notes. One of them says "DO NOT LOOK".',
+  'event.passwordReset.help': 'Reset it, properly.',
+  'event.passwordReset.help.0':
+    'You reset it, properly, and in the process read twelve sticky notes. You learn a surprising amount about how to do your job.',
+  'event.passwordReset.snoop': 'Read his emails while you are at it.',
+  'event.passwordReset.snoop.0': 'In a draft never sent: something that was meant for someone like you. He will never miss it.',
+  'event.passwordReset.snoop.1': 'He watches you over the monitor. The conversation that follows is polite and ends in a bruise.',
+  'event.passwordReset.hunter2': "Change everyone's password to hunter2.",
+  'event.passwordReset.hunter2.0': 'Chaos. Then a promotion for "initiative", then, a week later, a bonus for fixing it.',
+  'event.unionMeeting.title': 'Union Meeting',
+  'event.unionMeeting.text':
+    'The cult (sorry, the union) is holding a meeting in the stationery cupboard. Three members, two candles, one item on the agenda: you. "Brother," says the Veteran. "Sister. Whatever you are. Sit."',
+  'event.unionMeeting.oath': 'Recite the oath.',
+  'event.unionMeeting.oath.0':
+    'The oath is long, and one line in it asks for blood. A small amount. You give it, and in return something old agrees to carry a little more of you.',
+  'event.unionMeeting.dues': 'Collect the dues.',
+  'event.unionMeeting.dues.0': 'Everyone pays. Nobody is happy about it. It is, you are reminded, called solidarity.',
+  'event.unionMeeting.dead': 'Ask the dead for a favour.',
+  'event.unionMeeting.dead.0':
+    'A whisper from the filing cabinet. Then, from the third drawer, something that belonged to a worker who is no longer a worker.',
+  'event.unionMeeting.dead.1': 'The dead are in a meeting and cannot be disturbed. They disturb you instead.',
+  'event.staplerHeist.title': 'The Stapler Heist',
+  'event.staplerHeist.text':
+    "On the boss's desk, the Red Stapler, the one with a name on it. Nobody is watching. Everybody is watching, but nobody is looking. The Micromanager has gone for a coffee. For a coffee, he takes eleven minutes.",
+  'event.staplerHeist.steal': 'Take it. Walk out.',
+  'event.staplerHeist.steal.0':
+    'You walk out with the stapler and a perfect smile. Something falls from its tray, something he had been hiding behind it.',
+  'event.staplerHeist.steal.1': 'You are three steps from the door when he returns. He says nothing. His silence has a weight, and it lands on you.',
+  'event.staplerHeist.swap': 'Swap it for a fake.',
+  'event.staplerHeist.swap.0':
+    'You leave a perfect forgery and a polite note. The note costs you, in the end, more than the stapler. But there is something in the drawer you took.',
+  'event.staplerHeist.guard': "Keep watch for someone else's heist.",
+  'event.staplerHeist.guard.0': 'The best heist is the one you are paid to watch. Nothing happens, loudly. You are tipped.',
 } satisfies Record<string, string>;

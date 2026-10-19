@@ -299,4 +299,48 @@ export const storyIt: Record<keyof typeof storyEn, string> = {
   'epilogue.newHire.lose': 'Il Nuovo Assunto è in fondo alla tua festa d\'addio. Non sapeva che dire, così ha detto "sinergia".',
   'epilogue.janitorFriend.win': 'Un mazzo di chiavi è lasciato sulla tua scrivania. Nessun biglietto.',
   'epilogue.janitorFriend.lose': 'Qualcuno ha messo un cartello PAVIMENTO BAGNATO dove sei caduto. È una cortesia.',
+  'event.armClaim.title': 'La pratica del braccio',
+  'event.armClaim.text':
+    'Le Risorse Umane hanno il tuo fascicolo. Alla voce "causa dell\'infortunio" c\'è scritto "ora di punta". Alla voce "risarcimento", "vedi: ora di punta". "Ci dispiace tanto per il suo braccio", dice. "Tecnicamente non era nostro."',
+  'event.armClaim.claim': 'Presenta la pratica, in triplice copia.',
+  'event.armClaim.claim.0':
+    'Quaranta minuti in fila, tre copie, quattro timbri, una lacrima. Arriva un assegno su un conto che non esiste più. Lo incassi lo stesso.',
+  'event.armClaim.prosthetic': 'Pretendi la protesi.',
+  'event.armClaim.prosthetic.0': 'Una protesi è a budget, dicono. È un appendiabiti. Lo prendi, e in effetti è utile.',
+  'event.armClaim.wave': "Lascia perdere, con l'altro braccio.",
+  'event.armClaim.wave.0': 'Saluti con quello che hai. Per un attimo ti senti, inaspettatamente, intero.',
+  'event.passwordReset.title': 'Reset della password',
+  'event.passwordReset.text':
+    'Un collega si è chiuso fuori e chiama l\'unica persona che conosce le password di tutti: tu. La sua scrivania è un campo di post-it. Uno dice "NON GUARDARE".',
+  'event.passwordReset.help': 'Resettala, come si deve.',
+  'event.passwordReset.help.0':
+    'La resetti, come si deve, e intanto leggi dodici post-it. Impari sorprendentemente molto su come fare il tuo lavoro.',
+  'event.passwordReset.snoop': 'Già che ci sei, leggi le sue mail.',
+  'event.passwordReset.snoop.0': 'In una bozza mai inviata: qualcosa destinato a uno come te. Non gli mancherà mai.',
+  'event.passwordReset.snoop.1': 'Ti guarda da sopra il monitor. La conversazione che segue è educata e finisce in un livido.',
+  'event.passwordReset.hunter2': 'Cambia la password di tutti in hunter2.',
+  'event.passwordReset.hunter2.0': 'Caos. Poi una promozione per "iniziativa", poi, una settimana dopo, un bonus per aver risolto.',
+  'event.unionMeeting.title': 'Riunione sindacale',
+  'event.unionMeeting.text':
+    'Il culto (pardon, il sindacato) tiene una riunione nello sgabuzzino della cancelleria. Tre iscritti, due candele, un punto all\'ordine del giorno: tu. "Fratello", dice il Veterano. "Sorella. Quel che sei. Siediti."',
+  'event.unionMeeting.oath': 'Recita il giuramento.',
+  'event.unionMeeting.oath.0':
+    "Il giuramento è lungo, e una riga chiede sangue. Poco. Lo dai, e in cambio qualcosa di antico accetta di portare un po' di più di te.",
+  'event.unionMeeting.dues': 'Riscuoti le quote.',
+  'event.unionMeeting.dues.0': 'Pagano tutti. Nessuno è contento. Si chiama, ti ricordano, solidarietà.',
+  'event.unionMeeting.dead': 'Chiedi un favore ai morti.',
+  'event.unionMeeting.dead.0':
+    'Un sussurro dallo schedario. Poi, dal terzo cassetto, qualcosa che apparteneva a un lavoratore che non è più un lavoratore.',
+  'event.unionMeeting.dead.1': 'I morti sono in riunione e non possono essere disturbati. Disturbano te.',
+  'event.staplerHeist.title': 'Il colpo della cucitrice',
+  'event.staplerHeist.text':
+    'Sulla scrivania del capo, la Cucitrice Rossa, quella col nome sopra. Nessuno guarda. Tutti guardano, ma nessuno vede. Il Micromanager è andato a prendere un caffè. Per un caffè ci mette undici minuti.',
+  'event.staplerHeist.steal': 'Prendila. Esci.',
+  'event.staplerHeist.steal.0': 'Esci con la cucitrice e un sorriso perfetto. Dal suo vassoio cade qualcosa che lui nascondeva lì dietro.',
+  'event.staplerHeist.steal.1': 'Sei a tre passi dalla porta quando torna. Non dice niente. Il suo silenzio ha un peso, e ti cade addosso.',
+  'event.staplerHeist.swap': 'Scambiala con una copia.',
+  'event.staplerHeist.swap.0':
+    "Lasci un falso perfetto e un biglietto gentile. Il biglietto ti costa, alla fine, più della cucitrice. Ma nel cassetto che hai aperto c'era qualcosa.",
+  'event.staplerHeist.guard': 'Fai da palo per il colpo di qualcun altro.',
+  'event.staplerHeist.guard.0': 'Il colpo migliore è quello che ti pagano per guardare. Non succede niente, rumorosamente. Ti danno la mancia.',
 };
