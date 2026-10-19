@@ -1605,6 +1605,29 @@ ${shadow}
 <path d="M64 130C30 130 14 146 10 170" fill="none" stroke="#120e18" stroke-width="7" stroke-linecap="round"/><path d="M64 130C30 130 14 146 10 170" fill="none" stroke="#ff3b3b" stroke-width="3.5" stroke-linecap="round"/>
 <circle cx="150" cy="176" r="13" fill="#d8f040" ${OUT}/><path d="M139 172c6 4 16 4 22 0M141 181c6-3 14-3 20 0" stroke="#fff" stroke-width="2.5" fill="none" opacity=".8"/>`;
 
+/** The Barbecue Dad: a big smiling man in a "Kiss the Cook" apron and sunglasses, tongs in one hand and a beer in the other, behind a kettle grill with the lid up, smoke and sparks rising. */
+const grillDad = `
+<defs>${rg('gd-s', '#ffc8a0', '#c8785a')}${rg('gd-a', '#ffffff', '#c8d0e0')}${rg('gd-k', '#ff8a5a', '#c8281a')}${rg('gd-f', '#ffd900', '#f63a1e')}</defs>
+${shadow}
+<g class="limb" fill="#f6f0e4" opacity=".9" ${OUT}><circle cx="150" cy="30" r="9"/><circle cx="164" cy="14" r="7"/><circle cx="142" cy="10" r="5"/></g>
+<path d="M62 176l-2 12h28l2-12zM112 176l2 12h28l-2-12z" fill="#3a3450" ${OUT}/>
+<path d="M70 120h60l2 58H68z" fill="#4a6aa8" ${OUT}/>
+<path d="M62 84h76l8 56H54z" fill="url(#gd-a)" ${OUT}/>
+<path d="M68 84l-6 56M80 84l-4 56M92 84l-2 56M108 84l2 56M120 84l4 56M132 84l6 56" stroke="#ff3b3b" stroke-width="5"/>
+<rect x="70" y="96" width="60" height="26" rx="3" fill="#fff" ${OUT}/><path d="M76 104h48M76 113h30" stroke="#120e18" stroke-width="4" stroke-linecap="round"/>
+<g class="limb"><path d="M56 90l-24 34 16 10 20-26z" fill="url(#gd-s)" ${OUT}/><path d="M32 126L22 96M32 126l-10-4" stroke="#8a94a8" stroke-width="5" stroke-linecap="round"/><path d="M22 96l-6-8M22 96l6-8" stroke="#8a94a8" stroke-width="4" stroke-linecap="round"/></g>
+<g class="limb"><path d="M144 90l22 30-14 12-22-22z" fill="url(#gd-s)" ${OUT}/><rect x="160" y="108" width="20" height="30" rx="3" fill="#ffd900" ${OUT}/><path d="M160 116h20" stroke="#120e18" stroke-width="3"/><rect x="164" y="102" width="12" height="6" fill="#c8c0d8" ${OUT}/></g>
+<path d="M30 168c0-24 24-36 70-36s70 12 70 36z" fill="url(#gd-k)" ${OUT}/><path d="M46 156c8-12 24-18 44-20" stroke="#fff" stroke-width="5" stroke-linecap="round" fill="none" opacity=".5"/><rect x="92" y="126" width="16" height="8" rx="3" fill="#120e18" ${OUT}/>
+<ellipse cx="100" cy="168" rx="72" ry="10" fill="#8a94a8" ${OUT}/>
+<path d="M60 168l-6 20M100 168v22M140 168l6 20" stroke="#120e18" stroke-width="5" stroke-linecap="round"/>
+<g class="eye"><path d="M62 158c4-10 8-14 14-8-2 8-8 12-14 8zM104 160c4-12 12-14 16-6-2 8-10 12-16 6zM136 160c2-8 8-10 12-4-2 8-8 10-12 4z" fill="url(#gd-f)"/></g>
+<circle cx="100" cy="58" r="34" fill="url(#gd-s)" ${OUT}/>
+<path d="M76 40c0-16 48-16 48 0-10-6-38-6-48 0z" fill="#4a3018" ${OUT}/>
+<g ${OUT}><rect x="70" y="50" width="26" height="14" rx="5" fill="#120e18"/><rect x="104" y="50" width="26" height="14" rx="5" fill="#120e18"/><path d="M96 56h8"/></g>
+<path d="M74 54h14M108 54h14" stroke="#fff" stroke-width="3" stroke-linecap="round" opacity=".6"/>
+<path d="M76 76c6-6 14-4 24-4 10 0 18-2 24 4-2 12-12 18-24 18s-22-6-24-18z" fill="#4a3018" ${OUT}/>
+<path d="M84 80c10 8 22 8 32 0" fill="#fff" stroke="#120e18" stroke-width="3" stroke-linecap="round"/>`;
+
 /** The dog once a squirrel has gone by: eyes fixed on a thought bubble with the squirrel in it, tongue right out. */
 const offLeashDogDistracted = `${offLeashDog}
 <g ${OUT}><circle cx="172" cy="52" r="5" fill="#fff"/><circle cx="160" cy="68" r="3" fill="#fff"/><ellipse cx="164" cy="26" rx="30" ry="24" fill="#fff"/></g>
@@ -1752,6 +1775,7 @@ export const CREATURES: Record<string, string> = {
   selfCheckout,
   offLeashDog,
   offLeashDogDistracted,
+  grillDad,
   theCouch,
   brunchInfluencer,
   leafBlowerNeighbour,

@@ -23,6 +23,9 @@ const GET_COFFEE = 26;
 /** Seconds the Punch Clock's badge swipe takes to land: a refusal or two (it never reads the first) and a few tries at the right speed fit in it. */
 const BADGE_SWIPE = 16;
 
+/** Seconds the Barbecue Dad's burgers take to land: a few of them (two sides each, staggered) and a mistake or two fit in it. */
+const FLIP_BURGERS = 26;
+
 /** Seconds the Self-Checkout's unexpected item takes to land: a basket of groceries, a couple of lifts and the assistance's wait fit in it with a little to spare. */
 const CHECKOUT = 26;
 
@@ -947,6 +950,24 @@ const defs: EnemyDef[] = [
     start: [{ id: 'leafBlower' }],
   },
   {
+    // Touch his grill and it bites; before his big move lands you flip his burgers for him.
+    id: 'grillDad',
+    act: 4,
+    tier: 'normal',
+    hp: 150,
+    block: 15,
+    art: 'grillDad',
+    note: 'grill',
+    main: atk('tongs', 6, 6),
+    every: 2,
+    specials: [
+      { id: 'lighterFluid', intent: 'debuff', windup: 5, status: [gainStrength, { id: 'burn', v: 2, target: 'hero' }] },
+      { id: 'flipTheBurgers', intent: 'charge', windup: FLIP_BURGERS, dmg: 18, task: 'grill' },
+      { id: 'coldOne', intent: 'heal', windup: 6, heal: 12, status: [gainStrength] },
+    ],
+    start: [{ id: 'thorns', v: 1 }],
+  },
+  {
     // Skin like a block of marble: the small hits do nothing, and his sets come in rapid fire.
     id: 'gymBro',
     act: 4,
@@ -1037,6 +1058,7 @@ export const DIFFICULTY = [
   'offLeashDog',
   'selfCheckout',
   'gymBro',
+  'grillDad',
   'theCouch',
 ];
 

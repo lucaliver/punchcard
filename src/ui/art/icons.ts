@@ -1899,6 +1899,16 @@ export const ICONS: Record<string, { el: Element; svg: string; wide?: boolean }>
     el: 'nature',
     svg: `<path d="M2 22h24l8-4v28l-8-4H2z"/><rect x="34" y="16" width="26" height="30" rx="7"/><path d="M40 16v-8h14v8" fill="none" stroke="currentColor" stroke-width="5" stroke-linejoin="round"/><path fill="#16121f" opacity=".4" d="M42 24h10v4H42z"/><path d="M4 52h22M10 58h26" fill="none" stroke="currentColor" stroke-width="4" stroke-linecap="round"/>`,
   },
+  // A burger patty with its grill marks (tinted by how cooked it is).
+  patty: {
+    el: 'fire',
+    svg: `<ellipse cx="32" cy="34" rx="28" ry="22"/><path fill="#16121f" d="M10 26l7-5 24 26-7 5zM26 18l7-5 22 26-7 5zM6 40l6-4 14 18-6 4z"/>`,
+  },
+  // The grill: a grate over the coals.
+  grill: {
+    el: 'fire',
+    svg: `<path d="M4 14h56v6H4z"/><path d="M10 20h4v22h-4zM22 20h4v22h-4zM38 20h4v22h-4zM50 20h4v22h-4z" opacity=".0"/><path d="M8 26h48v5H8zM8 36h48v5H8z"/><path d="M16 46c2 4 2 6 0 10 6-2 8-6 6-12 4 2 6 6 4 12 6-4 8-10 6-16 4 4 6 10 4 16 6-3 8-9 6-14 3 3 4 7 2 12H16z"/>`,
+  },
   // A phone held up to take a picture.
   selfie: {
     el: 'holy',

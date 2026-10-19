@@ -5,6 +5,7 @@ import { COFFEE_SERVICE } from '../src/data/coffee';
 import { CoffeeTask } from '../src/game/coffee';
 import { BadgeSwipe } from '../src/game/badge';
 import { CheckoutLane } from '../src/game/checkout';
+import { GrillLine } from '../src/game/grill';
 import { MatchThree } from '../src/game/match3';
 import { ShellGame } from '../src/game/shells';
 import { SushiOrder } from '../src/game/sushi';
@@ -115,6 +116,13 @@ export function botDecide(c: Combat, rnd: () => number, opts: BotOpts): void {
   if (c.chore instanceof CheckoutLane) {
     if (c.chore.phase === 'scan') c.checkout({ kind: 'scan', item: 0 });
     else if (c.chore.phase === 'unexpected') c.checkout({ kind: 'lift' });
+    return;
+  }
+  // The barbecue: tap whichever patty is ready (a person's eye is on all of them), cards are out of reach meanwhile.
+  if (c.chore instanceof GrillLine) {
+    const line = c.chore;
+    const slot = line.slots.findIndex((p) => p && line.stateOf(p) === 'ready');
+    if (slot >= 0) c.grill(slot);
     return;
   }
   // The coffee chore: one right move per decision (a person takes a moment for each), cards are out of reach meanwhile.

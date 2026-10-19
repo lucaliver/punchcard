@@ -9,6 +9,7 @@ import { BadgeSwipe, type BadgeResult } from './badge';
 import { type CheckoutAction, CheckoutLane, type CheckoutResult } from './checkout';
 import { CHORES, type Chore } from './chore';
 import { CoffeeTask, type CoffeeAction, type CoffeeResult } from './coffee';
+import { GrillLine, type GrillResult } from './grill';
 import { MatchThree, type MoveResult } from './match3';
 import { MINIGAMES, type Minigame } from './minigame';
 import { ShellGame, type ShellResult } from './shells';
@@ -2489,6 +2490,18 @@ export class Combat {
     if (r === 'wrong') {
       this.fine(lane);
       this.loseHp(CONFIG.checkout.wrongHp, 'chore');
+    }
+    return r;
+  }
+
+  /** The hero taps the patty in this place of the grill; a raw or burnt one is fined and costs a little blood. Returns null when there is no grill to tend. */
+  grill(slot: number): GrillResult | null {
+    const line = this.chore;
+    if (!(line instanceof GrillLine) || this.result || this.begging) return null;
+    const r = line.flip(slot);
+    if (r === 'raw' || r === 'burnt') {
+      this.fine(line);
+      this.loseHp(CONFIG.grill.wrongHp, 'chore');
     }
     return r;
   }

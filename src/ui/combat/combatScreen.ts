@@ -26,6 +26,7 @@ import { createCardLayer } from './cardLayer';
 import { bindCombatFx } from './combatFx';
 import { createBadgeWindow } from './badgeWindow';
 import { createCheckoutWindow } from './checkoutWindow';
+import { createGrillWindow } from './grillWindow';
 import { createTaskWindow } from './coffeeWindow';
 import { createShellWindow } from './shellWindow';
 import { createMatch3Window } from './match3Window';
@@ -99,6 +100,7 @@ export function combatScreen(run: RunState, combat: Combat, cb: CombatCallbacks)
   const shellWindow = createShellWindow(v);
   const badgeWindow = createBadgeWindow(v);
   const checkoutWindow = createCheckoutWindow(v);
+  const grillWindow = createGrillWindow(v);
   const sushiSlip = createSushiSlip(v);
   const match3Window = createMatch3Window(v);
 
@@ -616,6 +618,7 @@ export function combatScreen(run: RunState, combat: Combat, cb: CombatCallbacks)
     shellWindow.render();
     badgeWindow.render();
     checkoutWindow.render();
+    grillWindow.render();
     sushiSlip.render();
     match3Window.render();
     cards.render();

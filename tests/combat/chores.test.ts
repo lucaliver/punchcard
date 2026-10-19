@@ -7,7 +7,7 @@ import { Rng } from '../../src/core/rng';
 import { CONFIG } from '../../src/data/config';
 import { BOARD_BLOCK, ENEMIES } from '../../src/data/enemies';
 import { CARDS } from '../../src/data/cards';
-import { setup, run, coffeeOf, shellsOf, sushiOf, badgeOf, checkoutOf } from './helpers';
+import { setup, run, coffeeOf, shellsOf, sushiOf, badgeOf, checkoutOf, grillOf } from './helpers';
 
 const COFFEE_MOVE = ENEMIES.slavesCeo.specials.find((m) => m.task === 'coffee')!;
 
@@ -673,5 +673,128 @@ describe("the Self-Checkout's till", () => {
     expect(d.hero.hp).toBeLessThan(80);
     expect(d.chore).toBeNull();
     expect(d.checkout({ kind: 'lift' })).toBeNull();
+  });
+});
+
+describe("the Barbecue Dad's grill", () => {
+  const flipMove = ENEMIES.grillDad.specials.find((m) => m.task === 'grill')!;
+  /** The burgers move is up first, then the dad idles for good. */
+  const grillFight = (move = flipMove, seed = 42): Combat => {
+    const c = setup({
+      enemy: { ...ENEMIES.grillDad, start: [], main: { id: 'wait', intent: 'idle', windup: 9999 }, specials: [move], every: 1 },
+      hp: 80,
+      maxHp: 80,
+      seed,
+    });
+    c.skipEnemyMove();
+    return c;
+  };
+  /** Taps whatever is ready, like a patient cook, until the plate is full. */
+  const cookEverything = (c: Combat): void => {
+    const line = grillOf(c);
+    for (let i = 0; i < 2000 && line.phase !== 'done'; i++) {
+      const slot = line.slots.findIndex((p) => p && line.stateOf(p) === 'ready');
+      if (slot >= 0) c.grill(slot);
+      run(c, 0.05);
+    }
+  };
+
+  it('a window covers the belt and the sleeve; the grill holds a few burgers and the dad says what he wants', () => {
+    const c = grillFight();
+    const said: string[] = [];
+    c.events.on((e) => {
+      if (e.type === 'speech') said.push(e.key);
+    });
+    run(c, CONFIG.introTime + 0.1);
+    const line = grillOf(c);
+    expect(line.slots.filter(Boolean)).toHaveLength(CONFIG.grill.slots);
+    expect(c.isCovered(c.belt[0].card.uid)).toBe(true);
+    expect(said).toEqual(['enemy.grillDad.order']);
+  });
+
+  it('a side is raw, then ready for a short window, then burnt', () => {
+    const c = grillFight();
+    run(c, CONFIG.introTime + 0.1);
+    const line = grillOf(c);
+    const patty = line.slots[0]!;
+    patty.t = 0;
+    expect(line.stateOf(patty)).toBe('raw');
+    patty.t = patty.cook + 0.01;
+    expect(line.stateOf(patty)).toBe('ready');
+    patty.t = patty.cook + CONFIG.grill.window + 0.01;
+    expect(line.stateOf(patty)).toBe('burnt');
+  });
+
+  it('a ready side is flipped, the second one served; a raw one is a mistake that costs seconds and blood', () => {
+    const c = grillFight({ ...flipMove, windup: 999 });
+    run(c, CONFIG.introTime + 0.1);
+    const line = grillOf(c);
+    const patty = line.slots[0]!;
+    patty.t = 0;
+    const [hp, timer] = [c.hero.hp, c.enemy.timer];
+    expect(c.grill(0)).toBe('raw');
+    expect(c.hero.hp).toBe(hp - CONFIG.grill.wrongHp);
+    expect(c.enemy.timer).toBeCloseTo(timer + CONFIG.grill.penalty, 5);
+    patty.t = patty.cook + 0.1;
+    expect(c.grill(0)).toBe('flip');
+    expect(patty.side).toBe(1);
+    expect(patty.done).toEqual([true, false]);
+    expect(line.stateOf(patty)).toBe('raw');
+    patty.t = patty.cook + 0.1;
+    expect(c.grill(0)).toBe('serve');
+    expect(line.served).toBe(1);
+  });
+
+  it('a burnt patty goes in the bin and a fresh one takes its place, at a price', () => {
+    const c = grillFight({ ...flipMove, windup: 999 });
+    run(c, CONFIG.introTime + 0.1);
+    const line = grillOf(c);
+    const patty = line.slots[1]!;
+    patty.t = patty.cook + CONFIG.grill.window + 1;
+    const hp = c.hero.hp;
+    expect(c.grill(1)).toBe('burnt');
+    expect(c.hero.hp).toBe(hp - CONFIG.grill.wrongHp);
+    expect(line.slots[1]).not.toBe(patty);
+    expect(line.stateOf(line.slots[1]!)).toBe('raw');
+    expect(line.served).toBe(0);
+  });
+
+  it('the grill never holds more burgers than are left to serve, and an empty slot ignores a tap', () => {
+    const c = grillFight({ ...flipMove, windup: 999 });
+    run(c, CONFIG.introTime + 0.1);
+    const line = grillOf(c);
+    for (let n = 0; n < CONFIG.grill.patties - 1; n++) {
+      const patty = line.slots.find(Boolean)!;
+      const slot = line.slots.indexOf(patty);
+      patty.done = [true, false];
+      patty.side = 1;
+      patty.t = patty.cook + 0.1;
+      expect(c.grill(slot)).toBe('serve');
+      expect(line.slots.filter(Boolean).length).toBeLessThanOrEqual(CONFIG.grill.patties - line.served);
+    }
+    const empty = line.slots.findIndex((p) => !p);
+    expect(empty).toBeGreaterThanOrEqual(0);
+    expect(c.grill(empty)).toBe('ignored');
+  });
+
+  it('serving them all in time cancels the move and stuns the dad', () => {
+    const c = grillFight();
+    run(c, CONFIG.introTime + 0.1);
+    const line = grillOf(c);
+    cookEverything(c);
+    expect(line.served).toBe(CONFIG.grill.patties);
+    expect(c.grill(0)).toBe('ignored');
+    run(c, CONFIG.grill.doneHold + 0.1);
+    expect(c.chore).toBeNull();
+    expect(c.has('enemy', 'stun')).toBe(true);
+    expect(c.hero.hp).toBe(80 - line.errors * CONFIG.grill.wrongHp);
+  });
+
+  it('a move that is left to land hurts, and the grill goes with it', () => {
+    const c = grillFight();
+    run(c, CONFIG.introTime + flipMove.windup + 0.1);
+    expect(c.hero.hp).toBeLessThan(80);
+    expect(c.chore).toBeNull();
+    expect(c.grill(0)).toBeNull();
   });
 });

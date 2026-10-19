@@ -753,6 +753,108 @@
   to { margin-top: -28px; opacity: 0; }
 }
 
+/* The Barbecue Dad's grill: three patties on a grate, each with a gauge (raw, ready, burnt) a marker runs along and its two sides as two squares, and the plate they are served onto */
+.gr-stage {
+  flex-direction: column;
+  align-items: stretch;
+  justify-content: space-between;
+  gap: 6px;
+}
+.gr-alert {
+  flex: none;
+  padding: 4px 8px;
+  font-family: var(--font-ui);
+  font-size: 16px;
+  line-height: 1.1;
+  text-align: center;
+  color: var(--mint);
+  background: var(--k);
+  border: var(--line) solid var(--mint);
+}
+.gr-alert[data-mood='ready'] { color: var(--y); border-color: var(--y); }
+.gr-alert[data-mood='burnt'] { color: var(--paper); background: var(--red); border-color: var(--paper); animation: ck-alarm 0.8s step-end infinite; }
+.gr-grate {
+  flex: 1;
+  min-height: 0;
+  display: flex;
+  align-items: stretch;
+  justify-content: center;
+  gap: 6px;
+  padding: 6px;
+  /* the coals under the bars */
+  background-color: var(--k);
+  background-image: repeating-linear-gradient(90deg, var(--muted) 0 3px, transparent 3px 14px), linear-gradient(to top, var(--rust), var(--k) 70%);
+  border: var(--line) solid var(--k);
+}
+.gr-slot {
+  position: relative;
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: space-between;
+  gap: 4px;
+  padding: 4px;
+  color: var(--k);
+  background: var(--paper-a72);
+  border: var(--line) solid var(--k);
+  box-shadow: 3px 3px 0 var(--shadow);
+}
+.gr-slot:active { translate: 2px 2px; box-shadow: 1px 1px 0 var(--shadow); }
+.gr-slot.empty { visibility: hidden; }
+.gr-patty { position: relative; width: 100%; max-width: 62px; aspect-ratio: 1; }
+.gr-patty .pico { width: 100%; height: 100%; color: var(--p); --ink2: var(--k); }
+.gr-slot[data-state='ready'] .gr-patty .pico { color: var(--rust); animation: gr-ready 0.4s steps(2) infinite; }
+.gr-slot[data-state='burnt'] .gr-patty .pico { color: var(--k); }
+.gr-slot[data-state='ready'] { border-color: var(--y); box-shadow: 0 0 0 var(--line) var(--y), 3px 3px 0 var(--shadow); }
+.gr-slot[data-state='burnt'] { border-color: var(--red); }
+@keyframes gr-ready {
+  50% { translate: 0 -3px; }
+}
+/* smoke over a burnt patty */
+.gr-smoke { position: absolute; left: 30%; top: -4px; width: 10px; height: 10px; background: var(--paper); border: var(--line) solid var(--k); opacity: 0; }
+.gr-slot[data-state='burnt'] .gr-smoke { opacity: 1; animation: gr-smoke 0.9s steps(5) infinite; }
+@keyframes gr-smoke {
+  to { translate: 8px -22px; opacity: 0; }
+}
+.gr-sides { display: flex; gap: 4px; }
+.gr-sides i { width: 14px; height: 10px; background: var(--paper2); border: var(--line) solid var(--k); }
+.gr-sides i.on { border-color: var(--y); background: var(--y); }
+.gr-sides i.done { background: var(--rust); border-color: var(--k); }
+/* the gauge: raw (`--raw`), then the ready window (`--rdy`), then the char; the marker at `--at` */
+.gr-gauge {
+  position: relative;
+  width: 100%;
+  height: 10px;
+  background: linear-gradient(90deg, var(--ice) 0 var(--raw), var(--mint) var(--raw) calc(var(--raw) + var(--rdy)), var(--k) calc(var(--raw) + var(--rdy)) 100%);
+  border: var(--line) solid var(--k);
+}
+.gr-mark { position: absolute; top: -4px; bottom: -4px; left: var(--at); width: 4px; margin-left: -2px; background: var(--p); border: 1px solid var(--k); }
+.gr-slot.turn { animation: gr-turn 0.25s steps(3); }
+.gr-slot.drop { animation: gr-drop 0.25s steps(3); }
+@keyframes gr-turn {
+  50% { scale: 1 0.1; }
+}
+@keyframes gr-drop {
+  0% { translate: 0 -14px; opacity: 0; }
+}
+.gr-plate {
+  flex: none;
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 34px;
+  padding: 12px 6px 2px;
+  border: var(--line) dashed var(--muted);
+}
+.gr-plate small { position: absolute; left: 6px; top: 1px; font-family: var(--font-ui); font-size: 12px; text-transform: uppercase; opacity: 0.7; }
+.gr-served { display: flex; gap: 4px; }
+.gr-served.plop { animation: gr-drop 0.25s steps(3); }
+.gr-done { width: 22px; height: 22px; }
+.gr-done .pico { width: 100%; height: 100%; color: var(--rust); --ink2: var(--k); }
+
 /* The Self-Checkout's till: the machine's voice over a basket of groceries to scan, a wait bar for the assistance, and the bagging area they land in */
 .ck-stage {
   flex-direction: column;

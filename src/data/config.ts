@@ -218,6 +218,23 @@ export const CONFIG = {
     calm: 3,
   },
   /**
+   * The Barbecue Dad's chore (`MoveDef.task` = 'grill', `game/grill.ts`): `patties` burgers to serve off a grill that holds `slots` of them at once. A side takes `cook` ([min, max] s) to be ready, stays ready
+   * `window` s and then burns; a ready side is flipped by a tap and the second one served; a tap on a raw or burnt one is a mistake (a burnt one is thrown away and a fresh patty takes its place). The ones put on
+   * together start `stagger` s apart. A mistake takes `penalty` s off the move's countdown (`penaltyMax` s in all) and costs `wrongHp` HP; `doneHold` s the plate is shown; done in time, the dad is stunned `calm` s.
+   */
+  grill: {
+    patties: 4,
+    slots: 3,
+    cook: [2.4, 3.4],
+    window: 1.6,
+    stagger: 1.1,
+    wrongHp: 2,
+    doneHold: 1.4,
+    penalty: 1.5,
+    penaltyMax: 6,
+    calm: 3,
+  },
+  /**
    * The Sushi Chef's chore (`MoveDef.task` = 'sushi', `game/sushi.ts`): `slips` orders of `length` pieces (a dish on a coloured plate) each, eaten off the belt in the order of their slip,
    * while the belt serves nothing but sushi and runs from `beltFrom` to `beltTo` times its speed as the pieces go. The chance a plate dealt is a random one instead of one the slips still want
    * starts at `decoy` and grows by `decoyRamp` for every piece eaten (up to `decoyMax`); `fugu` of those random ones are the trap, which hurts when eaten. A wrong plate, or a piece asked for

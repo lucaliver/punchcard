@@ -3,6 +3,7 @@ import { Combat, type CombatSetup } from '../../src/game/combat';
 import { CoffeeTask } from '../../src/game/coffee';
 import { BadgeSwipe } from '../../src/game/badge';
 import { CheckoutLane } from '../../src/game/checkout';
+import { GrillLine } from '../../src/game/grill';
 import { ShellGame } from '../../src/game/shells';
 import { MatchThree } from '../../src/game/match3';
 import { SushiOrder } from '../../src/game/sushi';
@@ -28,6 +29,11 @@ export const badgeOf = (c: Combat): BadgeSwipe => {
 export const checkoutOf = (c: Combat): CheckoutLane => {
   expect(c.chore).toBeInstanceOf(CheckoutLane);
   return c.chore as CheckoutLane;
+};
+
+export const grillOf = (c: Combat): GrillLine => {
+  expect(c.chore).toBeInstanceOf(GrillLine);
+  return c.chore as GrillLine;
 };
 
 export const sushiOf = (c: Combat): SushiOrder => {
