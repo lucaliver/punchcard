@@ -3,7 +3,7 @@
  * `Record<EnKey, string>` makes a missing or extra key a type error.
  */
 import type { EnKey } from './en';
-import { eventsEs } from './events/es';
+import { storyEs } from './story/es';
 
 const es: Record<EnKey, string> = {
   // ---------------------------------------------------------------- app
@@ -2333,7 +2333,7 @@ const es: Record<EnKey, string> = {
   'card.synergy.desc': 'Cada vez que juegas una carta de distinto tipo que la anterior, haces {0} de [damage].',
   'status.synergy': 'Sinergia',
   'status.synergy.d': 'Cada vez que juegas una carta de distinto tipo que la anterior, haces {v} de daño.',
-  ...eventsEs,
+  ...storyEs,
 };
 
 export default es;

@@ -11,3 +11,9 @@ The game was already polished in look and sound, but poor in three places: **nar
 - 20 scenes in four languages. A story that runs through a whole day: the Night Janitor (kind in the morning, a key in the afternoon, the truth at night) and the New Hire's favour.
 - New pixel art: the Water Cooler sprite and a map icon.
 - The bot plays events; tests for the dealing, the rules and the texts.
+
+## Step 2: the Intercom and the acts' taglines
+- **The Intercom**: the building's voice over the map, a ceiling speaker and a typed line (`data/intercom.ts`, `intercom.<id>`). 35 lines in four languages: cheery in the morning, passive-aggressive in the afternoon, wrong at night, the office intruding on the weekend, plus lines that answer what the run is going through (just clocked in, low HP, full HP, the boss next door, after an inspection, after the Water Cooler, after a break, a fat pay packet). The same room always reads the same line; a tap on the speaker asks for another.
+- Every shift now has a tagline under its name in its intro (*Welcome to the family.* / *Lunch has been cancelled for synergy.* / *Overtime is voluntary. Volunteer.*), not just the weekend.
+- The typed-line effect is a shared component (`ui/components/typewriter.ts`).
+- Narrative texts moved to `i18n/story/`.

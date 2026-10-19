@@ -67,7 +67,7 @@ Deploy: a push to `master` publishes to GitHub Pages (`.github/workflows/pages.y
 ```text
 src/
   core/        rng (seeded), emitter, i18n (typed keys), save (safe localStorage), util
-  i18n/        en.ts (every player-facing string, the source), it.ts / es.ts / zh.ts (`Record<EnKey, string>`, same placeholders); events/<lang>.ts hold the Water Cooler's texts and are spread into each
+  i18n/        en.ts (every player-facing string, the source), it.ts / es.ts / zh.ts (`Record<EnKey, string>`, same placeholders); story/<lang>.ts hold the narrative texts (the Water Cooler's scenes, the Intercom) and are spread into each
   data/        config (all tuning), acts, events (the Water Cooler's scenes), statuses, heroes, enemies, perks, hexes, relics, rank (the career ladder of each hero and the modifiers it brings), coffee (the Coffee Machine's drinks and coins), wheel (the Raffle's slices), values, cards/<class>.ts
   game/        combat (engine), pressure (adaptive difficulty: the run learns how easy it went), chore (the shared shape of a chore) with coffee, shells, sushi, badge, checkout, grill and slide, minigame (the shared shape of an enemy's minigame) with match3, run (map graph, rewards, save), meta (discoveries, unlocks, records, act stamps), settings, types
   ui/          app (screens, modals), dom

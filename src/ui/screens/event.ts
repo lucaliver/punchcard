@@ -10,6 +10,7 @@ import { creature } from '../art/creatures';
 import { CARD_SHOW_MS, playCardChange, playCardGain, playRelic, playShred } from '../components/cardShow';
 import { motes } from '../components/decor';
 import { openDeck } from '../components/modals';
+import { type Typing, typeLine } from '../components/typewriter';
 import { roomScene } from '../components/room';
 import { h } from '../dom';
 import { haptic } from '../fx/fx';
@@ -77,7 +78,7 @@ export function eventScreen(run: RunState, onDone: () => void): Screen {
     }, ms);
     timers.add(id);
   };
-  let typing: number | undefined;
+  let typing: Typing | undefined;
 
   const title = def.speaker ? t(`enemy.${def.speaker}.name`) : t('event.cooler');
   const said = h('span', null);
@@ -88,30 +89,17 @@ export function eventScreen(run: RunState, onDone: () => void): Screen {
   const actions = h('div', { class: 'event-actions' });
   let hud = runHud(run);
 
-  /** Types a line into the slip, letter by letter, with the speaker's voice; a tap on the slip shows it whole. Calls `then` when it is all there. */
+  /** Types a line into the slip with the speaker's voice; a tap on the slip shows it whole. Calls `then` when it is all there. */
   const speak = (text: string, then: () => void): void => {
-    clearInterval(typing);
-    const letters = [...text];
+    typing?.cancel();
     const [lo, hi] = CONFIG.voicePitch;
     voice(text, lo + ([...def.id].reduce((sum, c) => sum + c.charCodeAt(0) * 7, 0) % (hi - lo)), TYPE_MS);
-    let n = 0;
-    const show = (upTo: number): void => {
-      said.textContent = letters.slice(0, upTo).join('');
-      unsaid.textContent = letters.slice(upTo).join('');
-    };
-    const end = (): void => {
-      clearInterval(typing);
-      typing = undefined;
+    const line = typeLine(said, unsaid, text, TYPE_MS, () => {
       slip.onclick = null;
-      show(letters.length);
       then();
-    };
-    show(0);
-    slip.onclick = end;
-    typing = window.setInterval(() => {
-      show(++n);
-      if (n >= letters.length) end();
-    }, TYPE_MS);
+    });
+    slip.onclick = line.skip;
+    typing = line;
   };
 
   const refreshHud = (): void => {
@@ -285,7 +273,7 @@ export function eventScreen(run: RunState, onDone: () => void): Screen {
   return {
     el,
     leave: () => {
-      clearInterval(typing);
+      typing?.cancel();
       for (const id of timers) clearTimeout(id);
       timers.clear();
     },

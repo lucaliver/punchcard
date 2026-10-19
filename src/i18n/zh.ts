@@ -3,7 +3,7 @@
  * `Record<EnKey, string>` makes a missing or extra key a type error.
  */
 import type { EnKey } from './en';
-import { eventsZh } from './events/zh';
+import { storyZh } from './story/zh';
 
 const zh: Record<EnKey, string> = {
   // ---------------------------------------------------------------- app
@@ -2296,7 +2296,7 @@ const zh: Record<EnKey, string> = {
   'card.synergy.desc': '每当你打出与上一张类型不同的牌，造成 {0} 点[damage]。',
   'status.synergy': '协同效应',
   'status.synergy.d': '每当你打出与上一张类型不同的牌，造成 {v} 点伤害。',
-  ...eventsZh,
+  ...storyZh,
 };
 
 export default zh;

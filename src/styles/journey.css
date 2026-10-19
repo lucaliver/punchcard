@@ -410,3 +410,30 @@
   animation: act-stamp calc(0.15s * var(--pace)) steps(2) calc(1.5s * var(--pace)) both;
 }
 .act-intro-clock .pico { font-size: 26px; color: var(--p); --ink2: var(--k); }
+
+/* The Intercom: a ceiling speaker and the line it reads, typed out, between the act's banner and the map */
+.intercom {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin: 6px 0 2px;
+  padding: 5px 10px 5px 6px;
+  text-align: left;
+  color: var(--k);
+  background: var(--paper);
+  border: var(--line) solid var(--k);
+  box-shadow: 3px 3px 0 var(--shadow);
+}
+.intercom:active { transform: translate(3px, 3px); box-shadow: none; }
+.intercom-ico { flex: none; font-size: 26px; line-height: 0; color: var(--p); --ink2: var(--y); }
+.intercom-line {
+  flex: 1;
+  margin: 0;
+  /* two lines always, so the map under it never moves while the line is typed */
+  min-height: 2.6em;
+  font-family: var(--font);
+  font-size: 12.5px;
+  font-weight: 600;
+  line-height: 1.3;
+}
+.intercom-line .unsaid { visibility: hidden; }
