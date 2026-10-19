@@ -220,6 +220,10 @@
   border-bottom: 1px dashed var(--k-a20);
 }
 .foe-moves li:last-child { border-bottom: 0; }
+/* a phase's heading, then what changes in it: one line of text (its keywords stay inside it) */
+.foe-phase { align-items: baseline; padding: 4px 0; }
+.foe-phase > b { flex: none; text-transform: uppercase; }
+.foe-phase > span { flex: 1 1 12em; min-width: 0; font-size: 16px; line-height: 1.15; }
 .foe-moves .mi { font-size: 22px; --ink2: var(--y); }
 .foe-moves .mi { color: var(--tone, var(--muted)); }
 .foe-moves .mi { flex: none; width: 26px; }

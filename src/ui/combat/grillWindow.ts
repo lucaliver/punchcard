@@ -60,7 +60,7 @@ export function createGrillWindow(v: CombatView): { render(): void } {
         if (blocked()) return;
         const res = combat.grill(i);
         if (res === 'flip') {
-          sfx('tap');
+          sfx('sizzle');
           haptic('tap');
         } else if (res === 'serve') {
           sfx('served');

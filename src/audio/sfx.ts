@@ -473,6 +473,18 @@ const SOUNDS = {
     tone(110, 0.9, { type: 'sawtooth', vol: 0.05, to: 150, attack: 0.1 });
     for (let i = 0; i < 8; i++) tone(95, 0.04, { type: 'square', vol: 0.05, delay: i * 0.1 });
   },
+  /** A burger turned over on the grill: a hiss. */
+  sizzle: () => {
+    noise(0.4, { freq: 5200, to: 3000, vol: 0.14, type: 'highpass' });
+    noise(0.25, { freq: 2400, to: 1600, q: 1.5, vol: 0.08, delay: 0.05 });
+  },
+  /** The DJ's air horn: three stabs. */
+  airhorn: () => {
+    for (const d of [0, 0.17, 0.34]) {
+      tone(480, 0.13, { type: 'sawtooth', vol: 0.09, delay: d });
+      tone(610, 0.13, { type: 'sawtooth', vol: 0.07, delay: d });
+    }
+  },
   /** A phone's camera: a fake shutter click. */
   shutter: () => {
     noise(0.03, { freq: 3500, vol: 0.22, type: 'highpass' });

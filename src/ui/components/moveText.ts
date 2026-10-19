@@ -100,7 +100,7 @@ export function movePattern(e: EnemyDef, values: MoveValues = baseValues, mark?:
   const phases = [e, ...e.phases]
     .map(
       (p, i) =>
-        `<li class="foe-phase"><b>${t('compendium.phase', { n: i + 1 })}</b> ${keywordHtml(t(`enemy.${e.id}.phase${i + 1}.d`))}</li>${moves(p)}`,
+        `<li class="foe-phase"><b>${t('compendium.phase', { n: i + 1 })}</b><span>${keywordHtml(t(`enemy.${e.id}.phase${i + 1}.d`))}</span></li>${moves(p)}`,
     )
     .join('');
   return `<ul class="foe-moves">${phases}</ul>${traits}`;

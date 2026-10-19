@@ -96,7 +96,7 @@ export function createSlideWindow(v: CombatView): { render(): void } {
       el.dataset.call = call ?? '';
       if (dance.phase === 'done' && !celebrated) {
         celebrated = true;
-        sfx('served');
+        sfx('airhorn');
         haptic('proc');
       }
       // A new call: the DJ shouts it again, louder.

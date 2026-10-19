@@ -49,3 +49,8 @@ Before: one enemy of its own (the Self-Checkout) dealt for every fight, elites a
 ## Batch 9: polish and tests
 - Monday and two elites got more HP (400, 175, 170) and Monday's third phase hits harder; the dance pad fits a 375×620 phone.
 - e2e smoke tests for the barbecue window, the dance floor, the Sunday Lunch and the Corner Shop.
+
+## Batch 10: small things
+- Handbook: a boss's phase line no longer breaks into pieces when it names a keyword (a pre-existing flex quirk that also hit the Board).
+- Sounds: a sizzle for a burger turned, an air horn when the dance floor is done.
+- Version 2.62.0.
