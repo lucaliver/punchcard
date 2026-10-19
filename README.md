@@ -65,10 +65,14 @@ mosse. Tra uno scontro e l'altro migliori il mazzo.
   carte delle altre classi, due per classe), **ristrutturazione** (una volta a run: fino a due carte diventano altre carte della
   stessa rarità, a caso o, pagando vita, a tua scelta), **lotteria aziendale** (gira la ruota: quello che esce, un potenziamento o un
   vantaggio o uno svantaggio permanente, tocca a tre carte del mazzo a tua scelta). Le **cancellerie** (stationery) sono oggetti con un effetto permanente per la run.
+- **Distributore d'acqua (eventi):** su ogni percorso di ogni atto c'è una piccola scena con un personaggio (un nemico a riposo, o il distributore stesso): una nota che si scrive da sola e due o tre scelte, ognuna con il suo prezzo e il suo premio ben visibili (vita, paga, una carta, una cancelleria, un potenziamento) oppure una scommessa. Ogni evento arriva una sola volta per run. Alcune scene sono capitoli di una storia che attraversa la giornata (il Custode Notturno, il Nuovo Assunto, lo Stagista n. 47), altre sono solo di un eroe. Le scene sentite si raccolgono nella pagina *Gossip* dell'Handbook.
 - **Ricompensa:** scegli una carta e **scambiala** con una del mazzo, oppure **salta** per un po' di vita massima. Élite e boss
   danno carte più rare.
 - **Paga:** ogni scontro vinto paga, di più se in fretta. È il punteggio della run, mostrato nella busta paga finale.
 - **Salvataggio** a ogni piano. Dalla pausa: *Main menu* (la run resta) o *Call in sick* (abbandona).
+- **Altoparlante:** sopra la mappa la voce dell'edificio legge un annuncio, che cambia tono a ogni turno (allegro al mattino, passivo-aggressivo al pomeriggio, sbagliato di notte, l'ufficio che non ti lascia in pace nel weekend) e risponde a quello che sta succedendo nella run. Un tocco chiede un altro annuncio.
+- **Condizioni d'ufficio:** una parte dei lavori ha una *giornata speciale* annunciata prima di timbrare: un giorno di favori (caffè gratis, venerdì casual…) o un giorno di guai che però paga di più (sotto organico, straordinario obbligatorio…).
+- **Epiloghi:** la fine della run dice che ne è stato dell'eroe e delle persone incontrate lungo la strada.
 - **Prima run guidata:** mappa e nemici fissi, con un tour del primo scontro. Anche la prima volta che raggiungi un atto la
   sua mappa è fissa.
 - **Scala di carriera:** ogni eroe ha una carriera a gradini, con vantaggi e doveri suoi. Ogni giornata intera vinta al tuo grado massimo ti promuove al successivo: ogni grado porta un vantaggio e un dovere, si sommano a quelli dei gradi sotto, e puoi sempre rigiocare un grado più basso. La targhetta nella selezione eroe mostra il grado e apre l'intera scala; la promozione si festeggia lì.
