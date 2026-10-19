@@ -646,4 +646,7 @@ export const storyIt: Record<keyof typeof storyEn, string> = {
   'intercom.weekend6': 'Il weekend è stato rinviato al prossimo weekend. Liberate il calendario.',
   'intercom.afterBoss1': 'Congratulazioni per il turno. Ecco il prossimo.',
   'intercom.lowHp3': 'Si prega di sanguinare sulle piastrelle, non sulla moquette.',
+  'intercom.janitorFriend1': 'Un Custode Notturno mi ha chiesto di salutare qualcuno. Non ha detto chi. Sei tu.',
+  'intercom.newHireFriend1': 'Un nuovo assunto vorrebbe ringraziare un collega anonimo. Stiamo tutti guardando te.',
+  'intercom.internFriend1': 'Lo stagista n. 47 è stato visto al quarto piano. Si prega di non ricambiare il saluto.',
 };

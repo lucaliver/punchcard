@@ -552,4 +552,7 @@ export const storyZh: Record<keyof typeof storyEn, string> = {
   'intercom.weekend6': '周末已改到下个周末。请清空日程。',
   'intercom.afterBoss1': '恭喜你完成本班。这是下一班。',
   'intercom.lowHp3': '请流血在瓷砖上，不要流在地毯上。',
+  'intercom.janitorFriend1': '夜班清洁工让我向某人问好。他没说是谁。就是你。',
+  'intercom.newHireFriend1': '一位新员工想感谢一位匿名同事。我们都在看着你。',
+  'intercom.internFriend1': '有人在四楼看到了47号实习生。请不要挥手回应。',
 };

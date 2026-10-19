@@ -640,4 +640,7 @@ export const storyEs: Record<keyof typeof storyEn, string> = {
   'intercom.weekend6': 'El fin de semana se ha reprogramado para el próximo fin de semana. Despejen su calendario.',
   'intercom.afterBoss1': 'Enhorabuena por su turno. Aquí tiene el siguiente.',
   'intercom.lowHp3': 'Por favor, sangren sobre las baldosas, no sobre la moqueta.',
+  'intercom.janitorFriend1': 'Un Conserje Nocturno me ha pedido que salude a alguien. No dijo a quién. Eres tú.',
+  'intercom.newHireFriend1': 'Un nuevo empleado quiere dar las gracias a un compañero anónimo. Todos te estamos mirando.',
+  'intercom.internFriend1': 'El becario n.º 47 ha sido visto en la cuarta planta. Por favor, no le devuelvan el saludo.',
 };

@@ -647,4 +647,7 @@ export const storyEn = {
   'intercom.weekend6': 'The weekend has been rescheduled for next weekend. Please clear your calendar.',
   'intercom.afterBoss1': 'Congratulations on your shift. Here is the next one.',
   'intercom.lowHp3': 'Please bleed on the tiles, not the carpet.',
+  'intercom.janitorFriend1': 'A Night Janitor has asked me to say hello to someone. He did not say who. It is you.',
+  'intercom.newHireFriend1': 'A new hire would like to thank an anonymous colleague. We are all looking at you.',
+  'intercom.internFriend1': 'Intern #47 has been seen on the fourth floor. Please do not wave back.',
 } satisfies Record<string, string>;

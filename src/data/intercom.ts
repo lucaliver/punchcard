@@ -1,11 +1,24 @@
 import { Rng } from '../core/rng';
+import { hasStory } from '../game/events';
 import type { RunState } from '../game/run';
 
 /**
  * The Intercom: the building's voice. A line over the map, picked from what the run is going through (a cue) or, failing that, from the act's own
  * tone (cheery in the morning, passive-aggressive after lunch, wrong at night, the office intruding on the weekend). Texts: `intercom.<id>`.
  */
-export type IntercomCue = 'start' | 'lowHp' | 'fullHp' | 'bossNext' | 'afterElite' | 'afterBoss' | 'afterEvent' | 'afterRest' | 'rich';
+export type IntercomCue =
+  | 'start'
+  | 'lowHp'
+  | 'fullHp'
+  | 'bossNext'
+  | 'afterElite'
+  | 'afterBoss'
+  | 'afterEvent'
+  | 'afterRest'
+  | 'rich'
+  | 'janitorFriend'
+  | 'newHireFriend'
+  | 'internFriend';
 
 export interface IntercomDef {
   id: string;
@@ -73,6 +86,9 @@ export const INTERCOM: IntercomDef[] = [
   { id: 'afterBoss1', cue: 'afterBoss' },
   { id: 'afterEvent1', cue: 'afterEvent' },
   { id: 'afterRest1', cue: 'afterRest' },
+  { id: 'janitorFriend1', cue: 'janitorFriend' },
+  { id: 'newHireFriend1', cue: 'newHireFriend' },
+  { id: 'internFriend1', cue: 'internFriend' },
   { id: 'rich1', cue: 'rich' },
   { id: 'rich2', cue: 'rich' },
 ];
@@ -85,6 +101,8 @@ export function cuesOf(run: RunState): Set<IntercomCue> {
   if (run.hp <= run.maxHp * LOW_HP) cues.add('lowHp');
   else if (run.hp >= run.maxHp * FULL_HP) cues.add('fullHp');
   if (run.money >= RICH_PAY) cues.add('rich');
+  // The people the run has been kind to remember it.
+  for (const story of ['janitorFriend', 'newHireFriend', 'internFriend'] as const) if (hasStory(run, story)) cues.add(story);
   if (run.cleared) {
     if (here.next.some((id) => run.nodes[id].type === 'boss')) cues.add('bossNext');
     if (here.type === 'elite') cues.add('afterElite');
