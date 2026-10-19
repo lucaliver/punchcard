@@ -56,7 +56,7 @@ export function initFx(root: HTMLElement): void {
 let palettes: Record<string, string[]> | null = null;
 function paletteOf(kind: string): string[] {
   if (!palettes) {
-    const [Y, P, B, K, red, toxic, purple, muted, shield, shieldHi, ice, blood] = [
+    const [Y, P, B, K, red, toxic, purple, muted, shield, shieldHi, ice, blood, green, rust, paper] = [
       '--y',
       '--p',
       '--b',
@@ -69,6 +69,9 @@ function paletteOf(kind: string): string[] {
       '--shield-hi',
       '--ice',
       '--blood',
+      '--green',
+      '--rust',
+      '--paper',
     ].map(cssColor);
     palettes = {
       slash: [K, P, Y],
@@ -88,6 +91,8 @@ function paletteOf(kind: string): string[] {
       ash: [K, muted, P],
       gold: [Y, P, B],
       hit: [K, Y],
+      leaves: [green, toxic, rust, Y],
+      flash: [paper, Y, P],
     };
   }
   return palettes[kind] ?? palettes.hit;

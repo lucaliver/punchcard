@@ -2424,7 +2424,7 @@ export class Combat {
     }
     const finished = chore.tick(dt);
     for (let n = chore.lapses?.() ?? 0; n > 0; n--) this.penalise(chore);
-    if (!finished) return;
+    if (!finished || this.result) return;
     // The chore is done: the move is off, and its maker is left stunned for a moment.
     this.events.emit({ type: 'task', phase: 'done' });
     this.say(`enemy.${id}.calm`);

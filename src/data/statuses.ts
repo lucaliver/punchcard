@@ -1043,6 +1043,7 @@ const defs: StatusDef[] = [
     icon: 'selfie',
     progress: cycle(POSE_EVERY),
     cue: 'shutter',
+    burst: { kind: 'flash', n: 22 },
     tick: everySecond((c, side, n) => {
       if (n % POSE_EVERY !== 0) return;
       c.cue(side, 'photoOp');
@@ -1059,6 +1060,7 @@ const defs: StatusDef[] = [
     icon: 'leafBlower',
     progress: cycle(BLOW_EVERY),
     cue: 'gust',
+    burst: { kind: 'leaves', n: 30 },
     tick: everySecond((c, side, n) => {
       if (n % BLOW_EVERY !== 0) return;
       c.cue(side, 'leafBlower');

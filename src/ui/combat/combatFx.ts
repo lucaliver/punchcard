@@ -154,8 +154,13 @@ export function bindCombatFx(v: CombatView, cards: CardLayer, onEnd: (result: 'w
         break;
       }
       case 'cue': {
-        const cue = STATUSES[e.id].cue;
-        if (cue) sfx(cue);
+        const def = STATUSES[e.id];
+        if (def.cue) sfx(def.cue);
+        // A status that goes off on a clock can throw its particles each time (the Neighbour's leaves, the Influencer's flash).
+        if (def.burst) {
+          const p = v.pointOf(e.side);
+          burst(def.burst.kind, p.x, p.y, def.burst.n);
+        }
         break;
       }
       case 'relic': {
