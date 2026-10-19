@@ -558,6 +558,24 @@ test('no glyph of a card face touches the sides of the card', async ({ page }) =
   }
 });
 
+test('a card pressed on its left edge in a deck pick is still selected, though it sinks under the mouse', async ({ page }) => {
+  await freshGame(page);
+  await page.getByRole('button', { name: /new run/i }).click();
+  await page.getByRole('button', { name: /start shift/i }).click();
+  const floor = await page.evaluate(
+    '(() => { const g = window.__game; const n = g.run.nodes.find((x) => x.type === "rest"); g.run.current = n.id; g.run.cleared = false; g.goJourney(); return n.floor; })()',
+  );
+  await page.getByRole('button', { name: new RegExp(`enter floor ${floor}`, 'i') }).click();
+  await page.getByRole('button', { name: /training/i }).click();
+  // The deck's cards are dealt in first: they must stand still.
+  await page.waitForTimeout(800);
+  const box = (await page.locator('.deck-grid .card').first().boundingBox())!;
+  await page.mouse.move(box.x + 1, box.y + box.height / 2);
+  await page.mouse.down();
+  await page.mouse.up();
+  await expect(page.locator('.deck-grid .card.sel')).toHaveCount(1);
+});
+
 test('a tap on the way into a fight skips the door', async ({ page }) => {
   await freshGame(page);
   await page.getByRole('button', { name: /new run/i }).click();
