@@ -75,13 +75,13 @@ src/
     combat/    view, hud, cardLayer, mop, crank, taskFrame (the window every chore shares), coffeeWindow, shellWindow, badgeWindow, checkoutWindow, grillWindow, slideWindow, match3Window (the Supervisor's minigame), combatFx, speech (the speech bubbles), heroMood (the portrait's face), combatScreen
     components/ cardView, cardShow, coach, modals, rank (the rank plaque, the ladder window and the promotion), debugMenu, room, moveText, heroSheet, shareSlip, decor, reviewModal, runDetail, wings (the desktop's side boards), rotateBanner (a phone held sideways)
     fx/        particles, floating text, shake, haptics
-    screens/   title, studio, heroSelect, journey, reward, rest, promotion, copyRoom, tailor, lostFound, vending, crossTraining, wheel (the Raffle), end, compendium
+    screens/   title, studio, heroSelect, journey, reward, rest, promotion, copyRoom, tailor, lostFound, vending, crossTraining, wheel (the Raffle), lunch and lottery (the weekend's own rooms), end, compendium
   feedback/    `firebase.ts`: the only file that knows Firebase (reviews, crash reports)
   analytics/   anonymous play counters: `index.ts` (what is counted and when), `goatcounter.ts` (the only file that knows the service)
   audio/       sfx (synth), music (sequencer + tracks)
   styles/      index.css imports partials in order; responsive.css stays last
 tests/         combat/ (engine tests by area), content, balance.sim (+ bot), balance.stats, e2e/
-docs/          MECHANICS.md
+docs/          MECHANICS.md, ACT4_LOG.md (what the weekend overhaul added, batch by batch)
 music.html    soundtrack player (second page of the build: /music.html)
 dev/           art.html, og.html, map-editor.html (dev server only)
 ```
@@ -100,7 +100,7 @@ dev/           art.html, og.html, map-editor.html (dev server only)
   - A card's `type` is the colour of its background: attack pink, defense blue, skill yellow, power grey, curse green (`--cat-*`, `data-type`). There are no other types: rules name a type ("every attack") and the player sees it on the card.
   - Cost, keywords and values of a copy always come from `cardCostOf`/`cardKeywordsOf`/`cardValsOf`; set `dmg: []` only for raw damage that ignores modifiers.
   - Rarities: common, rare, epic, legendary (`special` only for cards a fight generates). Basic cards of the starter decks are common with `starterOnly` (never a reward, a vending drop or a cross-training offer).
-- **Enemy** (`enemies.ts`): `EnemyDef` + a sprite in `creatures.ts` (with `onHalf`: also `<id>Angry`) + `enemy.<id>.name`, `move.<id>` per move, `enemy.<id>.half`, `enemy.<id>.note` (+ `note` icon) when it has no passive status to tell what it does; a move with a `task` also needs `enemy.<id>.order`/`.calm`. Fields are documented on the type.
+- **Enemy** (`enemies.ts`): `EnemyDef` + a sprite in `creatures.ts` (with `onHalf`: also `<id>Angry`) + `enemy.<id>.name`, `move.<id>` per move, `enemy.<id>.half`, `enemy.<id>.note` (+ `note` icon) when it has no passive status to tell what it does; a move with a `task` also needs `enemy.<id>.order`/`.calm`; a weekend job also names the place it is met in (`stage`, drawn in `art/stageArt.ts`). Fields are documented on the type.
 - **Hero** (`heroes.ts`): `HeroDef`, a card file, a sprite and its face coordinates in `FACES` (`art/heroMoods.ts`), `hero.<id>.*` strings, `ABILITY_ICON`/`PASSIVE_ICON` (`ui/combat/view.ts`), `ink`.
 - **Status** (`statuses.ts`): `StatusDef` with its required `tone` + `status.<id>` and `.d` (`{v}` = amount); `selfName`/`.self` when the hero's side reads differently.
 - **Relic** (`relics.ts`): `RelicDef` + a sprite in `art/relics.ts` + `relic.<id>.name`/`.d` (`{n}`); a non-instant trigger needs `progress` or `armed`.
