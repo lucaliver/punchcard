@@ -457,6 +457,56 @@ export const EVENT_LIST: EventDef[] = [
     ],
   },
   {
+    id: 'neighbourInvite',
+    acts: [4, 4],
+    speaker: 'leafBlowerNeighbour',
+    weight: 3,
+    choices: [
+      sure('go', { kind: 'heal', pct: 0.35 }),
+      sure('lie', { kind: 'pay', n: 60 }),
+      sure('complain', { kind: 'relic' }, { kind: 'hp', n: -6 }),
+    ],
+  },
+  {
+    id: 'laundry',
+    acts: [4, 4],
+    weight: 3,
+    choices: [sure('fold', { kind: 'maxHp', n: 4 }), sure('iron', { kind: 'upgradeRandom' }), sure('ignore', { kind: 'heal', pct: 0.2 })],
+  },
+  {
+    id: 'gymTrial',
+    acts: [4, 4],
+    speaker: 'gymBro',
+    weight: 3,
+    choices: [
+      sure('train', { kind: 'hp', n: -8 }, { kind: 'maxHp', n: 8 }),
+      sure('card', { kind: 'pay', n: 40 }),
+      sure('run', { kind: 'hp', n: -4 }, { kind: 'upgradeRandom' }),
+    ],
+  },
+  {
+    id: 'weddingInvite',
+    acts: [4, 4],
+    speaker: 'weddingDj',
+    weight: 3,
+    choices: [
+      sure('dance', { kind: 'hp', n: -6 }, { kind: 'card', rarity: 'rare' }),
+      sure('bar', { kind: 'heal', pct: 0.3 }),
+      gamble('speech', [1, { kind: 'relic' }], [1, { kind: 'hp', n: -10 }]),
+    ],
+  },
+  {
+    id: 'motherCall',
+    acts: [4, 4],
+    speaker: 'motherInLaw',
+    weight: 3,
+    choices: [
+      sure('answer', { kind: 'heal', pct: 0.4 }, { kind: 'hp', n: -3 }),
+      sure('silence', { kind: 'pay', n: 70 }),
+      sure('call', { kind: 'card', rarity: 'common' }),
+    ],
+  },
+  {
     id: 'sunday',
     acts: [4, 4],
     weight: 3,

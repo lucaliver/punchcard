@@ -37,3 +37,9 @@ The game was already polished in look and sound, but poor in three places: **nar
 - **The hand-drawn maps have an event too** (act 1's floor 8, act 2's floor 4, act 3's floor 4, the weekend's floor 4: each one against another room, so it is a choice), so a new player meets the Water Cooler on the first pass of every act, and the teaching run's first scene is always the Night Janitor's spill.
 - A follow-up chapter of a story the run began is now certain to be met (weight 1000), not just likely.
 - 12 new scenes (36 in all): Fire Drill, Secret Santa, Leftover Fish, Lunch & Learn, The Reorg, Bonus Announcement, Dog Day, Salary Talk, Elevator Pitch, Anonymous Survey, Night Delivery, The Rooftop; and a third story, Intern #47, who remembers you at three in the morning.
+
+## Step 8: Gossip, weekend scenes, a longer Intercom
+- **The handbook's Gossip page** (`meta.scenes`, validated on load): every Water Cooler scene as a line, a shape and question marks until it has been met, then its speaker's face and title; a tap reads it again. A collection to fill that sends you back for another run.
+- 5 weekend scenes (Barbecue invite, Laundry Day, the Gym Bro's free trial, a wedding's plus one, the Sunday call): 41 scenes in all.
+- The Intercom grew to 52 lines (a few more for each act, and one for when a boss has fallen).
+- The day's twist slip is `.today-slip` (it shared `.foe-traits` with the passives, so a test counting those flaked).

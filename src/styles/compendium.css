@@ -325,3 +325,5 @@
 .stamp:nth-child(even) { rotate: 3deg; }
 .stamp b { font-size: 13px; font-weight: 700; }
 .stamp span { font-size: 13px; }
+/* a scene not heard yet: its speaker is only a shape */
+.scene-line.undiscovered .riso { filter: brightness(0) opacity(0.35); }

@@ -567,4 +567,84 @@ export const storyEn = {
     'The door at the end of the corridor opens onto a quiet street, in the rain, for exactly one minute. They look at it for the whole minute. They do not go. But you do, a little, in spirit, and are rested for it.',
   'epilogue.internFriend.win': 'On the third floor, a very translucent intern files your name under Emeritus. They are good at filing.',
   'epilogue.internFriend.lose': 'On the third floor, a very translucent intern holds a door for nobody, and keeps holding it.',
+  'event.neighbourInvite.title': 'Come Over for a Barbecue',
+  'event.neighbourInvite.text':
+    'The Leaf Blower Neighbour is at the fence with a plate of something. "You should come," he says. "Everyone is coming." Behind him, a garden with seven people in it, none of whom you have seen before, all of whom wave.',
+  'event.neighbourInvite.go': 'Go. Say yes to everything.',
+  'event.neighbourInvite.go.0':
+    "You say yes to a sausage, a stranger's anecdote and a second sausage. Nobody asks what you do for a living. It is, bizarrely, heaven.",
+  'event.neighbourInvite.lie': 'Say you are busy.',
+  'event.neighbourInvite.lie.0':
+    'You say you are busy, and, for a second, it is true: you are busy being unwilling. He nods, hurt, and leaves a sausage on your wall. Money is found under it.',
+  'event.neighbourInvite.complain': 'Ask about the leaf blower.',
+  'event.neighbourInvite.complain.0':
+    'There is a long and strange silence. Then he gives you the blower. "Take it," he says. "I can no longer be that man." You are not sure what you have done.',
+  'event.laundry.title': 'Laundry Day',
+  'event.laundry.text':
+    'A pile of work clothes on the sofa, taller than it was yesterday. Somewhere in the pile is the shirt you wore to the Wedding DJ. The machine hums in the corner, with an expression of someone who is only doing their job.',
+  'event.laundry.fold': 'Fold everything, slowly.',
+  'event.laundry.fold.0': 'There is a calm in folding that no one warned you about. By the last sock you are, for a moment, a person with a drawer.',
+  'event.laundry.iron': 'Iron the good shirt. Just in case.',
+  'event.laundry.iron.0':
+    'Mondays are decided on Sunday evening, with an iron. You press every crease until it is flat and afraid. Something in your kit is, in the same spirit, sharpened.',
+  'event.laundry.ignore': 'Leave it. It will be there Monday.',
+  'event.laundry.ignore.0':
+    'You step over it and lie on the sofa, on the clean part. Under a sleeve you find a note from a past you: "Sorry about this."',
+  'event.gymTrial.title': 'Free Trial',
+  'event.gymTrial.text':
+    'The Gym Bro appears next to you on the pavement, as if he had been there for a while. "Bro," he says. "Free trial. One session. No card details." He is holding a card machine.',
+  'event.gymTrial.train': 'Do the session.',
+  'event.gymTrial.train.0':
+    'Squats, mostly. You discover muscles that have been dormant since an earlier life. Tomorrow will be a kind of reckoning. Today you are mighty.',
+  'event.gymTrial.card': 'Sign the form (read the form).',
+  'event.gymTrial.card.0':
+    'The form is a six-year contract with a cancellation clause that must be exercised in person, at dawn, at a branch that no longer exists. You catch yourself in time.',
+  'event.gymTrial.run': 'Run. In work shoes.',
+  'event.gymTrial.run.0':
+    'He is, somehow, in front of you the entire time, and not out of breath. At the corner you stop. He nods, approvingly. It is the worst moment of the day, and you are fine.',
+  'event.weddingInvite.title': 'Plus One',
+  'event.weddingInvite.text':
+    'A wedding invitation, in an envelope as thick as a brick. You are the plus one of someone you have not met, of a couple you do not know. The dress code says "festive", which is not a dress code but a threat.',
+  'event.weddingInvite.dance': 'Dance. Properly.',
+  'event.weddingInvite.dance.0':
+    'Three songs in, you are the centre of a conga line and a rumour. Your knees will remember this on Wednesday. Someone puts a mysterious envelope in your pocket.',
+  'event.weddingInvite.bar': 'Stay at the bar.',
+  'event.weddingInvite.bar.0':
+    'The bartender asks nothing and pours well. You are told the bride is crying, in a happy way, and the groom is crying in the other way. You are fine.',
+  'event.weddingInvite.speech': 'Give an unprepared toast.',
+  'event.weddingInvite.speech.0':
+    'You use the word "synergy" in a wedding. Nobody has ever been this moved. You are promoted to guest of honour and given a cake.',
+  'event.weddingInvite.speech.1':
+    'You use the word "synergy" in a wedding. A silence follows that you can sit on. The best man mouths the word "no" and, later, uses his fists to say it again.',
+  'event.motherCall.title': 'The Sunday Call',
+  'event.motherCall.text':
+    'Your phone shows MOTHER-IN-LAW. It has shown it for eleven minutes. It is the only call in history to have been ringing before it was started. You can hear a lasagna in it.',
+  'event.motherCall.answer': 'Answer. Say yes to everything.',
+  'event.motherCall.answer.0':
+    'It lasts fifty-one minutes. You agree to lunch, to a hat, to a doctor. In the end she says something that is almost kind. You feel awfully fed.',
+  'event.motherCall.silence': 'Let it ring.',
+  'event.motherCall.silence.0':
+    'It rings, patiently, for as long as it takes. It stops. Seven seconds later a text arrives: "I made too much." You will, in time, pay for the silence.',
+  'event.motherCall.call': 'Call back with an excuse.',
+  'event.motherCall.call.0':
+    'The excuse is a good one, and she hangs up before you finish it. A while later a parcel arrives, with a note: "You are too thin." Inside, something useful.',
+  'compendium.gossip': 'Gossip',
+  'compendium.gossipFound': '{n} of {total} scenes overheard',
+  'gossip.who': 'Told by {name}',
+  'gossip.cooler': 'Overheard at the water cooler',
+  'gossip.hero': 'Only for {hero}',
+  'gossip.chapter': 'A chapter of a story',
+  'intercom.morning7': 'Today is Casual Friday. It is not Friday. It is not casual.',
+  'intercom.morning8': 'Please remember to hydrate. Water is available, in theory.',
+  'intercom.morning9': 'The fridge will be cleaned on Friday. Anything labelled Friday will be cleaned too.',
+  'intercom.afternoon7': 'The suggestion box has been emptied. It was emptier than expected.',
+  'intercom.afternoon8': 'Reminder: the quiet room is for quiet. The quiet room is also full.',
+  'intercom.afternoon9': 'A kind reminder that "per my last email" is a love language.',
+  'intercom.night6': 'Please do not feed the lights.',
+  'intercom.night7': 'The cleaners have been. There was no one to clean up after. They cleaned anyway.',
+  'intercom.night8': 'Please hold. Your shift is important to us. Your shift is also the only one left.',
+  'intercom.weekend5': 'It is Sunday. It has always been Sunday. Monday is a rumour.',
+  'intercom.weekend6': 'The weekend has been rescheduled for next weekend. Please clear your calendar.',
+  'intercom.afterBoss1': 'Congratulations on your shift. Here is the next one.',
+  'intercom.lowHp3': 'Please bleed on the tiles, not the carpet.',
 } satisfies Record<string, string>;

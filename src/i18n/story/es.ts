@@ -560,4 +560,84 @@ export const storyEs: Record<keyof typeof storyEn, string> = {
     'La puerta del final del pasillo se abre a una calle tranquila, bajo la lluvia, durante exactamente un minuto. Lo miran todo el minuto. No van. Pero tú sí, un poco, en espíritu, y sales descansado.',
   'epilogue.internFriend.win': 'En la tercera planta, un becario muy translúcido archiva tu nombre bajo Emérito. Se le da bien archivar.',
   'epilogue.internFriend.lose': 'En la tercera planta, un becario muy translúcido sostiene una puerta para nadie, y sigue sosteniéndola.',
+  'event.neighbourInvite.title': 'Pásate a la barbacoa',
+  'event.neighbourInvite.text':
+    'El Vecino del Soplador está en la valla con un plato de algo. "Deberías venir", dice. "Viene todo el mundo." Detrás de él, un jardín con siete personas, ninguna que hayas visto antes, todas saludando.',
+  'event.neighbourInvite.go': 'Ve. Di que sí a todo.',
+  'event.neighbourInvite.go.0':
+    'Dices que sí a una salchicha, a la anécdota de un desconocido y a una segunda salchicha. Nadie te pregunta a qué te dedicas. Es, extrañamente, el cielo.',
+  'event.neighbourInvite.lie': 'Di que estás ocupado.',
+  'event.neighbourInvite.lie.0':
+    'Dices que estás ocupado y, por un segundo, es verdad: estás ocupado en no querer ir. Asiente, dolido, y deja una salchicha en tu muro. Debajo hay dinero.',
+  'event.neighbourInvite.complain': 'Pregunta por el soplador.',
+  'event.neighbourInvite.complain.0':
+    'Sigue un silencio largo y extraño. Luego te da el soplador. "Quédatelo", dice. "Ya no puedo ser ese hombre." No sabes qué has hecho.',
+  'event.laundry.title': 'Día de colada',
+  'event.laundry.text':
+    'Un montón de ropa de trabajo en el sofá, más alto que ayer. En algún lugar del montón está la camisa que llevabas con el DJ de bodas. La lavadora zumba en la esquina, con la expresión de quien solo hace su trabajo.',
+  'event.laundry.fold': 'Dóblalo todo, despacio.',
+  'event.laundry.fold.0': 'Hay una calma al doblar que nadie te había contado. Al último calcetín eres, por un momento, una persona con un cajón.',
+  'event.laundry.iron': 'Plancha la camisa buena. Por si acaso.',
+  'event.laundry.iron.0':
+    'Los lunes se deciden el domingo por la tarde, con una plancha. Planchas cada arruga hasta que queda plana y asustada. Algo de tu repertorio, en el mismo espíritu, se afila.',
+  'event.laundry.ignore': 'Déjalo. Estará ahí el lunes.',
+  'event.laundry.ignore.0':
+    'Lo esquivas y te tumbas en el sofá, en la parte limpia. Bajo una manga encuentras una nota de un tú del pasado: "Perdón por esto."',
+  'event.gymTrial.title': 'Prueba gratuita',
+  'event.gymTrial.text':
+    'El Gym Bro aparece a tu lado en la acera, como si llevara allí un rato. "Colega", dice. "Prueba gratuita. Una sesión. Sin datos de tarjeta." Sostiene un datáfono.',
+  'event.gymTrial.train': 'Haz la sesión.',
+  'event.gymTrial.train.0':
+    'Sentadillas, sobre todo. Descubres músculos dormidos desde una vida anterior. Mañana será un ajuste de cuentas. Hoy eres poderoso.',
+  'event.gymTrial.card': 'Firma el formulario (lee el formulario).',
+  'event.gymTrial.card.0':
+    'El formulario es un contrato de seis años con una cláusula de cancelación que debe ejercerse en persona, al amanecer, en una sucursal que ya no existe. Te frenas a tiempo.',
+  'event.gymTrial.run': 'Corre. Con zapatos de trabajo.',
+  'event.gymTrial.run.0':
+    'Él está, de algún modo, delante de ti todo el rato, y sin faltarle el aire. En la esquina paras. Asiente, aprobando. Es el peor momento del día, y estás bien.',
+  'event.weddingInvite.title': 'Acompañante',
+  'event.weddingInvite.text':
+    'Una invitación de boda, en un sobre grueso como un ladrillo. Eres el acompañante de alguien que no conoces, de una pareja que no conoces. El código de vestimenta dice "festivo", que no es un código sino una amenaza.',
+  'event.weddingInvite.dance': 'Baila. Como Dios manda.',
+  'event.weddingInvite.dance.0':
+    'Tras tres canciones eres el centro de una conga y de un rumor. Tus rodillas lo recordarán el miércoles. Alguien te mete un sobre misterioso en el bolsillo.',
+  'event.weddingInvite.bar': 'Quédate en la barra.',
+  'event.weddingInvite.bar.0':
+    'El camarero no pregunta nada y sirve bien. Te dicen que la novia llora, de felicidad, y el novio llora de la otra manera. Tú estás bien.',
+  'event.weddingInvite.speech': 'Haz un brindis improvisado.',
+  'event.weddingInvite.speech.0':
+    'Usas la palabra "sinergia" en una boda. Nadie se ha emocionado nunca tanto. Te ascienden a invitado de honor y te dan una tarta.',
+  'event.weddingInvite.speech.1':
+    'Usas la palabra "sinergia" en una boda. Sigue un silencio sobre el que podrías sentarte. El padrino articula "no" con los labios y, luego, lo repite con los puños.',
+  'event.motherCall.title': 'La llamada del domingo',
+  'event.motherCall.text':
+    'Tu teléfono muestra SUEGRA. Lo muestra desde hace once minutos. Es la única llamada de la historia que sonaba antes de empezar. Se oye una lasaña dentro.',
+  'event.motherCall.answer': 'Contesta. Di que sí a todo.',
+  'event.motherCall.answer.0':
+    'Dura cincuenta y un minutos. Aceptas una comida, un sombrero, un médico. Al final dice algo casi amable. Te sientes terriblemente alimentado.',
+  'event.motherCall.silence': 'Déjalo sonar.',
+  'event.motherCall.silence.0':
+    'Suena, paciente, el tiempo que haga falta. Se corta. Siete segundos después llega un mensaje: "He hecho demasiado." Con el tiempo, pagarás el silencio.',
+  'event.motherCall.call': 'Llama con una excusa.',
+  'event.motherCall.call.0':
+    'La excusa es buena y ella cuelga antes de que termines. Un rato después llega un paquete, con una nota: "Estás muy flaco." Dentro, algo útil.',
+  'compendium.gossip': 'Cotilleos',
+  'compendium.gossipFound': 'Escenas oídas: {n} de {total}',
+  'gossip.who': 'Contada por {name}',
+  'gossip.cooler': 'Oída junto al dispensador de agua',
+  'gossip.hero': 'Solo para {hero}',
+  'gossip.chapter': 'Un capítulo de una historia',
+  'intercom.morning7': 'Hoy es viernes informal. No es viernes. No es informal.',
+  'intercom.morning8': 'Recuerden hidratarse. Hay agua disponible, en teoría.',
+  'intercom.morning9': 'La nevera se limpiará el viernes. También se limpiará todo lo que ponga viernes.',
+  'intercom.afternoon7': 'Se ha vaciado el buzón de sugerencias. Estaba más vacío de lo esperado.',
+  'intercom.afternoon8': 'Recordatorio: la sala silenciosa es para el silencio. La sala silenciosa también está llena.',
+  'intercom.afternoon9': 'Un amable recordatorio: "según mi último correo" es un lenguaje del amor.',
+  'intercom.night6': 'Por favor, no alimenten las luces.',
+  'intercom.night7': 'Han pasado los de la limpieza. No había nadie a quien limpiarle. Limpiaron igualmente.',
+  'intercom.night8': 'Por favor, esperen. Su turno es importante para nosotros. También es el único que queda.',
+  'intercom.weekend5': 'Es domingo. Siempre ha sido domingo. El lunes es un rumor.',
+  'intercom.weekend6': 'El fin de semana se ha reprogramado para el próximo fin de semana. Despejen su calendario.',
+  'intercom.afterBoss1': 'Enhorabuena por su turno. Aquí tiene el siguiente.',
+  'intercom.lowHp3': 'Por favor, sangren sobre las baldosas, no sobre la moqueta.',
 };

@@ -1,5 +1,8 @@
 import { describe, expect, it } from 'vitest';
+import { ENEMIES } from '../../src/data/enemies';
 import { EVENT_LIST } from '../../src/data/events';
+import { HEROES } from '../../src/data/heroes';
+import { CREATURES } from '../../src/ui/art/creatures';
 import en from '../../src/i18n/en';
 import {
   applyFx,
@@ -24,6 +27,13 @@ function atEvent(act: number, seed = 5): RunState {
 }
 
 describe('events', () => {
+  it("are told by an enemy that has a picture (or by the cooler), and a hero's scene by a real hero", () => {
+    for (const e of EVENT_LIST) {
+      if (e.speaker) expect(CREATURES[ENEMIES[e.speaker]?.art], `${e.id}: ${e.speaker}`).toBeTruthy();
+      if (e.hero) expect(HEROES[e.hero], e.id).toBeTruthy();
+    }
+  });
+
   it('have a title, a scene and every choice and result written (the other languages are checked against these keys)', () => {
     for (const e of EVENT_LIST) {
       expect(en, `${e.id}.title`).toHaveProperty(`event.${e.id}.title`);

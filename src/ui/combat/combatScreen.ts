@@ -736,7 +736,7 @@ export function combatScreen(run: RunState, combat: Combat, cb: CombatCallbacks)
         startWrap.prepend(
           h(
             'div',
-            { class: 'foe-traits today' },
+            { class: 'today-slip' },
             h('div', { class: 'trait-head' }, t('combat.today')),
             h('div', {
               class: 'trait',

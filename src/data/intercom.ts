@@ -5,7 +5,7 @@ import type { RunState } from '../game/run';
  * The Intercom: the building's voice. A line over the map, picked from what the run is going through (a cue) or, failing that, from the act's own
  * tone (cheery in the morning, passive-aggressive after lunch, wrong at night, the office intruding on the weekend). Texts: `intercom.<id>`.
  */
-export type IntercomCue = 'start' | 'lowHp' | 'fullHp' | 'bossNext' | 'afterElite' | 'afterEvent' | 'afterRest' | 'rich';
+export type IntercomCue = 'start' | 'lowHp' | 'fullHp' | 'bossNext' | 'afterElite' | 'afterBoss' | 'afterEvent' | 'afterRest' | 'rich';
 
 export interface IntercomDef {
   id: string;
@@ -31,6 +31,9 @@ export const INTERCOM: IntercomDef[] = [
   { id: 'morning4', acts: [1, 1] },
   { id: 'morning5', acts: [1, 1] },
   { id: 'morning6', acts: [1, 1] },
+  { id: 'morning7', acts: [1, 1] },
+  { id: 'morning8', acts: [1, 1] },
+  { id: 'morning9', acts: [1, 1] },
   // ---- the afternoon: passive-aggressive
   { id: 'afternoon1', acts: [2, 2] },
   { id: 'afternoon2', acts: [2, 2] },
@@ -38,26 +41,36 @@ export const INTERCOM: IntercomDef[] = [
   { id: 'afternoon4', acts: [2, 2] },
   { id: 'afternoon5', acts: [2, 2] },
   { id: 'afternoon6', acts: [2, 2] },
+  { id: 'afternoon7', acts: [2, 2] },
+  { id: 'afternoon8', acts: [2, 2] },
+  { id: 'afternoon9', acts: [2, 2] },
   // ---- the night: wrong
   { id: 'night1', acts: [3, 3] },
   { id: 'night2', acts: [3, 3] },
   { id: 'night3', acts: [3, 3] },
   { id: 'night4', acts: [3, 3] },
   { id: 'night5', acts: [3, 3] },
+  { id: 'night6', acts: [3, 3] },
+  { id: 'night7', acts: [3, 3] },
+  { id: 'night8', acts: [3, 3] },
   // ---- the weekend: the office will not leave you alone
   { id: 'weekend1', acts: [4, 4] },
   { id: 'weekend2', acts: [4, 4] },
   { id: 'weekend3', acts: [4, 4] },
   { id: 'weekend4', acts: [4, 4] },
+  { id: 'weekend5', acts: [4, 4] },
+  { id: 'weekend6', acts: [4, 4] },
   // ---- what the run is going through
   { id: 'start1', cue: 'start' },
   { id: 'start2', cue: 'start' },
   { id: 'lowHp1', cue: 'lowHp' },
   { id: 'lowHp2', cue: 'lowHp' },
+  { id: 'lowHp3', cue: 'lowHp' },
   { id: 'fullHp1', cue: 'fullHp' },
   { id: 'bossNext1', cue: 'bossNext' },
   { id: 'bossNext2', cue: 'bossNext' },
   { id: 'afterElite1', cue: 'afterElite' },
+  { id: 'afterBoss1', cue: 'afterBoss' },
   { id: 'afterEvent1', cue: 'afterEvent' },
   { id: 'afterRest1', cue: 'afterRest' },
   { id: 'rich1', cue: 'rich' },
@@ -75,6 +88,7 @@ export function cuesOf(run: RunState): Set<IntercomCue> {
   if (run.cleared) {
     if (here.next.some((id) => run.nodes[id].type === 'boss')) cues.add('bossNext');
     if (here.type === 'elite') cues.add('afterElite');
+    if (here.type === 'boss') cues.add('afterBoss');
     if (here.type === 'event') cues.add('afterEvent');
     if (here.type === 'rest') cues.add('afterRest');
   }

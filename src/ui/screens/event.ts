@@ -1,6 +1,7 @@
 import { sfx, voice } from '../../audio/sfx';
 import { t } from '../../core/i18n';
 import { CONFIG } from '../../data/config';
+import { ENEMIES } from '../../data/enemies';
 import type { EventChoice, EventDef, EventFx } from '../../data/events';
 import { applyFx, choicePossible, type Done, finishEvent, needsPick, pickShred, pickUpgrade, rollEvent, rollResult } from '../../game/events';
 import { canUpgrade, type RunState } from '../../game/run';
@@ -241,7 +242,7 @@ export function eventScreen(run: RunState, onDone: () => void): Screen {
   const speaker = def.speaker
     ? h('div', {
         class: 'room-scene enter-event speaker',
-        html: `${motes(14, ['var(--paper)', 'var(--paper)', 'var(--y)'])}<div class="room-stage"><div class="pedestal"></div><div class="room-art sway">${creature(def.speaker)}</div></div>`,
+        html: `${motes(14, ['var(--paper)', 'var(--paper)', 'var(--y)'])}<div class="room-stage"><div class="pedestal"></div><div class="room-art sway">${creature(ENEMIES[def.speaker].art)}</div></div>`,
       })
     : roomScene('event');
 

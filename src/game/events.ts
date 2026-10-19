@@ -12,6 +12,7 @@ import {
   upgradeCard,
   type RunState,
 } from './run';
+import { seeScene } from './meta';
 import type { CardInst } from './types';
 
 /** The smallest max HP an event may leave the hero with. */
@@ -149,6 +150,7 @@ export const pickShred = (run: RunState, uid: number): void => shredCard(run, ui
 
 /** The scene is over: it won't come again in this run, and the room is done. */
 export function finishEvent(run: RunState, id: string): void {
+  seeScene(id);
   run.relicFlags[DONE(id)] = 1;
   run.cleared = true;
 }
