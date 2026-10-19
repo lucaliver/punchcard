@@ -697,4 +697,10 @@ export const storyIt: Record<keyof typeof storyEn, string> = {
   'event.fx.gamble': 'Una scommessa: succede una di queste cose.',
   'event.fx.odds': '{pct}%: {what}',
   'event.fx.cantPay': 'Non puoi permettertelo ora.',
+  'condition.pizzaParty.name': 'Pizza Party',
+  'condition.pizzaParty.d': 'La pizza gratis rimette a posto ciò che la giornata rompe: recuperi {n} PV ogni tanto.',
+  'condition.unionDay.name': 'Giornata sindacale',
+  'condition.unionDay.d': 'Il picchetto è dalla tua parte: hai {n} [thorns].',
+  'condition.nepotism.name': 'Nepotismo',
+  'condition.nepotism.d': "Oggi c'è il nipote del capo. Il nemico inizia con {n} [strength].",
 };

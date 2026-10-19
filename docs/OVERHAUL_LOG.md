@@ -58,3 +58,6 @@ The game was already polished in look and sound, but poor in three places: **nar
 
 ## Step 12: hold a choice to read it
 - Holding a choice of a scene says in words what it does (and, for a gamble, the odds of each outcome); a choice that can't be paid is dimmed but still answers a hold, and a tap on it only knocks. 19 strings in four languages.
+
+## Step 13: three more office conditions
+- Pizza Party (the hero heals a little as the fight goes), Union Day (thorns for the hero) and Nepotism (the enemy starts with 3 Strength, pays 50% more): eleven conditions in all; a test checks that every one's icon and statuses exist.

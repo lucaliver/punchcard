@@ -597,4 +597,10 @@ export const storyZh: Record<keyof typeof storyEn, string> = {
   'event.fx.gamble': '赌一把：以下情形之一会发生。',
   'event.fx.odds': '{pct}%：{what}',
   'event.fx.cantPay': '你现在付不起。',
+  'condition.pizzaParty.name': '披萨派对',
+  'condition.pizzaParty.d': '免费披萨修补一天的伤痛：你每隔一会儿恢复 {n} 点生命值。',
+  'condition.unionDay.name': '工会日',
+  'condition.unionDay.d': '纠察线站在你这边：你拥有 {n} 点[thorns]。',
+  'condition.nepotism.name': '裙带关系',
+  'condition.nepotism.d': '今天老板的侄子也在。敌人以 {n} 点[strength]开始战斗。',
 };

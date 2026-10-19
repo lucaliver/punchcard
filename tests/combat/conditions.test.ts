@@ -4,6 +4,8 @@ import { CONFIG } from '../../src/data/config';
 import { ENEMIES } from '../../src/data/enemies';
 import { applyCombat, combatSetup, conditionFor, newRun } from '../../src/game/run';
 import { Combat } from '../../src/game/combat';
+import { STATUSES } from '../../src/data/statuses';
+import { ICONS } from '../../src/ui/art/icons';
 import en from '../../src/i18n/en';
 import { run, setup } from './helpers';
 
@@ -16,6 +18,8 @@ describe('office conditions', () => {
       expect(en, c.id).toHaveProperty(`condition.${c.id}.d`);
       expect(conditionAmount(c)).toBeGreaterThan(0);
       expect(c.hero || c.enemy).toBeTruthy();
+      expect(ICONS[c.icon], `${c.id}: icon ${c.icon}`).toBeTruthy();
+      for (const st of [...(c.hero ?? []), ...(c.enemy ?? [])]) expect(STATUSES[st.id], `${c.id}: status ${st.id}`).toBeTruthy();
     }
   });
 

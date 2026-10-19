@@ -32,10 +32,13 @@ export const CONDITIONS: ConditionDef[] = [
   { id: 'casualFriday', acts: [1, 4], icon: 'muscle', hero: [{ id: 'strength', v: 2 }], pay: 1 },
   { id: 'safetyWeek', acts: [1, 4], icon: 'hiVisVest', hero: [{ id: 'steelToes', v: 2 }], pay: 1 },
   { id: 'compDay', acts: [1, 4], icon: 'redCross', hero: [{ id: 'workersComp', v: 4 }], pay: 1 },
+  { id: 'pizzaParty', acts: [1, 4], icon: 'pizza', hero: [{ id: 'regen', v: 1 }], pay: 1 },
+  { id: 'unionDay', acts: [1, 4], icon: 'picketSign', hero: [{ id: 'thorns', v: 2 }], pay: 1 },
   // ---- trouble days
   { id: 'understaffed', acts: [1, 4], icon: 'intern', enemy: [{ id: 'strength', v: 2 }], pay: TROUBLE_PAY },
   { id: 'overtime', acts: [1, 4], icon: 'creepClock', enemy: [{ id: 'overtimeCreep', v: 1 }], pay: TROUBLE_PAY },
   { id: 'auditWeek', acts: [1, 4], icon: 'thorns', enemy: [{ id: 'thorns', v: 1 }], pay: TROUBLE_PAY },
+  { id: 'nepotism', acts: [1, 4], icon: 'tophat', enemy: [{ id: 'strength', v: 3 }], pay: 1.5 },
   { id: 'wellnessWeek', acts: [1, 2], icon: 'leaf', enemy: [{ id: 'forcedSmile', v: 1 }], pay: TROUBLE_PAY },
 ];
 

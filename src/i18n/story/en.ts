@@ -698,4 +698,10 @@ export const storyEn = {
   'event.fx.gamble': 'A gamble: one of these happens.',
   'event.fx.odds': '{pct}%: {what}',
   'event.fx.cantPay': 'You cannot afford this right now.',
+  'condition.pizzaParty.name': 'Pizza Party',
+  'condition.pizzaParty.d': 'Free pizza heals what the day breaks: you heal {n} HP every few seconds.',
+  'condition.unionDay.name': 'Union Day',
+  'condition.unionDay.d': 'The picket line is on your side: you have {n} [thorns].',
+  'condition.nepotism.name': 'Nepotism',
+  'condition.nepotism.d': "The boss's nephew is in today. The enemy starts with {n} [strength].",
 } satisfies Record<string, string>;
