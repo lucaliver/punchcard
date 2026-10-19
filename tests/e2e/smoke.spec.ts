@@ -2041,7 +2041,10 @@ async function enterWeekendRoom(page: Page, type: string): Promise<void> {
     g.run.hp = Math.floor(g.run.maxHp / 2);
     g.goJourney();
   }, type);
-  await page.getByRole('button', { name: /enter floor 1$/i }).last().click();
+  await page
+    .getByRole('button', { name: /enter floor 1$/i })
+    .last()
+    .click();
 }
 
 test('Sunday Lunch: two of the three dishes, and the room closes after the second', async ({ page }) => {
