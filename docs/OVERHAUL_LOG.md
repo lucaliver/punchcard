@@ -55,3 +55,6 @@ The game was already polished in look and sound, but poor in three places: **nar
 
 ## Step 11: the onboarding
 - From the third run on, a new run opens on **Onboarding**: the Orientation Video offers three of eight packages (Coffee: a mana crystal for some HP; Gym Voucher: +10 max HP; Good Laptop: an upgrade; Welcome Kit: a stationery for some max HP; Declutter: shred a card; Signing Bonus: a rare card for some HP; Mentor: two upgrades for some HP; or decline everything, humbly). A different start for every run. The first runs stay as they were, to learn on.
+
+## Step 12: hold a choice to read it
+- Holding a choice of a scene says in words what it does (and, for a gamble, the odds of each outcome); a choice that can't be paid is dimmed but still answers a hold, and a tap on it only knocks. 19 strings in four languages.

@@ -83,3 +83,6 @@
   0%, 66% { filter: drop-shadow(5px 0 0 var(--p)) drop-shadow(-4px 0 0 var(--b)); transform: translateX(-3px); }
   33% { transform: translateX(3px); }
 }
+
+/* a choice that can't be paid: dimmed, but still answers a hold (a disabled button would swallow it) */
+.option.choice.locked { opacity: 0.4; box-shadow: none; }

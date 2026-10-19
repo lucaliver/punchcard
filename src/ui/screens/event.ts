@@ -10,10 +10,10 @@ import { icon } from '../art/icons';
 import { creature } from '../art/creatures';
 import { CARD_SHOW_MS, playCardChange, playCardGain, playRelic, playShred } from '../components/cardShow';
 import { motes } from '../components/decor';
-import { openDeck } from '../components/modals';
+import { openDeck, openInfo } from '../components/modals';
 import { type Typing, typeLine } from '../components/typewriter';
 import { roomScene } from '../components/room';
-import { h } from '../dom';
+import { h, onTapOrHold } from '../dom';
 import { haptic } from '../fx/fx';
 import { HEAL_ANIM_MS, playHealing } from './rest';
 import { runHud } from './journey';
@@ -59,6 +59,39 @@ function chip(run: RunState, fx: EventFx): { icon: string; text: string; tone: T
       return null;
   }
 }
+
+/** What an effect does, in words: the hold-to-read of a choice (`null` for one that says nothing, a story flag). */
+function fxWords(run: RunState, fx: EventFx): string | null {
+  switch (fx.kind) {
+    case 'hp':
+      return fx.n > 0 ? t('event.fx.hpUp', { n: fx.n }) : t('event.fx.hpDown', { n: -fx.n });
+    case 'heal':
+      return t('event.fx.heal', { n: Math.round(run.maxHp * fx.pct) });
+    case 'maxHp':
+      return fx.n > 0 ? t('event.fx.maxHpUp', { n: fx.n }) : t('event.fx.maxHpDown', { n: -fx.n });
+    case 'pay':
+      return fx.n > 0 ? t('event.fx.payUp', { n: fx.n }) : t('event.fx.payDown', { n: -fx.n });
+    case 'relic':
+      return t('event.fx.relic');
+    case 'relicId':
+      return t('event.fx.relicId', { name: t(`relic.${fx.id}.name`) });
+    case 'card':
+      return t(fx.cross ? 'event.fx.cardCross' : 'event.fx.card', { rarity: t(`rarity.${fx.rarity}`) });
+    case 'upgrade':
+      return t('event.fx.upgrade');
+    case 'upgradeRandom':
+      return t('event.fx.upgradeRandom');
+    case 'shred':
+      return t('event.fx.shred');
+    case 'crystal':
+      return t('event.fx.crystal');
+    case 'flag':
+      return null;
+  }
+}
+
+/** A result in words (what it does, or that nothing happens). */
+const resultWords = (run: RunState, fx: EventFx[]): string => fx.flatMap((f) => fxWords(run, f) ?? []).join(' ') || t('event.fx.nothing');
 
 const chipHtml = (run: RunState, fx: EventFx[]): string => {
   const chips = fx.flatMap((f) => chip(run, f) ?? []);
@@ -268,11 +301,35 @@ export function eventScreen(run: RunState, onDone: () => void, opening = false):
   for (const choice of def.choices) {
     const possible = choicePossible(run, choice);
     const button = h('button', {
-      class: 'option choice',
-      disabled: !possible,
-      onclick: () => choose(choice, button),
+      class: `option choice${possible ? '' : ' locked'}`,
+      'aria-disabled': possible ? undefined : 'true',
       html: `<span class="choice-text">${t(`event.${def.id}.${choice.id}`)}</span><span class="fx-row">${optionChips(run, choice)}</span>`,
     });
+    // Tap = choose, hold = read what it does in words (a choice that can't be paid says so, and a tap on it only answers with a knock).
+    onTapOrHold(
+      button,
+      () => {
+        if (possible) choose(choice, button);
+        else {
+          sfx('denied');
+          haptic('error');
+        }
+      },
+      () => {
+        sfx('tap');
+        const [only, ...rest] = choice.results;
+        openInfo({
+          icon: 'question',
+          title: t(`event.${def.id}.${choice.id}`),
+          desc: rest.length ? t('event.fx.gamble') : [resultWords(run, only.fx), ...(possible ? [] : [t('event.fx.cantPay')])].join(' '),
+          extra: rest.length
+            ? choice.results.map((r) =>
+                t('event.fx.odds', { pct: Math.round((r.w / choice.results.reduce((sum, x) => sum + x.w, 0)) * 100), what: resultWords(run, r.fx) }),
+              )
+            : undefined,
+        });
+      },
+    );
     options.append(button);
   }
 

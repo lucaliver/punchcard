@@ -429,7 +429,7 @@ test('the fight waits for Start; meanwhile things can be held to read them', asy
   await ability.dispatchEvent('pointerdown');
   await page.waitForTimeout(500);
   await ability.dispatchEvent('pointerup');
-  await expect(page.locator('.modal .info')).toBeVisible();
+  await expect(page.locator('.modal')).toContainText(/HP|pay|stationery|card/i);
   await page.getByRole('button', { name: 'Close' }).click();
   await page.locator('.js-start').click();
   await expect.poll(clock).not.toBe(before);
@@ -819,7 +819,7 @@ test('closing the pause menu keeps the fight paused while another window is stil
   await ability.dispatchEvent('pointerdown');
   await page.waitForTimeout(500);
   await ability.dispatchEvent('pointerup');
-  await expect(page.locator('.modal .info')).toBeVisible();
+  await expect(page.locator('.modal')).toContainText(/HP|pay|stationery|card/i);
   // The app goes to the background: the pause menu opens on top.
   await page.evaluate(() => {
     Object.defineProperty(document, 'hidden', { value: true, configurable: true });
@@ -1470,7 +1470,7 @@ test('handbook: pressing a status in a move pattern explains it', async ({ page 
     .click();
   await page.getByRole('tab', { name: /enemies/i }).click();
   await page.locator('.foe [data-status]').first().click();
-  await expect(page.locator('.modal .info')).toBeVisible();
+  await expect(page.locator('.modal')).toContainText(/HP|pay|stationery|card/i);
 });
 
 test('the very first fight opens on a tour of the board, one step at a time, before Clock in', async ({ page }) => {
@@ -2092,6 +2092,15 @@ test('Water Cooler: the note is typed, the choices show their price tags, and th
   expect(await choices.count()).toBeGreaterThanOrEqual(2);
   await expect(page.locator('.option.choice .fx-chip').first()).toBeVisible();
   const first = choices.first();
+  // Holding a choice reads what it does in words, without choosing it (the choices are dealt in first).
+  await page.waitForTimeout(800);
+  await first.hover();
+  await page.mouse.down();
+  await page.waitForTimeout(1000);
+  await page.mouse.up();
+  await expect(page.locator('.modal')).toContainText(/HP|pay|stationery|card/i);
+  await page.getByRole('button', { name: 'Close' }).click();
+  await expect(choices.first()).toBeEnabled();
   await first.click();
   // A choice that asks for a card of the hand opens the deck: pick the first one.
   const confirm = page.locator('.modal .deck-confirm, .modal button:has-text("Upgrade"), .modal button:has-text("Shred")');
