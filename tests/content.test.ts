@@ -33,6 +33,8 @@ import { INK_HEX } from '../src/ui/art/riso';
 import { HEXES } from '../src/data/hexes';
 import { COFFEE_DRINKS, COFFEE_ITEMS } from '../src/data/coffee';
 import { MODIFIER_LIST } from '../src/data/modifiers';
+import { rankMax, rankSteps } from '../src/data/rank';
+import { rewardPool } from '../src/data/cards';
 import { DEBUG_ENEMY, ENEMIES } from '../src/data/enemies';
 import { CHORES } from '../src/game/chore';
 import { MINIGAMES } from '../src/game/minigame';
@@ -315,6 +317,31 @@ describe('content integrity', () => {
       expect(en[`memo.${m.id}.name`] && en[`memo.${m.id}.d`], m.id).toBeTruthy();
       expect(ICONS[m.icon], `${m.id}: missing icon ${m.icon}`).toBeTruthy();
       expect(m.enemyHp ?? m.enemyDmg ?? m.beltMul ?? m.heroHp ?? m.restHeal ?? m.rewardCards, `${m.id} does nothing`).toBeDefined();
+    }
+  });
+
+  it('every career ladder is complete: a title for each rank, a text for each effect, and gifts that can be given', () => {
+    for (let level = 0; level <= 10; level++) expect(en[`rank.${level}`], `rank.${level}`).toBeTruthy();
+    expect(ICONS.ladder).toBeTruthy();
+    for (const hero of HERO_LIST) {
+      const max = rankMax(hero.id);
+      if (!max) continue;
+      expect(max, hero.id).toBe(10);
+      for (const [i, step] of rankSteps(hero.id, max).entries()) {
+        for (const e of [step.bonus, step.duty]) {
+          const key = e.kind === 'cards' ? `cards.${e.rarity}` : e.kind;
+          expect(en[`rank.fx.${key}`], `${hero.id} rank ${i + 1}: rank.fx.${key}`).toBeTruthy();
+          if (e.kind === 'cards')
+            expect(rewardPool(hero.id, e.rarity).length, `${hero.id} rank ${i + 1}: no ${e.rarity} card to give`).toBeGreaterThanOrEqual(e.n);
+          if (e.kind === 'upgrade') {
+            for (const id of e.cards) {
+              expect(hero.startDeck, `${hero.id} rank ${i + 1}: ${id} is not in the starter deck`).toContain(id);
+              expect(hero.startUpgraded, `${hero.id} rank ${i + 1}: ${id} starts upgraded already`).not.toContain(id);
+              expect(CARDS[id].upVals ?? CARDS[id].upCost ?? CARDS[id].upKeywords, `${id} has no upgrade`).toBeDefined();
+            }
+          }
+        }
+      }
     }
   });
 

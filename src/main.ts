@@ -13,6 +13,7 @@ import { sendCrash } from './feedback/firebase';
 import { ACT_DEFS, actDef, MAIN_ACTS } from './data/acts';
 import { CONFIG, type RewardKind } from './data/config';
 import { ENEMIES } from './data/enemies';
+import { rankMax } from './data/rank';
 import { VALUES } from './data/values';
 import { logFight, resetFightLog, saveFightLog } from './ui/components/debugLog';
 import { Combat } from './game/combat';
@@ -40,7 +41,7 @@ import {
   type RewardOffer,
   type RunState,
 } from './game/run';
-import { chosenMemos, contractSigned, lastEnemies, memosOpen, reachAct, setLastEnemies, startingFirstRun, unmetActs } from './game/meta';
+import { chosenMemos, contractSigned, lastEnemies, memosOpen, rankPick, reachAct, setLastEnemies, startingFirstRun, unmetActs } from './game/meta';
 import { settings } from './game/settings';
 import type { HeroId } from './game/types';
 import { confirmModal, initApp, openModal, type Screen, show } from './ui/app';
@@ -135,7 +136,17 @@ function startRun(hero: HeroId): void {
   const scripted = unmetActs(SCRIPTED_ACTS);
   // A hero with the memos open also has the bonus acts (the weekend) after the main ones.
   const open = !first && memosOpen(hero);
-  run = newRun(hero, first ? FIRST_RUN_SEED : randomSeed(), scripted, open ? chosenMemos() : [], lastEnemies(), open ? ACT_DEFS.length : MAIN_ACTS);
+  // A hero with a career ladder plays under the rank picked on the hire screen instead of the memos.
+  const memos = open && !rankMax(hero) ? chosenMemos() : [];
+  run = newRun(
+    hero,
+    first ? FIRST_RUN_SEED : randomSeed(),
+    scripted,
+    memos,
+    lastEnemies(),
+    open ? ACT_DEFS.length : MAIN_ACTS,
+    first ? 0 : rankPick(hero),
+  );
   setLastEnemies(run.nodes.flatMap((n) => (n.enemy ? [n.enemy] : [])));
   resetFightLog();
   goJourney();

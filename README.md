@@ -71,7 +71,8 @@ mosse. Tra uno scontro e l'altro migliori il mazzo.
 - **Salvataggio** a ogni piano. Dalla pausa: *Main menu* (la run resta) o *Call in sick* (abbandona).
 - **Prima run guidata:** mappa e nemici fissi, con un tour del primo scontro. Anche la prima volta che raggiungi un atto la
   sua mappa è fissa.
-- **Promemoria della direzione:** finito l'ultimo atto con un eroe, puoi imporre alla run degli handicap facoltativi.
+- **Scala di carriera:** il Guerriero ha una carriera a gradini. Ogni giornata intera vinta al tuo grado massimo ti promuove al successivo: ogni grado porta un vantaggio e un dovere, si sommano a quelli dei gradi sotto, e puoi sempre rigiocare un grado più basso. La targhetta nella selezione eroe mostra il grado e apre l'intera scala; la promozione si festeggia lì.
+- **Promemoria della direzione:** per gli eroi senza carriera, finito l'ultimo atto puoi imporre alla run degli handicap facoltativi.
 - **Storico:** le ultime run restano nell'Handbook, con busta paga, cancellerie e mazzo finale.
 
 ---

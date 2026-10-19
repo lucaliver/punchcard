@@ -143,6 +143,10 @@
   /* the boss's blackout after the door: the tubes flicker, then come on for good at --boss-lights of the way (script waits on both and removes the curtain when its animation ends) */
   --dur-boss-intro: 2400ms;
   --boss-lights: 0.62;
+  /* a promotion on the hire screen's plaque: it shakes, then the new rank is stamped (script waits on both) */
+  --dur-promote-wait: 500ms;
+  --dur-promote-shake: 600ms;
+  --dur-promote-stamp: 2000ms;
   --dur-swap-fly: 350ms;
   --dur-swap-gone: 200ms;
   /** extra time the bonus card of a skipped reward stays up to be read */

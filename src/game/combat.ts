@@ -117,6 +117,14 @@ export interface CombatSetup {
   playedIds?: string[];
   /** The hero's ability was already used in this act: it can be used once per act (`RunState.abilityAct`). */
   abilitySpent?: boolean;
+  /** What the hero's ability costs in this run (the hero's own price when omitted): a rank on the career ladder can fix it. */
+  abilityCost?: number;
+  /** The hero's seconds per mana are multiplied by this (a rank's duty). */
+  manaSlow?: number;
+  /** The hero's Block fades this many times as fast (a rank's duty). */
+  blockFade?: number;
+  /** The enemy's moves come this many times as fast (a rank's duty). */
+  enemyTime?: number;
 }
 
 interface DamageOpts {
@@ -259,6 +267,10 @@ export class Combat {
   /** The hero begged to stay in this fight and was taken back (the run's adaptive difficulty eases off for it). */
   begged = false;
   private canBeg: boolean;
+  /** The enemy's moves come this many times as fast (`CombatSetup.enemyTime`). */
+  private readonly enemyPace: number;
+  /** The hero's ability costs this before the stationery (`CombatSetup.abilityCost`). */
+  private readonly abilityBase: number;
   private tempUid = 0;
 
   constructor(setup: CombatSetup) {
@@ -287,7 +299,9 @@ export class Combat {
       prewarm = Math.max(prewarm, m.startBelt ?? 0);
     }
     sleeve = Math.max(1, sleeve - (setup.sleeveLost ?? 0));
-    this.regenMul = regenMul;
+    this.regenMul = regenMul / (setup.manaSlow ?? 1);
+    this.enemyPace = setup.enemyTime ?? 1;
+    this.abilityBase = setup.abilityCost ?? h.ability.cost;
     this.runBeltMul = this.baseBeltMul = beltMul;
     this.canBeg = !!setup.canBeg && !this.relicFlags[BEG_FLAG];
     this.abilitySpent = !!setup.abilitySpent;
@@ -300,7 +314,7 @@ export class Combat {
       blockTimer: 0,
       blockLoss: 0,
       dotTimer: 0,
-      blockDecay: h.blockDecay,
+      blockDecay: h.blockDecay / (setup.blockFade ?? 1),
       slowBlock: h.slowBlock,
       mana: Math.min(CONFIG.startMana, maxMana),
       maxMana: Math.min(maxMana, CONFIG.maxManaCap),
@@ -576,7 +590,7 @@ export class Combat {
   }
 
   enemyTimeRate(): number {
-    return this.mul('enemy', 'timeMul');
+    return this.mul('enemy', 'timeMul') * this.enemyPace;
   }
 
   /** Temporary debug tool: sets the pace while the fight runs: seconds per mana (0 = the hero's own) and a multiplier on the belt's speed. */
@@ -1559,7 +1573,7 @@ export class Combat {
   }
 
   abilityCost(): number {
-    return abilityCostWith(this.heroDef.ability.cost, this.relics);
+    return abilityCostWith(this.abilityBase, this.relics);
   }
 
   abilityReady(): boolean {

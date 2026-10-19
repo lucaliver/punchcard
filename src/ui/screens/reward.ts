@@ -55,12 +55,12 @@ export function rewardScreen(run: RunState, picks: RewardOffer[], adds: boolean,
         swapBtn.disabled = true;
         skipBtn.disabled = true;
         (e.currentTarget as HTMLElement).blur();
-        playHealing(el, pay, t('reward.maxHp'), true);
+        if (pay > 0) playHealing(el, pay, t('reward.maxHp'), true);
         if (bonus) playCardGain(el, [{ ...bonus }], t('reward.bonus'), { start: 'ding', end: 'deckAdd' });
-        setTimeout(onDone, bonus ? CARD_SHOW_MS + cssMs('--dur-show-extra') : HEAL_FAST_MS);
+        setTimeout(onDone, bonus ? CARD_SHOW_MS + cssMs('--dur-show-extra') : pay > 0 ? HEAL_FAST_MS : 0);
       },
     },
-    t('reward.skip', { n: skipPay(run) }),
+    skipPay(run) > 0 ? t('reward.skip', { n: skipPay(run) }) : t('reward.skipFree'),
   );
   const deckGrid = h('div', { class: 'swap-deck' });
   const offerRow = h('div', { class: 'swap-offer' });

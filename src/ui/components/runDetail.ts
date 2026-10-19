@@ -12,11 +12,21 @@ import { groupCopies, openCardDetail, sortCards } from './modals';
 import { icon } from '../art/icons';
 import { payslipImage, type ShareSlip, shareImage, slipRows } from './shareSlip';
 import { keywordHtml } from './cardView';
+import { rankTitle } from './rank';
 
 /** A run of the handbook's history, opened: its payslip, the stationery it had and the deck it ended with. */
 export function openRunDetail(r: RunLog): ModalHandle {
   sfx('tap');
-  const rows = slipRows({ floor: r.floor, kills: r.kills, elites: r.elites, cards: r.cards, memos: r.memos, pay: r.pay, damage: r.damageTaken });
+  const rows = slipRows({
+    floor: r.floor,
+    kills: r.kills,
+    elites: r.elites,
+    cards: r.cards,
+    memos: r.memos,
+    rank: r.rank ? rankTitle(r.rank) : undefined,
+    pay: r.pay,
+    damage: r.damageTaken,
+  });
   const hero = t(`hero.${r.hero}.name`);
   const slip = h(
     'div',

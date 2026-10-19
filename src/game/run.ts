@@ -17,12 +17,25 @@ import {
   rewardOdds,
   rewardUpgradeChance,
 } from '../data/config';
-import { MODIFIERS, resolveMods } from '../data/modifiers';
+import { type Mods, MODIFIERS, mergeMods, NO_MODS, resolveMods } from '../data/modifiers';
+import { rankEffects, rankMax, rankMods } from '../data/rank';
 import { ENEMIES, enemiesFor } from '../data/enemies';
 import { HERO_LIST, HEROES, starterCards } from '../data/heroes';
 import type { Combat, CombatSetup } from './combat';
 import { calm, clampLevel, fightFacts, learn, type Pressure, pressureScale } from './pressure';
-import { discover, heroHidden, heroUnlocked, logRun, progress, type RunRecord, recordFight, recordRun, seeRelics, stampAct } from './meta';
+import {
+  discover,
+  heroHidden,
+  heroUnlocked,
+  logRun,
+  progress,
+  promoteRank,
+  type RunRecord,
+  recordFight,
+  recordRun,
+  seeRelics,
+  stampAct,
+} from './meta';
 import type { CardDef, CardInst, EnemyDef, HeroId, Rarity, RelicDef, RunLog } from './types';
 
 export const NODE_TYPES = [
@@ -67,7 +80,7 @@ export interface RunStats {
 }
 
 /** Shape of the saved run; a save of another version is dropped. */
-const SAVE_VERSION = 17;
+const SAVE_VERSION = 18;
 
 export interface RunState {
   version: number;
@@ -104,6 +117,8 @@ export interface RunState {
   uid: number;
   /** Management memos active for this run (`MODIFIERS` ids). */
   mods: string[];
+  /** The rank on the hero's career ladder this run is played at (`data/rank.ts`; 0: the plain game). */
+  level: number;
   /** Adaptive difficulty: how far the next enemies are pushed up or eased off, learned from the fights won so far (`game/pressure.ts`). */
   pressure: Pressure;
   /** The card reward on offer after a fight, until it is taken or skipped: kept in the save so closing the game on that screen doesn't lose it. */
@@ -220,6 +235,7 @@ export function newRun(
   mods: string[] = [],
   avoid: readonly string[] = [],
   acts: number = MAIN_ACTS,
+  level = 0,
 ): RunState {
   resetUid(0);
   const rng = new Rng(seed);
@@ -227,7 +243,7 @@ export function newRun(
   const nodes = buildNodes(rng, scripted, avoid, acts);
   discover(def.startDeck);
   const maxHp = Math.round(def.hp * resolveMods(mods).heroHp);
-  return {
+  const run: RunState = {
     version: SAVE_VERSION,
     seed,
     rng: rng.state,
@@ -245,6 +261,7 @@ export function newRun(
     money: 0,
     uid: peekUid(),
     mods,
+    level: Math.min(Math.max(0, Math.floor(level)), rankMax(hero)),
     pressure: calm(),
     crystals: 0,
     sleeveLost: 0,
@@ -253,7 +270,53 @@ export function newRun(
     skips: 0,
     playedIds: [],
   };
+  grantRank(run);
+  return run;
 }
+
+/** The rank's gifts, once, as the run begins: each rung up to the run's level hands over its bonus (the deck, the stationery and the HP the hero starts with). */
+function grantRank(run: RunState): void {
+  for (const e of rankEffects(run.hero, run.level, 'bonus')) {
+    switch (e.kind) {
+      case 'maxHp':
+        run.maxHp += e.n;
+        run.hp += e.n;
+        break;
+      case 'crystal':
+        run.crystals += e.n;
+        break;
+      case 'upgrade':
+        for (const c of run.deck) if (e.cards.includes(c.id)) c.up = true;
+        break;
+      case 'relic': {
+        const [id] = rollRelics(run, 1);
+        if (id) gainRelic(run, id);
+        break;
+      }
+      case 'cards': {
+        const rng = rngOf(run);
+        const picks: CardDef[] = [];
+        for (let i = 0; i < e.n; i++) {
+          const pool = poolOf(run, e.rarity).filter((c) => !picks.includes(c));
+          if (pool.length) picks.push(pickReward(rng, run, pool));
+        }
+        run.rng = rng.state;
+        discover(picks.map((c) => c.id));
+        for (const c of picks) run.deck.push(newCard(run, c.id));
+        break;
+      }
+      // What these change is read while the run is played (`runMods`).
+      case 'abilityCost':
+      case 'rewardCards':
+      case 'restBoth':
+        break;
+    }
+  }
+}
+
+/** Everything that bends this run: the memos pinned up and the hero's rank. */
+export const runMods = (run: RunState): Mods =>
+  run.mods.length || run.level ? mergeMods(resolveMods(run.mods), rankMods(run.hero, run.level)) : NO_MODS;
 
 /** A room of a lane: its floor (row) and side. */
 type Cell = [row: number, side: number];
@@ -433,12 +496,15 @@ function rngOf(run: RunState): Rng {
   return new Rng(run.rng);
 }
 
-/** Enemy scaling: normal enemies get tougher as the act goes on, and every enemy under the run's memos and the run's adaptive pressure. */
-export function enemyScale(node: RunNode, mods: string[] = [], pressure: Pressure = calm()): { hp: number; dmg: number } {
+/** Enemy scaling: normal enemies get tougher as the act goes on, and every enemy under the run's memos and rank and the run's adaptive pressure. */
+export function enemyScale(node: RunNode, m: Mods = NO_MODS, pressure: Pressure = calm()): { hp: number; dmg: number } {
   const f = node.type === 'fight' ? node.floor - 1 : 0;
-  const m = resolveMods(mods);
-  const p = pressureScale(pressure, mods.length > 0);
-  return { hp: (1 + CONFIG.floorHp * f) * CONFIG.enemyHp * m.enemyHp * p.hp, dmg: (1 + CONFIG.floorDmg * f) * CONFIG.enemyDmg * m.enemyDmg * p.dmg };
+  const p = pressureScale(pressure, m.hard);
+  const tough = node.type === 'fight' ? 1 : m.eliteHp;
+  return {
+    hp: (1 + CONFIG.floorHp * f) * CONFIG.enemyHp * m.enemyHp * tough * p.hp,
+    dmg: (1 + CONFIG.floorDmg * f) * CONFIG.enemyDmg * m.enemyDmg * p.dmg,
+  };
 }
 
 export function combatSetup(run: RunState): CombatSetup {
@@ -446,6 +512,7 @@ export function combatSetup(run: RunState): CombatSetup {
   const rng = rngOf(run);
   const seed = (rng.next() * 2 ** 32) >>> 0;
   run.rng = rng.state;
+  const m = runMods(run);
   return {
     hero: HEROES[run.hero],
     hp: run.hp,
@@ -454,9 +521,13 @@ export function combatSetup(run: RunState): CombatSetup {
     relics: run.relics,
     relicFlags: run.relicFlags,
     enemy: ENEMIES[node.enemy!],
-    scale: enemyScale(node, run.mods, run.pressure),
-    beltMul: resolveMods(run.mods).beltMul,
-    canBeg: true,
+    scale: enemyScale(node, m, run.pressure),
+    beltMul: m.beltMul,
+    canBeg: !m.noBeg,
+    abilityCost: m.abilityCost ?? undefined,
+    manaSlow: m.manaSlow,
+    blockFade: m.blockFade,
+    enemyTime: m.enemyTime,
     bonusMaxMana: run.crystals,
     sleeveLost: run.sleeveLost,
     abilitySpent: run.abilityAct === node.act && !abilityEveryFight(run.relics),
@@ -512,7 +583,7 @@ export function applyCombat(run: RunState, combat: Combat): void {
 
 /** Distinct reward cards for the current node (the player swaps one into the deck). */
 export const rewardChoices = (run: RunState, kind: RewardKind): number =>
-  Math.max(1, REWARD_CHOICES[kind] + resolveMods(run.mods).rewardCards + relicSum(run.relics, 'rewardCards'));
+  Math.max(1, REWARD_CHOICES[kind] + runMods(run).rewardCards + relicSum(run.relics, 'rewardCards'));
 
 /** A card on offer: any of the offered cards may come already upgraded (`rewardUpgradeChance`). */
 export interface RewardOffer {
@@ -586,7 +657,7 @@ function newCard(run: RunState, id: string): CardInst {
 }
 
 /** Skipping a card reward pays max HP (so passing on a weak offer still pays): `CONFIG.skipMaxHp` the first time, one less for every skip after it, never under 1. */
-export const skipPay = (run: RunState): number => Math.max(1, CONFIG.skipMaxHp - run.skips);
+export const skipPay = (run: RunState): number => (runMods(run).noSkipPay ? 0 : Math.max(1, CONFIG.skipMaxHp - run.skips));
 
 /** Skipping also pays one more card, as rare as the rarest one just shown (of the hero's class or neutral) but never one of them. */
 export function skipReward(run: RunState, shown: string[]): CardInst | null {
@@ -862,11 +933,11 @@ export function startShift(run: RunState): number {
 /** HP a Break Room rest would heal now. */
 export const restHeal = (run: RunState): number => {
   const missing = run.maxHp - run.hp;
-  return Math.round(missing * CONFIG.restHeal * resolveMods(run.mods).restHeal);
+  return Math.round(missing * CONFIG.restHeal * runMods(run).restHeal);
 };
 
 /** Whether a Break Room gives both the nap and the training (the Wellness Voucher). */
-export const restsBoth = (run: RunState): boolean => run.relics.some((id) => RELICS[id]?.restBoth);
+export const restsBoth = (run: RunState): boolean => run.relics.some((id) => RELICS[id]?.restBoth) || runMods(run).restBoth;
 
 export function rest(run: RunState): number {
   const amount = restHeal(run);
@@ -892,6 +963,8 @@ export function advance(run: RunState, to?: number): boolean {
 export interface RunEnd {
   hired: HeroId[];
   beaten: RunRecord[];
+  /** The rank the hero was promoted to by this win (0: no promotion). */
+  promoted: number;
 }
 
 /** The history line of a run that ends now. */
@@ -908,6 +981,7 @@ const runLog = (run: RunState, result: RunLog['result']): RunLog => {
     elites: run.stats.elites,
     damageTaken: run.stats.damageTaken,
     memos: run.mods.length,
+    rank: run.level,
     deck: run.deck.map(({ id, up, perks }) => (perks?.length ? { id, up, perks } : { id, up })),
     relics: [...run.relics],
     time: run.stats.time,
@@ -937,7 +1011,9 @@ export function finishRun(run: RunState, won: boolean): RunEnd {
     kills: run.stats.kills,
     cards: run.stats.cardsPlayed,
   });
-  return { hired: progress((u) => 'finishRun' in u && u.finishRun === run.hero), beaten };
+  // A full day at the hero's top rank is a promotion, even when the weekend that follows it goes wrong.
+  const promoted = node.act > MAIN_ACTS || (won && node.act >= MAIN_ACTS) ? promoteRank(run.hero, run.level) : 0;
+  return { hired: progress((u) => 'finishRun' in u && u.finishRun === run.hero), beaten, promoted };
 }
 
 export function saveRun(run: RunState): void {
@@ -989,6 +1065,7 @@ function parseRun(raw: unknown): RunState | null {
     stats,
     money,
     mods,
+    level,
     pressure,
     crystals,
     sleeveLost,
@@ -1030,6 +1107,7 @@ function parseRun(raw: unknown): RunState | null {
     money: isNum(money) ? money : 0,
     uid,
     mods: isStrings(mods) ? mods.filter((id) => id in MODIFIERS) : [],
+    level: Number.isInteger(level) && isNum(level) ? Math.min(Math.max(0, level), rankMax(heroId)) : 0,
     pressure: { hp: clampLevel(pressure.hp), dmg: clampLevel(pressure.dmg) },
     crystals: isNum(crystals) ? Math.max(0, crystals) : 0,
     sleeveLost: isNum(sleeveLost) ? Math.max(0, sleeveLost) : 0,

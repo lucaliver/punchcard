@@ -488,6 +488,8 @@ export interface RunLog {
   elites: number;
   damageTaken: number;
   memos: number;
+  /** The rank on the hero's career ladder the run was played at (absent in older entries: 0). */
+  rank?: number;
   /** The deck and relics it ended with (the detail a tap on the history line opens). */
   deck: { id: string; up: boolean; perks?: string[] }[];
   relics: string[];

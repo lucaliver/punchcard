@@ -4,6 +4,7 @@ import { CARD_LIST, CARDS } from '../data/cards';
 import { ENEMIES, ENEMY_LIST } from '../data/enemies';
 import { HERO_LIST, HEROES } from '../data/heroes';
 import { MODIFIERS } from '../data/modifiers';
+import { rankMax } from '../data/rank';
 import { RELIC_LIST, RELICS } from '../data/relics';
 import { CONFIG } from '../data/config';
 import type { EnemyDef, HeroId, HeroUnlock, Records, RunLog } from './types';
@@ -11,6 +12,13 @@ import type { EnemyDef, HeroId, HeroUnlock, Records, RunLog } from './types';
 /** What the handbook collects, as `collection()` counts it. */
 export type CollectionKind = 'cards' | 'foes' | 'relics';
 type Tally = Record<CollectionKind, number>;
+
+/** A hero's place on the career ladder (`data/rank.ts`). */
+interface RankProgress {
+  top: number;
+  seen: number;
+  pick: number;
+}
 
 /** Progress kept across runs. */
 interface Meta {
@@ -39,6 +47,8 @@ interface Meta {
   lastEnemies: string[];
   /** The runs played, newest first (`CONFIG.historyMax` of them). */
   history: RunLog[];
+  /** The career ladder of each hero that has one: the top rank reached, the one the hire screen has shown (a promotion is animated once), and the one picked for the next run. */
+  ranks: Partial<Record<HeroId, RankProgress>>;
   /** A review has been sent: the home stops asking for one. */
   rated: boolean;
   /** The handbook has been opened (or the home's hint about it dismissed). */
@@ -79,6 +89,7 @@ const meta: Meta = load('meta', {
   actsReached: [],
   lastEnemies: [],
   history: [],
+  ranks: {},
   rated: false,
   handbookSeen: false,
   pagesSeen: null,
@@ -140,6 +151,7 @@ meta.actsReached = Array.isArray(meta.actsReached)
     ) &&
     'begged' in l &&
     typeof l.begged === 'boolean' &&
+    (!('rank' in l) || isNum(l.rank)) &&
     'deck' in l &&
     Array.isArray(l.deck) &&
     l.deck.every(
@@ -157,6 +169,24 @@ meta.actsReached = Array.isArray(meta.actsReached)
     Array.isArray(l.relics) &&
     l.relics.every((id: unknown) => typeof id === 'string' && id in RELICS);
   meta.history = Array.isArray(meta.history) ? meta.history.filter(valid).slice(0, CONFIG.historyMax) : [];
+}
+
+{
+  // The ladders: only heroes that have one, each rank within the ladder's length, the one on show never above the top and the one picked never above it either.
+  const saved: Record<string, unknown> = typeof meta.ranks === 'object' && meta.ranks ? meta.ranks : {};
+  const ranks: Partial<Record<HeroId, RankProgress>> = {};
+  for (const hd of HERO_LIST) {
+    const r = saved[hd.id];
+    const max = rankMax(hd.id);
+    if (!max || typeof r !== 'object' || r === null) continue;
+    const field = (k: keyof RankProgress): number => {
+      const v = (r as Record<string, unknown>)[k];
+      return typeof v === 'number' && Number.isInteger(v) ? Math.min(max, Math.max(0, v)) : 0;
+    };
+    const top = field('top');
+    ranks[hd.id] = { top, seen: Math.min(top, field('seen')), pick: Math.min(top, field('pick')) };
+  }
+  meta.ranks = ranks;
 }
 
 export const contractSigned = (): boolean => meta.signed;
@@ -281,6 +311,8 @@ export function unlockAll(cards: Iterable<string>, enemies: Iterable<string>, re
   meta.stamps = HERO_LIST.flatMap((hd) => ACT_DEFS.map((_, i) => `${hd.id}:${i + 1}`));
   meta.met = [...enemies];
   meta.relics = [...relics];
+  // Every rank of every ladder is reached (and seen), so each can be tried.
+  for (const hd of HERO_LIST) if (rankMax(hd.id)) meta.ranks[hd.id] = { top: rankMax(hd.id), seen: rankMax(hd.id), pick: rankMax(hd.id) };
   for (const id of cards) discovered.add(id);
   meta.discovered = [...discovered];
   store('meta', meta);
@@ -385,6 +417,49 @@ export const hasStamp = (hero: HeroId, act: number): boolean => meta.stamps.incl
 
 /** A hero who has won a full day (beaten the last act's boss) may run under management memos. */
 export const memosOpen = (hero: HeroId): boolean => hasStamp(hero, MAIN_ACTS);
+
+/** The highest rank a hero has reached on their career ladder (0: the plain game; always 0 for a hero without a ladder). */
+export const rankTop = (hero: HeroId): number => meta.ranks[hero]?.top ?? 0;
+
+/** The rank picked for the hero's next run: the top one, unless a lower one was chosen. */
+export const rankPick = (hero: HeroId): number => {
+  const r = meta.ranks[hero];
+  return r ? Math.min(r.top, r.pick) : 0;
+};
+
+/** Picks the rank to play (never above the top one). */
+export function setRankPick(hero: HeroId, level: number): void {
+  const r = meta.ranks[hero];
+  if (!r) return;
+  r.pick = Math.max(0, Math.min(r.top, level));
+  store('meta', meta);
+}
+
+/** A full day won at the hero's top rank promotes them to the next one (and picks it for the next run). Returns the new rank, or 0 when nothing changed. */
+export function promoteRank(hero: HeroId, played: number): number {
+  const max = rankMax(hero);
+  const r = meta.ranks[hero] ?? { top: 0, seen: 0, pick: 0 };
+  if (!max || played !== r.top || r.top >= max) return 0;
+  r.top++;
+  r.pick = r.top;
+  meta.ranks[hero] = r;
+  store('meta', meta);
+  return r.top;
+}
+
+/** A promotion the hire screen hasn't shown yet: the rank the hero had on the last look and the one they have now. */
+export function rankPromotion(hero: HeroId): { from: number; to: number } | null {
+  const r = meta.ranks[hero];
+  return r && r.top > r.seen ? { from: r.seen, to: r.top } : null;
+}
+
+/** The hire screen has shown the hero's rank: the promotion is not animated again. */
+export function markRankSeen(hero: HeroId): void {
+  const r = meta.ranks[hero];
+  if (!r || r.seen === r.top) return;
+  r.seen = r.top;
+  store('meta', meta);
+}
 
 /** The memos switched on for the next run. */
 export const chosenMemos = (): string[] => [...meta.memos];

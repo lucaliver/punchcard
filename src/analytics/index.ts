@@ -15,7 +15,8 @@ const path = (...parts: string[]): string => [__APP_VERSION__, ...parts].join('/
 const count = (p: string): void => {
   if (settings.analytics) send(p);
 };
-const plain = (run: RunState): boolean => run.mods.length === 0;
+/** A run under memos or at a rank above the plain shift is tagged apart: its numbers would skew the plain ones. */
+const plain = (run: RunState): boolean => run.mods.length === 0 && run.level === 0;
 
 /** Paths of a fight's result: how each enemy fares against each hero. */
 export const fightPaths = (run: RunState, enemy: string, won: boolean): string[] =>
@@ -29,7 +30,7 @@ export const rewardPaths = (run: RunState, offered: string[], picked: string | n
 export const runPaths = (run: RunState, result: RunResult): string[] => {
   const node = currentNode(run);
   return [
-    path('run', run.hero, run.mods.length ? `${result}-memo` : result),
+    path('run', run.hero, plain(run) ? result : `${result}-memo`),
     ...(result === 'lose' && plain(run) ? [path('death', `act${node.act}-floor${node.floor}`)] : []),
   ];
 };

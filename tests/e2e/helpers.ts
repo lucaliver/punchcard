@@ -7,7 +7,16 @@ import { expect, type Page } from '@playwright/test';
  */
 export async function freshGame(
   page: Page,
-  opts: { tutorial?: boolean; locked?: boolean; veteran?: boolean; debug?: boolean; stamps?: string[]; met?: string[]; heroes?: string[] } = {},
+  opts: {
+    tutorial?: boolean;
+    locked?: boolean;
+    veteran?: boolean;
+    debug?: boolean;
+    stamps?: string[];
+    met?: string[];
+    heroes?: string[];
+    ranks?: Record<string, { top: number; seen: number; pick: number }>;
+  } = {},
 ): Promise<string[]> {
   const problems: string[] = [];
   page.on('console', (m) => {
@@ -18,11 +27,11 @@ export async function freshGame(
   page.on('pageerror', (e) => problems.push(`pageerror: ${e.message}`));
   await page.goto('/');
   await page.evaluate(
-    ([seen, unlocked, veteran, debug, stamps, met, more]) => {
+    ([seen, unlocked, veteran, debug, stamps, met, more, ranks]) => {
       localStorage.clear();
       localStorage.setItem('cardstone+:settings', JSON.stringify({ seenTutorial: seen, debugMenus: debug, localeChosen: true }));
       const heroes = unlocked ? ['mage', 'necromancer', ...more] : [];
-      if (unlocked || veteran || stamps.length || met.length)
+      if (unlocked || veteran || stamps.length || met.length || Object.keys(ranks).length)
         localStorage.setItem(
           'cardstone+:meta',
           JSON.stringify({
@@ -30,13 +39,23 @@ export async function freshGame(
             met,
             heroes,
             fresh: [],
-            runs: veteran || stamps.length ? 1 : 0,
+            runs: veteran || stamps.length || Object.keys(ranks).length ? 1 : 0,
+            ranks,
             stamps,
-            actsReached: veteran || stamps.length ? [1, 2, 3] : [],
+            actsReached: veteran || stamps.length || Object.keys(ranks).length ? [1, 2, 3] : [],
           }),
         );
     },
-    [!opts.tutorial, !opts.locked, !!opts.veteran, opts.debug ?? true, opts.stamps ?? [], opts.met ?? [], opts.heroes ?? []] as const,
+    [
+      !opts.tutorial,
+      !opts.locked,
+      !!opts.veteran,
+      opts.debug ?? true,
+      opts.stamps ?? [],
+      opts.met ?? [],
+      opts.heroes ?? [],
+      opts.ranks ?? {},
+    ] as const,
   );
   await page.reload();
   // The splash screen comes first: the contract, signed with a hold the first time, then one tap (it unlocks audio).

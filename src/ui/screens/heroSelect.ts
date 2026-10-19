@@ -2,7 +2,8 @@ import { t } from '../../core/i18n';
 import { sfx } from '../../audio/sfx';
 import { haptic } from '../fx/fx';
 import { HERO_LIST, starterCards } from '../../data/heroes';
-import { chosenMemos, heroFresh, heroHidden, heroUnlocked, markHeroSeen, memosOpen } from '../../game/meta';
+import { rankMax, rankMods } from '../../data/rank';
+import { chosenMemos, heroFresh, heroHidden, heroUnlocked, markHeroSeen, markRankSeen, memosOpen, rankPromotion, records } from '../../game/meta';
 import type { HeroDef, HeroId, HeroUnlock } from '../../game/types';
 import type { Screen } from '../app';
 import { creature } from '../art/creatures';
@@ -12,7 +13,8 @@ import { dropLetters, motes } from '../components/decor';
 import { createHeroMood, type HeroMood, heroFaces } from '../components/heroMood';
 import { openMemos } from '../components/memos';
 import { openDeck, openStatInfo } from '../components/modals';
-import { h, onPress, retrigger, stagger } from '../dom';
+import { playPromotion, rankPlaque } from '../components/rank';
+import { cssMs, h, onPress, retrigger, stagger } from '../dom';
 
 /** The faces a hero in view pulls when tapped, one after the other. */
 const REACTIONS = ['cast', 'cheer', 'hurt'] as const;
@@ -28,7 +30,7 @@ const unlockText = (u: HeroUnlock): string =>
         : '';
 
 /** The faces of the hero in view (the others stand still): `slide` registers them, the screen's `frame` runs the one on show. */
-function slide(hero: HeroDef, index: number, moods: (HeroMood | null)[]): HTMLElement {
+function slide(hero: HeroDef, index: number, moods: (HeroMood | null)[], plaques: (HTMLElement | null)[]): HTMLElement {
   const id = hero.id;
   const locked = !heroUnlocked(id);
   // A locked hero shows as a dark silhouette with a padlock and, right under it, how to unlock it; its stats stay
@@ -39,6 +41,17 @@ function slide(hero: HeroDef, index: number, moods: (HeroMood | null)[]): HTMLEl
       : heroFresh(id)
         ? `<div class="hero-new">${t('hero.new')}</div>`
         : '';
+  // A hero with a career ladder wears its rank on a plaque (not in the very first run, which has no ranks to speak of).
+  // The ability's price follows the rank picked (a rank can fix it).
+  const features = heroFeatures(hero, locked, hero.ability.cost);
+  const ladder =
+    !locked && rankMax(id) > 0 && records().runs > 0
+      ? rankPlaque(id, (level) => {
+          const cost = features.querySelector('.fcost');
+          if (cost) cost.innerHTML = `${icon('crystal')}${rankMods(id, level).abilityCost ?? hero.ability.cost}`;
+        })
+      : null;
+  plaques[index] = ladder?.el ?? null;
   const el = h(
     'section',
     {
@@ -54,6 +67,7 @@ function slide(hero: HeroDef, index: number, moods: (HeroMood | null)[]): HTMLEl
     }),
     h('h2', { class: 'hero-name', 'aria-label': t(`hero.${id}.name`), html: dropLetters(t(`hero.${id}.name`)) }),
     h('p', { class: 'hero-job' }, t(`hero.${id}.job`)),
+    ladder ? ladder.el : null,
     h(
       'div',
       { class: 'hero-stats' },
@@ -69,7 +83,7 @@ function slide(hero: HeroDef, index: number, moods: (HeroMood | null)[]): HTMLEl
         h('button', { class: 'stat deck', 'aria-label': t('hero.starterDeck'), html: `${icon('cards')}${hero.startDeck.length}` }),
       ]),
     ),
-    heroFeatures(hero, locked),
+    features,
   );
   // Every stat explains itself on a tap or a hold; the deck opens the starter deck.
   for (const stat of ['hp', 'mana', 'sleeve'] as const)
@@ -111,7 +125,8 @@ export function heroSelectScreen(onStart: (hero: HeroId) => void, onBack: () => 
     heroes.findIndex((hd) => hd.id === first),
   );
   const moods: (HeroMood | null)[] = [];
-  const slides = heroes.map((hd, i) => slide(hd, i, moods));
+  const plaques: (HTMLElement | null)[] = [];
+  const slides = heroes.map((hd, i) => slide(hd, i, moods, plaques));
   const track = h('div', { class: 'hero-track', role: 'region', 'aria-label': t('hero.select') }, ...slides);
   const dots = heroes.map((hd, i) =>
     h('button', {
@@ -151,7 +166,8 @@ export function heroSelectScreen(onStart: (hero: HeroId) => void, onBack: () => 
 
   const sync = (): void => {
     const hero = heroes[index];
-    const memos = memosOpen(hero.id);
+    // A hero with a career ladder plays under its ranks instead of the memos.
+    const memos = memosOpen(hero.id) && !rankMax(hero.id);
     memoBtn.hidden = !memos;
     memoBtn.innerHTML = `${icon('clipboard')}${memos && chosenMemos().length ? `<b>${chosenMemos().length}</b>` : ''}`;
     el.dataset.hero = hero.id;
@@ -179,6 +195,24 @@ export function heroSelectScreen(onStart: (hero: HeroId) => void, onBack: () => 
     track.scrollTo({ left: target * track.clientWidth, behavior: 'instant' });
   }
 
+  // A win at the top rank promoted the hero: the plaque of the hero in view plays it once (a beat after the hero lands), and the hero cheers.
+  let stopPromotion: (() => void) | null = null;
+  let promoteTimer = 0;
+  const promote = (): void => {
+    const hero = heroes[index];
+    const plaque = plaques[index];
+    const promotion = rankPromotion(hero.id);
+    if (!plaque || !promotion) return;
+    markRankSeen(hero.id);
+    stopPromotion?.();
+    stopPromotion = playPromotion(plaque, promotion.from, promotion.to);
+    moods[index]?.flash('cheer', 1.6);
+  };
+  const promoteSoon = (): void => {
+    clearTimeout(promoteTimer);
+    promoteTimer = window.setTimeout(promote, cssMs('--dur-promote-wait'));
+  };
+
   // The hero in view is the selection; update as soon as the carousel settles on a new one.
   track.addEventListener(
     'scroll',
@@ -188,6 +222,7 @@ export function heroSelectScreen(onStart: (hero: HeroId) => void, onBack: () => 
       index = i;
       sfx('tap');
       sync();
+      promoteSoon();
     },
     { passive: true },
   );
@@ -218,6 +253,11 @@ export function heroSelectScreen(onStart: (hero: HeroId) => void, onBack: () => 
     el,
     enter() {
       track.scrollTo({ left: index * track.clientWidth, behavior: 'instant' });
+      promoteSoon();
+    },
+    leave() {
+      clearTimeout(promoteTimer);
+      stopPromotion?.();
     },
     frame(dt) {
       moods[index]?.frame(dt);

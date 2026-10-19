@@ -4,6 +4,7 @@ import { sfx } from '../../audio/sfx';
 import type { HeroId } from '../../game/types';
 import { collection, type RunRecord } from '../../game/meta';
 import { MAIN_ACTS } from '../../data/acts';
+import { rankMax } from '../../data/rank';
 import { currentNode, type RunEnd, type RunState } from '../../game/run';
 import type { Screen } from '../app';
 import type { Section } from './compendium';
@@ -12,6 +13,7 @@ import { h } from '../dom';
 import { creature } from '../art/creatures';
 import { icon } from '../art/icons';
 import { groupCopies, sortCards } from '../components/modals';
+import { rankTitle } from '../components/rank';
 import { payslipImage, type ShareSlip, shareImage, slipRows } from '../components/shareSlip';
 import { dropLetters, motes } from '../components/decor';
 import { createHeroMood, heroFaces } from '../components/heroMood';
@@ -51,6 +53,7 @@ export function endScreen(
       elites: run.stats.elites,
       cards: run.stats.cardsPlayed,
       memos: run.mods.length,
+      rank: run.level ? rankTitle(run.level) : undefined,
       pay: run.money,
       damage: run.stats.damageTaken,
     },
@@ -109,11 +112,13 @@ export function endScreen(
         }),
       ),
       h('p', { class: 'sub' }, won ? t('end.victoryDesc') : t('end.defeatDesc', { n: node.floor })),
-      // Shown after a full day: tapping it opens the hire screen on this hero, where the memos are pinned up.
-      won && node.act >= MAIN_ACTS
+      // Shown after a full day: tapping it opens the hire screen on this hero, where the memos are pinned up, or the promotion is played on the plaque.
+      end.promoted || (won && node.act >= MAIN_ACTS && !rankMax(run.hero))
         ? h('button', {
             class: 'new-hire memo-note',
-            html: `<i class="lead">${icon('clipboard')}</i><div><b>${t('end.memosTitle')}</b><span>${t('end.memosOpen', { hero: t(`hero.${run.hero}.name`) })}</span></div><i class="go">${icon('left')}</i>`,
+            html: end.promoted
+              ? `<i class="lead">${icon('ladder')}</i><div><b>${t('end.promotedTitle')}</b><span>${t('end.promoted', { hero: t(`hero.${run.hero}.name`), title: rankTitle(end.promoted) })}</span></div><i class="go">${icon('left')}</i>`
+              : `<i class="lead">${icon('clipboard')}</i><div><b>${t('end.memosTitle')}</b><span>${t('end.memosOpen', { hero: t(`hero.${run.hero}.name`) })}</span></div><i class="go">${icon('left')}</i>`,
             onclick: () => {
               sfx('button');
               haptic('tap');

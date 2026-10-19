@@ -1,6 +1,6 @@
 import type { CardTally, Combat } from '../../game/combat';
 import { fightFacts, fightSignals, learn, pressureScale } from '../../game/pressure';
-import { currentNode, enemyScale, pressureLearns, type RunState } from '../../game/run';
+import { currentNode, enemyScale, pressureLearns, runMods, type RunState } from '../../game/run';
 import { settings } from '../../game/settings';
 
 /** Temporary debug tool: with the debug menus on, every fight of a run is noted down and the run's end saves the notes as a text file, one JSON object per line. */
@@ -87,7 +87,7 @@ export function logFight(run: RunState, combat: Combat): void {
       hpTrail: stats.hpTrail,
       pressure: {
         before: rounded(run.pressure, 2),
-        enemyScale: rounded(enemyScale(node, run.mods, run.pressure), 2),
+        enemyScale: rounded(enemyScale(node, runMods(run), run.pressure), 2),
         pressureScale: rounded(pressureScale(run.pressure, run.mods.length > 0), 2),
         ...(learned ? { signals: rounded(fightSignals(facts), 2), after: rounded(learn(run.pressure, facts), 2) } : {}),
       },

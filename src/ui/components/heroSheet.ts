@@ -2,7 +2,7 @@ import { t } from '../../core/i18n';
 import { sfx } from '../../audio/sfx';
 import { HEROES } from '../../data/heroes';
 import { RELICS, abilityCostWith, abilityEveryFight, relicSum } from '../../data/relics';
-import type { RunState } from '../../game/run';
+import { runMods, type RunState } from '../../game/run';
 import type { HeroDef } from '../../game/types';
 import { openModal } from '../app';
 import { creature } from '../art/creatures';
@@ -43,7 +43,12 @@ export function heroFeatures(hero: HeroDef, hidden = false, abilityCost = hero.a
 export function openHeroSheet(run: RunState): void {
   const hero = HEROES[run.hero];
   sfx('tap');
-  const features = heroFeatures(hero, false, abilityCostWith(hero.ability.cost, run.relics), abilityEveryFight(run.relics));
+  const features = heroFeatures(
+    hero,
+    false,
+    abilityCostWith(runMods(run).abilityCost ?? hero.ability.cost, run.relics),
+    abilityEveryFight(run.relics),
+  );
   const sleeve = Math.max(1, hero.sleeve + relicSum(run.relics, 'sleeve') - run.sleeveLost);
   const mana = hero.maxMana + relicSum(run.relics, 'maxMana') + run.crystals;
   const relics = run.relics.map((id) =>

@@ -58,9 +58,10 @@ test('a tab left open for a day asks for a reload on the home', async ({ page })
   expect(problems).toEqual([]);
 });
 
-test('a hero who has won a full day can pin up management memos before a run', async ({ page }) => {
-  const problems = await freshGame(page, { stamps: ['warrior:3'] });
+test('a hero without a career ladder, once a full day is won, can pin up management memos before a run', async ({ page }) => {
+  const problems = await freshGame(page, { stamps: ['necromancer:3'] });
   await page.getByRole('button', { name: /new run/i }).click();
+  await page.locator('.hero-dot').nth(2).click();
   const memos = page.locator('.memo-btn');
   await expect(memos).toBeVisible();
   await memos.click();
@@ -68,13 +69,85 @@ test('a hero who has won a full day can pin up management memos before a run', a
   await page.locator('.setting.memo .switch').nth(5).click();
   await page.getByRole('button', { name: 'Close' }).click();
   await expect(memos.locator('b')).toHaveText('2');
-  // Other heroes haven't earned them.
-  await page.locator('.hero-arrow.next').click();
-  await expect(memos).toBeHidden();
+  // Other heroes haven't earned them, and the warrior plays under its ranks instead.
   await page.locator('.hero-arrow.prev').click();
+  await expect(memos).toBeHidden();
+  await page.locator('.hero-arrow.next').click();
   await expect(memos).toBeVisible();
   await page.getByRole('button', { name: /start shift/i }).click();
   await expect.poll(() => page.evaluate('window.__game.run.mods')).toEqual(['quotas', 'budget']);
+  expect(problems).toEqual([]);
+});
+
+test('the warrior wears a rank plaque that opens the ladder, and the next run is played at the rank picked', async ({ page }) => {
+  const problems = await freshGame(page, { ranks: { warrior: { top: 3, seen: 3, pick: 3 } } });
+  await page.getByRole('button', { name: /new run/i }).click();
+  const plaque = page.locator('.rank-plaque');
+  await expect(plaque).toHaveCount(1);
+  await expect(plaque).toContainText('Senior Specialist');
+  await expect(page.locator('.memo-btn')).toBeHidden();
+  await plaque.click();
+  const rows = page.locator('.rank-row');
+  await expect(rows).toHaveCount(11);
+  await expect(page.locator('.rank-row.picked')).toContainText('Senior Specialist');
+  await expect(page.locator('.rank-row.locked')).toHaveCount(7);
+  // A rank not reached yet can't be picked; one below the top can.
+  await rows.nth(6).click({ force: true });
+  await expect(page.locator('.rank-row.picked')).toContainText('Senior Specialist');
+  await rows.nth(2).click();
+  await expect(page.locator('.rank-row.picked')).toContainText('Specialist');
+  await page.getByRole('button', { name: 'Close' }).click();
+  await expect(plaque).toContainText('Specialist');
+  // A hero without a ladder has no plaque.
+  await page.locator('.hero-arrow.next').click();
+  await expect(page.locator('.hero-slide.current .rank-plaque')).toHaveCount(0);
+  await page.locator('.hero-arrow.prev').click();
+  await page.getByRole('button', { name: /start shift/i }).click();
+  await expect.poll(() => page.evaluate('window.__game.run.level')).toBe(2);
+  expect(await page.evaluate('window.__game.run.deck.length')).toBe(20);
+  expect(problems).toEqual([]);
+});
+
+test('no rank plaque on the very first run', async ({ page }) => {
+  const problems = await freshGame(page);
+  await page.getByRole('button', { name: /new run/i }).click();
+  await expect(page.locator('.rank-plaque')).toHaveCount(0);
+  expect(problems).toEqual([]);
+});
+
+test('a promotion is played on the plaque once, when the hire screen opens', async ({ page }) => {
+  const problems = await freshGame(page, { ranks: { warrior: { top: 2, seen: 1, pick: 2 } } });
+  await page.getByRole('button', { name: /new run/i }).click();
+  const plaque = page.locator('.rank-plaque');
+  await expect(plaque.locator('.rk-stamp')).toBeVisible();
+  await expect(plaque.locator('.rk-n')).toHaveText('2');
+  await expect(plaque.locator('.rk-stamp')).toBeHidden({ timeout: 5000 });
+  expect(await page.evaluate(() => JSON.parse(localStorage.getItem('cardstone+:meta') ?? '{}').ranks.warrior.seen)).toBe(2);
+  // Seen once: coming back plays nothing.
+  await page.getByRole('button', { name: 'Main menu' }).click();
+  await page.getByRole('button', { name: /new run/i }).click();
+  await page.waitForTimeout(1200);
+  await expect(plaque.locator('.rk-stamp')).toHaveCount(0);
+  expect(problems).toEqual([]);
+});
+
+test('clocking out of a full day at the top rank promotes the warrior, and the end screen says so', async ({ page }) => {
+  const problems = await freshGame(page, { veteran: true, stamps: ['warrior:3'] });
+  await page.getByRole('button', { name: /new run/i }).click();
+  await page.getByRole('button', { name: /start shift/i }).click();
+  await page.evaluate(
+    "(() => { const g = window.__game; const n = g.run.nodes.find((x) => x.type === 'boss' && x.act === 3); g.run.current = n.id; g.run.cleared = true; g.run.path = [0, n.id]; g.goJourney(); })()",
+  );
+  await page
+    .locator('.modal.weekend-fork')
+    .getByRole('button', { name: /clock out for good/i })
+    .click();
+  const note = page.locator('.memo-note');
+  await expect(note).toContainText('Promotion', { timeout: 8000 });
+  await expect(note).toContainText('Associate');
+  await note.click();
+  await expect(page.locator('.rank-plaque .rk-stamp')).toBeVisible();
+  await expect(page.locator('.rank-plaque .rk-n')).toHaveText('1');
   expect(problems).toEqual([]);
 });
 

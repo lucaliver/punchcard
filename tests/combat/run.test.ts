@@ -3,6 +3,7 @@ import { Rng } from '../../src/core/rng';
 import { CONFIG, relicGuarantee, rewardOdds, rewardUpgradeChance } from '../../src/data/config';
 import { ENEMIES, enemiesFor } from '../../src/data/enemies';
 import { HEROES } from '../../src/data/heroes';
+import { NO_MODS, resolveMods } from '../../src/data/modifiers';
 import { CARD_LIST, CARDS, RARITY_ORDER, cardCostOf, cardKeywordsOf } from '../../src/data/cards';
 import { RELICS } from '../../src/data/relics';
 import { WHEEL } from '../../src/data/wheel';
@@ -655,9 +656,9 @@ describe('management memos', () => {
     const hard = newRun('warrior', 7, [], ['quotas', 'hostile', 'speedUp', 'benefits', 'noBreaks', 'budget']);
     expect(hard.maxHp).toBe(Math.round(HEROES.warrior.hp * 0.8));
     const node = currentNode(plain);
-    expect(enemyScale(node, hard.mods).hp).toBeCloseTo(enemyScale(node).hp * 1.25);
-    expect(enemyScale(node, hard.mods).dmg).toBeCloseTo(enemyScale(node).dmg * 1.25);
-    expect(enemyScale(node, ['quotas', 'quotas']).hp).toBeCloseTo(enemyScale(node).hp * 1.25 ** 2);
+    expect(enemyScale(node, resolveMods(hard.mods)).hp).toBeCloseTo(enemyScale(node).hp * 1.25);
+    expect(enemyScale(node, resolveMods(hard.mods)).dmg).toBeCloseTo(enemyScale(node).dmg * 1.25);
+    expect(enemyScale(node, resolveMods(['quotas', 'quotas'])).hp).toBeCloseTo(enemyScale(node).hp * 1.25 ** 2);
     plain.hp = 1;
     hard.hp = 1;
     expect(restHeal(hard)).toBeLessThan(restHeal(plain));
@@ -809,11 +810,11 @@ describe('adaptive difficulty', () => {
     const r = fightRun();
     const high = { hp: 1, dmg: -1 };
     for (const node of [currentNode(r), ...r.nodes.filter((n) => n.type === 'elite' || n.type === 'boss')]) {
-      expect(enemyScale(node, [], high).hp).toBeCloseTo(enemyScale(node).hp * (1 + max.up));
-      expect(enemyScale(node, [], high).dmg).toBeCloseTo(enemyScale(node).dmg * (1 - max.down));
+      expect(enemyScale(node, NO_MODS, high).hp).toBeCloseTo(enemyScale(node).hp * (1 + max.up));
+      expect(enemyScale(node, NO_MODS, high).dmg).toBeCloseTo(enemyScale(node).dmg * (1 - max.down));
     }
     r.pressure = high;
-    expect(combatSetup(r).scale).toEqual(enemyScale(currentNode(r), [], high));
+    expect(combatSetup(r).scale).toEqual(enemyScale(currentNode(r), NO_MODS, high));
   });
 
   it('reads every won fight from the first one, and never in the very first run', () => {
@@ -840,7 +841,7 @@ describe('adaptive difficulty', () => {
     expect(r.pressure.hp).toBeGreaterThan(0.4);
     win(r, 1, 120, 80, true);
     expect(r.pressure).toEqual({ hp: -1, dmg: -1 });
-    expect(enemyScale(currentNode(r), [], r.pressure).hp).toBeCloseTo(enemyScale(currentNode(r)).hp * 0.9);
+    expect(enemyScale(currentNode(r), NO_MODS, r.pressure).hp).toBeCloseTo(enemyScale(currentNode(r)).hp * 0.9);
     win(r, 9999, 50, 0);
     expect(r.pressure.hp).toBeCloseTo(-1 + rate.normal * 2);
   });
