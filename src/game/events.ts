@@ -1,5 +1,17 @@
-import { EVENT_LIST, type EventChoice, type EventDef, type EventFx, type EventResult } from '../data/events';
-import { canGiftRelic, canShred, canUpgrade, currentNode, giftCard, giftRelic, rngOf, shredCard, upgradeCard, type RunState } from './run';
+import { EVENT_LIST, EVENTS, type EventChoice, type EventDef, type EventFx, type EventResult } from '../data/events';
+import {
+  canGiftRelic,
+  canShred,
+  canUpgrade,
+  currentNode,
+  giftCard,
+  giftRelic,
+  isFirstRun,
+  rngOf,
+  shredCard,
+  upgradeCard,
+  type RunState,
+} from './run';
 import type { CardInst } from './types';
 
 /** The smallest max HP an event may leave the hero with. */
@@ -30,6 +42,8 @@ export function eligibleEvents(run: RunState): EventDef[] {
 
 /** The event of the room the player is in: weighted among the ones that fit (a chapter of a story the run began is far likelier than a new scene). */
 export function rollEvent(run: RunState): EventDef {
+  // The teaching run tells the story from its first scene: the janitor's spill.
+  if (isFirstRun(run) && currentNode(run).act === 1) return EVENTS.spill;
   const rng = rngOf(run);
   const pool = eligibleEvents(run);
   // An act whose whole list is spent (a very long run of the same hero) deals the first one again rather than an empty room.

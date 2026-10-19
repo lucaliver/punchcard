@@ -78,7 +78,7 @@ export const EVENT_LIST: EventDef[] = [
     id: 'janitorKey',
     acts: [2, 2],
     speaker: 'nightJanitor',
-    weight: 40,
+    weight: 1000,
     needs: 'janitorFriend',
     choices: [
       sure('key', { kind: 'upgrade' }, { kind: 'flag', id: 'janitorKey' }),
@@ -89,7 +89,7 @@ export const EVENT_LIST: EventDef[] = [
     id: 'janitorTruth',
     acts: [3, 3],
     speaker: 'nightJanitor',
-    weight: 40,
+    weight: 1000,
     needs: 'janitorKey',
     choices: [
       sure('listen', { kind: 'relic' }, { kind: 'flag', id: 'janitorTruth' }),
@@ -109,7 +109,7 @@ export const EVENT_LIST: EventDef[] = [
     id: 'promoted',
     acts: [2, 4],
     speaker: 'newHire',
-    weight: 40,
+    weight: 1000,
     needs: 'newHireFriend',
     choices: [sure('favour', { kind: 'card', rarity: 'rare' }), sure('money', { kind: 'pay', n: 120 }, { kind: 'maxHp', n: 4 })],
   },
@@ -223,6 +223,136 @@ export const EVENT_LIST: EventDef[] = [
       sure('bin', { kind: 'maxHp', n: 3 }),
     ],
   },
+  // ---- more of the building
+  {
+    id: 'fireDrill',
+    acts: [1, 3],
+    speaker: 'smokeDetector',
+    weight: 2,
+    choices: [
+      sure('evacuate', { kind: 'heal', pct: 0.25 }),
+      sure('stay', { kind: 'pay', n: 90 }, { kind: 'hp', n: -6 }),
+      gamble('pull', [1, { kind: 'card', rarity: 'common' }], [1, { kind: 'hp', n: -8 }]),
+    ],
+  },
+  {
+    id: 'secretSanta',
+    acts: [1, 4],
+    weight: 2,
+    choices: [
+      sure('generous', { kind: 'pay', n: -40 }, { kind: 'maxHp', n: 6 }),
+      sure('cheap', { kind: 'card', rarity: 'common' }),
+      sure('skip', { kind: 'heal', pct: 0.15 }),
+    ],
+  },
+  {
+    id: 'microwave',
+    acts: [1, 3],
+    speaker: 'microwave',
+    weight: 2,
+    choices: [
+      sure('open', { kind: 'hp', n: -8 }, { kind: 'upgradeRandom' }),
+      sure('clean', { kind: 'maxHp', n: 4 }),
+      sure('note', { kind: 'pay', n: 40 }),
+    ],
+  },
+  {
+    id: 'lunchAndLearn',
+    acts: [1, 3],
+    speaker: 'wellnessCoach',
+    weight: 2,
+    choices: [
+      sure('listen', { kind: 'upgradeRandom' }),
+      sure('sandwich', { kind: 'heal', pct: 0.25 }),
+      gamble('heckle', [1, { kind: 'pay', n: 100 }], [1, { kind: 'hp', n: -8 }]),
+    ],
+  },
+  {
+    id: 'reorg',
+    acts: [2, 3],
+    speaker: 'changeManager',
+    weight: 2,
+    choices: [
+      sure('embrace', { kind: 'shred' }, { kind: 'heal', pct: 0.15 }),
+      sure('resist', { kind: 'hp', n: -8 }, { kind: 'upgrade' }),
+      sure('negotiate', { kind: 'pay', n: 60 }),
+    ],
+  },
+  {
+    id: 'bonus',
+    acts: [2, 4],
+    speaker: 'outgoingVp',
+    weight: 2,
+    choices: [
+      sure('clap', { kind: 'heal', pct: 0.2 }),
+      gamble('ask', [1, { kind: 'relic' }], [2, { kind: 'hp', n: -6 }]),
+      sure('bank', { kind: 'upgradeRandom' }),
+    ],
+  },
+  {
+    id: 'officeDog',
+    acts: [1, 4],
+    speaker: 'offLeashDog',
+    weight: 2,
+    choices: [
+      sure('pet', { kind: 'heal', pct: 0.3 }),
+      sure('walk', { kind: 'hp', n: -4 }, { kind: 'pay', n: 70 }),
+      sure('hire', { kind: 'card', rarity: 'common' }),
+    ],
+  },
+  {
+    id: 'salaryTalk',
+    acts: [2, 4],
+    speaker: 'beanCounter',
+    weight: 2,
+    choices: [
+      gamble('ask', [1, { kind: 'pay', n: 250 }], [2, { kind: 'hp', n: -8 }]),
+      sure('benefits', { kind: 'maxHp', n: 6 }),
+      sure('quit', { kind: 'hp', n: -10 }, { kind: 'relic' }),
+    ],
+  },
+  {
+    id: 'elevatorPitch',
+    acts: [1, 4],
+    speaker: 'vipClient',
+    weight: 2,
+    choices: [
+      gamble('pitch', [1, { kind: 'pay', n: 180 }], [1, { kind: 'hp', n: -8 }]),
+      sure('silence', { kind: 'maxHp', n: 4 }),
+      sure('card', { kind: 'card', rarity: 'common' }),
+    ],
+  },
+  {
+    id: 'hrSurvey',
+    acts: [1, 3],
+    speaker: 'happinessOfficer',
+    weight: 2,
+    choices: [
+      sure('lie', { kind: 'pay', n: 50 }),
+      sure('honest', { kind: 'hp', n: -6 }, { kind: 'upgrade' }),
+      sure('blank', { kind: 'heal', pct: 0.15 }),
+    ],
+  },
+  // ---- the intern: help in the morning, and they remember at night
+  {
+    id: 'internCoffee',
+    acts: [1, 2],
+    speaker: 'graveyardIntern',
+    weight: 3,
+    choices: [
+      sure('help', { kind: 'hp', n: -4 }, { kind: 'flag', id: 'internFriend' }),
+      sure('ignore'),
+      sure('warn', { kind: 'heal', pct: 0.1 }, { kind: 'flag', id: 'internFriend' }),
+    ],
+  },
+  {
+    id: 'internReturns',
+    acts: [3, 3],
+    speaker: 'graveyardIntern',
+    weight: 1000,
+    needs: 'internFriend',
+    choices: [sure('take', { kind: 'relic' }), sure('hug', { kind: 'maxHp', n: 8 }), sure('advise', { kind: 'heal', pct: 0.5 })],
+  },
   // ---- each hero's own scene
   {
     id: 'armClaim',
@@ -292,6 +422,26 @@ export const EVENT_LIST: EventDef[] = [
       sure('sit', { kind: 'heal', pct: 0.45 }),
       gamble('search', [1, { kind: 'relic' }], [1, { kind: 'hp', n: -12 }]),
       sure('leaveLights', { kind: 'maxHp', n: 5 }),
+    ],
+  },
+  {
+    id: 'lateNight',
+    acts: [3, 3],
+    weight: 3,
+    choices: [
+      sure('eat', { kind: 'heal', pct: 0.4 }),
+      sure('sell', { kind: 'pay', n: 150 }),
+      gamble('ask', [1, { kind: 'relic' }], [1, { kind: 'hp', n: -10 }]),
+    ],
+  },
+  {
+    id: 'rooftop',
+    acts: [3, 3],
+    weight: 3,
+    choices: [
+      sure('stay', { kind: 'heal', pct: 0.35 }),
+      sure('wave', { kind: 'maxHp', n: 6 }),
+      sure('throw', { kind: 'shred' }, { kind: 'heal', pct: 0.1 }),
     ],
   },
   // ---- the weekend

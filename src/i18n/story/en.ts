@@ -411,4 +411,160 @@ export const storyEn = {
   'condition.auditWeek.d': 'Everything you do is being measured: the enemy has {n} [thorns].',
   'condition.wellnessWeek.name': 'Wellness Week',
   'condition.wellnessWeek.d': 'Smoothies for the enemy: it heals {$smileHeal} HP every {$smileEvery}s.',
+  'event.fireDrill.title': 'Fire Drill',
+  'event.fireDrill.text':
+    'The alarm goes off. Everyone files out, talking about lunch. The Smoke Detector over your desk has not stopped chirping since March. A man with a clipboard counts heads, and then counts them again.',
+  'event.fireDrill.evacuate': 'Walk out with the others.',
+  'event.fireDrill.evacuate.0': 'You stand in the car park in the sun. Nobody mentions work. It is the best fire in years.',
+  'event.fireDrill.stay': 'Stay and keep working.',
+  'event.fireDrill.stay.0': 'Smoke, a deadline and nobody to talk to. You are noted as "dedicated", in a file you will never read.',
+  'event.fireDrill.pull': 'Pull the real alarm, for science.',
+  'event.fireDrill.pull.0': 'The sprinklers come on. In the chaos, something useful floats past, and you catch it.',
+  'event.fireDrill.pull.1': 'Everyone looks at you. A man with a clipboard writes, very slowly, and the clipboard is the heaviest thing in the room.',
+  'event.secretSanta.title': 'Secret Santa',
+  'event.secretSanta.text':
+    'Budget: five euros. Someone has spent twelve. Someone has spent one. Your match is somebody from Accounting, and all you know is that they like "things".',
+  'event.secretSanta.generous': 'Spend big. Be remembered.',
+  'event.secretSanta.generous.0': 'They open it and cry. It is a nice stapler. Somebody takes a photo, and for a day you are a person.',
+  'event.secretSanta.cheap': 'Wrap something you stole.',
+  'event.secretSanta.cheap.0':
+    'A stapler, from a desk that is not yours. It is received with joy. Of all the things that go around, this one goes best.',
+  'event.secretSanta.skip': 'Say you are ill.',
+  'event.secretSanta.skip.0': 'You spend the afternoon in a stairwell with a thermos and a wonderful, shameful peace.',
+  'event.microwave.title': 'Leftover Fish',
+  'event.microwave.text':
+    'Someone has microwaved fish. The Break Room Microwave, still ticking, has the expression of an appliance that has seen things. A queue of colleagues waits at a respectful distance, all holding their breath.',
+  'event.microwave.open': 'Open the door. Be brave.',
+  'event.microwave.open.0': 'You open it. The air has a texture. You learn, quickly, to breathe in a different way, and that is a skill.',
+  'event.microwave.clean': 'Clean it in silence.',
+  'event.microwave.clean.0':
+    "A hero's work is never thanked, but it is noticed by exactly one person. They leave a small drawing on your desk. It is of you, with a halo.",
+  'event.microwave.note': 'Leave a passive-aggressive note.',
+  'event.microwave.note.0': '"Some of us have noses." It is stuck to the door for a week. In your next review it is described as "proactive".',
+  'event.lunchAndLearn.title': 'Lunch & Learn',
+  'event.lunchAndLearn.text':
+    'Free sandwiches, if you attend a talk called "Resilience: A Mindset". The Wellness Coach stands before a slide that says only BREATHE. The sandwiches are on a table at the back, guarded by a plant.',
+  'event.lunchAndLearn.listen': 'Listen. Take notes.',
+  'event.lunchAndLearn.listen.0':
+    'It is mostly breathing. But, around minute thirty, one sentence is useful, and you write it on your hand. Something in your kit is better for it.',
+  'event.lunchAndLearn.sandwich': 'Take the sandwiches and leave.',
+  'event.lunchAndLearn.sandwich.0': 'You pass the plant, which says nothing. The sandwiches are the best thing that has happened to you this week.',
+  'event.lunchAndLearn.heckle': 'Ask how resilience pays the rent.',
+  'event.lunchAndLearn.heckle.0':
+    'Silence. Then applause, from the back, and then from everywhere. The Coach looks at his slide, which still says BREATHE, and does.',
+  'event.lunchAndLearn.heckle.1':
+    'You are escorted out by someone who calls it "an opportunity to reflect". The sandwiches stay where they are. The plant smiles.',
+  'event.reorg.title': 'The Reorg',
+  'event.reorg.text':
+    'Overnight, every desk has moved one to the left. Yours is now in a cupboard under a sign that says STRATEGIC ALIGNMENT. The Change Manager, in a gilded tracksuit, has a new word: "pivot".',
+  'event.reorg.embrace': 'Embrace the change.',
+  'event.reorg.embrace.0':
+    'You say "pivot" with your whole chest. Something you have carried for too long is sent to the shredder as "legacy". You feel lighter, and a bit nauseous.',
+  'event.reorg.resist': 'Refuse to move desks.',
+  'event.reorg.resist.0': "You sit at the old desk, which is now someone else's. You are, for two days, the problem. Dug in, your methods sharpen.",
+  'event.reorg.negotiate': 'Negotiate a window seat.',
+  'event.reorg.negotiate.0':
+    'You get the window. It looks onto another window. A small payment arrives for "flexibility", which is apparently a thing you did.',
+  'event.bonus.title': 'Bonus Announcement',
+  'event.bonus.text':
+    'The Outgoing VP gathers everyone for an announcement. "Great news!" he says. "There is a bonus!" Applause. "It is a bonus of... experience." Silence. Somebody drops a stapler.',
+  'event.bonus.clap': 'Clap anyway.',
+  'event.bonus.clap.0': 'You clap with the rest. It is surprisingly warm, as a feeling. The Outgoing VP bows, to nobody, and leaves.',
+  'event.bonus.ask': 'Ask what the bonus actually is.',
+  'event.bonus.ask.0':
+    'He looks at you for a long time. Then he opens a drawer and gives you something that was, in fact, a real bonus, from a time when there were such things.',
+  'event.bonus.ask.1': '"Experience," he says again, and presents you with a form to describe it. The form is nine pages. You describe it. It hurts.',
+  'event.bonus.bank': 'Bank the "experience" and leave.',
+  'event.bonus.bank.0':
+    'Experience, it turns out, is a currency, if you spend it in the right place. You spend it in the right place. Something of yours is sharper.',
+  'event.lateNight.title': 'Night Delivery',
+  'event.lateNight.text':
+    'At two in the morning the lift opens. A delivery driver, soaked, holds forty pizzas nobody ordered. "It is on your account," he says. "Everyone\'s account." He does not blink. He has been here a long time.',
+  'event.lateNight.eat': 'Eat until you cannot feel it.',
+  'event.lateNight.eat.0': 'Cold pizza at two in the morning is a sacrament. You eat three slices and are, briefly, forgiven.',
+  'event.lateNight.sell': 'Sell them to the night shift.',
+  'event.lateNight.sell.0': 'The night shift pays in small notes and large silences. By dawn there are no pizzas, and no one remembers a delivery.',
+  'event.lateNight.ask': 'Ask who ordered them.',
+  'event.lateNight.ask.0':
+    'The driver looks at the ceiling, then at you. "Someone who is no longer here," he says, and hands you something under the box. It is warm.',
+  'event.lateNight.ask.1': 'The ceiling looks back. You do not ask a second question. Your ears ring for a while.',
+  'event.rooftop.title': 'The Rooftop',
+  'event.rooftop.text':
+    'Eleven floors up, the whole city sleeps except for one lit window, just like yours. Someone is up here who does not smoke, smoking. "I just come for the view," they say. "The view is a window with more windows."',
+  'event.rooftop.stay': 'Stay a while.',
+  'event.rooftop.stay.0':
+    'The wind is the first thing all day that has not asked you for anything. You stay until your hands are cold and your head is not.',
+  'event.rooftop.wave': 'Wave at the other window.',
+  'event.rooftop.wave.0': 'Someone in it waves back. A long way away, small, tired. It is, you realise, someone exactly like you. It helps.',
+  'event.rooftop.throw': 'Throw something off the edge.',
+  'event.rooftop.throw.0':
+    'A card drifts down into the dark. It lands nowhere. You feel lighter than you did, and somewhat guilty about the traffic.',
+  'event.officeDog.title': 'Dog Day',
+  'event.officeDog.text':
+    "There is a dog in the office. It is not anyone's. It has a lanyard, and a face that suggests it has been hired. Everyone is happy and nobody is working.",
+  'event.officeDog.pet': 'Pet the dog.',
+  'event.officeDog.pet.0': 'The dog leans on your leg with its whole weight. It is the most honest relationship you have had this week.',
+  'event.officeDog.walk': 'Take it for a walk.',
+  'event.officeDog.walk.0': "It has strong opinions about squirrels and the pavement is not on your side. A passer-by tips you for the dog's sake.",
+  'event.officeDog.hire': 'Recommend it for a promotion.',
+  'event.officeDog.hire.0': 'It is promoted to Head of Morale. In gratitude, it brings you something from the back of the stockroom, tail going.',
+  'event.salaryTalk.title': 'Salary Talk',
+  'event.salaryTalk.text':
+    'The Bean Counter will see you now. There is a spreadsheet with your name on it, which is also your worth. "Raises," he says, "are a state of mind. The budget has no mind."',
+  'event.salaryTalk.ask': 'Ask for a raise.',
+  'event.salaryTalk.ask.0': 'He sighs, and taps a cell. The cell changes. It is a small miracle of arithmetic, and it will not be repeated.',
+  'event.salaryTalk.ask.1': '"No," he says, with great tenderness. A sound leaves you that was supposed to be a sentence.',
+  'event.salaryTalk.benefits': 'Ask for benefits instead.',
+  'event.salaryTalk.benefits.0':
+    'A gym membership, a dental plan and an app that reminds you to drink water. You do not know why, but you feel sturdier.',
+  'event.salaryTalk.quit': 'Pretend to hand in your notice.',
+  'event.salaryTalk.quit.0':
+    'He panics. A counter-offer: something from the cupboard of things given to people who might leave. The lie costs you, though. You are not a good liar.',
+  'event.elevatorPitch.title': 'Elevator Pitch',
+  'event.elevatorPitch.text':
+    'The VIP Client is trapped in the lift with you. He says nothing, and it says everything. The lift moves at the speed of a decision. You have ninety seconds and a floor-by-floor chance to be remembered.',
+  'event.elevatorPitch.pitch': 'Give the pitch of your life.',
+  'event.elevatorPitch.pitch.0':
+    'Fourth floor: nothing. Ninth floor: a smile. Eleventh: he writes something down. You are paid in handshakes and the real thing.',
+  'event.elevatorPitch.pitch.1': 'He says "interesting" in a way that closes doors. The rest of the ride is a silence you can feel in your teeth.',
+  'event.elevatorPitch.silence': 'Say nothing. Stare ahead.',
+  'event.elevatorPitch.silence.0':
+    'He respects it. You both get off at different floors, each convinced you won. It is, in the end, a kind of strength.',
+  'event.elevatorPitch.card': 'Hand him a business card.',
+  'event.elevatorPitch.card.0': 'He reads it twice, folds it, and gives you his own. Yours says only your name. His says someone you could use.',
+  'event.hrSurvey.title': 'Anonymous Survey',
+  'event.hrSurvey.text':
+    'The Happiness Officer hands out an anonymous survey. Each copy is numbered. "How happy are you?" it asks. "Be honest." "Honesty," she adds, "is not anonymous."',
+  'event.hrSurvey.lie': 'Tick "very happy" everywhere.',
+  'event.hrSurvey.lie.0':
+    'A perfect score. You are invited to a Culture Lunch where you are paid for being happy. It is, at last, a job you are good at.',
+  'event.hrSurvey.honest': 'Tell the truth, in full.',
+  'event.hrSurvey.honest.0':
+    'You write the whole truth in the margins. It takes four pages, and the pen runs out. Saying it sharpens something in you.',
+  'event.hrSurvey.blank': 'Leave it blank.',
+  'event.hrSurvey.blank.0': 'A blank survey is also an answer, and, you are told, a "pattern". You nap on the form, a nice thick stack.',
+  'event.internCoffee.title': 'Intern #47',
+  'event.internCoffee.text':
+    'A very young person in a very large lanyard is carrying seven coffees and a printer. "Sorry," they say. "Which floor is Finance? Or Facilities? Or God?" They have been here three days. They already look like a ghost.',
+  'event.internCoffee.help': 'Carry the printer for them.',
+  'event.internCoffee.help.0':
+    'The printer weighs more than it should. They thank you six times and write your name down, as if it might be useful. You will be remembered.',
+  'event.internCoffee.ignore': 'Point at a random floor.',
+  'event.internCoffee.ignore.0': '"Four," you say. They go to four. Four, you reflect, is probably Facilities. Probably.',
+  'event.internCoffee.warn': 'Tell them to leave while they can.',
+  'event.internCoffee.warn.0': 'They nod gravely and write it down. They do not leave. You admire it, in a way. A coffee goes cold in your hand.',
+  'event.internReturns.title': 'The Intern Returns',
+  'event.internReturns.text':
+    'Three in the morning. The Graveyard Intern, a little translucent now, finds you by the printer. "I stayed," they say. "I was made Intern Emeritus. I get a whole floor to haunt." They have kept something for you from the dead drawers.',
+  'event.internReturns.take': 'Take what they kept.',
+  'event.internReturns.take.0':
+    'It is a little cold, and slightly hers, his, theirs. It has been dusted. Someone has taken care of it, which no one has done for anything in this building.',
+  'event.internReturns.hug': 'Give them a hug (it is mostly air).',
+  'event.internReturns.hug.0':
+    'It is mostly air, and very cold, and for a moment it is the warmest thing in the whole building. They glow a little. So do you.',
+  'event.internReturns.advise': 'Tell them to go home. Now.',
+  'event.internReturns.advise.0':
+    'The door at the end of the corridor opens onto a quiet street, in the rain, for exactly one minute. They look at it for the whole minute. They do not go. But you do, a little, in spirit, and are rested for it.',
+  'epilogue.internFriend.win': 'On the third floor, a very translucent intern files your name under Emeritus. They are good at filing.',
+  'epilogue.internFriend.lose': 'On the third floor, a very translucent intern holds a door for nobody, and keeps holding it.',
 } satisfies Record<string, string>;

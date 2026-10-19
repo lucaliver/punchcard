@@ -10,6 +10,7 @@ export function epilogueKeys(run: RunState, won: boolean): string[] {
   const story = [
     hasStory(run, 'janitorTruth') ? `janitorTruth.${end}` : undefined,
     hasStory(run, 'newHireFriend') ? `newHire.${end}` : undefined,
+    hasStory(run, 'internFriend') ? `internFriend.${end}` : undefined,
     hasStory(run, 'janitorFriend') ? `janitorFriend.${end}` : undefined,
   ].find(Boolean);
   return [`${run.hero}.${end}`, ...(story ? [story] : [])].map((k) => `epilogue.${k}`);

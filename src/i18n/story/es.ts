@@ -407,4 +407,157 @@ export const storyEs: Record<keyof typeof storyEn, string> = {
   'condition.auditWeek.d': 'Todo lo que haces se mide: el enemigo tiene {n} de [thorns].',
   'condition.wellnessWeek.name': 'Semana del bienestar',
   'condition.wellnessWeek.d': 'Batidos para el enemigo: se cura {$smileHeal} PV cada {$smileEvery}s.',
+  'event.fireDrill.title': 'Simulacro de incendio',
+  'event.fireDrill.text':
+    'Suena la alarma. Todos salen en fila hablando de la comida. El Detector de Humo sobre tu mesa no deja de piar desde marzo. Un hombre con una carpeta cuenta cabezas, y luego las vuelve a contar.',
+  'event.fireDrill.evacuate': 'Sal con los demás.',
+  'event.fireDrill.evacuate.0': 'Te quedas en el aparcamiento, al sol. Nadie menciona el trabajo. Es el mejor incendio en años.',
+  'event.fireDrill.stay': 'Quédate y sigue trabajando.',
+  'event.fireDrill.stay.0': 'Humo, una fecha límite y nadie con quien hablar. Te anotan como "entregado", en un expediente que nunca leerás.',
+  'event.fireDrill.pull': 'Tira de la alarma de verdad, por la ciencia.',
+  'event.fireDrill.pull.0': 'Saltan los aspersores. En el caos, algo útil flota junto a ti y lo agarras.',
+  'event.fireDrill.pull.1': 'Todos te miran. Un hombre con una carpeta escribe, muy despacio, y la carpeta es lo más pesado de la sala.',
+  'event.secretSanta.title': 'Amigo invisible',
+  'event.secretSanta.text':
+    'Presupuesto: cinco euros. Alguien ha gastado doce. Alguien ha gastado uno. Te ha tocado alguien de Contabilidad, y solo sabes que le gustan las "cosas".',
+  'event.secretSanta.generous': 'Gasta a lo grande. Que te recuerden.',
+  'event.secretSanta.generous.0': 'Lo abren y lloran. Es una grapadora bonita. Alguien hace una foto y durante un día eres una persona.',
+  'event.secretSanta.cheap': 'Envuelve algo que robaste.',
+  'event.secretSanta.cheap.0': 'Una grapadora, de una mesa que no es tuya. La reciben con alegría. De todo lo que circula, esto circula mejor.',
+  'event.secretSanta.skip': 'Di que estás enfermo.',
+  'event.secretSanta.skip.0': 'Pasas la tarde en una escalera con un termo y una paz maravillosa y vergonzosa.',
+  'event.microwave.title': 'Pescado de ayer',
+  'event.microwave.text':
+    'Alguien ha calentado pescado. El Microondas de la Sala de Descanso, aún en marcha, tiene la expresión de un electrodoméstico que ha visto cosas. Una cola de compañeros espera a distancia respetuosa, todos aguantando la respiración.',
+  'event.microwave.open': 'Abre la puerta. Sé valiente.',
+  'event.microwave.open.0': 'La abres. El aire tiene textura. Aprendes, rápido, a respirar de otro modo, y eso es una habilidad.',
+  'event.microwave.clean': 'Límpialo en silencio.',
+  'event.microwave.clean.0':
+    'El trabajo de un héroe nunca se agradece, pero lo nota exactamente una persona. Deja un pequeño dibujo en tu mesa. Eres tú, con aureola.',
+  'event.microwave.note': 'Deja una nota pasivo-agresiva.',
+  'event.microwave.note.0': '"Algunos tenemos nariz." Queda pegada en la puerta una semana. En tu próxima evaluación se describe como "proactivo".',
+  'event.lunchAndLearn.title': 'Comida y formación',
+  'event.lunchAndLearn.text':
+    'Bocadillos gratis, si asistes a una charla titulada "Resiliencia: una actitud". El Coach de Bienestar está ante una diapositiva que solo dice RESPIRA. Los bocadillos están en una mesa al fondo, vigilados por una planta.',
+  'event.lunchAndLearn.listen': 'Escucha. Toma notas.',
+  'event.lunchAndLearn.listen.0':
+    'Es sobre todo respirar. Pero, hacia el minuto treinta, una frase es útil y te la apuntas en la mano. Algo de tu repertorio mejora.',
+  'event.lunchAndLearn.sandwich': 'Coge los bocadillos y márchate.',
+  'event.lunchAndLearn.sandwich.0': 'Pasas junto a la planta, que no dice nada. Los bocadillos son lo mejor que te ha pasado esta semana.',
+  'event.lunchAndLearn.heckle': 'Pregunta cómo la resiliencia paga el alquiler.',
+  'event.lunchAndLearn.heckle.0':
+    'Silencio. Luego un aplauso, desde el fondo, y luego de todas partes. El Coach mira su diapositiva, que sigue diciendo RESPIRA, y respira.',
+  'event.lunchAndLearn.heckle.1':
+    'Te acompaña a la salida alguien que lo llama "una oportunidad para reflexionar". Los bocadillos se quedan donde están. La planta sonríe.',
+  'event.reorg.title': 'La reorganización',
+  'event.reorg.text':
+    'De la noche a la mañana, cada mesa se ha movido un puesto a la izquierda. La tuya está ahora en un armario bajo un cartel que dice ALINEACIÓN ESTRATÉGICA. El Gestor del Cambio, en chándal dorado, tiene una palabra nueva: "pivotar".',
+  'event.reorg.embrace': 'Abraza el cambio.',
+  'event.reorg.embrace.0':
+    'Dices "pivotar" con todo el pecho. Algo que cargabas desde hacía demasiado va a la trituradora como "legado". Te sientes más ligero, y un poco mareado.',
+  'event.reorg.resist': 'Niégate a cambiar de mesa.',
+  'event.reorg.resist.0':
+    'Te quedas en la mesa vieja, que ahora es de otro. Eres, durante dos días, el problema. Atrincherado, tus métodos se afilan.',
+  'event.reorg.negotiate': 'Negocia un sitio junto a la ventana.',
+  'event.reorg.negotiate.0':
+    'Consigues la ventana. Da a otra ventana. Llega un pequeño pago por "flexibilidad", que al parecer es algo que has hecho.',
+  'event.bonus.title': 'Anuncio de bonificación',
+  'event.bonus.text':
+    'El VP Saliente reúne a todos para un anuncio. "¡Buenas noticias!", dice. "¡Hay una bonificación!" Aplausos. "Es una bonificación de... experiencia." Silencio. A alguien se le cae una grapadora.',
+  'event.bonus.clap': 'Aplaude de todos modos.',
+  'event.bonus.clap.0': 'Aplaudes con los demás. Como sensación es sorprendentemente cálida. El VP Saliente se inclina, ante nadie, y se va.',
+  'event.bonus.ask': 'Pregunta qué es en realidad la bonificación.',
+  'event.bonus.ask.0': 'Te mira largo rato. Luego abre un cajón y te da algo que era, en efecto, una bonificación de verdad, de cuando las había.',
+  'event.bonus.ask.1': '"Experiencia", repite, y te presenta un formulario para describirla. El formulario tiene nueve páginas. La describes. Duele.',
+  'event.bonus.bank': 'Ingresa la "experiencia" y márchate.',
+  'event.bonus.bank.0':
+    'La experiencia, resulta, es una moneda, si la gastas en el sitio adecuado. La gastas en el sitio adecuado. Algo tuyo está más afilado.',
+  'event.lateNight.title': 'Reparto nocturno',
+  'event.lateNight.text':
+    'A las dos de la madrugada se abre el ascensor. Un repartidor, empapado, sostiene cuarenta pizzas que nadie ha pedido. "Va a su cuenta", dice. "A la cuenta de todos." No parpadea. Lleva aquí mucho tiempo.',
+  'event.lateNight.eat': 'Come hasta no sentir nada.',
+  'event.lateNight.eat.0': 'La pizza fría a las dos de la madrugada es un sacramento. Te comes tres porciones y quedas, brevemente, perdonado.',
+  'event.lateNight.sell': 'Véndelas al turno de noche.',
+  'event.lateNight.sell.0':
+    'El turno de noche paga en billetes pequeños y grandes silencios. Al amanecer no quedan pizzas, y nadie recuerda un reparto.',
+  'event.lateNight.ask': 'Pregunta quién las pidió.',
+  'event.lateNight.ask.0':
+    'El repartidor mira al techo, luego a ti. "Alguien que ya no está", dice, y te pasa algo por debajo de la caja. Está caliente.',
+  'event.lateNight.ask.1': 'El techo te devuelve la mirada. No haces una segunda pregunta. Te zumban los oídos un rato.',
+  'event.rooftop.title': 'La azotea',
+  'event.rooftop.text':
+    'Once pisos más arriba, toda la ciudad duerme salvo una ventana iluminada, como la tuya. Hay alguien que no fuma, fumando. "Vengo solo por las vistas", dice. "Las vistas son una ventana con más ventanas."',
+  'event.rooftop.stay': 'Quédate un rato.',
+  'event.rooftop.stay.0': 'El viento es lo primero en todo el día que no te pide nada. Te quedas hasta que tienes las manos frías y la cabeza no.',
+  'event.rooftop.wave': 'Saluda a la otra ventana.',
+  'event.rooftop.wave.0': 'Alguien dentro te devuelve el saludo. Muy lejos, pequeño, cansado. Es, te das cuenta, alguien exactamente como tú. Ayuda.',
+  'event.rooftop.throw': 'Tira algo por el borde.',
+  'event.rooftop.throw.0':
+    'Una carta baja flotando a la oscuridad. No aterriza en ningún sitio. Te sientes más ligero que antes, y algo culpable por el tráfico.',
+  'event.officeDog.title': 'Día del perro',
+  'event.officeDog.text':
+    'Hay un perro en la oficina. No es de nadie. Lleva una acreditación y una cara que sugiere que lo han contratado. Todos están contentos y nadie trabaja.',
+  'event.officeDog.pet': 'Acaricia al perro.',
+  'event.officeDog.pet.0': 'El perro se apoya en tu pierna con todo su peso. Es la relación más honesta que has tenido esta semana.',
+  'event.officeDog.walk': 'Sácalo a pasear.',
+  'event.officeDog.walk.0': 'Tiene opiniones firmes sobre las ardillas y la acera no está de tu parte. Un transeúnte te da propina, por el perro.',
+  'event.officeDog.hire': 'Recomiéndalo para un ascenso.',
+  'event.officeDog.hire.0': 'Lo ascienden a Jefe de Moral. En agradecimiento, te trae algo del fondo del almacén, moviendo la cola.',
+  'event.salaryTalk.title': 'Charla salarial',
+  'event.salaryTalk.text':
+    'El Contable te recibe ahora. Hay una hoja de cálculo con tu nombre, que es también tu valor. "Los aumentos", dice, "son un estado de ánimo. El presupuesto no tiene mente."',
+  'event.salaryTalk.ask': 'Pide un aumento.',
+  'event.salaryTalk.ask.0': 'Suspira y toca una celda. La celda cambia. Es un pequeño milagro aritmético y no se repetirá.',
+  'event.salaryTalk.ask.1': '"No", dice, con gran ternura. Te sale un sonido que debía ser una frase.',
+  'event.salaryTalk.benefits': 'Pide beneficios en su lugar.',
+  'event.salaryTalk.benefits.0': 'Un gimnasio, un seguro dental y una app que te recuerda beber agua. No sabes por qué, pero te sientes más robusto.',
+  'event.salaryTalk.quit': 'Finge presentar tu dimisión.',
+  'event.salaryTalk.quit.0':
+    'Entra en pánico. Una contraoferta: algo del armario de cosas que se dan a quien podría irse. La mentira te cuesta, eso sí. No eres buen mentiroso.',
+  'event.elevatorPitch.title': 'Discurso de ascensor',
+  'event.elevatorPitch.text':
+    'El Cliente VIP está atrapado en el ascensor contigo. No dice nada, y lo dice todo. El ascensor se mueve a la velocidad de una decisión. Tienes noventa segundos y una oportunidad piso a piso de que te recuerden.',
+  'event.elevatorPitch.pitch': 'Da el discurso de tu vida.',
+  'event.elevatorPitch.pitch.0': 'Cuarta planta: nada. Novena: una sonrisa. Undécima: apunta algo. Te pagan en apretones de manos y en lo de verdad.',
+  'event.elevatorPitch.pitch.1': 'Dice "interesante" de una forma que cierra puertas. El resto del trayecto es un silencio que notas en los dientes.',
+  'event.elevatorPitch.silence': 'No digas nada. Mira al frente.',
+  'event.elevatorPitch.silence.0':
+    'Él lo respeta. Os bajáis en plantas distintas, cada uno convencido de haber ganado. Es, al final, una forma de fuerza.',
+  'event.elevatorPitch.card': 'Entrégale una tarjeta de visita.',
+  'event.elevatorPitch.card.0': 'La lee dos veces, la dobla y te da la suya. La tuya solo dice tu nombre. La suya, a alguien que podrías usar.',
+  'event.hrSurvey.title': 'Encuesta anónima',
+  'event.hrSurvey.text':
+    'La Responsable de Felicidad reparte una encuesta anónima. Cada copia está numerada. "¿Cómo de feliz eres?", pregunta. "Sé sincero." "La sinceridad", añade, "no es anónima."',
+  'event.hrSurvey.lie': 'Marca "muy feliz" en todo.',
+  'event.hrSurvey.lie.0':
+    'Puntuación perfecta. Te invitan a una Comida de Cultura donde te pagan por ser feliz. Es, por fin, un trabajo en el que eres bueno.',
+  'event.hrSurvey.honest': 'Di la verdad, completa.',
+  'event.hrSurvey.honest.0':
+    'Escribes toda la verdad en los márgenes. Ocupa cuatro páginas y se acaba el bolígrafo. Decirla te afila algo por dentro.',
+  'event.hrSurvey.blank': 'Déjala en blanco.',
+  'event.hrSurvey.blank.0':
+    'Una encuesta en blanco también es una respuesta y, te dicen, un "patrón". Echas una siesta sobre el formulario, un buen montón grueso.',
+  'event.internCoffee.title': 'Becario n.º 47',
+  'event.internCoffee.text':
+    'Una persona muy joven con una acreditación enorme lleva siete cafés y una impresora. "Perdone", dice. "¿En qué planta está Finanzas? ¿O Mantenimiento? ¿O Dios?" Lleva aquí tres días. Ya parece un fantasma.',
+  'event.internCoffee.help': 'Llévale la impresora.',
+  'event.internCoffee.help.0':
+    'La impresora pesa más de lo debido. Te dan las gracias seis veces y apuntan tu nombre, como si fuera a servir. Te recordarán.',
+  'event.internCoffee.ignore': 'Señala una planta al azar.',
+  'event.internCoffee.ignore.0': '"La cuatro", dices. Van a la cuatro. La cuatro, piensas, es probablemente Mantenimiento. Probablemente.',
+  'event.internCoffee.warn': 'Diles que se vayan mientras puedan.',
+  'event.internCoffee.warn.0': 'Asienten con gravedad y lo apuntan. No se van. En cierto modo lo admiras. Un café se enfría en tu mano.',
+  'event.internReturns.title': 'El becario regresa',
+  'event.internReturns.text':
+    'Las tres de la madrugada. El Becario del Cementerio, ya algo translúcido, te encuentra junto a la impresora. "Me quedé", dice. "Me nombraron Becario Emérito. Tengo una planta entera que embrujar." Ha guardado algo para ti de los cajones de los muertos.',
+  'event.internReturns.take': 'Coge lo que guardó.',
+  'event.internReturns.take.0':
+    'Está un poco frío y algo de otra persona. Le han quitado el polvo. Alguien lo ha cuidado, algo que nadie ha hecho por nada en este edificio.',
+  'event.internReturns.hug': 'Dales un abrazo (es sobre todo aire).',
+  'event.internReturns.hug.0': 'Es sobre todo aire, y muy frío, y por un momento es lo más cálido de todo el edificio. Brillan un poco. Tú también.',
+  'event.internReturns.advise': 'Diles que se vayan a casa. Ya.',
+  'event.internReturns.advise.0':
+    'La puerta del final del pasillo se abre a una calle tranquila, bajo la lluvia, durante exactamente un minuto. Lo miran todo el minuto. No van. Pero tú sí, un poco, en espíritu, y sales descansado.',
+  'epilogue.internFriend.win': 'En la tercera planta, un becario muy translúcido archiva tu nombre bajo Emérito. Se le da bien archivar.',
+  'epilogue.internFriend.lose': 'En la tercera planta, un becario muy translúcido sostiene una puerta para nadie, y sigue sosteniéndola.',
 };

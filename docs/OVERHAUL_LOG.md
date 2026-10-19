@@ -32,3 +32,8 @@ The game was already polished in look and sound, but poor in three places: **nar
 ## Step 6: office conditions
 - A share of ordinary fights (35%, never the first run's) come with **the day's twist**, told on a slip over the enemy's passives and in the map's room info: four perk days (Free Coffee Day, Casual Friday, Safety Week, Workers' Comp Wednesday) and four days of trouble that pay 35% more (Understaffed, Mandatory Overtime, Audit Week, Wellness Week). Built from statuses the engine already has, so no new rules in `Combat`; dealt from the run's seed, so nothing is saved.
 - Tests for the dealing, the statuses and the pay.
+
+## Step 7: the story reaches the first run, and more scenes
+- **The hand-drawn maps have an event too** (act 1's floor 8, act 2's floor 4, act 3's floor 4, the weekend's floor 4: each one against another room, so it is a choice), so a new player meets the Water Cooler on the first pass of every act, and the teaching run's first scene is always the Night Janitor's spill.
+- A follow-up chapter of a story the run began is now certain to be met (weight 1000), not just likely.
+- 12 new scenes (36 in all): Fire Drill, Secret Santa, Leftover Fish, Lunch & Learn, The Reorg, Bonus Announcement, Dog Day, Salary Talk, Elevator Pitch, Anonymous Survey, Night Delivery, The Rooftop; and a third story, Intern #47, who remembers you at three in the morning.
