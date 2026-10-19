@@ -1011,7 +1011,7 @@ const defs: EnemyDef[] = [
     act: 4,
     stage: 'park',
     tier: 'normal',
-    hp: 150,
+    hp: 135,
     block: 15,
     art: 'gymBro',
     main: atk('rep', 0, 4, { hits: 3 }),
@@ -1020,7 +1020,7 @@ const defs: EnemyDef[] = [
       { id: 'proteinShake', intent: 'buff', windup: 5, block: 15, status: [{ id: 'strength', v: 2, target: 'enemy' }] },
       atk('oneMoreSet', 2, 10, { intent: 'charge', hits: 4 }),
     ],
-    start: [{ id: 'swole', v: 3 }],
+    start: [{ id: 'swole', v: 2 }],
   },
   {
     // A wall of cushions: its Block never fades and it settles back in whenever you wear it down.

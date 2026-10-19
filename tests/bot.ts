@@ -44,6 +44,8 @@ export interface BotOpts {
   level?: number;
   /** How many acts the run has (default the main ones; `ACT_DEFS.length` adds the weekend). */
   acts?: number;
+  /** The acts laid out by hand (`ACT_SCRIPTS`) instead of dealt. */
+  scripted?: number[];
 }
 
 const DT = 1 / 30;
@@ -259,7 +261,7 @@ export function simulateRun(hero: HeroId, seed: number, opts: BotOpts): RunOutco
     s = (s * 1664525 + 1013904223) >>> 0;
     return s / 2 ** 32;
   };
-  const run: RunState = newRun(hero, seed, [], [], opts.acts ?? MAIN_ACTS, opts.level ?? 0);
+  const run: RunState = newRun(hero, seed, opts.scripted ?? [], [], opts.acts ?? MAIN_ACTS, opts.level ?? 0);
   const combatTimes: number[] = [];
   const fights: RunOutcome['fights'] = [];
   for (;;) {
