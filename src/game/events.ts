@@ -34,6 +34,7 @@ export function eligibleEvents(run: RunState): EventDef[] {
   const { act } = currentNode(run);
   return EVENT_LIST.filter(
     (e) =>
+      !e.opening &&
       (!e.hero || e.hero === run.hero) &&
       e.acts[0] <= act &&
       act <= e.acts[1] &&
@@ -43,11 +44,18 @@ export function eligibleEvents(run: RunState): EventDef[] {
   );
 }
 
-/** The event of the room the player is in: weighted among the ones that fit (a chapter of a story the run began is far likelier than a new scene). */
-export function rollEvent(run: RunState): EventDef {
+/** The event of the room the player is in (`opening`: the onboarding scene before the first room): weighted among the ones that fit (a chapter of a story the run began is far likelier than a new scene). */
+export function rollEvent(run: RunState, opening = false): EventDef {
   // The teaching run tells the story from its first scene: the janitor's spill.
   if (isFirstRun(run) && currentNode(run).act === 1) return EVENTS.spill;
   const rng = rngOf(run);
+  // The onboarding that opens a run (before its first room): a few of its packages, picked at random.
+  if (opening) {
+    const onboarding = EVENT_LIST.find((e) => e.opening)!;
+    const choices = rng.shuffle([...onboarding.choices]).slice(0, onboarding.offer ?? onboarding.choices.length);
+    run.rng = rng.state;
+    return { ...onboarding, choices };
+  }
   const pool = eligibleEvents(run);
   // An act whose whole list is spent (a very long run of the same hero) deals the first one again rather than an empty room.
   const event = pool.length ? rng.weighted(pool, (e) => e.weight) : EVENT_LIST[0];

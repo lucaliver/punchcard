@@ -75,8 +75,8 @@ const optionChips = (run: RunState, choice: EventChoice): string =>
  * of it is applied at once (`game/events.ts`) and then played one beat after another: the lines of the result, then its effects, then the hand picks (a card
  * to upgrade or to shred), then the button that ends the room. Nothing is saved until the room ends, like the other rooms.
  */
-export function eventScreen(run: RunState, onDone: () => void): Screen {
-  const def: EventDef = rollEvent(run);
+export function eventScreen(run: RunState, onDone: () => void, opening = false): Screen {
+  const def: EventDef = rollEvent(run, opening);
   const timers = new Set<number>();
   const later = (ms: number, fn: () => void): void => {
     const id = window.setTimeout(() => {

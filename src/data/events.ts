@@ -51,6 +51,10 @@ export interface EventDef {
   weight: number;
   /** Only this hero meets it: a scene about who they are. */
   hero?: HeroId;
+  /** The scene that opens a run (act 1, floor 1): never dealt by chance. */
+  opening?: boolean;
+  /** Only this many of its choices are offered, picked at random from the list (the opening's packages). */
+  offer?: number;
   /** A story flag the run must hold / must not hold. */
   needs?: string;
   unless?: string;
@@ -64,6 +68,25 @@ const gamble = (id: string, ...results: [w: number, ...fx: EventFx[]][]): EventC
 });
 
 export const EVENT_LIST: EventDef[] = [
+  // ---- the first room of a run: three onboarding packages out of eight, a boon each with its own small price
+  {
+    id: 'orientation',
+    opening: true,
+    offer: 3,
+    acts: [1, 1],
+    speaker: 'hrOrientationVideo',
+    weight: 0,
+    choices: [
+      sure('coffee', { kind: 'hp', n: -10 }, { kind: 'crystal' }),
+      sure('gym', { kind: 'maxHp', n: 10 }),
+      sure('laptop', { kind: 'upgrade' }),
+      sure('kit', { kind: 'maxHp', n: -6 }, { kind: 'relic' }),
+      sure('declutter', { kind: 'shred' }),
+      sure('bonus', { kind: 'hp', n: -10 }, { kind: 'card', rarity: 'rare' }),
+      sure('mentor', { kind: 'hp', n: -8 }, { kind: 'upgradeRandom' }, { kind: 'upgradeRandom' }),
+      sure('humble', { kind: 'maxHp', n: 6 }, { kind: 'pay', n: 100 }),
+    ],
+  },
   // ---- the night janitor's story: kind in the morning, a key in the afternoon, the truth at night
   {
     id: 'spill',

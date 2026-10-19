@@ -134,6 +134,23 @@ describe('events', () => {
     expect(fight.stacks('hero', 'lostBadge')).toBe(2);
   });
 
+  it('open a run on the onboarding: three of the eight packages, never dealt by chance, each one doable at the start', () => {
+    const offers = new Set<string>();
+    for (let seed = 2; seed < 40; seed++) {
+      const run = newRun('warrior', seed);
+      const onboarding = rollEvent(run, true);
+      expect(onboarding.id).toBe('orientation');
+      expect(onboarding.choices).toHaveLength(3);
+      expect(new Set(onboarding.choices.map((c) => c.id)).size).toBe(3);
+      for (const c of onboarding.choices) {
+        offers.add(c.id);
+        expect(choicePossible(run, c), c.id).toBe(true);
+      }
+    }
+    expect(offers.size).toBe(8);
+    for (let act = 1; act <= MAIN_ACTS; act++) expect(eligibleEvents(atEvent(act)).map((e) => e.id)).not.toContain('orientation');
+  });
+
   it('name a pick of the hand only for upgrades and shreds', () => {
     expect(needsPick({ kind: 'upgrade' })).toBe(true);
     expect(needsPick({ kind: 'shred' })).toBe(true);

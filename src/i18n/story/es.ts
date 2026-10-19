@@ -647,4 +647,27 @@ export const storyEs: Record<keyof typeof storyEn, string> = {
   'relic.masterKeys.d': 'Cada combate empieza con {n} credenciales perdidas: tus próximas {n} cartas que cuestan [mana] son gratis.',
   'relic.emeritusLanyard.name': 'Acreditación del Becario Emérito',
   'relic.emeritusLanyard.d': 'El maná vuelve un {n}% más rápido.',
+  'event.orientation.title': 'Incorporación',
+  'event.orientation.text':
+    '¡Bienvenido a la familia! Tu primer día empieza con un vídeo corto, que es también el largo. Al terminar, el Vídeo de Bienvenida te ofrece varios paquetes de incorporación, cada uno envuelto, cada uno con un leve olor a tóner. Elige uno. Los demás irán a alguien más entusiasta.',
+  'event.orientation.coffee': 'El paquete Café.',
+  'event.orientation.coffee.0':
+    'Un termo del tamaño de un niño y una taza que dice EL MÁS NORMALITO DEL MUNDO. Tu pulso es ya un rumor, pero tu maná nunca ha estado tan lleno.',
+  'event.orientation.gym': 'El bono Gimnasio.',
+  'event.orientation.gym.0': 'Un bono para un gimnasio que cerró en 2019. Te pones en forma por rencor, y el rencor te lleva lejos.',
+  'event.orientation.laptop': 'El Portátil Bueno.',
+  'event.orientation.laptop.0':
+    'No es bueno. Solo es más nuevo que los demás. Una de tus herramientas aprende una macro, y una macro es una forma de poder.',
+  'event.orientation.kit': 'El Kit de Bienvenida.',
+  'event.orientation.kit.0':
+    'Una bolsa de tela, una acreditación, una pegatina y, al fondo, algo que alguien claramente olvidó quitar. La bolsa te deja una marca en el hombro.',
+  'event.orientation.declutter': 'El paquete Despeja.',
+  'event.orientation.declutter.0': 'Una bolsa de basura y una pegatina motivacional: TÍRALO. Tiras algo y la pegatina, por una vez, tiene razón.',
+  'event.orientation.bonus': 'La Prima de Fichaje.',
+  'event.orientation.bonus.0': 'Algo raro y una pequeña factura. Firmas dos veces y llega una buena carta con el leve olor de un contrato sin leer.',
+  'event.orientation.mentor': 'El Mentor.',
+  'event.orientation.mentor.0': 'Tu mentor tiene dos años más que tú y lleva aquí desde siempre. Te enseña dos cosas y un arrepentimiento.',
+  'event.orientation.humble': 'Rechaza todo, con humildad.',
+  'event.orientation.humble.0':
+    '"Vaya", dice el vídeo. "Un jugador de equipo." Nadie ha anotado nada tan rápido. Te apuntan como "de bajo mantenimiento", en un expediente que te sobrevivirá.',
 };

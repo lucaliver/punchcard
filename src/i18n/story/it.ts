@@ -653,4 +653,29 @@ export const storyIt: Record<keyof typeof storyEn, string> = {
   'relic.masterKeys.d': 'Ogni scontro inizia con {n} Badge Smarriti: le prossime {n} carte che costano [mana] sono gratis.',
   'relic.emeritusLanyard.name': 'Cordino dello Stagista Emerito',
   'relic.emeritusLanyard.d': 'Il mana torna il {n}% più in fretta.',
+  'event.orientation.title': 'Accoglienza',
+  'event.orientation.text':
+    'Benvenuto in famiglia! Il tuo primo giorno inizia con un breve video, che è anche quello lungo. Quando finisce, il Video di Orientamento ti offre dei pacchetti di accoglienza, ciascuno incartato, ciascuno con un vago odore di toner. Scegline uno. Gli altri andranno a qualcuno più entusiasta.',
+  'event.orientation.coffee': 'Il pacchetto Caffè.',
+  'event.orientation.coffee.0':
+    'Un thermos grande come un bambino e una tazza con scritto IL PIÙ DISCRETO DEL MONDO. Il tuo battito è ormai una voce di corridoio, ma il tuo mana non è mai stato così pieno.',
+  'event.orientation.gym': 'Il buono Palestra.',
+  'event.orientation.gym.0': 'Un buono per una palestra chiusa nel 2019. Ti metti in forma per dispetto, e il dispetto ti porta lontano.',
+  'event.orientation.laptop': 'Il Portatile Buono.',
+  'event.orientation.laptop.0':
+    'Non è buono. È solo più nuovo degli altri. Uno dei tuoi attrezzi impara una macro, e una macro è una forma di potere.',
+  'event.orientation.kit': 'Il Kit di Benvenuto.',
+  'event.orientation.kit.0':
+    'Una borsa di tela, un cordino, un adesivo e, in fondo, qualcosa che qualcuno ha chiaramente dimenticato di togliere. La borsa ti lascia un segno sulla spalla.',
+  'event.orientation.declutter': 'Il pacchetto Fai Ordine.',
+  'event.orientation.declutter.0':
+    "Un sacco della spazzatura e un adesivo motivazionale: BUTTALO VIA. Butti via qualcosa, e l'adesivo, per una volta, ha ragione.",
+  'event.orientation.bonus': 'Il Bonus di Ingresso.',
+  'event.orientation.bonus.0':
+    'Una cosa rara e una piccola fattura. Firmi due volte, e arriva una buona carta con il vago odore di un contratto non letto.',
+  'event.orientation.mentor': 'Il Mentore.',
+  'event.orientation.mentor.0': 'Il tuo mentore ha due anni più di te ed è qui da sempre. Ti insegna due cose e un rimpianto.',
+  'event.orientation.humble': 'Rifiuta tutto, con umiltà.',
+  'event.orientation.humble.0':
+    '"Wow", dice il video. "Un giocatore di squadra." Nessuno ha mai scritto qualcosa così in fretta. Ti segnano come "a basso mantenimento", in un fascicolo che ti sopravvivrà.',
 };

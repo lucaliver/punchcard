@@ -52,3 +52,6 @@ The game was already polished in look and sound, but poor in three places: **nar
 ## Step 10: the stories pay off in stationery
 - Two new stationery that only a story gives (rarity `special`, never in the Lost & Found): the **Master Key Ring** (the janitor's: every fight starts with two Lost Badges) and the **Intern Emeritus Lanyard** (mana comes back 15% faster). New effect `relicId` for events; sprites, chip icons and four languages.
 - The scene's typing is faster (a tap still shows it whole) and the speaker only mumbles the first letters.
+
+## Step 11: the onboarding
+- From the third run on, a new run opens on **Onboarding**: the Orientation Video offers three of eight packages (Coffee: a mana crystal for some HP; Gym Voucher: +10 max HP; Good Laptop: an upgrade; Welcome Kit: a stationery for some max HP; Declutter: shred a card; Signing Bonus: a rare card for some HP; Mentor: two upgrades for some HP; or decline everything, humbly). A different start for every run. The first runs stay as they were, to learn on.

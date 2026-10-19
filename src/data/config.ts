@@ -54,6 +54,8 @@ export const CONFIG = {
     regen: { min: 0.25, max: 3, step: 0.05, start: 1 },
     belt: { min: 0.5, max: 1.5, step: 0.05 },
   },
+  /** Runs started before a new run opens on the onboarding (`orientation`, the Water Cooler's opening scene): the first ones are for learning the game. */
+  onboardingAfterRuns: 2,
   /** Runs finished (won, lost or abandoned) before the home asks for a rating. */
   ratingAfterRuns: 2,
   /** Stars from which a rating counts as a good one (the review asks what was liked, not what was not). */

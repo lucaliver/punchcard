@@ -654,4 +654,29 @@ export const storyEn = {
   'relic.masterKeys.d': 'Every fight starts with {n} Lost Badges: your next {n} cards that cost [mana] are free.',
   'relic.emeritusLanyard.name': 'Intern Emeritus Lanyard',
   'relic.emeritusLanyard.d': 'Mana comes back {n}% faster.',
+  'event.orientation.title': 'Onboarding',
+  'event.orientation.text':
+    'Welcome to the family! Your first day starts with a short video, which is also the long one. When it ends, the Orientation Video offers a choice of onboarding packages, each one wrapped, each one smelling faintly of toner. Choose one. The others will go to someone more enthusiastic.',
+  'event.orientation.coffee': 'The Coffee Package.',
+  'event.orientation.coffee.0':
+    "A thermos the size of a child, and a mug that says WORLD'S OKAYEST. Your heart rate is now a rumour, but your mana has never been so full.",
+  'event.orientation.gym': 'The Gym Voucher.',
+  'event.orientation.gym.0': 'A voucher for a gym that closed in 2019. You get fit out of spite, and the spite carries you.',
+  'event.orientation.laptop': 'The Good Laptop.',
+  'event.orientation.laptop.0':
+    'It is not good. It is merely newer than the others. One of your tools learns a macro, and a macro is a kind of power.',
+  'event.orientation.kit': 'The Welcome Kit.',
+  'event.orientation.kit.0':
+    'A tote bag, a lanyard, a sticker and, at the bottom, a thing someone clearly forgot to remove. The tote bag leaves a mark on your shoulder.',
+  'event.orientation.declutter': 'The Declutter Pack.',
+  'event.orientation.declutter.0':
+    'A bin liner and a motivational sticker: THROW IT AWAY. You throw something away, and the sticker, for once, is right.',
+  'event.orientation.bonus': 'The Signing Bonus.',
+  'event.orientation.bonus.0':
+    'A rare thing and a small invoice. You sign twice, and a good card arrives with the faint smell of an unread contract.',
+  'event.orientation.mentor': 'The Mentor.',
+  'event.orientation.mentor.0': 'Your mentor is two years older and has been here since forever. He teaches you two things and one regret.',
+  'event.orientation.humble': 'Decline everything, humbly.',
+  'event.orientation.humble.0':
+    '"Wow," says the video. "A team player." Nobody has ever written anything down so fast. You are noted as "low-maintenance", in a file that will outlive you.',
 } satisfies Record<string, string>;

@@ -40,7 +40,7 @@ import {
   type RewardOffer,
   type RunState,
 } from './game/run';
-import { contractSigned, lastEnemies, rankPick, reachAct, setLastEnemies, startingFirstRun, unmetActs, weekendOpen } from './game/meta';
+import { records, contractSigned, lastEnemies, rankPick, reachAct, setLastEnemies, startingFirstRun, unmetActs, weekendOpen } from './game/meta';
 import { settings } from './game/settings';
 import type { HeroId } from './game/types';
 import { confirmModal, initApp, openModal, type Screen, show } from './ui/app';
@@ -144,7 +144,26 @@ function startRun(hero: HeroId): void {
   run = newRun(hero, first ? FIRST_RUN_SEED : randomSeed(), scripted, lastEnemies(), open ? ACT_DEFS.length : MAIN_ACTS, first ? 0 : rankPick(hero));
   setLastEnemies(run.nodes.flatMap((n) => (n.enemy ? [n.enemy] : [])));
   resetFightLog();
-  goJourney();
+  if (first || records().runs <= CONFIG.onboardingAfterRuns) goJourney();
+  else goOnboarding(run);
+}
+
+/** A new run (not the teaching one) opens on the onboarding: three packages out of eight, one boon each. The first room stays to be played after it. */
+function goOnboarding(r: RunState): void {
+  playMusic('rest');
+  show(
+    inAct(
+      eventScreen(
+        r,
+        () => {
+          r.cleared = false;
+          goJourney();
+        },
+        true,
+      ),
+      r,
+    ),
+  );
 }
 
 /** Debug: a fresh run whose first fight is against the chosen enemy. */

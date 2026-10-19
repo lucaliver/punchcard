@@ -2106,3 +2106,25 @@ test('Water Cooler: the note is typed, the choices show their price tags, and th
   await expect(page.locator('.node.open, .node.current').first()).toBeVisible({ timeout: 10_000 });
   expect(problems).toEqual([]);
 });
+
+test('from the third run on, a new run opens on the onboarding: three packages, one pick, then the map', async ({ page }) => {
+  const problems = await freshGame(page, { veteran: true, runs: 3 });
+  await page.getByRole('button', { name: /new run/i }).click();
+  await page.getByRole('button', { name: /start shift/i }).click();
+  await expect(page.locator('.event-slip')).toBeVisible();
+  await page.locator('.event-slip').click();
+  await expect(page.locator('.option.choice')).toHaveCount(3);
+  await page.locator('.option.choice').first().click();
+  const confirm = page.locator('.modal button:has-text("Upgrade"), .modal button:has-text("Shred")');
+  for (let i = 0; i < 80 && !(await page.getByRole('button', { name: /back to work/i }).isVisible()); i++) {
+    if (await confirm.first().isVisible()) {
+      await page.locator('.modal .card').first().click();
+      await confirm.first().click();
+    }
+    await page.waitForTimeout(250);
+  }
+  await page.getByRole('button', { name: /back to work/i }).click();
+  // The first room is still to be played: the map shows it as the one to enter.
+  await expect(page.getByRole('button', { name: /enter floor 1/i })).toBeVisible({ timeout: 10_000 });
+  expect(problems).toEqual([]);
+});
