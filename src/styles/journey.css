@@ -385,6 +385,14 @@
   color: var(--fg);
   animation: act-in calc(0.2s * var(--pace)) steps(2) calc(1s * var(--pace)) both;
 }
+.act-intro-tag {
+  margin: 4px 0 0;
+  font-family: var(--font-ui);
+  font-size: 20px;
+  color: var(--fg);
+  opacity: 0.8;
+  animation: act-in calc(0.2s * var(--pace)) steps(2) calc(1.25s * var(--pace)) both;
+}
 .act-intro-clock {
   display: flex;
   align-items: center;

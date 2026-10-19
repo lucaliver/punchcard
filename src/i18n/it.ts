@@ -353,6 +353,7 @@ const it: Record<EnKey, string> = {
   'journey.actName.2': 'Il Turno del Pomeriggio',
   'journey.actName.3': 'Il Turno di Notte',
   'journey.actName.4': 'Il Weekend',
+  'journey.actTag.4': 'Due giorni liberi. A quanto pare.',
   'journey.clock': '{h}:{m}',
   'journey.enter': 'Entra nel piano {n}',
   'journey.choose': 'Scegli la strada',
@@ -786,6 +787,9 @@ const it: Record<EnKey, string> = {
   'end.defeatDesc': 'Portato via in barella dal piano {n}.',
   'end.victory': 'Turno finito',
   'end.victoryDesc': "Il Consiglio è sciolto. Il sole è alto e la linea è silenziosa. Timbra l'uscita e torna a casa. Stessa ora domani.",
+  'end.victoryWeekend': 'Lunedì rimandato',
+  'end.victoryWeekendDesc':
+    'La sveglia è spenta e il divano è tuo. Nessuno ti crederà quando dirai di aver battuto il lunedì, e tornerà tra cinque giorni.',
   'end.promotedTitle': 'Promozione',
   'end.promoted': '{hero} ora è {title}. Tocca per vedere il nuovo vantaggio e il nuovo dovere.',
   'end.slip.rank': 'Livello',

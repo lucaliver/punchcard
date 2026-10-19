@@ -1,4 +1,5 @@
 import { type TKey, t } from '../../core/i18n';
+import { MAIN_ACTS } from '../../data/acts';
 import { BEG_FLAG } from '../../data/config';
 import { sfx } from '../../audio/sfx';
 import type { HeroId } from '../../game/types';
@@ -40,7 +41,9 @@ export function endScreen(
   onHandbook: (section: Section) => void,
 ): Screen {
   const node = currentNode(run);
-  const title = won ? t('end.victory') : t('end.defeat');
+  // Beating Monday, the weekend's boss, is a win of its own.
+  const weekend = won && node.act > MAIN_ACTS;
+  const title = won ? t(weekend ? 'end.victoryWeekend' : 'end.victory') : t('end.defeat');
   let confetti = 0;
   /** The ticks of the bars filling and the stamps landing. */
   const ticks: number[] = [];
@@ -108,7 +111,7 @@ export function endScreen(
           },
         }),
       ),
-      h('p', { class: 'sub' }, won ? t('end.victoryDesc') : t('end.defeatDesc', { n: node.floor })),
+      h('p', { class: 'sub' }, won ? t(weekend ? 'end.victoryWeekendDesc' : 'end.victoryDesc') : t('end.defeatDesc', { n: node.floor })),
       // A promotion: tapping the note opens the hire screen on this hero, where it is played on the plaque.
       end.promoted
         ? h('button', {

@@ -352,6 +352,7 @@ const es: Record<EnKey, string> = {
   'journey.actName.2': 'El turno de tarde',
   'journey.actName.3': 'El turno de noche',
   'journey.actName.4': 'El Fin de Semana',
+  'journey.actTag.4': 'Dos días libres. Supuestamente.',
   'journey.clock': '{h}:{m}',
   'journey.enter': 'Entrar al piso {n}',
   'journey.choose': 'Elige tu camino',
@@ -785,6 +786,8 @@ const es: Record<EnKey, string> = {
   'end.victory': 'Turno terminado',
   'end.victoryDesc':
     'Se levanta la sesión del Consejo. Ha salido el sol y la línea está en silencio. Ficha la salida y vete a casa. Mañana, a la misma hora.',
+  'end.victoryWeekend': 'Lunes pospuesto',
+  'end.victoryWeekendDesc': 'El despertador está apagado y el sofá es tuyo. Nadie creerá que le ganaste al lunes, y volverá dentro de cinco días.',
   'end.promotedTitle': 'Ascenso',
   'end.promoted': '{hero} ahora es {title}. Toca para ver la nueva ventaja y el nuevo deber.',
   'end.slip.rank': 'Rango',

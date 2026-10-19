@@ -356,12 +356,14 @@ export function journeyScreen(run: RunState, onEnter: (to?: number) => void, onH
   // A new shift begins (the act boss is down): a curtain with the act's title, its clock-in time and the factory whistle.
   const actIntro = (onDone: () => void): void => {
     const title = t('journey.title', { n: act });
+    const { tagline } = actDef(act);
     const curtain = h(
       'div',
       { class: 'act-intro' },
       h('div', { class: 'h1 act-intro-title', 'aria-label': title, html: dropLetters(title) }),
       h('div', { class: 'act-intro-art', html: actArt(act, true) }),
       h('p', { class: 'act-intro-name' }, t(`journey.actName.${act}`)),
+      tagline ? h('p', { class: 'act-intro-tag' }, t(tagline)) : null,
       h('p', { class: 'act-intro-clock', html: `${icon('timer')}${t('combat.clockIn', { time: clockText(to) })}` }),
     );
     curtain.addEventListener('click', () => curtain.classList.add('out'));

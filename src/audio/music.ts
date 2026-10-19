@@ -18,7 +18,9 @@ export type TrackId =
   | 'map3'
   | 'map4'
   | 'elite'
+  | 'elite4'
   | 'boss'
+  | 'boss4'
   | 'rest'
   | 'pause'
   | 'victory'
@@ -662,6 +664,108 @@ const TRACKS: Record<TrackId, Track> = {
     leadOn: (p) => p >= 1,
     leadVoice: 'pulse',
     drums: ['k.......k.......', '........s.......', 'h...h...h...h...', '............t.tt'],
+    pad: true,
+    gain: 0.8,
+  },
+  // The weekend's elites: a funky A minor shuffle on a bouncing pulse bass, a bright little lead on top, drums that never quite sit still. Cheerful, and a bit too loud for Sunday.
+  elite4: {
+    bpm: 108,
+    chords: [
+      { root: 33, tones: MIN7 }, // Am7
+      { root: 38, tones: DOM7 }, // D7
+      { root: 31, tones: MAJ7 }, // Gmaj7
+      { root: 40, tones: DOM7 }, // E7
+    ],
+    bass: [0, _, _, 12, 0, _, 7, _, 0, _, 12, _, 7, _, 10, _],
+    bassWave: 'pulse',
+    arp: [0, _, 2, _, 1, _, 3, _, 2, _, 1, _, 2, _, 3, _],
+    arpOctave: 4,
+    lead: [
+      [
+        [0, E5, 2],
+        [3, G5, 2],
+        [6, A5, 2],
+        [10, G5, 2],
+        [12, E5, 4],
+      ],
+      [
+        [0, Fs5, 2],
+        [3, A5, 2],
+        [6, Fs5, 2],
+        [8, D5, 4],
+        [12, Fs5, 4],
+      ],
+      [
+        [0, G5, 2],
+        [3, B5, 2],
+        [6, G5, 2],
+        [8, D5, 4],
+        [12, B4, 4],
+      ],
+      [
+        [0, E5, 2],
+        [3, Gs5, 2],
+        [6, B5, 2],
+        [8, Gs5, 4],
+        [12, E5, 4],
+      ],
+    ],
+    leadOn: (p) => p >= 1,
+    leadVoice: 'pulse',
+    drums: ['k.......k..k....', '....s.......s...', 'h.hhh.hhh.hhh.hh', '..............tt'],
+    pad: true,
+    gain: 0.8,
+  },
+  // Monday: an alarm clock that learnt to play the trumpet. Rapid beeps on one note over a bright C that keeps sliding up a semitone and into the tritone, with a kick that never lets up.
+  boss4: {
+    bpm: 160,
+    chords: [
+      { root: 36, tones: MAJ }, // C
+      { root: 37, tones: MAJ }, // Db
+      { root: 36, tones: MAJ }, // C
+      { root: 30, tones: MAJ }, // Gb (tritone)
+    ],
+    bass: [0, 0, 12, 0, 0, 12, 0, 0, 0, 0, 12, 0, 0, 12, 7, 12],
+    bassWave: 'pulse',
+    arp: [0, 1, 2, 1, 0, 1, 2, 1, 0, 1, 2, 1, 0, 1, 2, 1],
+    arpOctave: 5,
+    lead: [
+      [
+        [0, G5, 1],
+        [2, G5, 1],
+        [4, G5, 1],
+        [6, G5, 1],
+        [8, E5, 4],
+        [12, C5, 4],
+      ],
+      [
+        [0, Ab5, 1],
+        [2, Ab5, 1],
+        [4, Ab5, 1],
+        [6, Ab5, 1],
+        [8, F5, 4],
+        [12, Cs5, 4],
+      ],
+      [
+        [0, G5, 1],
+        [2, G5, 1],
+        [4, G5, 1],
+        [6, G5, 1],
+        [8, E5, 2],
+        [10, G5, 2],
+        [12, B5, 4],
+      ],
+      [
+        [0, B5, 1],
+        [2, B5, 1],
+        [4, B5, 1],
+        [6, B5, 1],
+        [8, Bb5, 8],
+      ],
+    ],
+    leadOn: () => true,
+    leadVoice: 'pulse',
+    drums: ['k..kk..kk..kk.k.', '....s.......s.s.', 'h.h.h.h.h.h.h.h.', '..............tt'],
     pad: true,
     gain: 0.8,
   },
