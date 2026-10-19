@@ -403,6 +403,7 @@ async function boot(): Promise<void> {
         },
         nextNode,
         goJourney,
+        endRun,
         musicTrack,
       },
     });

@@ -17,3 +17,7 @@ The game was already polished in look and sound, but poor in three places: **nar
 - Every shift now has a tagline under its name in its intro (*Welcome to the family.* / *Lunch has been cancelled for synergy.* / *Overtime is voluntary. Volunteer.*), not just the weekend.
 - The typed-line effect is a shared component (`ui/components/typewriter.ts`).
 - Narrative texts moved to `i18n/story/`.
+
+## Step 3: epilogues
+- The end screen now has a note under the verdict (`data/epilogue.ts`, `epilogue.*`): a line about the hero (eight, win and loss for each) and one about the story the run told, if any (the Night Janitor's truth, the New Hire's postcard, a key ring on the desk). 28 lines in four languages.
+- The janitor's last chapter now sets a story flag, so the ending can answer it.

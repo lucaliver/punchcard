@@ -89,7 +89,11 @@ export const EVENT_LIST: EventDef[] = [
     speaker: 'nightJanitor',
     weight: 40,
     needs: 'janitorKey',
-    choices: [sure('listen', { kind: 'relic' }), sure('thank', { kind: 'maxHp', n: 12 }), sure('ignore', { kind: 'heal', pct: 0.25 })],
+    choices: [
+      sure('listen', { kind: 'relic' }, { kind: 'flag', id: 'janitorTruth' }),
+      sure('thank', { kind: 'maxHp', n: 12 }, { kind: 'flag', id: 'janitorTruth' }),
+      sure('ignore', { kind: 'heal', pct: 0.25 }),
+    ],
   },
   // ---- the new hire's story: cover for him and he remembers it
   {
