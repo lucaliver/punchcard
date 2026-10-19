@@ -5,7 +5,8 @@ import { BLOW_EVERY, HOUSE_BAN, HOUSE_EVERY, houseBan, PANEL_EVERY, PLATE_HEAL, 
 import { CARDS } from '../../src/data/cards';
 import { STAGE_IDS, stageArt } from '../../src/ui/art/stageArt';
 import { RELIC_LIST, RELICS, REMOTE_STUN } from '../../src/data/relics';
-import { canGiftRelic, giftRelic, newRun, rollRelics } from '../../src/game/run';
+import { ACT_DEFS } from '../../src/data/acts';
+import { canGiftRelic, giftRelic, newRun, rollRelics, WEEKEND_SPECIALS } from '../../src/game/run';
 import { coffeeOf, badgeOf, run, setup } from './helpers';
 
 /** The weekend (act 4): its enemies and what each one does. A fight with the enemy's own moves out of the way (its attack never lands), to look at its passives alone. */
@@ -302,5 +303,38 @@ describe("the weekend's stationery", () => {
     for (let i = 0; i < 400; i++) RELICS.lotteryTicket.hooks?.onCardPlayed?.(c, { ...card, id: 'punch' }, CARDS.punch);
     expect(refunds).toBeGreaterThan(20);
     expect(refunds).toBeLessThan(90);
+  });
+});
+
+describe('the weekend, the first time it is met', () => {
+  const weekend = (seed: number, hero: 'warrior' | 'mage' = 'warrior') => newRun(hero, seed, [4], [], ACT_DEFS.length).nodes;
+
+  it('is hand-drawn: the same rooms and jobs whatever the seed, with both of its own rooms', () => {
+    const sketch = (list: ReturnType<typeof weekend>): string[] =>
+      list.filter((n) => n.act === 4).map((n) => `${n.floor}:${n.lane}:${n.type}:${n.enemy ?? ''}:${n.next}`);
+    expect(sketch(weekend(1))).toEqual(sketch(weekend(77, 'mage')));
+    const types = weekend(1)
+      .filter((n) => n.act === 4)
+      .map((n) => n.type);
+    for (const room of WEEKEND_SPECIALS) expect(types).toContain(room);
+  });
+
+  it('every room can be reached, every walk ends on Monday, and no job comes up twice on a road', () => {
+    const all = weekend(3);
+    const first = all.find((n) => n.act === 4)!;
+    const mine = all.filter((n) => n.act === 4);
+    const seen = new Set<number>();
+    const walk = (id: number, jobs: string[]): void => {
+      seen.add(id);
+      const n = all[id];
+      const here = n.type === 'fight' ? [...jobs, n.enemy!] : jobs;
+      expect(new Set(here).size, `#${id}`).toBe(here.length);
+      if (n.type === 'fight') expect(ENEMIES[n.enemy!]).toMatchObject({ tier: 'normal', act: 4 });
+      if (n.type === 'elite') expect(ENEMIES[n.enemy!]).toMatchObject({ tier: 'elite', act: 4 });
+      if (!n.next.length) expect(n).toMatchObject({ type: 'boss', act: 4, enemy: 'monday' });
+      for (const next of n.next) walk(next, here);
+    };
+    walk(first.id, []);
+    expect(seen.size).toBe(mine.length);
   });
 });
