@@ -65,7 +65,7 @@ function markup(run: RunState, combat: Combat): string {
       <button class="icon-btn js-pause" aria-label="${t('combat.paused')}">${icon('pause')}</button>
     </header>
     <section class="stage">
-      <div class="stage-art" aria-hidden="true">${stageArt(enemyDef.act)}</div>
+      <div class="stage-art" aria-hidden="true">${stageArt(enemyDef.act, enemyDef.stage)}</div>
       <div class="stage-floor"></div>
       ${motes(14)}
       ${darkEyes([

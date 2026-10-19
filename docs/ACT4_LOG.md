@@ -34,3 +34,6 @@ Before: one enemy of its own (the Self-Checkout) dealt for every fight, elites a
 - **Corner Shop** (weekend room): scratch cards, the first free, the others paid in blood; jackpot, upgrades, a heal or nothing.
 - Later weekend maps (not the first) are dealt like any act's, and always hold both rooms (`WEEKEND_SPECIALS`).
 - Bot walks through both rooms; tests for the dealing, the dishes and the scratch cards.
+
+## Batch 6: a place for every job
+- **Stage scenes**: `EnemyDef.stage` picks the scene behind the enemy (`StageId`, `stageArt(act, place)`). The weekend no longer happens in one supermarket aisle: the park (Off-Leash Dog, Gym Bro), a café terrace with parasols and fairy lights (Brunch Influencer), the back garden with a hedge, fence and washing line (Grill Dad, Leaf Blower Neighbour), a living room with a flickering telly (The Couch), a dining room with a wall of framed relatives (Mother-in-Law), a wedding hall with light beams and a balloon arch (Wedding DJ), the town hall with bunting (Ribbon-Cutting Mayor) and Monday's bedroom in the small hours (Monday). The aisle stays for the Self-Checkout and the Flat-Pack Wardrobe.

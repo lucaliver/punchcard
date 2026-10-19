@@ -389,6 +389,9 @@ export interface EnemyPhase {
   block?: number;
 }
 
+/** The places the weekend's jobs are met in (the scene behind the enemy, `art/stageArt.ts`); an enemy with none stands in its act's own scene. */
+export type StageId = 'aisle' | 'park' | 'terrace' | 'garden' | 'livingRoom' | 'diningRoom' | 'ballroom' | 'townHall' | 'bedroom';
+
 export interface EnemyDef {
   id: string;
   act: 1 | 2 | 3 | 4;
@@ -434,6 +437,8 @@ export interface EnemyDef {
   manaTap?: number;
   /** A minigame the hero can open from a button beside the enemy (`Combat.minigame`): the fight runs on underneath while its window covers the belt, and what it scores hurts the enemy (`enemy.<id>.game` says how). */
   minigame?: MinigameId;
+  /** The place it is met in, when it isn't the one of its act (the weekend's jobs each have their own). */
+  stage?: StageId;
   /** Only met as the very first fight of the very first run (never dealt at random). */
   firstRunOnly?: boolean;
   /** Bends the rules of the belt or of what you may play (not just numbers): every act 2 opens on one of these, so the act's fun shows at once. */

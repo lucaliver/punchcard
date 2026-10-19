@@ -3,6 +3,8 @@ import { CONFIG } from '../../src/data/config';
 import { ENEMIES, HALF, MONDAY_BLOCK } from '../../src/data/enemies';
 import { BLOW_EVERY, PANEL_EVERY, PLATE_HEAL, POSE_EVERY, POSE_TIME, STATUSES } from '../../src/data/statuses';
 import { CARDS } from '../../src/data/cards';
+import { ENEMY_LIST } from '../../src/data/enemies';
+import { STAGE_IDS, stageArt } from '../../src/ui/art/stageArt';
 import { coffeeOf, badgeOf, run, setup } from './helpers';
 
 /** The weekend (act 4): its enemies and what each one does. A fight with the enemy's own moves out of the way (its attack never lands), to look at its passives alone. */
@@ -183,5 +185,21 @@ describe('Monday, the weekend boss', () => {
     const c = quiet();
     CARDS.sundayScaries.onExpire?.(c, [3], { uid: 1, id: 'sundayScaries', up: false, bonus: 0, temp: true });
     expect(c.has('hero', 'stalled')).toBe(true);
+  });
+});
+
+describe('the weekend: where the jobs are met', () => {
+  it('every place is drawn, differently, and every weekend job stands in one of them (the aisle when it names none)', () => {
+    const scenes = STAGE_IDS.map((id) => stageArt(4, id));
+    for (const scene of scenes) expect(scene).toContain('<rect');
+    expect(new Set(scenes).size).toBe(STAGE_IDS.length);
+    const weekend = ENEMY_LIST.filter((e) => e.act === 4);
+    for (const e of weekend) if (e.stage) expect(STAGE_IDS, e.id).toContain(e.stage);
+    // Most of them have a place of their own: a weekend is not spent in one supermarket.
+    expect(new Set(weekend.map((e) => e.stage ?? 'aisle')).size).toBeGreaterThanOrEqual(8);
+  });
+
+  it('the boss is met in the bedroom, in the small hours', () => {
+    expect(ENEMIES.monday.stage).toBe('bedroom');
   });
 });

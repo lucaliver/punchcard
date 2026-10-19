@@ -922,6 +922,7 @@ const defs: EnemyDef[] = [
     // Twice as fast as anything else and he steals your cards for sport; at half HP a squirrel goes by.
     id: 'offLeashDog',
     act: 4,
+    stage: 'park',
     tier: 'normal',
     hp: 120,
     art: 'offLeashDog',
@@ -938,6 +939,7 @@ const defs: EnemyDef[] = [
     // Strikes a pose now and then, and nothing touches a pose.
     id: 'brunchInfluencer',
     act: 4,
+    stage: 'terrace',
     tier: 'normal',
     hp: 130,
     art: 'brunchInfluencer',
@@ -954,6 +956,7 @@ const defs: EnemyDef[] = [
     // Every so often the belt is blown back the other way.
     id: 'leafBlowerNeighbour',
     act: 4,
+    stage: 'garden',
     tier: 'normal',
     hp: 130,
     block: 10,
@@ -971,6 +974,7 @@ const defs: EnemyDef[] = [
     // Touch his grill and it bites; before his big move lands you flip his burgers for him.
     id: 'grillDad',
     act: 4,
+    stage: 'garden',
     tier: 'normal',
     hp: 150,
     block: 15,
@@ -1005,6 +1009,7 @@ const defs: EnemyDef[] = [
     // Skin like a block of marble: the small hits do nothing, and his sets come in rapid fire.
     id: 'gymBro',
     act: 4,
+    stage: 'park',
     tier: 'normal',
     hp: 150,
     block: 15,
@@ -1021,6 +1026,7 @@ const defs: EnemyDef[] = [
     // A wall of cushions: its Block never fades and it settles back in whenever you wear it down.
     id: 'theCouch',
     act: 4,
+    stage: 'livingRoom',
     tier: 'normal',
     hp: 80,
     block: 70,
@@ -1038,6 +1044,7 @@ const defs: EnemyDef[] = [
     // Every card you let slip is food wasted, and she is happy to finish it for you.
     id: 'motherInLaw',
     act: 4,
+    stage: 'diningRoom',
     tier: 'elite',
     hp: 180,
     block: 40,
@@ -1061,6 +1068,7 @@ const defs: EnemyDef[] = [
     // No accountability: now and then nothing sticks to him; and the press conference never ends.
     id: 'ribbonMayor',
     act: 4,
+    stage: 'townHall',
     tier: 'elite',
     hp: 160,
     block: 40,
@@ -1080,6 +1088,7 @@ const defs: EnemyDef[] = [
     // Before his big move lands you have to follow his calls on the pad: left, right, back, hop, and freeze when he says so.
     id: 'weddingDj',
     act: 4,
+    stage: 'ballroom',
     tier: 'elite',
     hp: 160,
     block: 35,
@@ -1099,6 +1108,7 @@ const defs: EnemyDef[] = [
     // The weekend's last boss, and the game's: Sunday night (a slow belt, dread), the snooze button (a fast belt, coffee) and nine o'clock on Monday (a rush, the badge reader), in three phases of an alarm clock.
     id: 'monday',
     act: 4,
+    stage: 'bedroom',
     tier: 'boss',
     hp: 360,
     block: 80,
