@@ -16,7 +16,8 @@ import {
   rollEvent,
   rollResult,
 } from '../../src/game/events';
-import { advance, newRun, type RunState } from '../../src/game/run';
+import { advance, newRun, rollRelics, type RunState } from '../../src/game/run';
+import { setup } from './helpers';
 import { MAIN_ACTS } from '../../src/data/acts';
 
 /** A run standing on an event room of the given act. */
@@ -120,6 +121,17 @@ describe('events', () => {
       return `${event.id}:${event.choices.map((c) => rollResult(run, c).w).join()}`;
     };
     expect(roll()).toBe(roll());
+  });
+
+  it("give a story's stationery once, and never from the Lost & Found", () => {
+    const run = atEvent(3);
+    expect(fxPossible(run, { kind: 'relicId', id: 'masterKeys' })).toBe(true);
+    expect(applyFx(run, { kind: 'relicId', id: 'masterKeys' }).relic).toBe('masterKeys');
+    expect(run.relics).toContain('masterKeys');
+    expect(fxPossible(run, { kind: 'relicId', id: 'masterKeys' })).toBe(false);
+    for (let i = 0; i < 40; i++) expect(rollRelics(run, 3)).not.toContain('emeritusLanyard');
+    const fight = setup({ relics: ['masterKeys'] });
+    expect(fight.stacks('hero', 'lostBadge')).toBe(2);
   });
 
   it('name a pick of the hand only for upgrades and shreds', () => {

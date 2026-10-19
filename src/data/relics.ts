@@ -52,6 +52,8 @@ export const STOCK_HP = 0.25;
 const CARDIGAN_MANA = 2;
 /** The Revenge Spreadsheet gives 1 Strength for each curse an enemy deals, up to this many in a fight. */
 export const REVENGE_MAX = 5;
+/** Master Key Ring: the Lost Badges every fight starts with. */
+const MASTER_BADGES = 2;
 /** Rooms more the Floor Plan lets you see on the map. */
 const PLAN_VISION = 2;
 /** The weekend's stationery. Garden Gnome: Thorns at the start of a fight. */
@@ -531,6 +533,19 @@ const defs: RelicDef[] = [
   },
   // The Tailor's: not found in the Lost & Found.
   { id: 'cargoPants', rarity: 'special', n: 1, mods: { sleeve: 1 } },
+  // The Water Cooler's stories: only a scene gives them (`EventFx` `relicId`), so they never turn up in the Lost & Found.
+  {
+    id: 'masterKeys',
+    rarity: 'special',
+    n: MASTER_BADGES,
+    hooks: {
+      onCombatStart: (c) => {
+        c.applyStatus('hero', 'lostBadge', MASTER_BADGES);
+        proc(c, 'masterKeys');
+      },
+    },
+  },
+  { id: 'emeritusLanyard', rarity: 'special', n: 15, mods: { regen: 1.15 } },
 ];
 
 export const RELICS: Record<string, RelicDef> = Object.fromEntries(defs.map((r) => [r.id, r]));

@@ -4,8 +4,10 @@ import {
   canShred,
   canUpgrade,
   currentNode,
+  gainRelic,
   giftCard,
   giftRelic,
+  hasRelic,
   isFirstRun,
   rngOf,
   shredCard,
@@ -67,6 +69,8 @@ export function fxPossible(run: RunState, fx: EventFx): boolean {
       return fx.n >= 0 || run.money >= -fx.n;
     case 'relic':
       return canGiftRelic(run);
+    case 'relicId':
+      return !hasRelic(run, fx.id);
     case 'upgrade':
     case 'upgradeRandom':
       return run.deck.some(canUpgrade);
@@ -123,6 +127,9 @@ export function applyFx(run: RunState, fx: EventFx): Done {
       return { fx };
     case 'relic':
       return { fx, relic: giftRelic(run) };
+    case 'relicId':
+      gainRelic(run, fx.id);
+      return { fx, relic: fx.id };
     case 'card':
       return { fx, card: giftCard(run, fx.rarity, fx.cross) };
     case 'upgradeRandom': {

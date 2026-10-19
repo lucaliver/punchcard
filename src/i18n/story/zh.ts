@@ -555,4 +555,8 @@ export const storyZh: Record<keyof typeof storyEn, string> = {
   'intercom.janitorFriend1': '夜班清洁工让我向某人问好。他没说是谁。就是你。',
   'intercom.newHireFriend1': '一位新员工想感谢一位匿名同事。我们都在看着你。',
   'intercom.internFriend1': '有人在四楼看到了47号实习生。请不要挥手回应。',
+  'relic.masterKeys.name': '万能钥匙串',
+  'relic.masterKeys.d': '每场战斗开始时有 {n} 个丢失的工牌：你接下来 {n} 张需要 [mana] 的卡牌免费。',
+  'relic.emeritusLanyard.name': '荣誉实习生挂绳',
+  'relic.emeritusLanyard.d': '法力恢复速度加快 {n}%。',
 };

@@ -48,3 +48,7 @@ The game was already polished in look and sound, but poor in three places: **nar
 - The portrait in the HUD of a scene pulls a face (wince, cheer, cast) as what you chose lands.
 - The Intercom greets the people the run was kind to (the janitor, the New Hire, the intern).
 - Version 2.70.0.
+
+## Step 10: the stories pay off in stationery
+- Two new stationery that only a story gives (rarity `special`, never in the Lost & Found): the **Master Key Ring** (the janitor's: every fight starts with two Lost Badges) and the **Intern Emeritus Lanyard** (mana comes back 15% faster). New effect `relicId` for events; sprites, chip icons and four languages.
+- The scene's typing is faster (a tap still shows it whole) and the speaker only mumbles the first letters.

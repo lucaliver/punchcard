@@ -15,6 +15,8 @@ export type EventFx =
   | { kind: 'pay'; n: number }
   /** A random stationery, dealt like the Lost & Found's. */
   | { kind: 'relic' }
+  /** A named stationery that only a story gives (`special`), if the run doesn't hold it yet. */
+  | { kind: 'relicId'; id: string }
   /** A random card of this rarity from the hero's pool (`cross`: from any class) is added to the deck. */
   | { kind: 'card'; rarity: Rarity; cross?: boolean }
   /** The player picks a deck card to upgrade / to shred. */
@@ -92,7 +94,7 @@ export const EVENT_LIST: EventDef[] = [
     weight: 1000,
     needs: 'janitorKey',
     choices: [
-      sure('listen', { kind: 'relic' }, { kind: 'flag', id: 'janitorTruth' }),
+      sure('listen', { kind: 'relicId', id: 'masterKeys' }, { kind: 'flag', id: 'janitorTruth' }),
       sure('thank', { kind: 'maxHp', n: 12 }, { kind: 'flag', id: 'janitorTruth' }),
       sure('ignore', { kind: 'heal', pct: 0.25 }),
     ],
@@ -351,7 +353,11 @@ export const EVENT_LIST: EventDef[] = [
     speaker: 'graveyardIntern',
     weight: 1000,
     needs: 'internFriend',
-    choices: [sure('take', { kind: 'relic' }), sure('hug', { kind: 'maxHp', n: 8 }), sure('advise', { kind: 'heal', pct: 0.5 })],
+    choices: [
+      sure('take', { kind: 'relicId', id: 'emeritusLanyard' }),
+      sure('hug', { kind: 'maxHp', n: 8 }),
+      sure('advise', { kind: 'heal', pct: 0.5 }),
+    ],
   },
   // ---- each hero's own scene
   {

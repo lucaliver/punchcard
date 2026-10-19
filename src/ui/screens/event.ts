@@ -19,7 +19,10 @@ import { HEAL_ANIM_MS, playHealing } from './rest';
 import { runHud } from './journey';
 
 /** One letter of a typed line every so many ms (the speaker's voice blips on each). */
-const TYPE_MS = 24;
+const TYPE_MS = 12;
+/** The speaker's voice only mumbles the first letters of a line (blips on every letter of a long one would be a buzz), every so many ms. */
+const VOICE_LETTERS = 70;
+const VOICE_MS = 36;
 /** How long the HUD's portrait keeps a face (ms). */
 const FACE_MS = 1500;
 /** The moment between two things that happen after a choice (ms). */
@@ -41,6 +44,7 @@ function chip(run: RunState, fx: EventFx): { icon: string; text: string; tone: T
     case 'pay':
       return { icon: 'coin', text: signed(fx.n), tone: tone(fx.n) };
     case 'relic':
+    case 'relicId':
       return { icon: 'lostBox', text: '+1', tone: 'good' };
     case 'card':
       return { icon: 'addCard', text: '+1', tone: 'good' };
@@ -96,7 +100,7 @@ export function eventScreen(run: RunState, onDone: () => void): Screen {
   const speak = (text: string, then: () => void): void => {
     typing?.cancel();
     const [lo, hi] = CONFIG.voicePitch;
-    voice(text, lo + ([...def.id].reduce((sum, c) => sum + c.charCodeAt(0) * 7, 0) % (hi - lo)), TYPE_MS);
+    voice([...text].slice(0, VOICE_LETTERS).join(''), lo + ([...def.id].reduce((sum, c) => sum + c.charCodeAt(0) * 7, 0) % (hi - lo)), VOICE_MS);
     const line = typeLine(said, unsaid, text, TYPE_MS, () => {
       slip.onclick = null;
       then();
@@ -151,6 +155,7 @@ export function eventScreen(run: RunState, onDone: () => void): Screen {
         haptic('ability');
         return BEAT_MS;
       case 'relic':
+      case 'relicId':
         if (d.relic) playRelic(el, d.relic, { start: 'chomp', end: 'jingle' });
         return d.relic ? CARD_SHOW_MS : 0;
       case 'card':
@@ -246,7 +251,7 @@ export function eventScreen(run: RunState, onDone: () => void): Screen {
         const lost = (d.hp ?? 0) < 0 || (d.fx.kind === 'maxHp' && d.fx.n < 0);
         if (lost) face('hurt');
         else if (d.fx.kind === 'hp' || d.fx.kind === 'heal' || d.fx.kind === 'maxHp') face('cheer');
-        else if (d.fx.kind === 'relic' || d.fx.kind === 'card' || d.fx.kind === 'upgradeRandom') face('cast');
+        else if (d.fx.kind === 'relic' || d.fx.kind === 'relicId' || d.fx.kind === 'card' || d.fx.kind === 'upgradeRandom') face('cast');
         later(ms + BEAT_MS, next);
       };
       later(BEAT_MS, next);

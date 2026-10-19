@@ -643,4 +643,8 @@ export const storyEs: Record<keyof typeof storyEn, string> = {
   'intercom.janitorFriend1': 'Un Conserje Nocturno me ha pedido que salude a alguien. No dijo a quién. Eres tú.',
   'intercom.newHireFriend1': 'Un nuevo empleado quiere dar las gracias a un compañero anónimo. Todos te estamos mirando.',
   'intercom.internFriend1': 'El becario n.º 47 ha sido visto en la cuarta planta. Por favor, no le devuelvan el saludo.',
+  'relic.masterKeys.name': 'Llavero Maestro',
+  'relic.masterKeys.d': 'Cada combate empieza con {n} credenciales perdidas: tus próximas {n} cartas que cuestan [mana] son gratis.',
+  'relic.emeritusLanyard.name': 'Acreditación del Becario Emérito',
+  'relic.emeritusLanyard.d': 'El maná vuelve un {n}% más rápido.',
 };

@@ -450,6 +450,29 @@ const remoteControl = `
 ${face(100, 106, 12, 4)}
 <g fill="#6a98ea" ${OUT}><circle cx="82" cy="152" r="8"/><circle cx="118" cy="152" r="8"/></g><circle cx="100" cy="166" r="8" fill="#ff3d9a" ${OUT}/>`;
 
+/** The Master Key Ring: a brass ring, the janitor's, with three keys that open what no floor plan shows, and a tag with a face. */
+const masterKeys = `
+<defs><linearGradient id="mk-b" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#ffe45a"/><stop offset="1" stop-color="#c8881a"/></linearGradient></defs>
+<circle cx="100" cy="50" r="34" fill="none" stroke="${INK}" stroke-width="16"/><circle cx="100" cy="50" r="34" fill="none" stroke="url(#mk-b)" stroke-width="9"/>
+<g ${OUT}><path d="M58 76h22v82a11 11 0 0 1-22 0z" fill="url(#mk-b)"/><path d="M58 128h-10v-8h10zM58 144h-14v-8h14z" fill="#c8881a"/><circle cx="69" cy="164" r="4" fill="${INK}"/></g>
+<g ${OUT}><path d="M120 76h22v62a11 11 0 0 1-22 0z" fill="#9ab8f0"/><path d="M142 110h12v8h-12zM142 126h8v8h-8z" fill="#5a7ac8"/><circle cx="131" cy="146" r="4" fill="${INK}"/></g>
+<g ${OUT}><path d="M86 82h24v94a12 12 0 0 1-24 0z" fill="#ff7aba"/><path d="M110 118h12v8h-12zM110 138h16v8h-16z" fill="#c84a8a"/></g>
+<rect x="84" y="94" width="30" height="26" rx="3" fill="${PAPER}" ${OUT}/>
+${face(99, 108, 6, 2.4)}`;
+
+/** The Intern Emeritus's Lanyard: a faded lilac strap, a clip, and a badge with a small gold star that someone has dusted. */
+const emeritusLanyard = `
+<defs><linearGradient id="el-b" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#c8b8ff"/><stop offset="1" stop-color="#8a78d8"/></linearGradient></defs>
+<path d="M54 8l46 70 46-70" fill="none" stroke="${INK}" stroke-width="22" stroke-linejoin="round"/><path d="M54 8l46 70 46-70" fill="none" stroke="url(#el-b)" stroke-width="14" stroke-linejoin="round"/>
+<path d="M62 18l38 56M138 18l-38 56" stroke="#e8e0ff" stroke-width="3" stroke-dasharray="2 7"/>
+<rect x="88" y="72" width="24" height="16" rx="3" fill="#9aa3b5" ${OUT}/>
+<rect x="52" y="86" width="96" height="100" rx="10" fill="${PAPER}" ${OUT}/>
+<rect x="52" y="86" width="96" height="22" rx="10" fill="#8a78d8" ${OUT}/>
+<path d="M100 152l-8 14 14-4 14 4-8-14 10-11-15 1-5-14-5 14-15-1z" fill="#ffd900" ${OUT} transform="translate(0 -22) scale(1)" opacity=".0"/>
+<path d="M${star(100, 126, 17, 7)}" fill="none"/>
+<polygon points="${star(100, 128, 18, 8)}" fill="#ffd900" ${OUT}/>
+${face(100, 160, 14, 3.4)}`;
+
 /** Sprite sources by relic id, as the renderer wants them (`relic.` keeps them apart from creature ids). */
 export const RELIC_SPRITES: Record<string, string> = Object.fromEntries(
   Object.entries({
@@ -498,6 +521,8 @@ export const RELIC_SPRITES: Record<string, string> = Object.fromEntries(
     lotteryTicket,
     doggyBag,
     remoteControl,
+    masterKeys,
+    emeritusLanyard,
   }).map(([id, svg]) => [`relic.${id}`, svg]),
 );
 

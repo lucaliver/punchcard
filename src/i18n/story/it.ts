@@ -649,4 +649,8 @@ export const storyIt: Record<keyof typeof storyEn, string> = {
   'intercom.janitorFriend1': 'Un Custode Notturno mi ha chiesto di salutare qualcuno. Non ha detto chi. Sei tu.',
   'intercom.newHireFriend1': 'Un nuovo assunto vorrebbe ringraziare un collega anonimo. Stiamo tutti guardando te.',
   'intercom.internFriend1': 'Lo stagista n. 47 è stato visto al quarto piano. Si prega di non ricambiare il saluto.',
+  'relic.masterKeys.name': 'Passepartout del Custode',
+  'relic.masterKeys.d': 'Ogni scontro inizia con {n} Badge Smarriti: le prossime {n} carte che costano [mana] sono gratis.',
+  'relic.emeritusLanyard.name': 'Cordino dello Stagista Emerito',
+  'relic.emeritusLanyard.d': 'Il mana torna il {n}% più in fretta.',
 };

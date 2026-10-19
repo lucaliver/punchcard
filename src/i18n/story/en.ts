@@ -650,4 +650,8 @@ export const storyEn = {
   'intercom.janitorFriend1': 'A Night Janitor has asked me to say hello to someone. He did not say who. It is you.',
   'intercom.newHireFriend1': 'A new hire would like to thank an anonymous colleague. We are all looking at you.',
   'intercom.internFriend1': 'Intern #47 has been seen on the fourth floor. Please do not wave back.',
+  'relic.masterKeys.name': 'Master Key Ring',
+  'relic.masterKeys.d': 'Every fight starts with {n} Lost Badges: your next {n} cards that cost [mana] are free.',
+  'relic.emeritusLanyard.name': 'Intern Emeritus Lanyard',
+  'relic.emeritusLanyard.d': 'Mana comes back {n}% faster.',
 } satisfies Record<string, string>;
