@@ -1,7 +1,7 @@
 import { describe, expect, it } from 'vitest';
 import { CONFIG } from '../../src/data/config';
 import { ENEMIES, ENEMY_LIST, HALF, MONDAY_BLOCK } from '../../src/data/enemies';
-import { BLOW_EVERY, PANEL_EVERY, PLATE_HEAL, POSE_EVERY, POSE_TIME, STATUSES } from '../../src/data/statuses';
+import { BLOW_EVERY, HOUSE_BAN, HOUSE_EVERY, houseBan, PANEL_EVERY, PLATE_HEAL, POSE_EVERY, POSE_TIME, STATUSES } from '../../src/data/statuses';
 import { CARDS } from '../../src/data/cards';
 import { STAGE_IDS, stageArt } from '../../src/ui/art/stageArt';
 import { RELIC_LIST, RELICS, REMOTE_STUN } from '../../src/data/relics';
@@ -107,7 +107,7 @@ describe('the weekend: the other normal enemy and the elites', () => {
   });
 
   it('every weekend elite starts armoured, and the half-HP moves do what their texts say', () => {
-    for (const id of ['motherInLaw', 'ribbonMayor', 'weddingDj']) expect(ENEMIES[id].tier).toBe('elite');
+    for (const id of ['motherInLaw', 'ribbonMayor', 'weddingDj', 'condoPresident']) expect(ENEMIES[id].tier).toBe('elite');
     const mother = setup({
       enemy: { ...ENEMIES.motherInLaw, block: 0, main: { ...ENEMIES.motherInLaw.main, windup: 9999 }, specials: [], every: 0 },
     });
@@ -123,6 +123,39 @@ describe('the weekend: the other normal enemy and the elites', () => {
     dj.hit(10);
     run(dj, 0.1);
     expect(dj.has('hero', 'hurry')).toBe(true);
+  });
+});
+
+describe("the Condo Board President's house rules", () => {
+  it('the building votes: quiet first, then a kind of card is banned for a while (attacks, skills, defences, round and round)', () => {
+    const c = alone('condoPresident');
+    run(c, CONFIG.introTime);
+    const e = (): number => c.enemy.statuses.houseRules.e ?? 0;
+    expect(houseBan(c)).toBeNull();
+    const seen: (string | null)[] = [];
+    const step = 0.5;
+    // Three full cycles, a look every half second.
+    for (let t = 0; t < HOUSE_EVERY * 3; t += step) {
+      run(c, step);
+      seen.push(houseBan(c));
+    }
+    const bans = seen.filter((x, i) => x && x !== seen[i - 1]);
+    expect(bans).toEqual(['attack', 'skill', 'defense']);
+    expect(seen.filter((x) => x).length * step).toBeGreaterThan(HOUSE_BAN * 3 - 2);
+    expect(e()).toBeGreaterThan(HOUSE_EVERY * 3 - 1);
+  });
+
+  it('a banned card cannot be played (its badge says why) and a curse never is banned; the others are free', () => {
+    const c = alone('condoPresident');
+    run(c, CONFIG.introTime);
+    c.enemy.statuses.houseRules.e = HOUSE_EVERY - HOUSE_BAN + 0.5;
+    expect(houseBan(c)).toBe('attack');
+    const card = (id: string) => ({ uid: 900, id, up: false, bonus: 0, temp: true });
+    expect(c.ruleBlock(card('punch'))?.key).toBe('combat.houseRules.attack');
+    expect(c.ruleBlock(card('bobTheBuilder'))).toBeNull();
+    expect(c.ruleBlock(card('gossip'))).toBeNull();
+    c.enemy.statuses.houseRules.e = HOUSE_EVERY * 2 - 1;
+    expect(houseBan(c)).toBe('skill');
   });
 });
 

@@ -276,8 +276,30 @@ const bedroom = (): string =>
   parts('b', [[82, 18, 2, 10], [78, 12, 10, 6]]) + twinkle(78, 12, 10, 4, 'l', 10, 6) +
   parts('b', [[68, 33, 8, 7]]) + parts('a', [[69, 34, 6, 3]]) + twinkle(70, 34, 1, 0, 'h', 1, 2) + twinkle(72, 34, 1, -0.5, 'h', 2, 1) + twinkle(74, 34, 1, -0.25, 'h', 1, 2);
 
+/** The weekend's stairwell: a wall of mailboxes, the stairs going up with their railing, a notice board of angry notes and a bare bulb, a "lift out of order" sign. */
+// biome-ignore format: pixel rects read best in rows
+const stairwell = (): string => {
+  const boxes: Rect[] = [];
+  for (let row = 0; row < 3; row++) for (let col = 0; col < 5; col++) boxes.push([2 + col * 5, 18 + row * 7, 4, 6]);
+  const steps: Rect[] = [];
+  for (let i = 0; i < 8; i++) steps.push([64 + i * 4, 38 - i * 3, 32 - i * 4, 2]);
+  return (
+    // the mailboxes, a few with a letter sticking out
+    parts('b', [[0, 16, 28, 24]]) + parts('a', boxes) + parts('l', [[4, 19, 1, 1], [14, 26, 1, 1], [24, 33, 1, 1], [9, 33, 1, 1]]) + parts('h', [[7, 20, 2, 2], [17, 34, 2, 2]]) +
+    // the notice board with its notes
+    parts('b', [[34, 8, 22, 16]]) + parts('a', [[35, 9, 20, 14]]) + parts('l', [[37, 11, 6, 5], [45, 12, 7, 6], [38, 18, 5, 4]]) + parts('h', [[47, 19, 4, 3], [40, 11, 1, 1]]) +
+    // a sign on the lift doors
+    parts('b', [[32, 26, 24, 14]]) + parts('a', [[34, 28, 9, 12], [45, 28, 9, 12]]) + parts('h', [[34, 26, 20, 2]]) +
+    twinkle(34, 26, 1.4, 0, 'l', 20, 1) +
+    // the stairs going up to the right, their railing, and the bulb
+    parts('b', steps) + parts('a', steps.map(([x, y, , ]): Rect => [x, y + 2, 2, 40 - y])) +
+    parts('b', [[64, 24, 1, 14], [72, 12, 1, 14], [80, 6, 1, 8], [88, 4, 1, 4], [64, 24, 32, 1]]) +
+    parts('b', [[48, 0, 1, 5]]) + twinkle(46, 5, 3.4, 0, 'l', 5, 2) + parts('l', [[47, 4, 3, 1]])
+  );
+};
+
 /** The scenes of the weekend's places (`EnemyDef.stage`); the supermarket aisle is the weekend's own (the act's default), the rest are where its jobs are met. */
-const PLACES: Record<StageId, () => string> = { aisle, park, terrace, garden, livingRoom, diningRoom, ballroom, townHall, bedroom };
+const PLACES: Record<StageId, () => string> = { aisle, park, terrace, garden, livingRoom, diningRoom, ballroom, townHall, stairwell, bedroom };
 export const STAGE_IDS = Object.keys(PLACES) as StageId[];
 
 const SCENES = [parking, office, factory, aisle];

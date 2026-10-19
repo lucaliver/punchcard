@@ -54,3 +54,6 @@ Before: one enemy of its own (the Self-Checkout) dealt for every fight, elites a
 - Handbook: a boss's phase line no longer breaks into pieces when it names a keyword (a pre-existing flex quirk that also hit the Board).
 - Sounds: a sizzle for a burger turned, an air horn when the dance floor is done.
 - Version 2.62.0.
+
+## Batch 11: a fourth elite with a rule of its own
+- **Condo Board President** (elite): *House Rules* (`houseRules`): every 12 s the building votes a ban and for 7 s one kind of card (attacks, then skills, then defences, round and round) can't be played; the usual rule badge shows on every card of that kind, the chip fills up to the vote and the belt reddens just before it. Special Assessment drains mana, Proxy Vote slows your belt, Eviction Notice is the heavy hit. Met in a new place: the stairwell (mailboxes, a notice board, a lift out of order, stairs going up).

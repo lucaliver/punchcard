@@ -79,6 +79,18 @@ export const POSE_TIME = 3;
 export const BLOW_EVERY = 20;
 const BLOW_WARN = 3;
 
+/** House Rules: the building votes every `HOUSE_EVERY` seconds, and for the last `HOUSE_BAN` of them one kind of card (attacks, then skills, then defences, over and over) can't be played; it warns `HOUSE_WARN` seconds ahead. */
+export const HOUSE_EVERY = 12;
+export const HOUSE_BAN = 7;
+const HOUSE_WARN = 2;
+const HOUSE_TYPES = ['attack', 'skill', 'defense'] as const;
+const houseClock = (c: Combat): number => c.enemy.statuses.houseRules?.e ?? 0;
+/** The kind of card banned now, or null while the building isn't voting. */
+export const houseBan = (c: Combat): (typeof HOUSE_TYPES)[number] | null => {
+  const e = houseClock(c);
+  return e % HOUSE_EVERY >= HOUSE_EVERY - HOUSE_BAN ? HOUSE_TYPES[Math.floor(e / HOUSE_EVERY) % HOUSE_TYPES.length] : null;
+};
+
 /** Clean Plate: HP healed for each card that slips off the belt (times the stacks). */
 export const PLATE_HEAL = 3;
 /** Flat Pack: another panel clicks into place this often (s). */
@@ -1055,6 +1067,27 @@ const defs: StatusDef[] = [
     warning: (_c, s) => {
       const left = BLOW_EVERY - ((s.e ?? 0) % BLOW_EVERY);
       return left < BLOW_WARN ? 1 - left / BLOW_WARN : 0;
+    },
+  },
+  // House rules: the building votes, and for a while a kind of card is banned (its badge shows on every card of it).
+  {
+    id: 'houseRules',
+    tone: 'purple',
+    kind: 'stacks',
+    good: true,
+    passive: true,
+    icon: 'rulebook',
+    progress: (c) => (houseClock(c) % HOUSE_EVERY) / HOUSE_EVERY,
+    tick: (_c, _side, s, dt) => {
+      s.e = (s.e ?? 0) + dt;
+    },
+    canPlay: (c, side, def) => {
+      const banned = houseBan(c);
+      return side === 'enemy' && banned && def.type === banned ? `combat.houseRules.${banned}` : null;
+    },
+    warning: (c) => {
+      const left = HOUSE_EVERY - HOUSE_BAN - (houseClock(c) % HOUSE_EVERY);
+      return left > 0 && left < HOUSE_WARN ? 1 - left / HOUSE_WARN : 0;
     },
   },
   // Clean plate: every card that slips off the belt is food wasted, and she is happy to finish it for you.

@@ -538,6 +538,9 @@ const es: Record<EnKey, string> = {
   'combat.inflation': 'Inflación: algunas cartas cuestan {$inflationCost} más hasta que las juegues',
   'combat.blackout': 'Luces apagadas: no puedes leer lo que hacen tus cartas',
   'combat.policy': '¡No dos veces el mismo color!',
+  'combat.houseRules.attack': 'Reglamento de la comunidad: ¡nada de ataques ahora!',
+  'combat.houseRules.skill': 'Reglamento de la comunidad: ¡nada de habilidades ahora!',
+  'combat.houseRules.defense': 'Reglamento de la comunidad: ¡nada de defensas ahora!',
   'combat.noMana': 'No hay maná suficiente',
   'combat.dodged': '¡Esquivado!',
   'combat.parried': '¡Parado!',
@@ -1107,6 +1110,9 @@ const es: Record<EnKey, string> = {
   'status.cleanPlate.d': 'Cada carta que se escapa de tu cinta es comida desperdiciada: ella cura {$plateHeal} PV por cada una.',
   'status.flatPack': 'Montaje por Piezas',
   'status.flatPack.d': 'Aún se está montando: cada {$panelEvery}s otro panel encaja en su sitio y gana {v} de [block].',
+  'status.houseRules': 'Reglamento de la Comunidad',
+  'status.houseRules.d':
+    'Cada {$houseEvery}s la comunidad vota una prohibición y durante {$houseBan}s no se puede jugar un tipo de carta: primero ataques, luego habilidades, luego defensas, en rotación.',
   'status.flickeringLights': 'Luces parpadeantes',
   'status.flickeringLights.d':
     'Cada {$flickerEvery}s las luces se apagan durante {$flickerTime}s: puedes leer los nombres de tus cartas, pero no lo que hacen.',
@@ -1899,6 +1905,7 @@ const es: Record<EnKey, string> = {
   'enemy.ribbonMayor.name': 'Alcalde de las Inauguraciones',
   'enemy.ribbonMayor.half': 'Llegan los lobistas: gana {$mayorBlock} de [block].',
   'enemy.ribbonMayor.speech': 'No admitiré preguntas. Asumo toda la responsabilidad. La de otro.',
+  'enemy.condoPresident.name': 'Presidente de la Comunidad',
   'enemy.weddingDj.name': 'DJ de Bodas',
   'enemy.weddingDj.note':
     'Antes de que caiga su gran movimiento, sigue sus órdenes en el pad: izquierda, derecha, atrás, salto, y quieto cuando lo diga.',
@@ -2079,6 +2086,10 @@ const es: Record<EnKey, string> = {
   'move.noAccountability': 'Sin Responsabilidad',
   'move.pressConferenceCall': 'Rueda de Prensa',
   'move.filibuster': 'Filibusterismo',
+  'move.registeredLetter': 'Burofax',
+  'move.specialAssessment': 'Derrama Extraordinaria',
+  'move.proxyVote': 'Voto por Delegación',
+  'move.eviction': 'Desahucio',
   'move.bassDrop': 'Caída de Bajos',
   'move.chaChaSlide': 'Cha-Cha Slide',
   'move.doYouTakeRequests': '¿Aceptas Peticiones?',

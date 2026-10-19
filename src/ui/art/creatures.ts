@@ -1795,6 +1795,31 @@ const mondayThree = `${alarmClock('m3', ['#ff9a1e', '#b04a00'], '#f6f0e4', '<pat
 <g ${OUT}><rect x="130" y="64" width="46" height="22" rx="5" fill="#ffd900"/><path d="M138 72h30M138 79h18" stroke="#120e18" stroke-width="3"/><path d="M146 86l-4 8 10-4z" fill="#ffd900"/></g>
 <g ${OUT}><rect x="24" y="64" width="40" height="20" rx="5" fill="#fff"/><path d="M32 71h24M32 77h14" stroke="#ff3b3b" stroke-width="3"/><path d="M54 84l4 8-10-4z" fill="#fff"/></g>`;
 
+/** The Condo Board President: a short, bald man in a beige cardigan with elbow patches, thick glasses and a moustache, a clipboard of minutes in one hand and a ring of forty keys in the other, a briefcase of unpaid service charges at his feet. */
+const condoPresident = `
+<defs>${rg('cp-s', '#ffc8a0', '#c8785a')}${rg('cp-c', '#e8d4a8', '#a8885a')}${rg('cp-g', '#ffe45a', '#b88a10')}</defs>
+${shadow}
+<rect x="130" y="160" width="46" height="28" rx="4" fill="#5a3a1a" ${OUT}/><rect x="146" y="154" width="14" height="8" rx="3" fill="none" stroke="#120e18" stroke-width="3"/><path d="M130 172h46" stroke="#120e18" stroke-width="2"/><rect x="148" y="170" width="10" height="6" fill="#ffd900" ${OUT}/>
+<path d="M66 176l-2 12h28l2-12zM104 176l2 12h28l-2-12z" fill="#2a2a3a" ${OUT}/>
+<path d="M72 124h56l-2 54H74z" fill="#6a6a8a" ${OUT}/>
+<path d="M56 84h88l10 62H46z" fill="url(#cp-c)" ${OUT}/>
+<path d="M100 84v62" stroke="#120e18" stroke-width="3"/><g fill="#8a5a2a" ${OUT}><circle cx="92" cy="104" r="3.5"/><circle cx="92" cy="122" r="3.5"/><circle cx="92" cy="140" r="3.5"/></g>
+<path d="M88 84l12 22 12-22" fill="#fff" ${OUT}/><path d="M96 90l4 6 4-6z" fill="#1c5fd0" stroke="#120e18" stroke-width="2"/><path d="M98 96h4l2 22-4 5-4-5z" fill="#1c5fd0" ${OUT}/>
+<g fill="#8a5a2a" ${OUT}><ellipse cx="60" cy="116" rx="9" ry="6"/><ellipse cx="140" cy="116" rx="9" ry="6"/></g>
+<g class="limb"><path d="M54 92L34 124l16 8 22-30z" fill="url(#cp-c)" ${OUT}/><circle cx="40" cy="130" r="9" fill="url(#cp-s)" ${OUT}/>
+<g transform="rotate(-8 28 140)"><rect x="6" y="104" width="40" height="52" rx="3" fill="#f6f0e4" ${OUT}/><rect x="18" y="100" width="16" height="8" rx="2" fill="#8a94a8" ${OUT}/><path d="M12 118h28M12 126h28M12 134h28M12 142h18" stroke="#1c5fd0" stroke-width="3"/><circle cx="36" cy="142" r="4" fill="#ff3b3b"/></g></g>
+<g class="limb"><path d="M146 92l22 28-14 12-22-22z" fill="url(#cp-c)" ${OUT}/><circle cx="162" cy="134" r="9" fill="url(#cp-s)" ${OUT}/>
+<circle cx="170" cy="152" r="14" fill="none" stroke="#120e18" stroke-width="7"/><circle cx="170" cy="152" r="14" fill="none" stroke="#8a94a8" stroke-width="3"/>
+<g ${OUT}><path d="M160 160l-4 16h8z" fill="url(#cp-g)"/><path d="M170 164l0 18h8z" fill="url(#cp-g)"/><path d="M180 158l10 12-6 4z" fill="url(#cp-g)"/><path d="M178 144l12-6 2 8z" fill="url(#cp-g)"/></g></g>
+<rect x="86" y="62" width="28" height="22" fill="url(#cp-s)" ${OUT}/>
+<circle cx="100" cy="46" r="32" fill="url(#cp-s)" ${OUT}/>
+<path d="M70 44c-2-10 2-14 6-16-4 8-4 16-2 24zM130 44c2-10-2-14-6-16 4 8 4 16 2 24z" fill="#8a8aa0" ${OUT}/>
+<g ${OUT}><circle cx="86" cy="46" r="11" fill="#fff"/><circle cx="114" cy="46" r="11" fill="#fff"/><path d="M97 46h6"/></g>
+<g class="eye"><circle cx="86" cy="47" r="4" fill="#120e18"/><circle cx="114" cy="47" r="4" fill="#120e18"/></g>
+<path d="M74 34l24 6M126 34l-24 6" stroke="#8a8aa0" stroke-width="5" stroke-linecap="round"/>
+<path d="M82 62c8-6 28-6 36 0-4 10-12 12-18 12s-14-2-18-12z" fill="#8a8aa0" ${OUT}/>
+<path d="M90 72c6 3 14 3 20 0" stroke="#120e18" stroke-width="3" fill="none" stroke-linecap="round"/>`;
+
 /** The dog once a squirrel has gone by: eyes fixed on a thought bubble with the squirrel in it, tongue right out. */
 const offLeashDogDistracted = `${offLeashDog}
 <g ${OUT}><circle cx="172" cy="52" r="5" fill="#fff"/><circle cx="160" cy="68" r="3" fill="#fff"/><ellipse cx="164" cy="26" rx="30" ry="24" fill="#fff"/></g>
@@ -1951,6 +1976,7 @@ export const CREATURES: Record<string, string> = {
   motherInLawAngry,
   ribbonMayor,
   ribbonMayorAngry,
+  condoPresident,
   weddingDj,
   weddingDjAngry,
   theCouch,

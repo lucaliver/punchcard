@@ -1085,6 +1085,24 @@ const defs: EnemyDef[] = [
     onHalf: (c) => c.gainBlock('enemy', HALF.mayorBlock),
   },
   {
+    // The building votes: every few seconds one kind of card is banned for a while (attacks, then skills, then defences).
+    id: 'condoPresident',
+    act: 4,
+    stage: 'stairwell',
+    tier: 'elite',
+    hp: 170,
+    block: 40,
+    art: 'condoPresident',
+    main: atk('registeredLetter', 8, 7, ramp),
+    every: 2,
+    specials: [
+      { id: 'specialAssessment', intent: 'drain', windup: 6, drainMana: 2, status: [gainStrength] },
+      { id: 'proxyVote', intent: 'debuff', windup: 6, status: [{ id: 'slowdown', t: 8, target: 'hero' }, gainStrength] },
+      atk('eviction', 18, 11, { intent: 'charge' }),
+    ],
+    start: [{ id: 'houseRules' }],
+  },
+  {
     // Before his big move lands you have to follow his calls on the pad: left, right, back, hop, and freeze when he says so.
     id: 'weddingDj',
     act: 4,
@@ -1214,6 +1232,7 @@ export const DIFFICULTY = [
   'theCouch',
   'weddingDj',
   'ribbonMayor',
+  'condoPresident',
   'motherInLaw',
   'monday',
 ];

@@ -390,7 +390,7 @@ export interface EnemyPhase {
 }
 
 /** The places the weekend's jobs are met in (the scene behind the enemy, `art/stageArt.ts`); an enemy with none stands in its act's own scene. */
-export type StageId = 'aisle' | 'park' | 'terrace' | 'garden' | 'livingRoom' | 'diningRoom' | 'ballroom' | 'townHall' | 'bedroom';
+export type StageId = 'aisle' | 'park' | 'terrace' | 'garden' | 'livingRoom' | 'diningRoom' | 'ballroom' | 'townHall' | 'stairwell' | 'bedroom';
 
 export interface EnemyDef {
   id: string;
