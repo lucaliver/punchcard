@@ -37,6 +37,12 @@ const BOARD_SLOW = 0.7;
 const BOARD_FAST = 1.5;
 /** Block the Board gains each time a head is lost (the phase it enters). */
 export const BOARD_BLOCK = 50;
+/** The belt's multipliers in Monday's three phases (the sleepless night crawls, the alarm races, the morning rushes), and the Block he gains each time he changes phase. */
+const MONDAY_SLOW = 0.8;
+const MONDAY_FAST = 1.35;
+const MONDAY_RUSH = 1.6;
+export const MONDAY_BLOCK = 40;
+
 /** Seconds the Board's audit takes to land: a couple of rounds of the shell game fit in it. */
 const AUDIT = 18;
 
@@ -1089,6 +1095,52 @@ const defs: EnemyDef[] = [
     halfArt: 'weddingDjAngry',
     onHalf: (c) => c.applyStatus('hero', 'hurry', 1, HALF.djHurry),
   },
+  {
+    // The weekend's last boss, and the game's: Sunday night (a slow belt, dread), the snooze button (a fast belt, coffee) and nine o'clock on Monday (a rush, the badge reader), in three phases of an alarm clock.
+    id: 'monday',
+    act: 4,
+    tier: 'boss',
+    hp: 360,
+    block: 80,
+    art: 'mondayOne',
+    note: 'alarmClock',
+    main: atk('doomscrolling', 11, 7, ramp),
+    every: 2,
+    specials: [
+      { id: 'sundayScariesCall', intent: 'curse', windup: 6, curse: [{ id: 'sundayScaries', n: 2, to: 'draw' }], status: [gainStrength] },
+      { id: 'insomnia', intent: 'debuff', windup: 6, status: [{ id: 'blackout', t: 8, target: 'hero' }, gainStrength] },
+    ],
+    belt: { rows: 2, mul: MONDAY_SLOW },
+    phases: [
+      {
+        at: 2 / 3,
+        art: 'mondayTwo',
+        main: atk('alarmBlast', 12, 5, ramp),
+        every: 2,
+        specials: [
+          { id: 'snoozeButton', intent: 'defend', windup: 6, block: 30, heal: 20 },
+          { id: 'mondayCoffee', intent: 'charge', windup: GET_COFFEE, dmg: 22, task: 'coffee' },
+          { id: 'riseAndGrind', intent: 'debuff', windup: 6, status: [{ id: 'crunch', t: 8, target: 'hero' }, gainStrength] },
+        ],
+        belt: { rows: 2, mul: MONDAY_FAST },
+        block: MONDAY_BLOCK,
+      },
+      {
+        at: 1 / 3,
+        art: 'mondayThree',
+        main: atk('replyAll', 14, 5, ramp),
+        every: 2,
+        specials: [
+          { id: 'clockIn', intent: 'charge', windup: BADGE_SWIPE, dmg: 20, task: 'badge' },
+          { id: 'standUpMeeting', intent: 'curse', windup: 6, curse: [{ id: 'quickSync', n: 3, to: 'belt' }], status: [gainStrength] },
+          atk('allHands', 30, 12, { intent: 'charge' }),
+        ],
+        belt: { rows: 2, mul: MONDAY_RUSH },
+        block: MONDAY_BLOCK,
+      },
+    ],
+    start: [{ id: 'strength', v: 2 }],
+  },
 ];
 
 /** The handbook lists the enemies in this order: the very first run's enemies first, in the order it meets them. */
@@ -1153,6 +1205,7 @@ export const DIFFICULTY = [
   'weddingDj',
   'ribbonMayor',
   'motherInLaw',
+  'monday',
 ];
 
 /** A dummy for tests in the debug fight menu (200 HP, 10 damage every 10 s): in `ENEMIES` so a fight can load it, but in no list, map, handbook or reward. */

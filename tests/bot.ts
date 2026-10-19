@@ -40,6 +40,8 @@ export interface BotOpts {
   sloppiness: number;
   /** The rank on the hero's career ladder to play at (default 0, the plain game). */
   level?: number;
+  /** How many acts the run has (default the main ones; `ACT_DEFS.length` adds the weekend). */
+  acts?: number;
 }
 
 const DT = 1 / 30;
@@ -245,6 +247,8 @@ export interface RunOutcome {
   killer?: string;
   hp: number;
   combatTimes: number[];
+  /** Every fight the run had: who, how it ended, how long it took and how much HP it cost. */
+  fights: { enemy: string; act: number; won: boolean; time: number; hpLost: number }[];
 }
 
 export function simulateRun(hero: HeroId, seed: number, opts: BotOpts): RunOutcome {
@@ -253,8 +257,9 @@ export function simulateRun(hero: HeroId, seed: number, opts: BotOpts): RunOutco
     s = (s * 1664525 + 1013904223) >>> 0;
     return s / 2 ** 32;
   };
-  const run: RunState = newRun(hero, seed, [], [], MAIN_ACTS, opts.level ?? 0);
+  const run: RunState = newRun(hero, seed, [], [], opts.acts ?? MAIN_ACTS, opts.level ?? 0);
   const combatTimes: number[] = [];
+  const fights: RunOutcome['fights'] = [];
   for (;;) {
     const node = currentNode(run);
     if (node.type === 'promotion') {
@@ -292,8 +297,9 @@ export function simulateRun(hero: HeroId, seed: number, opts: BotOpts): RunOutco
       const c = new Combat({ ...combatSetup(run), canBeg: false });
       simulateCombat(c, rnd, opts);
       combatTimes.push(c.time);
+      fights.push({ enemy: node.enemy!, act: node.act, won: c.result === 'win', time: c.time, hpLost: c.hero.maxHp - c.hero.hp });
       applyCombat(run, c);
-      if (c.result === 'lose' || !c.result) return { won: false, act: node.act, floor: node.floor, killer: node.enemy, hp: 0, combatTimes };
+      if (c.result === 'lose' || !c.result) return { won: false, act: node.act, floor: node.floor, killer: node.enemy, hp: 0, combatTimes, fights };
       if (c.result === 'win' && node.type !== 'boss') {
         const picks = rollRewards(run, node.type === 'elite' ? 'elite' : 'fight');
         // Swap the best offer in for a plain starter card (never a mana crystal).
@@ -302,6 +308,6 @@ export function simulateRun(hero: HeroId, seed: number, opts: BotOpts): RunOutco
         if (pick && out) swapCard(run, out.uid, pick.def.id, pick.up);
       }
     }
-    if (!advance(run)) return { won: true, act: node.act, floor: node.floor, hp: run.hp, combatTimes };
+    if (!advance(run)) return { won: true, act: node.act, floor: node.floor, hp: run.hp, combatTimes, fights };
   }
 }

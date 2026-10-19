@@ -1758,6 +1758,43 @@ const weddingDjAngry = `${weddingDj}<g ${OUT}><rect x="76" y="44" width="22" hei
   },
 )}`;
 
+/** Monday, the weekend's last boss, as an alarm clock three times over (`mondayOne` is the Sunday night, `mondayTwo` the snooze button and `mondayThree` nine o'clock): twin bells, little legs, a round face. */
+const alarmClock = (id: string, body: [string, string], face: string, hands: string, bells: string, legs = '#2a2a3a'): string =>
+  `<defs>${rg(`${id}-b`, body[0], body[1])}${rg(`${id}-f`, face, '#c8d0e0')}</defs>
+<path d="M58 168l-10 20h22l6-18zM142 168l10 20h-22l-6-18z" fill="${legs}" ${OUT}/>
+<g class="limb"><circle cx="48" cy="40" r="26" fill="${bells}" ${OUT}/><path d="M32 30c4-8 12-12 20-12" stroke="#fff" stroke-width="4" fill="none" stroke-linecap="round" opacity=".6"/></g>
+<g class="limb"><circle cx="152" cy="40" r="26" fill="${bells}" ${OUT}/><path d="M136 30c4-8 12-12 20-12" stroke="#fff" stroke-width="4" fill="none" stroke-linecap="round" opacity=".6"/></g>
+<path d="M92 24h16v14H92z" fill="#8a94a8" ${OUT}/>
+<circle cx="100" cy="108" r="76" fill="url(#${id}-b)" ${OUT}/>
+<circle cx="100" cy="108" r="60" fill="url(#${id}-f)" ${OUT}/>
+<g stroke="#120e18" stroke-width="4" stroke-linecap="round"><path d="M100 54v10M100 152v10M46 108h10M144 108h10M62 70l7 7M138 70l-7 7M62 146l7-7M138 146l-7-7"/></g>
+${hands}`;
+
+const mondayOne = `${alarmClock('m1', ['#6a7ae8', '#1c2a88'], '#dfe6ff', '<path d="M100 108V70M100 108l12 22" stroke="#120e18" stroke-width="6" stroke-linecap="round"/><circle cx="100" cy="108" r="6" fill="#ff3d9a" stroke="#120e18" stroke-width="3"/>', '#ffd900')}
+<g class="eye"><path d="M66 100q12 10 24 0M110 100q12 10 24 0" stroke="#120e18" stroke-width="5" fill="none" stroke-linecap="round"/><path d="M68 108q10 8 20 0M112 108q10 8 20 0" stroke="#6a7ae8" stroke-width="3" fill="none" opacity=".6" stroke-linecap="round"/></g>
+<path d="M88 126q12 10 24 0" stroke="#120e18" stroke-width="5" fill="none" stroke-linecap="round"/>
+<path d="M62 28c10-18 40-20 52-4-10-4-22 0-30 6 4 12-6 24-22-2z" fill="#ff3d9a" ${OUT}/><circle cx="118" cy="22" r="7" fill="#fff" ${OUT}/>
+<g fill="#fff" ${OUT} font-family="monospace"><path d="M164 90l12-4v6l-8 6h8v6l-12 4v-6l8-6h-8z" transform="scale(.9)"/><path d="M176 62l10-3v5l-6 5h6v5l-10 3v-5l6-5h-6z" transform="scale(.9)"/></g>
+<path d="M166 160c18-4 22-22 10-34 6 24-14 26-30 22z" fill="#ffd900" ${OUT}/>`;
+
+const mondayTwo = `${alarmClock('m2', ['#ff5a3a', '#b0140e'], '#fff0d0', '<path d="M100 108V68M100 108l-26-2" stroke="#120e18" stroke-width="6" stroke-linecap="round"/><circle cx="100" cy="108" r="6" fill="#ffd900" stroke="#120e18" stroke-width="3"/>', '#ffd900')}
+<path d="M30 20l-14-8M24 44l-16 2M32 66l-14 10M170 20l14-8M176 44l16 2M168 66l14 10" stroke="#120e18" stroke-width="5" stroke-linecap="round"/>
+<g class="eye"><circle cx="76" cy="98" r="14" fill="#fff" ${OUT}/><circle cx="124" cy="98" r="14" fill="#fff" ${OUT}/><circle cx="76" cy="98" r="7" fill="#ff3b3b"/><circle cx="124" cy="98" r="7" fill="#ff3b3b"/><circle cx="76" cy="98" r="3" fill="#120e18"/><circle cx="124" cy="98" r="3" fill="#120e18"/></g>
+<path d="M56 78l32 12M144 78l-32 12" stroke="#120e18" stroke-width="8" stroke-linecap="round"/>
+<path d="M72 128h56l-6 18H78z" fill="#120e18" ${OUT}/><path d="M78 128v8M88 128v10M100 128v10M112 128v10M122 128v8" stroke="#f6f0e4" stroke-width="4"/>
+<rect x="74" y="8" width="52" height="22" rx="10" fill="#8ae848" ${OUT}/><path d="M86 19h28" stroke="#120e18" stroke-width="4" stroke-linecap="round"/>
+<g class="limb"><rect x="92" y="2" width="16" height="10" fill="#8a94a8" ${OUT}/></g>`;
+
+const mondayThree = `${alarmClock('m3', ['#ff9a1e', '#b04a00'], '#f6f0e4', '<path d="M100 108V62M100 108h28" stroke="#120e18" stroke-width="6" stroke-linecap="round"/><circle cx="100" cy="108" r="6" fill="#ff3d9a" stroke="#120e18" stroke-width="3"/>', '#ff3d9a')}
+<g class="eye"><circle cx="78" cy="94" r="9" fill="#fff" ${OUT}/><circle cx="122" cy="94" r="9" fill="#fff" ${OUT}/><circle cx="80" cy="96" r="4" fill="#120e18"/><circle cx="120" cy="96" r="4" fill="#120e18"/></g>
+<path d="M60 76l32 10M140 76l-32 10" stroke="#120e18" stroke-width="8" stroke-linecap="round"/>
+<path d="M82 128c10-6 26-6 36 0" stroke="#120e18" stroke-width="6" fill="none" stroke-linecap="round"/>
+<path d="M92 160l8-30 8 30z" fill="#ff3d9a" ${OUT}/><path d="M100 150v-20" stroke="#120e18" stroke-width="3"/>
+<g class="limb"><path d="M150 140l30 8" stroke="#120e18" stroke-width="12" stroke-linecap="round"/><path d="M150 140l30 8" stroke="#ff9a1e" stroke-width="6" stroke-linecap="round"/><path d="M176 134h22v24c0 6-4 10-10 10h-2c-6 0-10-4-10-10z" fill="#fff" ${OUT}/><path d="M198 140c8 0 8 12 0 12" fill="none" stroke="#120e18" stroke-width="3"/><path d="M180 126c-4-6 4-8 0-14M190 126c-4-6 4-8 0-14" stroke="#f6f0e4" stroke-width="3" fill="none" stroke-linecap="round"/></g>
+<g class="limb"><path d="M50 140l-30 8" stroke="#120e18" stroke-width="12" stroke-linecap="round"/><path d="M50 140l-30 8" stroke="#ff9a1e" stroke-width="6" stroke-linecap="round"/><rect x="-2" y="132" width="26" height="32" rx="3" fill="#fff" ${OUT} transform="rotate(-10 11 148)"/><path d="M4 142h14M4 150h14M4 158h8" stroke="#1c5fd0" stroke-width="3" transform="rotate(-10 11 148)"/></g>
+<g ${OUT}><rect x="130" y="64" width="46" height="22" rx="5" fill="#ffd900"/><path d="M138 72h30M138 79h18" stroke="#120e18" stroke-width="3"/><path d="M146 86l-4 8 10-4z" fill="#ffd900"/></g>
+<g ${OUT}><rect x="24" y="64" width="40" height="20" rx="5" fill="#fff"/><path d="M32 71h24M32 77h14" stroke="#ff3b3b" stroke-width="3"/><path d="M54 84l4 8-10-4z" fill="#fff"/></g>`;
+
 /** The dog once a squirrel has gone by: eyes fixed on a thought bubble with the squirrel in it, tongue right out. */
 const offLeashDogDistracted = `${offLeashDog}
 <g ${OUT}><circle cx="172" cy="52" r="5" fill="#fff"/><circle cx="160" cy="68" r="3" fill="#fff"/><ellipse cx="164" cy="26" rx="30" ry="24" fill="#fff"/></g>
@@ -1906,6 +1943,9 @@ export const CREATURES: Record<string, string> = {
   offLeashDog,
   offLeashDogDistracted,
   grillDad,
+  mondayOne,
+  mondayTwo,
+  mondayThree,
   flatPackWardrobe,
   motherInLaw,
   motherInLawAngry,

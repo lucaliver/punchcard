@@ -22,3 +22,8 @@ Before: one enemy of its own (the Self-Checkout) dealt for every fight, elites a
 - **Normal**: *Flat-Pack Wardrobe* (Flat Pack: another panel of Block every 6 s; Assembly Required swaps your belt and sleeve for a bag of spare screws).
 - **Curses**: Leftovers (weak when it slips off), Spare Parts (bulky clog), Press Conference (unplayable, fleeting).
 - **Art**: five sprites + angry faces for the three elites, icons plate, allenKey, tupperware, screws, microphone, discoBall, a better grill.
+
+## Batch 4: the boss
+- **Monday** (boss, the game's last): one alarm clock in three phases, `mondayOne` / `mondayTwo` / `mondayThree`. Sunday night (slow belt; Sunday Scaries curses, Insomnia blackout), the snooze button (fast belt; Snooze Button heals, *Coffee Before Anything* is the Slaves CEO's coffee chore again, Rise and Grind crunches), nine o'clock (belt rush; *Clock In* is the Punch Clock's badge chore, Stand-Up Meeting clogs the belt with Quick Syncs, All Hands hits hard). +40 Block at each phase.
+- **Curse**: Sunday Scaries (stops your belt when it slips off). **Icons**: alarmClock (also the boss's marker on the map), sundayNight.
+- **Tests / tools**: the bot can now run the weekend (`BotOpts.acts`) and reports each fight (`RunOutcome.fights`); the weekend's enemies hold their own against it like act 3's do.

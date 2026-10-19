@@ -1,9 +1,9 @@
 import { describe, expect, it } from 'vitest';
 import { CONFIG } from '../../src/data/config';
-import { ENEMIES, HALF } from '../../src/data/enemies';
+import { ENEMIES, HALF, MONDAY_BLOCK } from '../../src/data/enemies';
 import { BLOW_EVERY, PANEL_EVERY, PLATE_HEAL, POSE_EVERY, POSE_TIME, STATUSES } from '../../src/data/statuses';
 import { CARDS } from '../../src/data/cards';
-import { run, setup } from './helpers';
+import { coffeeOf, badgeOf, run, setup } from './helpers';
 
 /** The weekend (act 4): its enemies and what each one does. A fight with the enemy's own moves out of the way (its attack never lands), to look at its passives alone. */
 const alone = (id: string) => setup({ enemy: { ...ENEMIES[id], main: { ...ENEMIES[id].main, windup: 9999 }, specials: [], every: 0 } });
@@ -120,5 +120,68 @@ describe('the weekend: the other normal enemy and the elites', () => {
     dj.hit(10);
     run(dj, 0.1);
     expect(dj.has('hero', 'hurry')).toBe(true);
+  });
+});
+
+describe('Monday, the weekend boss', () => {
+  const idle = { id: 'wait', intent: 'idle', windup: 9999 } as const;
+  const monday = ENEMIES.monday;
+  const quiet = () =>
+    setup({ enemy: { ...monday, main: idle, specials: [], phases: monday.phases!.map((p) => ({ ...p, main: idle, specials: [] })) } });
+  const hit = (c: ReturnType<typeof quiet>, n: number): void => void c.damage('hero', 'enemy', n, { raw: true }, 'hero');
+
+  it('is the weekend boss: three phases of one alarm clock, each with its sprite, its belt and its Block', () => {
+    expect(monday.tier).toBe('boss');
+    expect(monday.act).toBe(4);
+    expect(monday.phases).toHaveLength(2);
+    const c = quiet();
+    run(c, CONFIG.introTime);
+    expect(c.enemy.maxHp).toBe(monday.hp);
+    const slow = c.beltRate();
+    c.enemy.block = 0;
+    hit(c, Math.ceil(c.enemy.maxHp / 3) + 1);
+    expect(c.enemy.phase).toBe(1);
+    expect(c.enemy.block).toBe(MONDAY_BLOCK);
+    const fast = c.beltRate();
+    expect(fast).toBeGreaterThan(slow);
+    c.enemy.block = 0;
+    hit(c, Math.ceil(c.enemy.maxHp / 3));
+    expect(c.enemy.phase).toBe(2);
+    expect(c.enemy.block).toBe(MONDAY_BLOCK);
+    expect(c.beltRate()).toBeGreaterThan(fast);
+  });
+
+  it("brings back the earlier shifts' chores: the Boss's coffee in the second phase, the badge reader in the third", () => {
+    const chore = (phase: number, task: 'coffee' | 'badge') => {
+      const move = monday.phases![phase - 1].specials.find((m) => m.task === task)!;
+      expect(move, `${task} in phase ${phase + 1}`).toBeTruthy();
+      const c = setup({
+        enemy: {
+          ...monday,
+          block: 0,
+          main: idle,
+          specials: [],
+          phases: monday.phases!.map((p) => ({ ...p, main: idle, specials: [move], every: 1 })),
+        },
+      });
+      run(c, CONFIG.introTime + 0.1);
+      c.enemy.block = 0;
+      c.damage('hero', 'enemy', c.enemy.maxHp * (phase === 1 ? 0.4 : 0.7), { raw: true }, 'hero');
+      expect(c.enemy.phase).toBe(phase);
+      c.enemy.move = move;
+      c.enemy.timer = 0;
+      run(c, 0.2);
+      return c;
+    };
+    expect(coffeeOf(chore(1, 'coffee')).phase).toBe('code');
+    expect(badgeOf(chore(2, 'badge')).phase).toBe('swipe');
+  });
+
+  it('shuffles the Sunday Scaries into the deck in the first phase, and they stop your belt when they slip off', () => {
+    const scare = monday.specials.find((m) => m.curse?.some((x) => x.id === 'sundayScaries'))!;
+    expect(scare.curse![0].n).toBe(2);
+    const c = quiet();
+    CARDS.sundayScaries.onExpire?.(c, [3], { uid: 1, id: 'sundayScaries', up: false, bonus: 0, temp: true });
+    expect(c.has('hero', 'stalled')).toBe(true);
   });
 });

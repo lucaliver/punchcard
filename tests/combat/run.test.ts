@@ -249,11 +249,16 @@ describe('the weekend (the bonus act)', () => {
     expect(bosses.filter((n) => !n.next.length).map((n) => n.act)).toEqual([ACT_DEFS.length]);
   });
 
-  it('its fights are of the weekend, and its elites and boss come from the shift before until it has its own', () => {
+  it('its fights, elites and boss are all of the weekend, and no job comes up twice', () => {
     for (let seed = 1; seed <= 10; seed++) {
       const nodes = newRun('mage', seed, [], [], ACT_DEFS.length).nodes.filter((n) => n.act === ACT_DEFS.length);
       for (const n of nodes.filter((x) => x.type === 'fight')) expect(ENEMIES[n.enemy!].act).toBe(ACT_DEFS.length);
-      for (const n of nodes.filter((x) => x.type === 'elite' || x.type === 'boss')) expect(ENEMIES[n.enemy!].tier).toBe(n.type);
+      for (const n of nodes.filter((x) => x.type === 'elite' || x.type === 'boss')) {
+        expect(ENEMIES[n.enemy!].tier).toBe(n.type);
+        expect(ENEMIES[n.enemy!].act, n.enemy).toBe(ACT_DEFS.length);
+      }
+      const jobs = nodes.filter((x) => x.type === 'fight').map((x) => x.enemy);
+      expect(new Set(jobs).size, `seed ${seed}`).toBe(jobs.length);
     }
   });
 

@@ -1,4 +1,4 @@
-import { BOARD_BLOCK, ENEMIES, HALF } from './enemies';
+import { BOARD_BLOCK, ENEMIES, HALF, MONDAY_BLOCK } from './enemies';
 import { CONFIG } from './config';
 import { CARDS } from './cards';
 import { HARDSHIP_HP, JUST_CAUSE_HP } from './cards/conditions';
@@ -169,6 +169,7 @@ export const VALUES = {
   mayorBlock: HALF.mayorBlock,
   djHurry: HALF.djHurry,
   boardBlock: BOARD_BLOCK,
+  mondayBlock: MONDAY_BLOCK,
   sushiSlips: CONFIG.sushi.slips,
   // Heroes
   thickSkinPct: pct(THICK_SKIN.mul - 1),

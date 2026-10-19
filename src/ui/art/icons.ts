@@ -1935,6 +1935,16 @@ export const ICONS: Record<string, { el: Element; svg: string; wide?: boolean }>
     el: 'holy',
     svg: `<circle cx="22" cy="20" r="15"/><path fill="#16121f" opacity=".4" d="M10 14h24M8 20h28M10 26h24M18 6v28M26 6v28"/><path d="M31 31l23 23-7 7-23-23z"/><path fill="#16121f" opacity=".35" d="M40 40l8-1-1 8z"/>`,
   },
+  // Monday's alarm clock: twin bells on a round face.
+  alarmClock: {
+    el: 'blood',
+    svg: `<circle cx="14" cy="14" r="10"/><circle cx="50" cy="14" r="10"/><circle cx="32" cy="37" r="24"/><circle cx="32" cy="37" r="18" fill="#16121f"/><path d="M32 37V24M32 37l9 6" stroke="currentColor" stroke-width="4" stroke-linecap="round" fill="none"/><path d="M14 58l-4 5M50 58l4 5" stroke="currentColor" stroke-width="4" stroke-linecap="round"/>`,
+  },
+  // Sunday night: a crescent over a pillow, with a Z.
+  sundayNight: {
+    el: 'shadow',
+    svg: `<path d="M34 4a22 22 0 1 0 24 30A18 18 0 0 1 34 4z"/><path d="M42 6h14v5L47 20h9v5H42v-5l9-9h-9z"/><rect x="6" y="46" width="52" height="14" rx="6"/><path fill="#16121f" opacity=".35" d="M12 52h40v3H12z"/>`,
+  },
   // The DJ's mirror ball.
   discoBall: {
     el: 'arcane',

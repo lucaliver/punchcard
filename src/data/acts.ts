@@ -26,7 +26,7 @@ export const ACT_DEFS: readonly ActDef[] = [
   // The night shift runs past midnight to the dawn: the clock shows 22:00 to 06:00.
   { shift: [22, 30], music: 'combat3', mapMusic: 'map3', door: 'doorShutter', bossIcon: 'gavel' },
   // The bonus act: the weekend, from Saturday morning to Sunday night (09:00 to 21:00 on the map's clock).
-  { shift: [9, 21], music: 'combat4', mapMusic: 'map4', door: 'doorBell', bossIcon: 'stopwatch' },
+  { shift: [9, 21], music: 'combat4', mapMusic: 'map4', door: 'doorBell', bossIcon: 'alarmClock' },
 ];
 
 /** The definition of an act (1-based; later acts fall back to the last one). */

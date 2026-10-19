@@ -1874,6 +1874,20 @@ export const curseCards: CardDef[] = [
     art: 'microphone',
   },
   {
+    // Monday's: the night before. Let it slip off the belt and your belt stops dead for a moment.
+    id: 'sundayScaries',
+    face: '{?exit}{!stop:0}',
+    cls: 'curse',
+    type: 'curse',
+    rarity: 'rare',
+    cost: 2,
+    vals: [3],
+    keywords: ['exhaust', 'volatile'],
+    art: 'sundayNight',
+    play: () => {},
+    onExpire: (c, v) => c.applyStatus('hero', 'stalled', 1, v[0]),
+  },
+  {
     // The Office Chair's: nobody can pay for it, and every fall hurts more than the last.
     id: 'deathMarch',
     face: '{?exit}{!boom:0}|{grow:1}',
