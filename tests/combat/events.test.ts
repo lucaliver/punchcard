@@ -93,6 +93,16 @@ describe('events', () => {
     expect(applyFx(run, { kind: 'upgradeRandom' }).card?.up).toBe(true);
   });
 
+  it("keep each hero's own scene for that hero", () => {
+    const warrior = atEvent(1);
+    expect(eligibleEvents(warrior).map((e) => e.id)).toContain('armClaim');
+    expect(eligibleEvents(warrior).map((e) => e.id)).not.toContain('staplerHeist');
+    const rogue = newRun('rogue', 5, [], [], MAIN_ACTS + 1);
+    rogue.current = rogue.nodes.find((n) => n.act === 1 && n.type === 'event')!.id;
+    expect(eligibleEvents(rogue).map((e) => e.id)).toContain('staplerHeist');
+    expect(eligibleEvents(rogue).map((e) => e.id)).not.toContain('armClaim');
+  });
+
   it("roll a gamble from the run's own rng, so a reload deals the same room", () => {
     const roll = (): string => {
       const run = atEvent(1, 9);
