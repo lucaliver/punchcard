@@ -20,6 +20,8 @@ import { runHud } from './journey';
 
 /** One letter of a typed line every so many ms (the speaker's voice blips on each). */
 const TYPE_MS = 24;
+/** How long the HUD's portrait keeps a face (ms). */
+const FACE_MS = 1500;
 /** The moment between two things that happen after a choice (ms). */
 const BEAT_MS = 350;
 
@@ -107,6 +109,14 @@ export function eventScreen(run: RunState, onDone: () => void): Screen {
     const fresh = runHud(run);
     hud.replaceWith(fresh);
     hud = fresh;
+  };
+
+  /** The hero's portrait in the HUD pulls a face for a moment (`data-mood`, `art/heroMoods.ts`). */
+  const face = (mood: 'hurt' | 'cheer' | 'cast'): void => {
+    const chip = hud.querySelector<HTMLElement>('.hero-chip');
+    if (!chip) return;
+    chip.dataset.mood = mood;
+    later(FACE_MS, () => delete chip.dataset.mood);
   };
 
   /** The hero takes a knock: the screen flashes and the phone knocks back. */
@@ -233,6 +243,10 @@ export function eventScreen(run: RunState, onDone: () => void): Screen {
         }
         const ms = play(d);
         if (d.fx.kind === 'hp' || d.fx.kind === 'heal' || d.fx.kind === 'maxHp') refreshHud();
+        const lost = (d.hp ?? 0) < 0 || (d.fx.kind === 'maxHp' && d.fx.n < 0);
+        if (lost) face('hurt');
+        else if (d.fx.kind === 'hp' || d.fx.kind === 'heal' || d.fx.kind === 'maxHp') face('cheer');
+        else if (d.fx.kind === 'relic' || d.fx.kind === 'card' || d.fx.kind === 'upgradeRandom') face('cast');
         later(ms + BEAT_MS, next);
       };
       later(BEAT_MS, next);

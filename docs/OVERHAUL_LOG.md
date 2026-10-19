@@ -43,3 +43,8 @@ The game was already polished in look and sound, but poor in three places: **nar
 - 5 weekend scenes (Barbecue invite, Laundry Day, the Gym Bro's free trial, a wedding's plus one, the Sunday call): 41 scenes in all.
 - The Intercom grew to 52 lines (a few more for each act, and one for when a boss has fallen).
 - The day's twist slip is `.today-slip` (it shared `.foe-traits` with the passives, so a test counting those flaked).
+
+## Step 9: small things
+- The portrait in the HUD of a scene pulls a face (wince, cheer, cast) as what you chose lands.
+- The Intercom greets the people the run was kind to (the janitor, the New Hire, the intern).
+- Version 2.70.0.
