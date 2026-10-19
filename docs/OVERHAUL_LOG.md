@@ -24,3 +24,7 @@ The game was already polished in look and sound, but poor in three places: **nar
 
 ## Step 4: each hero's own scene
 - Four events only one hero meets (`EventDef.hero`): the Warrior's arm claim, the Mage's password reset, the Necromancer's union meeting, the Rogue's stapler heist. Weighed above the common ones, so every run of a hero tells at least one scene about who they are. 24 scenes in all.
+
+## Step 5: the rooms talk
+- Each room's picture (Break Room, Promotion, Copy Room, Tailor, Lost & Found, Vending Machine, Restructuring, Sunday Lunch, Corner Shop) now says a line when it comes in and another when a choice is made, in the same speech bubble the enemies use (`quip.<room>.enter.<n>` / `.done.<n>`, 45 lines in four languages). The coffee machine counts your fifteen minutes; the vending machine takes blood.
+- Dev hook `__game.room(type)` opens any room on the current run (for screenshots).

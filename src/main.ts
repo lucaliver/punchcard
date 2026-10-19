@@ -404,6 +404,10 @@ async function boot(): Promise<void> {
         nextNode,
         goJourney,
         endRun,
+        /** Dev only: opens a room's screen on the current run (screenshots). */
+        room: (type: NodeType) => {
+          if (run) show(inAct(ROOMS[type]!(run, goJourney), run));
+        },
         musicTrack,
       },
     });

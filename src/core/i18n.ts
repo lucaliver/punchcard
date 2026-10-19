@@ -32,6 +32,7 @@ type DynamicPrefix =
   | 'event'
   | 'intercom'
   | 'epilogue'
+  | 'quip'
   | 'task';
 export type TKey = EnKey | `${DynamicPrefix}.${string}`;
 export type Params = Record<string, string | number>;
