@@ -127,3 +127,9 @@
 }
 .rank-row.picked .rk-picked { display: block; }
 .rank-list .rank-note { margin: 2px 0; text-align: center; font-size: 15px; color: var(--p); }
+
+/* the debug window: the hero and its rank on one line, the two buttons under them */
+.rank-debug { flex-wrap: wrap; gap: 6px 8px; }
+.rank-debug > span { flex: 1 1 40%; }
+.rank-debug > b { flex: 1 1 40%; text-align: right; font-weight: 400; }
+.rank-debug .btn { flex: 1 1 40%; min-height: 40px; }

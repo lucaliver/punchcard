@@ -276,9 +276,9 @@ export const CONFIG = {
     closeCall: 0.15,
     /** How far a fight pulls the level toward its signal, by tier (a boss or an elite says more than a normal fight). */
     rate: { normal: 0.25, elite: 0.6, boss: 0.6 },
-    /** The most the multipliers rise or fall at a full level: it climbs much more than it eases, and a run under memos climbs `memoUp` times as far. */
+    /** The most the multipliers rise or fall at a full level: it climbs much more than it eases, and a run at a rank above the plain shift climbs `rankUp` times as far. */
     max: { up: 0.2, down: 0.1 },
-    memoUp: 0.5,
+    rankUp: 0.5,
   },
   /** Chance that a floor of the map swaps its two rooms between the lanes. */
   laneSwap: 0.3,
@@ -316,7 +316,7 @@ export const CONFIG = {
 
 export type RewardKind = 'fight' | 'elite' | 'boss';
 
-/** Distinct cards a reward offers (before memos and stationery): a normal fight a few, the ones that add a card to the deck one more. */
+/** Distinct cards a reward offers (before the rank's perks and the stationery): a normal fight a few, the ones that add a card to the deck one more. */
 export const REWARD_CHOICES: Record<RewardKind, number> = { fight: 3, elite: 4, boss: 4 };
 
 /**

@@ -1,7 +1,8 @@
 import { t, type Params } from '../../core/i18n';
 import { sfx } from '../../audio/sfx';
+import { HERO_LIST } from '../../data/heroes';
 import { rankMax, rankSteps, type RankEffect } from '../../data/rank';
-import { rankPick, rankTop, setRankPick } from '../../game/meta';
+import { debugRank, rankPick, rankTop, setRankPick } from '../../game/meta';
 import { settings } from '../../game/settings';
 import type { HeroId } from '../../game/types';
 import { openModal } from '../app';
@@ -125,4 +126,58 @@ export function playPromotion(plaque: HTMLElement, from: number, to: number): ()
     timers.push(window.setTimeout(land, cssMs('--dur-promote-shake')));
   }
   return () => timers.forEach(window.clearTimeout);
+}
+
+/** Temporary debug tool: puts every hero's top rank where the menu says (titles unlocked at once, or one promotion to see it played on the hire screen). `onClose` runs when the window goes. */
+export function openRankDebug(onClose: () => void): void {
+  const rows = HERO_LIST.filter((hd) => rankMax(hd.id) > 0).map((hd) => {
+    const now = h('b', null);
+    const paint = (): void => {
+      now.textContent = `${rankTop(hd.id)} ${rankTitle(rankTop(hd.id))}`;
+    };
+    paint();
+    const button = (label: string, to: () => void): HTMLButtonElement =>
+      h(
+        'button',
+        {
+          class: 'btn small secondary',
+          onclick: () => {
+            sfx('tap');
+            to();
+            paint();
+          },
+        },
+        label,
+      );
+    return h(
+      'div',
+      { class: 'setting rank-debug' },
+      h('span', null, t(`hero.${hd.id}.name`)),
+      now,
+      button(t('debug.rankDemote'), () => debugRank(hd.id, rankTop(hd.id) - 1)),
+      button(t('debug.rankPromote'), () => debugRank(hd.id, rankTop(hd.id) + 1, true)),
+    );
+  });
+  openModal({
+    title: t('debug.ranks'),
+    body: h('div', null, ...rows),
+    actions: [
+      {
+        label: t('debug.rankAll'),
+        cls: 'secondary',
+        onClick: () => {
+          for (const hd of HERO_LIST) debugRank(hd.id, rankMax(hd.id));
+        },
+      },
+      {
+        label: t('debug.rankReset'),
+        cls: 'secondary',
+        onClick: () => {
+          for (const hd of HERO_LIST) debugRank(hd.id, 0);
+        },
+      },
+      { label: t('common.close'), cls: 'secondary' },
+    ],
+    onClose,
+  });
 }

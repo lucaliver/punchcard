@@ -107,7 +107,7 @@ export interface CombatSetup {
   bonusMaxMana?: number;
   /** Belt rows (default `CONFIG.beltRows`). With two rows cards alternate between them and the belt runs a bit slower. */
   beltRows?: number;
-  /** Run-wide belt speed multiplier (memos). */
+  /** Run-wide belt speed multiplier (a rank's duty). */
   beltMul?: number;
   /** The hero may beg to stay once if this fight is lost (needs the run's flag `BEG_FLAG` unset too). */
   canBeg?: boolean;
@@ -119,6 +119,8 @@ export interface CombatSetup {
   abilitySpent?: boolean;
   /** What the hero's ability costs in this run (the hero's own price when omitted): a rank on the career ladder can fix it. */
   abilityCost?: number;
+  /** Sleeve slots added to the hero's own (a rank's duty takes some away; never under one in all). */
+  sleeveBonus?: number;
   /** The hero's seconds per mana are multiplied by this (a rank's duty). */
   manaSlow?: number;
   /** The hero's Block fades this many times as fast (a rank's duty). */
@@ -298,7 +300,7 @@ export class Combat {
       beltMul *= m.beltSpeed ?? 1;
       prewarm = Math.max(prewarm, m.startBelt ?? 0);
     }
-    sleeve = Math.max(1, sleeve - (setup.sleeveLost ?? 0));
+    sleeve = Math.max(1, sleeve + (setup.sleeveBonus ?? 0) - (setup.sleeveLost ?? 0));
     this.regenMul = regenMul / (setup.manaSlow ?? 1);
     this.enemyPace = setup.enemyTime ?? 1;
     this.abilityBase = setup.abilityCost ?? h.ability.cost;
@@ -1028,6 +1030,8 @@ export class Combat {
     // Expire cards that fell off the left edge: first they tip over the end for `CONFIG.fallGrace` s, still within reach (to stash them).
     for (let i = this.belt.length - 1; i >= 0; i--) {
       const b = this.belt[i];
+      // An expiring card's effect can take other cards off the belt (a drop, a discard): the rest of the pass skips what is gone.
+      if (!b) continue;
       if (b.card.uid === this.dragged && (CARDS[b.card.id].sweep || this.dragEdge < CONFIG.dragGrace)) {
         delete b.falling;
         b.pos = Math.min(b.pos, EXPIRE_POS - move);

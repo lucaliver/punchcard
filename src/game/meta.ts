@@ -3,7 +3,6 @@ import { ACT_DEFS, MAIN_ACTS } from '../data/acts';
 import { CARD_LIST, CARDS } from '../data/cards';
 import { ENEMIES, ENEMY_LIST } from '../data/enemies';
 import { HERO_LIST, HEROES } from '../data/heroes';
-import { MODIFIERS } from '../data/modifiers';
 import { rankMax } from '../data/rank';
 import { RELIC_LIST, RELICS } from '../data/relics';
 import { CONFIG } from '../data/config';
@@ -38,8 +37,6 @@ interface Meta {
   signed: boolean;
   /** Acts finished (their boss beaten), one `hero:act` entry per hero and act: the records page stamps them. */
   stamps: string[];
-  /** Management memos switched on for the next run (`MODIFIERS` ids); they only apply to a hero who has won a full day. */
-  memos: string[];
   records: Records;
   /** Acts whose map has been shown at least once: the first time an act is met its rooms are scripted. */
   actsReached: number[];
@@ -84,7 +81,6 @@ const meta: Meta = load('meta', {
   runs: 0,
   signed: false,
   stamps: [],
-  memos: [],
   records: { ...NO_RECORDS },
   actsReached: [],
   lastEnemies: [],
@@ -120,7 +116,6 @@ meta.base =
   meta.stamps = Array.isArray(meta.stamps) ? [...new Set(meta.stamps.filter(valid))] : [];
 }
 meta.lastEnemies = Array.isArray(meta.lastEnemies) ? meta.lastEnemies.filter((id) => typeof id === 'string' && id in ENEMIES) : [];
-meta.memos = Array.isArray(meta.memos) ? [...new Set(meta.memos.filter((id) => typeof id === 'string' && id in MODIFIERS))] : [];
 {
   // Only finite numbers survive; anything missing starts at zero.
   const saved: Partial<Record<keyof Records, unknown>> = typeof meta.records === 'object' && meta.records ? meta.records : {};
@@ -146,7 +141,7 @@ meta.actsReached = Array.isArray(meta.actsReached)
     l.hero in HEROES &&
     'result' in l &&
     (l.result === 'win' || l.result === 'lose' || l.result === 'abandon') &&
-    ['act', 'floor', 'kills', 'cards', 'pay', 'elites', 'damageTaken', 'memos', 'time', 'at'].every(
+    ['act', 'floor', 'kills', 'cards', 'pay', 'elites', 'damageTaken', 'time', 'at'].every(
       (k) => k in l && isNum((l as Record<string, unknown>)[k]),
     ) &&
     'begged' in l &&
@@ -304,7 +299,7 @@ export function seeRelics(ids: Iterable<string>): void {
 }
 export const relicSeen = (id: string): boolean => meta.relics.includes(id);
 
-/** Debug: every hero hired and stamped for every act (the memos and the weekend are open to all), every card discovered, every enemy met and every relic seen. */
+/** Debug: every hero hired and stamped for every act (the weekend is open to all, every rank of every ladder is reached), every card discovered, every enemy met and every relic seen. */
 export function unlockAll(cards: Iterable<string>, enemies: Iterable<string>, relics: Iterable<string>): void {
   meta.heroes = HERO_LIST.filter((hd) => hd.unlock).map((hd) => hd.id);
   meta.fresh = [];
@@ -415,8 +410,8 @@ export function stampAct(hero: HeroId, act: number): void {
 }
 export const hasStamp = (hero: HeroId, act: number): boolean => meta.stamps.includes(`${hero}:${act}`);
 
-/** A hero who has won a full day (beaten the last act's boss) may run under management memos. */
-export const memosOpen = (hero: HeroId): boolean => hasStamp(hero, MAIN_ACTS);
+/** A hero who has won a full day (beaten the last act's boss) has the weekend, the bonus act, open. */
+export const weekendOpen = (hero: HeroId): boolean => hasStamp(hero, MAIN_ACTS);
 
 /** The highest rank a hero has reached on their career ladder (0: the plain game; always 0 for a hero without a ladder). */
 export const rankTop = (hero: HeroId): number => meta.ranks[hero]?.top ?? 0;
@@ -432,6 +427,16 @@ export function setRankPick(hero: HeroId, level: number): void {
   const r = meta.ranks[hero];
   if (!r) return;
   r.pick = Math.max(0, Math.min(r.top, level));
+  store('meta', meta);
+}
+
+/** Debug: puts the hero's top rank where the menu says (and picks it). With `promote` the hire screen plays the climb from the old rank, otherwise it is simply there. */
+export function debugRank(hero: HeroId, top: number, promote = false): void {
+  const max = rankMax(hero);
+  if (!max) return;
+  const was = meta.ranks[hero]?.top ?? 0;
+  const to = Math.max(0, Math.min(max, top));
+  meta.ranks[hero] = { top: to, seen: promote ? Math.min(was, to) : to, pick: to };
   store('meta', meta);
 }
 
@@ -458,14 +463,6 @@ export function markRankSeen(hero: HeroId): void {
   const r = meta.ranks[hero];
   if (!r || r.seen === r.top) return;
   r.seen = r.top;
-  store('meta', meta);
-}
-
-/** The memos switched on for the next run. */
-export const chosenMemos = (): string[] => [...meta.memos];
-export function setMemo(id: string, on: boolean): void {
-  meta.memos = meta.memos.filter((x) => x !== id);
-  if (on && id in MODIFIERS) meta.memos.push(id);
   store('meta', meta);
 }
 

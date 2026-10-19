@@ -1,6 +1,5 @@
 import { afterEach, describe, expect, it, vi } from 'vitest';
 import { fightPaths, rewardPaths, runPaths, trackFight } from '../src/analytics';
-import { MODIFIER_LIST } from '../src/data/modifiers';
 import { newRun } from '../src/game/run';
 import { settings } from '../src/game/settings';
 
@@ -23,11 +22,11 @@ describe('analytics', () => {
     expect(runPaths(run, 'lose')[1]).toMatch(/\/death\/act1-floor\d+$/);
   });
 
-  it('keeps memo runs apart: only the tagged run result is sent', () => {
-    const run = newRun('warrior', 1, [], [MODIFIER_LIST[0].id]);
+  it('keeps ranked runs apart: only the tagged run result is sent', () => {
+    const run = newRun('warrior', 1, [], [], 3, 2);
     expect(fightPaths(run, 'boss1', true)).toEqual([]);
     expect(rewardPaths(run, ['a'], null, null)).toEqual([]);
-    expect(runPaths(run, 'lose')).toEqual([`${V}/run/warrior/lose-memo`]);
+    expect(runPaths(run, 'lose')).toEqual([`${V}/run/warrior/lose-rank`]);
   });
 
   it('sends nothing without an endpoint or with the switch off, and spaces hits out otherwise', () => {

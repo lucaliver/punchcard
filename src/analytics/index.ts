@@ -6,7 +6,7 @@ import { send } from './goatcounter';
 /**
  * Anonymous play stats: counters only (no player id, no deck, no seed), off with the Settings switch `analytics`.
  * The game calls the three `track*` functions below from its flow (`main.ts`, the reward screen), never the engine. Names
- * are paths: `<build>/<what>/<ids…>`, with data ids (English, stable). Runs under a memo are tagged apart, as their fights are harder.
+ * are paths: `<build>/<what>/<ids…>`, with data ids (English, stable). Runs at a rank above the plain shift are tagged apart, as their fights are harder.
  * To remove the whole thing: delete this folder, the three call sites, `settings.analytics` and its strings.
  */
 export type RunResult = 'win' | 'lose' | 'abandon';
@@ -15,8 +15,8 @@ const path = (...parts: string[]): string => [__APP_VERSION__, ...parts].join('/
 const count = (p: string): void => {
   if (settings.analytics) send(p);
 };
-/** A run under memos or at a rank above the plain shift is tagged apart: its numbers would skew the plain ones. */
-const plain = (run: RunState): boolean => run.mods.length === 0 && run.level === 0;
+/** A run at a rank above the plain shift is tagged apart: its numbers would skew the plain ones. */
+const plain = (run: RunState): boolean => run.level === 0;
 
 /** Paths of a fight's result: how each enemy fares against each hero. */
 export const fightPaths = (run: RunState, enemy: string, won: boolean): string[] =>
@@ -30,7 +30,7 @@ export const rewardPaths = (run: RunState, offered: string[], picked: string | n
 export const runPaths = (run: RunState, result: RunResult): string[] => {
   const node = currentNode(run);
   return [
-    path('run', run.hero, plain(run) ? result : `${result}-memo`),
+    path('run', run.hero, plain(run) ? result : `${result}-rank`),
     ...(result === 'lose' && plain(run) ? [path('death', `act${node.act}-floor${node.floor}`)] : []),
   ];
 };

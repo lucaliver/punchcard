@@ -78,9 +78,9 @@ export function learn(p: Pressure, f: FightFacts): Pressure {
   return { hp: p.hp + rate * (s.hp - p.hp), dmg: closeCall(f) ? -1 : p.dmg + rate * (s.dmg - p.dmg) };
 }
 
-/** The multipliers on the enemies' HP and damage (1 = none); `memos` says the run plays under management memos, which already ask more of the player. */
-export function pressureScale(p: Pressure, memos: boolean): { hp: number; dmg: number } {
-  const { max, memoUp } = CONFIG.pressure;
-  const mult = (level: number): number => 1 + (level >= 0 ? level * max.up * (memos ? memoUp : 1) : level * max.down);
+/** The multipliers on the enemies' HP and damage (1 = none); `ranked` says the run is played at a rank above the plain shift, which already asks more of the player. */
+export function pressureScale(p: Pressure, ranked: boolean): { hp: number; dmg: number } {
+  const { max, rankUp } = CONFIG.pressure;
+  const mult = (level: number): number => 1 + (level >= 0 ? level * max.up * (ranked ? rankUp : 1) : level * max.down);
   return { hp: mult(p.hp), dmg: mult(p.dmg) };
 }

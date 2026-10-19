@@ -1,5 +1,5 @@
 import type { HeroId, Rarity } from '../game/types';
-import { mergeMods, NO_MODS, type Mods } from './modifiers';
+import { HEROES } from './heroes';
 
 /**
  * The career ladder: a hero wins a full day at their top rank and is promoted to the next one. Every rank gives a bonus and asks a duty, and a run
@@ -19,7 +19,9 @@ export type RankBonus =
   | { kind: 'rewardCards'; n: number }
   /** Mana crystals more, for good. */
   | { kind: 'crystal'; n: number }
-  | { kind: 'restBoth' };
+  | { kind: 'restBoth' }
+  /** Mana refills `n`% faster. */
+  | { kind: 'manaRegen'; n: number };
 
 /** A duty's `n` is a percentage. */
 export type RankDuty =
@@ -32,7 +34,11 @@ export type RankDuty =
   | { kind: 'blockFade'; n: number }
   | { kind: 'enemyTime'; n: number }
   | { kind: 'noSkipPay' }
-  | { kind: 'noBeg' };
+  | { kind: 'noBeg' }
+  /** The hero starts with `n`% less max HP. */
+  | { kind: 'heroHp'; n: number }
+  /** The sleeve has `n` slots fewer (never under one). */
+  | { kind: 'sleeveCut'; n: number };
 
 export type RankEffect = RankBonus | RankDuty;
 
@@ -42,23 +48,64 @@ export interface RankStep {
   duty: RankDuty;
 }
 
+const step = (bonus: RankBonus, duty: RankDuty): RankStep => ({ bonus, duty });
+
+// Ordered so a run gets harder a little at a time: the mild duties first, the ones that change how you play after; a perk comes with every rung and the big gifts crown the top.
 const LADDER: Partial<Record<HeroId, readonly RankStep[]>> = {
-  // Ordered so a run gets harder a little at a time: the mild duties first, the ones that change how you play after; a bonus comes with every rung and the big gifts crown the top.
   warrior: [
-    { bonus: { kind: 'maxHp', n: 10 }, duty: { kind: 'restHeal', n: 15 } },
-    { bonus: { kind: 'abilityCost', n: 3 }, duty: { kind: 'eliteHp', n: 10 } },
-    { bonus: { kind: 'cards', rarity: 'rare', n: 1 }, duty: { kind: 'enemyDmg', n: 10 } },
-    { bonus: { kind: 'upgrade', cards: ['skillIssue', 'heavyLifting', 'caffeineJolt'] }, duty: { kind: 'belt', n: 10 } },
-    { bonus: { kind: 'relic' }, duty: { kind: 'noSkipPay' } },
-    { bonus: { kind: 'crystal', n: 1 }, duty: { kind: 'manaSlow', n: 15 } },
-    { bonus: { kind: 'rewardCards', n: 1 }, duty: { kind: 'blockFade', n: 25 } },
-    { bonus: { kind: 'restBoth' }, duty: { kind: 'enemyTime', n: 10 } },
-    { bonus: { kind: 'cards', rarity: 'epic', n: 1 }, duty: { kind: 'enemyHp', n: 10 } },
-    { bonus: { kind: 'cards', rarity: 'legendary', n: 2 }, duty: { kind: 'noBeg' } },
+    step({ kind: 'maxHp', n: 10 }, { kind: 'restHeal', n: 15 }),
+    step({ kind: 'abilityCost', n: 3 }, { kind: 'eliteHp', n: 10 }),
+    step({ kind: 'cards', rarity: 'rare', n: 1 }, { kind: 'enemyDmg', n: 10 }),
+    step({ kind: 'upgrade', cards: ['skillIssue', 'heavyLifting', 'caffeineJolt'] }, { kind: 'belt', n: 10 }),
+    step({ kind: 'relic' }, { kind: 'noSkipPay' }),
+    step({ kind: 'crystal', n: 1 }, { kind: 'manaSlow', n: 15 }),
+    step({ kind: 'rewardCards', n: 1 }, { kind: 'blockFade', n: 25 }),
+    step({ kind: 'restBoth' }, { kind: 'enemyTime', n: 10 }),
+    step({ kind: 'cards', rarity: 'epic', n: 1 }, { kind: 'enemyHp', n: 10 }),
+    step({ kind: 'cards', rarity: 'legendary', n: 2 }, { kind: 'noBeg' }),
+  ],
+  // The glass cannon: the duties go for its HP and its tempo.
+  mage: [
+    step({ kind: 'maxHp', n: 10 }, { kind: 'restHeal', n: 15 }),
+    step({ kind: 'abilityCost', n: 4 }, { kind: 'eliteHp', n: 15 }),
+    step({ kind: 'cards', rarity: 'rare', n: 1 }, { kind: 'enemyDmg', n: 15 }),
+    step({ kind: 'upgrade', cards: ['staticShock', 'burnout', 'caffeineJolt'] }, { kind: 'belt', n: 10 }),
+    step({ kind: 'relic' }, { kind: 'noSkipPay' }),
+    step({ kind: 'crystal', n: 1 }, { kind: 'heroHp', n: 15 }),
+    step({ kind: 'rewardCards', n: 1 }, { kind: 'blockFade', n: 25 }),
+    step({ kind: 'manaRegen', n: 10 }, { kind: 'enemyTime', n: 10 }),
+    step({ kind: 'cards', rarity: 'epic', n: 1 }, { kind: 'enemyHp', n: 20 }),
+    step({ kind: 'cards', rarity: 'legendary', n: 2 }, { kind: 'noBeg' }),
+  ],
+  // Starts with two mana: the perks feed it, the duties take its sleeve and its HP.
+  necromancer: [
+    step({ kind: 'maxHp', n: 10 }, { kind: 'restHeal', n: 15 }),
+    step({ kind: 'abilityCost', n: 4 }, { kind: 'eliteHp', n: 15 }),
+    step({ kind: 'cards', rarity: 'rare', n: 1 }, { kind: 'enemyDmg', n: 15 }),
+    step({ kind: 'upgrade', cards: ['zombieShift', 'holdMusic', 'caffeineJolt'] }, { kind: 'sleeveCut', n: 1 }),
+    step({ kind: 'relic' }, { kind: 'noSkipPay' }),
+    step({ kind: 'manaRegen', n: 10 }, { kind: 'belt', n: 10 }),
+    step({ kind: 'crystal', n: 1 }, { kind: 'enemyTime', n: 10 }),
+    step({ kind: 'restBoth' }, { kind: 'heroHp', n: 15 }),
+    step({ kind: 'cards', rarity: 'epic', n: 1 }, { kind: 'enemyHp', n: 20 }),
+    step({ kind: 'cards', rarity: 'legendary', n: 2 }, { kind: 'noBeg' }),
+  ],
+  // The sleeve is its engine: the sleeve is what the last duties come for.
+  rogue: [
+    step({ kind: 'maxHp', n: 10 }, { kind: 'restHeal', n: 15 }),
+    step({ kind: 'abilityCost', n: 4 }, { kind: 'eliteHp', n: 10 }),
+    step({ kind: 'cards', rarity: 'rare', n: 1 }, { kind: 'enemyDmg', n: 10 }),
+    step({ kind: 'upgrade', cards: ['caffeineJolt', 'lupin', 'plausibleDeniability'] }, { kind: 'enemyTime', n: 10 }),
+    step({ kind: 'relic' }, { kind: 'noSkipPay' }),
+    step({ kind: 'crystal', n: 1 }, { kind: 'manaSlow', n: 15 }),
+    step({ kind: 'rewardCards', n: 1 }, { kind: 'blockFade', n: 25 }),
+    step({ kind: 'restBoth' }, { kind: 'sleeveCut', n: 1 }),
+    step({ kind: 'cards', rarity: 'epic', n: 1 }, { kind: 'enemyHp', n: 10 }),
+    step({ kind: 'cards', rarity: 'legendary', n: 2 }, { kind: 'noBeg' }),
   ],
 };
 
-/** The ranks a hero can reach (0 when the hero has no ladder: the hero plays under management memos instead). */
+/** The ranks a hero can reach. */
 export const rankMax = (hero: HeroId): number => LADDER[hero]?.length ?? 0;
 
 /** The first `level` rungs of a hero's ladder, in order. */
@@ -67,52 +114,135 @@ export const rankSteps = (hero: HeroId, level: number): readonly RankStep[] => L
 /** The effects of one side of the rungs up to `level`. */
 export const rankEffects = (hero: HeroId, level: number, side: keyof RankStep): RankEffect[] => rankSteps(hero, level).map((s) => s[side]);
 
-const pct = (n: number): number => 1 + n / 100;
+/** What the ranks change while a run is played (1 / 0 / false / null = no change). */
+export interface Mods {
+  enemyHp: number;
+  /** Elites and bosses only, on top of `enemyHp`. */
+  eliteHp: number;
+  enemyDmg: number;
+  beltMul: number;
+  /** The hero's max HP, times this (the start of the run: `rankStart`). */
+  heroHp: number;
+  restHeal: number;
+  rewardCards: number;
+  /** Seconds per mana, times this (above 1: mana refills slower). */
+  manaSlow: number;
+  /** How fast the hero's Block fades, times this. */
+  blockFade: number;
+  /** How fast the enemy's moves come, times this (above 1: sooner). */
+  enemyTime: number;
+  /** The hero's ability costs exactly this much, whatever the hero's own price. */
+  abilityCost: number | null;
+  /** Sleeve slots added to the hero's own (below zero: taken away). */
+  sleeve: number;
+  /** The Break Room gives the nap and the training both. */
+  restBoth: boolean;
+  /** The hero can't beg to stay. */
+  noBeg: boolean;
+  /** Skipping a card reward pays nothing. */
+  noSkipPay: boolean;
+  /** The run is harder than plain: the adaptive pressure climbs less (`pressureScale`). */
+  hard: boolean;
+}
 
-/** What an effect changes while the run is played (the part of it that isn't a gift at the start: those are `RankEffect`s read by `newRun`). */
-function modsOf(e: RankEffect): Partial<Mods> {
+export const NO_MODS: Readonly<Mods> = {
+  enemyHp: 1,
+  eliteHp: 1,
+  enemyDmg: 1,
+  beltMul: 1,
+  heroHp: 1,
+  restHeal: 1,
+  rewardCards: 0,
+  manaSlow: 1,
+  blockFade: 1,
+  enemyTime: 1,
+  abilityCost: null,
+  sleeve: 0,
+  restBoth: false,
+  noBeg: false,
+  noSkipPay: false,
+  hard: false,
+};
+
+const more = (n: number): number => 1 + n / 100;
+const less = (n: number): number => 1 - n / 100;
+
+/** Adds what an effect changes while the run is played to `m` (the gifts at the start of the run are `grantRank`'s and `rankStart`'s). */
+function apply(m: Mods, e: RankEffect): void {
   switch (e.kind) {
     case 'maxHp':
     case 'cards':
     case 'upgrade':
     case 'relic':
     case 'crystal':
-      return {};
+      break;
     case 'abilityCost':
-      return { abilityCost: e.n };
+      m.abilityCost = e.n;
+      break;
     case 'rewardCards':
-      return { rewardCards: e.n };
+      m.rewardCards += e.n;
+      break;
     case 'restBoth':
-      return { restBoth: true };
+      m.restBoth = true;
+      break;
+    case 'manaRegen':
+      m.manaSlow *= less(e.n);
+      break;
     case 'restHeal':
-      return { restHeal: 1 - e.n / 100 };
+      m.restHeal *= less(e.n);
+      break;
     case 'eliteHp':
-      return { eliteHp: pct(e.n) };
+      m.eliteHp *= more(e.n);
+      break;
     case 'enemyHp':
-      return { enemyHp: pct(e.n) };
+      m.enemyHp *= more(e.n);
+      break;
     case 'enemyDmg':
-      return { enemyDmg: pct(e.n) };
+      m.enemyDmg *= more(e.n);
+      break;
     case 'belt':
-      return { beltMul: pct(e.n) };
+      m.beltMul *= more(e.n);
+      break;
     case 'manaSlow':
-      return { manaSlow: pct(e.n) };
+      m.manaSlow *= more(e.n);
+      break;
     case 'blockFade':
-      return { blockFade: pct(e.n) };
+      m.blockFade *= more(e.n);
+      break;
     case 'enemyTime':
-      return { enemyTime: pct(e.n) };
+      m.enemyTime *= more(e.n);
+      break;
     case 'noSkipPay':
-      return { noSkipPay: true };
+      m.noSkipPay = true;
+      break;
     case 'noBeg':
-      return { noBeg: true };
+      m.noBeg = true;
+      break;
+    case 'heroHp':
+      m.heroHp *= less(e.n);
+      break;
+    case 'sleeveCut':
+      m.sleeve -= e.n;
+      break;
   }
 }
 
 /** What playing a hero at this rank changes, all the rungs up to it together (`NO_MODS` at rank 0). */
 export function rankMods(hero: HeroId, level: number): Mods {
   if (level <= 0 || !rankMax(hero)) return NO_MODS;
-  let total: Mods = { ...NO_MODS, hard: true };
+  const m: Mods = { ...NO_MODS, hard: true };
   for (const step of rankSteps(hero, level)) {
-    for (const e of [step.bonus, step.duty]) total = mergeMods(total, { ...NO_MODS, ...modsOf(e) });
+    apply(m, step.bonus);
+    apply(m, step.duty);
   }
-  return total;
+  return m;
+}
+
+/** What the hero starts the run with at this rank: max HP, mana and sleeve slots (the run is dealt them, the hire screen shows them). */
+export function rankStart(hero: HeroId, level: number): { hp: number; mana: number; sleeve: number } {
+  const def = HEROES[hero];
+  const m = rankMods(hero, level);
+  const gifts = rankEffects(hero, level, 'bonus');
+  const sum = (kind: 'maxHp' | 'crystal'): number => gifts.reduce((n, e) => n + (e.kind === kind ? e.n : 0), 0);
+  return { hp: Math.round(def.hp * m.heroHp) + sum('maxHp'), mana: def.maxMana + sum('crystal'), sleeve: Math.max(1, def.sleeve + m.sleeve) };
 }

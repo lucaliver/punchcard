@@ -32,7 +32,6 @@ import { ROOM_SCENE } from '../src/ui/components/room';
 import { INK_HEX } from '../src/ui/art/riso';
 import { HEXES } from '../src/data/hexes';
 import { COFFEE_DRINKS, COFFEE_ITEMS } from '../src/data/coffee';
-import { MODIFIER_LIST } from '../src/data/modifiers';
 import { rankMax, rankSteps } from '../src/data/rank';
 import { rewardPool } from '../src/data/cards';
 import { DEBUG_ENEMY, ENEMIES } from '../src/data/enemies';
@@ -310,14 +309,6 @@ describe('content integrity', () => {
       if (scene.alt) expect(ROOM_SPRITES[`room.${type}.open`], `${type}: missing second frame`).toBeTruthy();
     }
     expect(Object.keys(ROOM_SPRITES).length).toBe(Object.keys(ROOM_SCENE).length + Object.values(ROOM_SCENE).filter((s) => s.alt).length);
-  });
-
-  it('every management memo has a name, a text and an icon, and changes something', () => {
-    for (const m of MODIFIER_LIST) {
-      expect(en[`memo.${m.id}.name`] && en[`memo.${m.id}.d`], m.id).toBeTruthy();
-      expect(ICONS[m.icon], `${m.id}: missing icon ${m.icon}`).toBeTruthy();
-      expect(m.enemyHp ?? m.enemyDmg ?? m.beltMul ?? m.heroHp ?? m.restHeal ?? m.rewardCards, `${m.id} does nothing`).toBeDefined();
-    }
   });
 
   it('every career ladder is complete: a title for each rank, a text for each effect, and gifts that can be given', () => {

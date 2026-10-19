@@ -3,7 +3,7 @@ import { Rng } from '../../src/core/rng';
 import { CONFIG, relicGuarantee, rewardOdds, rewardUpgradeChance } from '../../src/data/config';
 import { ENEMIES, enemiesFor } from '../../src/data/enemies';
 import { HEROES } from '../../src/data/heroes';
-import { NO_MODS, resolveMods } from '../../src/data/modifiers';
+import { NO_MODS } from '../../src/data/rank';
 import { CARD_LIST, CARDS, RARITY_ORDER, cardCostOf, cardKeywordsOf } from '../../src/data/cards';
 import { RELICS } from '../../src/data/relics';
 import { WHEEL } from '../../src/data/wheel';
@@ -14,12 +14,12 @@ import {
   hasStamp,
   isDiscovered,
   markRated,
-  memosOpen,
   ratingDue,
   runHistory,
   stampAct,
   startingFirstRun,
   unlockAll,
+  weekendOpen,
 } from '../../src/game/meta';
 import { ACT_DEFS, MAIN_ACTS } from '../../src/data/acts';
 import {
@@ -36,9 +36,7 @@ import {
   canVend,
   currentNode,
   enemyScale,
-  restHeal,
   restsBoth,
-  rewardChoices,
   rollRewards,
   spinWheel,
   swapCard,
@@ -197,7 +195,7 @@ describe('run maps', () => {
     for (let seed = 2; seed < 32; seed++) {
       const before = newRun('warrior', seed).nodes;
       const avoid = [...new Set(before.flatMap((n) => (n.enemy ? [n.enemy] : [])))];
-      const nodes = newRun('warrior', seed + 100, [], [], avoid).nodes;
+      const nodes = newRun('warrior', seed + 100, [], avoid).nodes;
       for (let act = 1; act <= MAIN_ACTS; act++)
         for (const tier of ['elite', 'boss'] as const) {
           const pool = enemiesFor(act, tier);
@@ -244,7 +242,7 @@ describe('run maps', () => {
 describe('the weekend (the bonus act)', () => {
   it('a run has the main acts, and the bonus ones too when asked; the last boss is the one with nothing after it', () => {
     expect(Math.max(...newRun('warrior', 7).nodes.map((n) => n.act))).toBe(MAIN_ACTS);
-    const full = newRun('warrior', 7, [], [], [], ACT_DEFS.length);
+    const full = newRun('warrior', 7, [], [], ACT_DEFS.length);
     expect(Math.max(...full.nodes.map((n) => n.act))).toBe(ACT_DEFS.length);
     const bosses = full.nodes.filter((n) => n.type === 'boss');
     expect(bosses.map((n) => n.act)).toEqual(Array.from({ length: ACT_DEFS.length }, (_, i) => i + 1));
@@ -253,7 +251,7 @@ describe('the weekend (the bonus act)', () => {
 
   it('its fights are of the weekend, and its elites and boss come from the shift before until it has its own', () => {
     for (let seed = 1; seed <= 10; seed++) {
-      const nodes = newRun('mage', seed, [], [], [], ACT_DEFS.length).nodes.filter((n) => n.act === ACT_DEFS.length);
+      const nodes = newRun('mage', seed, [], [], ACT_DEFS.length).nodes.filter((n) => n.act === ACT_DEFS.length);
       for (const n of nodes.filter((x) => x.type === 'fight')) expect(ENEMIES[n.enemy!].act).toBe(ACT_DEFS.length);
       for (const n of nodes.filter((x) => x.type === 'elite' || x.type === 'boss')) expect(ENEMIES[n.enemy!].tier).toBe(n.type);
     }
@@ -269,7 +267,7 @@ describe('the weekend (the bonus act)', () => {
       },
       configurable: true,
     });
-    const full = newRun('warrior', 7, [], [], [], ACT_DEFS.length);
+    const full = newRun('warrior', 7, [], [], ACT_DEFS.length);
     store.set('cardstone+:run', JSON.stringify(full));
     expect(loadRun()?.nodes).toHaveLength(full.nodes.length);
     Reflect.deleteProperty(globalThis, 'localStorage');
@@ -641,52 +639,14 @@ describe('the first run nudges to the sleeve', () => {
   });
 });
 
-describe('management memos', () => {
-  it('open for a hero once the last act is stamped for them', () => {
-    expect(memosOpen('necromancer')).toBe(false);
+describe('the weekend', () => {
+  it('opens for a hero once the last act is stamped for them', () => {
+    expect(weekendOpen('necromancer')).toBe(false);
     stampAct('necromancer', MAIN_ACTS - 1);
-    expect(memosOpen('necromancer')).toBe(false);
+    expect(weekendOpen('necromancer')).toBe(false);
     stampAct('necromancer', MAIN_ACTS);
-    expect(memosOpen('necromancer')).toBe(true);
-    expect(memosOpen('warrior')).toBe(false);
-  });
-
-  it('toughen enemies, the belt, the hero, rests and rewards, and stack', () => {
-    const plain = newRun('warrior', 7);
-    const hard = newRun('warrior', 7, [], ['quotas', 'hostile', 'speedUp', 'benefits', 'noBreaks', 'budget']);
-    expect(hard.maxHp).toBe(Math.round(HEROES.warrior.hp * 0.8));
-    const node = currentNode(plain);
-    expect(enemyScale(node, resolveMods(hard.mods)).hp).toBeCloseTo(enemyScale(node).hp * 1.25);
-    expect(enemyScale(node, resolveMods(hard.mods)).dmg).toBeCloseTo(enemyScale(node).dmg * 1.25);
-    expect(enemyScale(node, resolveMods(['quotas', 'quotas'])).hp).toBeCloseTo(enemyScale(node).hp * 1.25 ** 2);
-    plain.hp = 1;
-    hard.hp = 1;
-    expect(restHeal(hard)).toBeLessThan(restHeal(plain));
-    expect(restHeal(plain)).toBe(Math.round(0.9 * (plain.maxHp - 1)));
-    expect(rewardChoices(plain, 'fight')).toBe(3);
-    expect(rewardChoices(plain, 'elite')).toBe(4);
-    expect(rewardChoices(plain, 'boss')).toBe(4);
-    expect(rewardChoices(hard, 'elite')).toBe(3);
-    expect(rollRewards(hard, 'fight')).toHaveLength(2);
-    expect(rollRewards(hard, 'elite')).toHaveLength(3);
-    const base = setup().beltRate();
-    expect(setup({ beltMul: 1.15 }).beltRate()).toBeCloseTo(base * 1.15);
-  });
-
-  it('a saved run keeps its known memos and drops the rest', () => {
-    const store = new Map<string, string>();
-    const stub = {
-      getItem: (k: string) => store.get(k) ?? null,
-      setItem: (k: string, v: string) => void store.set(k, v),
-      removeItem: (k: string) => void store.delete(k),
-    };
-    Object.defineProperty(globalThis, 'localStorage', { value: stub, configurable: true });
-    const run = newRun('warrior', 7, [], ['quotas']);
-    store.set('cardstone+:run', JSON.stringify({ ...run, mods: ['quotas', 'bogus'] }));
-    expect(loadRun()?.mods).toEqual(['quotas']);
-    store.set('cardstone+:run', JSON.stringify({ ...run, mods: undefined }));
-    expect(loadRun()?.mods).toEqual([]);
-    Reflect.deleteProperty(globalThis, 'localStorage');
+    expect(weekendOpen('necromancer')).toBe(true);
+    expect(weekendOpen('warrior')).toBe(false);
   });
 });
 
@@ -802,7 +762,7 @@ describe('adaptive difficulty', () => {
     expect(pressureScale(calm(), false)).toEqual({ hp: 1, dmg: 1 });
     expect(pressureScale({ hp: 1, dmg: -1 }, false)).toEqual({ hp: 1 + max.up, dmg: 1 - max.down });
     expect(max.up).toBeGreaterThan(max.down);
-    expect(pressureScale({ hp: 1, dmg: 1 }, true).hp).toBe(1 + max.up * CONFIG.pressure.memoUp);
+    expect(pressureScale({ hp: 1, dmg: 1 }, true).hp).toBe(1 + max.up * CONFIG.pressure.rankUp);
     expect(pressureScale({ hp: -1, dmg: 0 }, true).hp).toBe(1 - max.down);
   });
 
@@ -922,7 +882,7 @@ describe('the debug unlock-all', () => {
   it('opens the memos and every act, the weekend too, to every hero', () => {
     unlockAll([], [], []);
     for (const hd of Object.values(HEROES)) {
-      expect(memosOpen(hd.id), hd.id).toBe(true);
+      expect(weekendOpen(hd.id), hd.id).toBe(true);
       for (let act = 1; act <= ACT_DEFS.length; act++) expect(hasStamp(hd.id, act), `${hd.id} ${act}`).toBe(true);
     }
   });

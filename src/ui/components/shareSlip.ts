@@ -49,7 +49,6 @@ export interface SlipStats {
   kills: number;
   elites: number;
   cards: number;
-  memos: number;
   /** The title of the rank the run was played at, when it was above the plain shift. */
   rank?: string;
   pay: number;
@@ -65,7 +64,6 @@ export function slipRows(s: SlipStats, isRecord: (k: TKey) => boolean = () => fa
     row('end.slip.kills', s.kills),
     row('end.slip.overtime', s.elites),
     row('end.slip.cards', s.cards),
-    ...(s.memos ? [row('end.slip.memos', s.memos)] : []),
     ...(s.rank ? [row('end.slip.rank', s.rank)] : []),
     row('end.slip.gross', s.pay),
     row('end.slip.deductions', '', 'section'),

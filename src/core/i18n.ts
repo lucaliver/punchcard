@@ -26,7 +26,6 @@ type DynamicPrefix =
   | 'perk'
   | 'wheel'
   | 'relic'
-  | 'memo'
   | 'rank'
   | 'hex'
   | 'drink'

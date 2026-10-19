@@ -2,8 +2,8 @@ import { t } from '../../core/i18n';
 import { sfx } from '../../audio/sfx';
 import { haptic } from '../fx/fx';
 import { HERO_LIST, starterCards } from '../../data/heroes';
-import { rankMax, rankMods } from '../../data/rank';
-import { chosenMemos, heroFresh, heroHidden, heroUnlocked, markHeroSeen, markRankSeen, memosOpen, rankPromotion, records } from '../../game/meta';
+import { rankMax, rankMods, rankStart } from '../../data/rank';
+import { heroFresh, heroHidden, heroUnlocked, markHeroSeen, markRankSeen, rankPromotion, records } from '../../game/meta';
 import type { HeroDef, HeroId, HeroUnlock } from '../../game/types';
 import type { Screen } from '../app';
 import { creature } from '../art/creatures';
@@ -11,9 +11,10 @@ import { icon } from '../art/icons';
 import { heroFeatures } from '../components/heroSheet';
 import { dropLetters, motes } from '../components/decor';
 import { createHeroMood, type HeroMood, heroFaces } from '../components/heroMood';
-import { openMemos } from '../components/memos';
+import { debugButton } from '../components/debugMenu';
+import { settings } from '../../game/settings';
 import { openDeck, openStatInfo } from '../components/modals';
-import { playPromotion, rankPlaque } from '../components/rank';
+import { openRankDebug, playPromotion, rankPlaque } from '../components/rank';
 import { cssMs, h, onPress, retrigger, stagger } from '../dom';
 
 /** The faces a hero in view pulls when tapped, one after the other. */
@@ -41,16 +42,27 @@ function slide(hero: HeroDef, index: number, moods: (HeroMood | null)[], plaques
       : heroFresh(id)
         ? `<div class="hero-new">${t('hero.new')}</div>`
         : '';
-  // A hero with a career ladder wears its rank on a plaque (not in the very first run, which has no ranks to speak of).
-  // The ability's price follows the rank picked (a rank can fix it).
   const features = heroFeatures(hero, locked, hero.ability.cost);
-  const ladder =
-    !locked && rankMax(id) > 0 && records().runs > 0
-      ? rankPlaque(id, (level) => {
-          const cost = features.querySelector('.fcost');
-          if (cost) cost.innerHTML = `${icon('crystal')}${rankMods(id, level).abilityCost ?? hero.ability.cost}`;
-        })
-      : null;
+  const stat = {
+    hp: h('button', { class: 'stat hp', 'data-stat': 'hp' }),
+    mana: h('button', { class: 'stat mana', 'data-stat': 'mana' }),
+    sleeve: h('button', { class: 'stat sleeve', 'data-stat': 'sleeve' }),
+  };
+  let sleeve = hero.sleeve;
+  /** What the hero starts with follows the rank picked: the HP, the mana, the sleeve and the ability's price. */
+  const paint = (level: number): void => {
+    const start = rankStart(id, level);
+    stat.hp.innerHTML = `${icon('heart')}${start.hp}`;
+    stat.mana.innerHTML = `${icon('crystal')}${start.mana}`;
+    stat.sleeve.innerHTML = `${icon('hand')}${start.sleeve}`;
+    stat.sleeve.setAttribute('aria-label', t('hero.sleeve', { n: start.sleeve }));
+    sleeve = start.sleeve;
+    const cost = features.querySelector('.fcost');
+    if (cost) cost.innerHTML = `${icon('crystal')}${rankMods(id, level).abilityCost ?? hero.ability.cost}`;
+  };
+  // A hero wears the rank to play at on a plaque (not in the very first run, which has no ranks to speak of).
+  const ladder = !locked && rankMax(id) > 0 && records().runs > 0 ? rankPlaque(id, paint) : null;
+  if (!ladder) paint(0);
   plaques[index] = ladder?.el ?? null;
   const el = h(
     'section',
@@ -72,22 +84,17 @@ function slide(hero: HeroDef, index: number, moods: (HeroMood | null)[], plaques
       'div',
       { class: 'hero-stats' },
       ...stagger([
-        h('button', { class: 'stat hp', 'data-stat': 'hp', html: `${icon('heart')}${hero.hp}` }),
-        h('button', { class: 'stat mana', 'data-stat': 'mana', html: `${icon('crystal')}${hero.maxMana}` }),
-        h('button', {
-          class: 'stat sleeve',
-          'data-stat': 'sleeve',
-          'aria-label': t('hero.sleeve', { n: hero.sleeve }),
-          html: `${icon('hand')}${hero.sleeve}`,
-        }),
+        stat.hp,
+        stat.mana,
+        stat.sleeve,
         h('button', { class: 'stat deck', 'aria-label': t('hero.starterDeck'), html: `${icon('cards')}${hero.startDeck.length}` }),
       ]),
     ),
     features,
   );
   // Every stat explains itself on a tap or a hold; the deck opens the starter deck.
-  for (const stat of ['hp', 'mana', 'sleeve'] as const)
-    onPress(el.querySelector<HTMLElement>(`[data-stat='${stat}']`)!, () => openStatInfo(stat, hero.sleeve));
+  for (const which of ['hp', 'mana', 'sleeve'] as const)
+    onPress(el.querySelector<HTMLElement>(`[data-stat='${which}']`)!, () => openStatInfo(which, sleeve));
   onPress(el.querySelector<HTMLElement>('.stat.deck')!, () => {
     sfx('tap');
     openDeck(
@@ -118,7 +125,12 @@ function slide(hero: HeroDef, index: number, moods: (HeroMood | null)[], plaques
 }
 
 /** Game-style hero select: one hero per screen, swipe or use the arrows; the hero in view is the one chosen. */
-export function heroSelectScreen(onStart: (hero: HeroId) => void, onBack: () => void, first?: HeroId): Screen {
+export function heroSelectScreen(
+  onStart: (hero: HeroId) => void,
+  onBack: () => void,
+  first: HeroId | undefined,
+  onReload: (first: HeroId) => void,
+): Screen {
   const heroes = HERO_LIST.filter((hd) => !heroHidden(hd.id));
   let index = Math.max(
     0,
@@ -154,22 +166,8 @@ export function heroSelectScreen(onStart: (hero: HeroId) => void, onBack: () => 
     t('hero.start'),
   );
 
-  // A hero who has won a full day can run under management memos: the button shows how many are pinned up.
-  const memoBtn = h('button', {
-    class: 'icon-btn memo-btn',
-    'aria-label': t('memo.title'),
-    onclick: () => {
-      sfx('tap');
-      openMemos(sync);
-    },
-  });
-
   const sync = (): void => {
     const hero = heroes[index];
-    // A hero with a career ladder plays under its ranks instead of the memos.
-    const memos = memosOpen(hero.id) && !rankMax(hero.id);
-    memoBtn.hidden = !memos;
-    memoBtn.innerHTML = `${icon('clipboard')}${memos && chosenMemos().length ? `<b>${chosenMemos().length}</b>` : ''}`;
     el.dataset.hero = hero.id;
     el.style.setProperty('--hero-ink', hero.ink);
     const locked = !heroUnlocked(hero.id);
@@ -243,10 +241,12 @@ export function heroSelectScreen(onStart: (hero: HeroId) => void, onBack: () => 
         html: icon('home'),
       }),
       h('h1', { class: 'h1' }, t('hero.select')),
+      // Debug: change the ranks the heroes have reached (the screen is built again to show them).
+      settings.debugMenus ? debugButton(t('debug.ranks'), () => openRankDebug(() => onReload(heroes[index].id))) : null,
     ),
     h('div', { class: 'hero-carousel' }, track, prev, next),
     h('div', { class: 'hero-dots' }, ...dots),
-    h('div', { class: 'hero-start' }, memoBtn, startBtn),
+    h('div', { class: 'hero-start' }, startBtn),
   );
   sync();
   return {

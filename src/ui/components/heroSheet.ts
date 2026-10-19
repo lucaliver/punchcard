@@ -49,7 +49,7 @@ export function openHeroSheet(run: RunState): void {
     abilityCostWith(runMods(run).abilityCost ?? hero.ability.cost, run.relics),
     abilityEveryFight(run.relics),
   );
-  const sleeve = Math.max(1, hero.sleeve + relicSum(run.relics, 'sleeve') - run.sleeveLost);
+  const sleeve = Math.max(1, hero.sleeve + runMods(run).sleeve + relicSum(run.relics, 'sleeve') - run.sleeveLost);
   const mana = hero.maxMana + relicSum(run.relics, 'maxMana') + run.crystals;
   const relics = run.relics.map((id) =>
     h('div', {

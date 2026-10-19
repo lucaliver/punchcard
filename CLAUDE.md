@@ -68,12 +68,12 @@ Deploy: a push to `master` publishes to GitHub Pages (`.github/workflows/pages.y
 src/
   core/        rng (seeded), emitter, i18n (typed keys), save (safe localStorage), util
   i18n/        en.ts (every player-facing string, the source), it.ts / es.ts / zh.ts (`Record<EnKey, string>`, same placeholders)
-  data/        config (all tuning), acts, statuses, heroes, enemies, perks, hexes, relics, modifiers, rank (the career ladder of a hero), coffee (the Coffee Machine's drinks and coins), wheel (the Raffle's slices), values, cards/<class>.ts
+  data/        config (all tuning), acts, statuses, heroes, enemies, perks, hexes, relics, rank (the career ladder of each hero and the modifiers it brings), coffee (the Coffee Machine's drinks and coins), wheel (the Raffle's slices), values, cards/<class>.ts
   game/        combat (engine), pressure (adaptive difficulty: the run learns how easy it went), chore (the shared shape of a chore) with coffee, shells, sushi, badge and checkout, minigame (the shared shape of an enemy's minigame) with match3, run (map graph, rewards, save), meta (discoveries, unlocks, records, act stamps), settings, types
   ui/          app (screens, modals), dom
     art/       icons (64×64), creatures (200×200), relics (200×200 stationery sprites), rooms (200×200 picture of each room, and the props of the contract screen and the studio mark: `PROP_SPRITES`), actArt (the skyline behind each act's map title, and the animated scene of its intro), stageArt (the scene behind the enemy in a fight, one per act), heroMoods (the hero's faces: blink, hurt, tired, cheer, cast), riso (pixel renderer), cardArt (the cards' own paintings: one 160×68 vector per card, printed 56 pixels wide; the Warrior's so far, and the two X cards that moved to the Rogue)
     combat/    view, hud, cardLayer, mop, crank, taskFrame (the window every chore shares), coffeeWindow, shellWindow, badgeWindow, checkoutWindow, match3Window (the Supervisor's minigame), combatFx, speech (the speech bubbles), heroMood (the portrait's face), combatScreen
-    components/ cardView, cardShow, coach, modals, memos, rank (the rank plaque, the ladder window and the promotion), debugMenu, room, moveText, heroSheet, shareSlip, decor, reviewModal, runDetail, wings (the desktop's side boards), rotateBanner (a phone held sideways)
+    components/ cardView, cardShow, coach, modals, rank (the rank plaque, the ladder window and the promotion), debugMenu, room, moveText, heroSheet, shareSlip, decor, reviewModal, runDetail, wings (the desktop's side boards), rotateBanner (a phone held sideways)
     fx/        particles, floating text, shake, haptics
     screens/   title, studio, heroSelect, journey, reward, rest, promotion, copyRoom, tailor, lostFound, vending, crossTraining, wheel (the Raffle), end, compendium
   feedback/    `firebase.ts`: the only file that knows Firebase (reviews, crash reports)
@@ -104,7 +104,7 @@ dev/           art.html, og.html, map-editor.html (dev server only)
 - **Hero** (`heroes.ts`): `HeroDef`, a card file, a sprite and its face coordinates in `FACES` (`art/heroMoods.ts`), `hero.<id>.*` strings, `ABILITY_ICON`/`PASSIVE_ICON` (`ui/combat/view.ts`), `ink`.
 - **Status** (`statuses.ts`): `StatusDef` with its required `tone` + `status.<id>` and `.d` (`{v}` = amount); `selfName`/`.self` when the hero's side reads differently.
 - **Relic** (`relics.ts`): `RelicDef` + a sprite in `art/relics.ts` + `relic.<id>.name`/`.d` (`{n}`); a non-instant trigger needs `progress` or `armed`.
-- **Room**, **act**, **memo**: see `docs/MECHANICS.md`; a new act also needs a block in `acts.css` (with its `--stage-*` inks), an `actArt` scene, a `stageArt` scene behind its fights and a door into them (below, CSS).
+- **Room**, **act**, **rank**: see `docs/MECHANICS.md`; a new act also needs a block in `acts.css` (with its `--stage-*` inks), an `actArt` scene, a `stageArt` scene behind its fights and a door into them (below, CSS).
 - Tune with `CONFIG.enemyHp`/`enemyDmg` (global), `floorHp`/`floorDmg` (per floor); elites and bosses climb by act. `npm run stats` shows the numbers.
 
 ## i18n

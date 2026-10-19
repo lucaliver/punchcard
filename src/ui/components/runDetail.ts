@@ -22,7 +22,6 @@ export function openRunDetail(r: RunLog): ModalHandle {
     kills: r.kills,
     elites: r.elites,
     cards: r.cards,
-    memos: r.memos,
     rank: r.rank ? rankTitle(r.rank) : undefined,
     pay: r.pay,
     damage: r.damageTaken,

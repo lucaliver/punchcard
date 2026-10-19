@@ -2,15 +2,15 @@ import { describe, expect, it } from 'vitest';
 import { ACT_DEFS, MAIN_ACTS } from '../../src/data/acts';
 import { CARDS } from '../../src/data/cards';
 import { HEROES } from '../../src/data/heroes';
-import { NO_MODS } from '../../src/data/modifiers';
-import { rankMax, rankMods, rankSteps } from '../../src/data/rank';
+import { NO_MODS, rankMax, rankMods, rankStart, rankSteps } from '../../src/data/rank';
 import { Combat, type CombatSetup } from '../../src/game/combat';
 import { markRankSeen, promoteRank, rankPick, rankPromotion, rankTop, setRankPick } from '../../src/game/meta';
+import { HERO_LIST } from '../../src/data/heroes';
 import { combatSetup, currentNode, enemyScale, finishRun, loadRun, newRun, rewardChoices, runMods, skipPay } from '../../src/game/run';
 import { run, setup } from './helpers';
 
 describe('the career ladder', () => {
-  const warrior = (level: number) => newRun('warrior', 11, [], [], [], MAIN_ACTS, level);
+  const warrior = (level: number) => newRun('warrior', 11, [], [], MAIN_ACTS, level);
   const rarityOf = (r: ReturnType<typeof warrior>, extra: number) =>
     r.deck.slice(HEROES.warrior.startDeck.length, HEROES.warrior.startDeck.length + extra).map((c) => CARDS[c.id].rarity);
 
@@ -18,10 +18,11 @@ describe('the career ladder', () => {
     expect(rankMods('warrior', 0)).toBe(NO_MODS);
     expect(runMods(warrior(0))).toBe(NO_MODS);
     expect(warrior(0).deck.map((c) => c.id)).toEqual(newRun('warrior', 11).deck.map((c) => c.id));
-    expect(newRun('mage', 11, [], [], [], MAIN_ACTS, 5).level).toBe(0);
-    expect(rankMax('mage')).toBe(0);
-    expect(rankMax('warrior')).toBe(10);
-    expect(warrior(99).level).toBe(10);
+    for (const hero of HERO_LIST) {
+      expect(rankMax(hero.id), hero.id).toBe(10);
+      expect(newRun(hero.id, 11, [], [], MAIN_ACTS, 99).level, hero.id).toBe(10);
+      expect(newRun(hero.id, 11, [], [], MAIN_ACTS, -2).level, hero.id).toBe(0);
+    }
   });
 
   it('every rung hands over its gift as the run begins, and they add up', () => {
@@ -69,9 +70,6 @@ describe('the career ladder', () => {
     expect(runMods(warrior(9)).enemyHp).toBeCloseTo(1.1);
     expect(runMods(warrior(9)).noBeg).toBe(false);
     expect(runMods(warrior(10)).noBeg).toBe(true);
-    // Memos and a rank pile up.
-    const both = newRun('warrior', 11, [], ['quotas'], [], MAIN_ACTS, 9);
-    expect(runMods(both).enemyHp).toBeCloseTo(1.25 * 1.1);
   });
 
   it('the fight is set up with them: the ability price, the begging, the pace of the enemy and of the Block', () => {
@@ -128,14 +126,14 @@ describe('the career ladder', () => {
     expect(loadWith({ level: 2.5 })?.level).toBe(0);
     expect(loadWith({ level: 'high' })?.level).toBe(0);
     expect(loadWith({ level: undefined })?.level).toBe(0);
-    expect(loadWith({ level: 4 }, newRun('mage', 3))?.level).toBe(0);
+    expect(loadWith({ level: 4 }, newRun('mage', 3))?.level).toBe(4);
     Reflect.deleteProperty(globalThis, 'localStorage');
   });
 
   it('a full day won at the top rank promotes the hero; a lower rank, a loss or no ladder does not', () => {
     const top = rankTop('warrior');
     const atBoss = (level: number, acts = MAIN_ACTS) => {
-      const r = newRun('warrior', 5, [], [], [], acts, level);
+      const r = newRun('warrior', 5, [], [], acts, level);
       r.current = r.nodes.filter((n) => n.act === acts && n.type === 'boss').at(-1)!.id;
       return r;
     };
@@ -150,7 +148,7 @@ describe('the career ladder', () => {
     expect(rankTop('warrior')).toBe(top + 1);
     expect(rankPick('warrior')).toBe(top + 1);
     // The weekend that goes wrong still counts: the day was won before it.
-    const weekend = newRun('warrior', 5, [], [], [], ACT_DEFS.length, top + 1);
+    const weekend = newRun('warrior', 5, [], [], ACT_DEFS.length, top + 1);
     weekend.current = weekend.nodes.find((n) => n.act > MAIN_ACTS)!.id;
     expect(finishRun(weekend, false).promoted).toBe(top + 2);
   });
@@ -169,8 +167,6 @@ describe('the career ladder', () => {
     for (let i = 0; i < 12; i++) promoteRank('warrior', rankTop('warrior'));
     expect(rankTop('warrior')).toBe(rankMax('warrior'));
     expect(promoteRank('warrior', rankMax('warrior'))).toBe(0);
-    expect(promoteRank('mage', 0)).toBe(0);
-    expect(rankTop('mage')).toBe(0);
   });
 
   it('every rung has a perk and a duty, and the same effect never comes twice', () => {
@@ -178,5 +174,52 @@ describe('the career ladder', () => {
     expect(steps).toHaveLength(10);
     const kinds = steps.flatMap((s) => [s.bonus.kind, s.duty.kind]);
     expect(new Set(kinds).size).toBe(kinds.length - steps.filter((s) => s.bonus.kind === 'cards').length + 1);
+  });
+
+  it('each hero has a ladder of its own: the gifts are theirs and the duties go for what they lean on', () => {
+    const start = (hero: 'mage' | 'necromancer' | 'rogue', level: number) => newRun(hero, 11, [], [], MAIN_ACTS, level);
+    for (const hero of ['mage', 'necromancer', 'rogue'] as const) {
+      const def = HEROES[hero];
+      const top = start(hero, 10);
+      expect(top.deck, hero).toHaveLength(def.startDeck.length + 4);
+      expect(
+        top.deck.slice(def.startDeck.length).map((c) => CARDS[c.id].rarity),
+        hero,
+      ).toEqual(['rare', 'epic', 'legendary', 'legendary']);
+      expect(
+        top.deck.slice(def.startDeck.length).every((c) => CARDS[c.id].cls === hero || CARDS[c.id].cls === 'neutral'),
+        hero,
+      ).toBe(true);
+      expect(runMods(top).noBeg, hero).toBe(true);
+      expect(start(hero, 5).relics.length, hero).toBe(1);
+      expect(start(hero, 4).relics.length, hero).toBe(0);
+      expect(rankStart(hero, 0)).toEqual({ hp: def.hp, mana: def.maxMana, sleeve: def.sleeve });
+      expect(newRun(hero, 11).hp, hero).toBe(def.hp);
+    }
+    // The ability prices.
+    expect(runMods(start('mage', 2)).abilityCost).toBe(4);
+    expect(runMods(start('necromancer', 2)).abilityCost).toBe(4);
+    expect(runMods(start('rogue', 2)).abilityCost).toBe(4);
+    // The Necromancer starts with two mana: its perks make it come faster, and give it a crystal.
+    expect(runMods(start('necromancer', 5)).manaSlow).toBe(1);
+    expect(runMods(start('necromancer', 6)).manaSlow).toBeCloseTo(0.9);
+    expect(rankStart('necromancer', 7).mana).toBe(HEROES.necromancer.maxMana + 1);
+    expect(runMods(start('mage', 8)).manaSlow).toBeCloseTo(0.9);
+    expect(runMods(start('rogue', 6)).manaSlow).toBeCloseTo(1.15);
+    // The mage's HP: a perk, then a duty that takes a part of the base before the perk is added.
+    expect(start('mage', 1).maxHp).toBe(HEROES.mage.hp + 10);
+    expect(start('mage', 6).maxHp).toBe(Math.round(HEROES.mage.hp * 0.85) + 10);
+    expect(start('mage', 6).hp).toBe(start('mage', 6).maxHp);
+    expect(rankStart('mage', 6)).toEqual({ hp: start('mage', 6).maxHp, mana: HEROES.mage.maxMana + 1, sleeve: HEROES.mage.sleeve });
+    // The sleeve: the Necromancer loses a slot from rank 4, the Rogue from rank 8, never the last one.
+    expect(rankStart('necromancer', 3).sleeve).toBe(HEROES.necromancer.sleeve);
+    expect(rankStart('necromancer', 4).sleeve).toBe(HEROES.necromancer.sleeve - 1);
+    expect(rankStart('rogue', 7).sleeve).toBe(HEROES.rogue.sleeve);
+    expect(rankStart('rogue', 8).sleeve).toBe(HEROES.rogue.sleeve - 1);
+    expect(combatSetup(start('rogue', 8)).sleeveBonus).toBe(-1);
+    const slots = (over: Partial<CombatSetup>): number => setup({ hero: HEROES.rogue, ...over }).sleeve.length;
+    expect(slots({})).toBe(HEROES.rogue.sleeve);
+    expect(slots({ sleeveBonus: -1 })).toBe(HEROES.rogue.sleeve - 1);
+    expect(slots({ sleeveBonus: -9 })).toBe(1);
   });
 });

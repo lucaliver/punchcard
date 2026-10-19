@@ -238,7 +238,7 @@ export function simulateRun(hero: HeroId, seed: number, opts: BotOpts): RunOutco
     s = (s * 1664525 + 1013904223) >>> 0;
     return s / 2 ** 32;
   };
-  const run: RunState = newRun(hero, seed, [], [], [], MAIN_ACTS, opts.level ?? 0);
+  const run: RunState = newRun(hero, seed, [], [], MAIN_ACTS, opts.level ?? 0);
   const combatTimes: number[] = [];
   for (;;) {
     const node = currentNode(run);

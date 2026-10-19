@@ -17,7 +17,7 @@ export interface ActDef {
   bossIcon?: string;
 }
 
-/** The acts of a full workday: beating the last of them is a won day (`fullDay`), opens the memos and is what the other heroes' unlocks count. The acts after them are a bonus. */
+/** The acts of a full workday: beating the last of them is a won day (`fullDay`), opens the weekend and is what the other heroes' unlocks count. The acts after them are a bonus. */
 export const MAIN_ACTS = 3;
 
 export const ACT_DEFS: readonly ActDef[] = [

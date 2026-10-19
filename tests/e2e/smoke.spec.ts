@@ -58,34 +58,12 @@ test('a tab left open for a day asks for a reload on the home', async ({ page })
   expect(problems).toEqual([]);
 });
 
-test('a hero without a career ladder, once a full day is won, can pin up management memos before a run', async ({ page }) => {
-  const problems = await freshGame(page, { stamps: ['necromancer:3'] });
-  await page.getByRole('button', { name: /new run/i }).click();
-  await page.locator('.hero-dot').nth(2).click();
-  const memos = page.locator('.memo-btn');
-  await expect(memos).toBeVisible();
-  await memos.click();
-  await page.locator('.setting.memo .switch').first().click();
-  await page.locator('.setting.memo .switch').nth(5).click();
-  await page.getByRole('button', { name: 'Close' }).click();
-  await expect(memos.locator('b')).toHaveText('2');
-  // Other heroes haven't earned them, and the warrior plays under its ranks instead.
-  await page.locator('.hero-arrow.prev').click();
-  await expect(memos).toBeHidden();
-  await page.locator('.hero-arrow.next').click();
-  await expect(memos).toBeVisible();
-  await page.getByRole('button', { name: /start shift/i }).click();
-  await expect.poll(() => page.evaluate('window.__game.run.mods')).toEqual(['quotas', 'budget']);
-  expect(problems).toEqual([]);
-});
-
 test('the warrior wears a rank plaque that opens the ladder, and the next run is played at the rank picked', async ({ page }) => {
   const problems = await freshGame(page, { ranks: { warrior: { top: 3, seen: 3, pick: 3 } } });
   await page.getByRole('button', { name: /new run/i }).click();
-  const plaque = page.locator('.rank-plaque');
+  const plaque = page.locator('.hero-slide.current .rank-plaque');
   await expect(plaque).toHaveCount(1);
   await expect(plaque).toContainText('Senior Specialist');
-  await expect(page.locator('.memo-btn')).toBeHidden();
   await plaque.click();
   const rows = page.locator('.rank-row');
   await expect(rows).toHaveCount(11);
@@ -98,13 +76,37 @@ test('the warrior wears a rank plaque that opens the ladder, and the next run is
   await expect(page.locator('.rank-row.picked')).toContainText('Specialist');
   await page.getByRole('button', { name: 'Close' }).click();
   await expect(plaque).toContainText('Specialist');
-  // A hero without a ladder has no plaque.
+  // What the hero starts with follows the rank picked: rank 2 adds 10 max HP and fixes the ability's price.
+  const slide = page.locator('.hero-slide.current');
+  await expect(slide.locator('.stat.hp')).toHaveText('80');
+  await expect(slide.locator('.fcost')).toHaveText('3');
+  // Every hero has a ladder of its own.
   await page.locator('.hero-arrow.next').click();
-  await expect(page.locator('.hero-slide.current .rank-plaque')).toHaveCount(0);
+  await expect(page.locator('.hero-slide.current .rank-plaque')).toHaveCount(1);
   await page.locator('.hero-arrow.prev').click();
   await page.getByRole('button', { name: /start shift/i }).click();
   await expect.poll(() => page.evaluate('window.__game.run.level')).toBe(2);
   expect(await page.evaluate('window.__game.run.deck.length')).toBe(20);
+  expect(problems).toEqual([]);
+});
+
+test('the debug menu on the hire screen unlocks the titles and can play a promotion', async ({ page }) => {
+  const problems = await freshGame(page, { veteran: true });
+  await page.getByRole('button', { name: /new run/i }).click();
+  await expect(page.locator('.hero-slide.current .rank-plaque').last()).toContainText('Intern');
+  await page.getByRole('button', { name: 'Debug: ranks' }).click();
+  const rows = page.locator('.rank-debug');
+  await expect(rows).toHaveCount(4);
+  await rows.first().getByRole('button', { name: 'Promote' }).click();
+  await page.getByRole('button', { name: 'Close' }).click();
+  // The screen is built again and plays the promotion it was asked for.
+  await expect(page.locator('.hero-slide.current .rank-plaque .rk-stamp').last()).toBeVisible();
+  await expect(page.locator('.hero-slide.current .rank-plaque .rk-n').last()).toHaveText('1');
+  await page.getByRole('button', { name: 'Debug: ranks' }).click();
+  await page.getByRole('button', { name: 'Unlock all titles' }).click();
+  await expect(page.locator('.hero-slide.current .rank-plaque').last()).toContainText('CEO');
+  await page.locator('.hero-slide.current .rank-plaque').last().click();
+  await expect(page.locator('.rank-row.locked')).toHaveCount(0);
   expect(problems).toEqual([]);
 });
 
@@ -118,7 +120,7 @@ test('no rank plaque on the very first run', async ({ page }) => {
 test('a promotion is played on the plaque once, when the hire screen opens', async ({ page }) => {
   const problems = await freshGame(page, { ranks: { warrior: { top: 2, seen: 1, pick: 2 } } });
   await page.getByRole('button', { name: /new run/i }).click();
-  const plaque = page.locator('.rank-plaque');
+  const plaque = page.locator('.hero-slide.current .rank-plaque');
   await expect(plaque.locator('.rk-stamp')).toBeVisible();
   await expect(plaque.locator('.rk-n')).toHaveText('2');
   await expect(plaque.locator('.rk-stamp')).toBeHidden({ timeout: 5000 });
@@ -142,12 +144,12 @@ test('clocking out of a full day at the top rank promotes the warrior, and the e
     .locator('.modal.weekend-fork')
     .getByRole('button', { name: /clock out for good/i })
     .click();
-  const note = page.locator('.memo-note');
+  const note = page.locator('.rank-note');
   await expect(note).toContainText('Promotion', { timeout: 8000 });
   await expect(note).toContainText('Associate');
   await note.click();
-  await expect(page.locator('.rank-plaque .rk-stamp')).toBeVisible();
-  await expect(page.locator('.rank-plaque .rk-n')).toHaveText('1');
+  await expect(page.locator('.hero-slide.current .rank-plaque .rk-stamp')).toBeVisible();
+  await expect(page.locator('.hero-slide.current .rank-plaque .rk-n')).toHaveText('1');
   expect(problems).toEqual([]);
 });
 

@@ -88,10 +88,10 @@ export function logFight(run: RunState, combat: Combat): void {
       pressure: {
         before: rounded(run.pressure, 2),
         enemyScale: rounded(enemyScale(node, runMods(run), run.pressure), 2),
-        pressureScale: rounded(pressureScale(run.pressure, run.mods.length > 0), 2),
+        pressureScale: rounded(pressureScale(run.pressure, runMods(run).hard), 2),
         ...(learned ? { signals: rounded(fightSignals(facts), 2), after: rounded(learn(run.pressure, facts), 2) } : {}),
       },
-      build: { deck: deckOf(run), relics: run.relics, mods: run.mods, money: run.money, skips: run.skips, crystals: run.crystals },
+      build: { deck: deckOf(run), relics: run.relics, rank: run.level, money: run.money, skips: run.skips, crystals: run.crystals },
     }),
   );
 }

@@ -17,8 +17,7 @@ import {
   rewardOdds,
   rewardUpgradeChance,
 } from '../data/config';
-import { type Mods, MODIFIERS, mergeMods, NO_MODS, resolveMods } from '../data/modifiers';
-import { rankEffects, rankMax, rankMods } from '../data/rank';
+import { type Mods, NO_MODS, rankEffects, rankMax, rankMods, rankStart } from '../data/rank';
 import { ENEMIES, enemiesFor } from '../data/enemies';
 import { HERO_LIST, HEROES, starterCards } from '../data/heroes';
 import type { Combat, CombatSetup } from './combat';
@@ -80,7 +79,7 @@ export interface RunStats {
 }
 
 /** Shape of the saved run; a save of another version is dropped. */
-const SAVE_VERSION = 18;
+const SAVE_VERSION = 19;
 
 export interface RunState {
   version: number;
@@ -115,8 +114,6 @@ export interface RunState {
   /** Pay earned so far: the run's score (fast wins pay more). */
   money: number;
   uid: number;
-  /** Management memos active for this run (`MODIFIERS` ids). */
-  mods: string[];
   /** The rank on the hero's career ladder this run is played at (`data/rank.ts`; 0: the plain game). */
   level: number;
   /** Adaptive difficulty: how far the next enemies are pushed up or eased off, learned from the fights won so far (`game/pressure.ts`). */
@@ -225,14 +222,13 @@ export const ACT_SCRIPTS: Record<number, ScriptNode[]> = {
 
 /**
  * A new run; the acts in `scripted` have the rooms and enemies of `ACT_SCRIPTS` instead of shuffled ones (the first run's act 1, and every other act the
- * first time it is met), the rest are dealt as usual. `mods` are the memos it plays under; `acts` is how many acts the map has (the bonus ones follow the main ones).
+ * first time it is met), the rest are dealt as usual. `acts` is how many acts the map has (the bonus ones follow the main ones); `level` is the rank the hero plays at.
  * `avoid` are the enemies of the last run: the dealt acts keep them out of the map when they can.
  */
 export function newRun(
   hero: HeroId,
   seed: number,
   scripted: readonly number[] = [],
-  mods: string[] = [],
   avoid: readonly string[] = [],
   acts: number = MAIN_ACTS,
   level = 0,
@@ -242,7 +238,8 @@ export function newRun(
   const def = HEROES[hero];
   const nodes = buildNodes(rng, scripted, avoid, acts);
   discover(def.startDeck);
-  const maxHp = Math.round(def.hp * resolveMods(mods).heroHp);
+  const rank = Math.min(Math.max(0, Math.floor(level)), rankMax(hero));
+  const maxHp = rankStart(hero, rank).hp;
   const run: RunState = {
     version: SAVE_VERSION,
     seed,
@@ -260,8 +257,7 @@ export function newRun(
     stats: { kills: 0, elites: 0, cardsPlayed: 0, damageTaken: 0, time: 0 },
     money: 0,
     uid: peekUid(),
-    mods,
-    level: Math.min(Math.max(0, Math.floor(level)), rankMax(hero)),
+    level: rank,
     pressure: calm(),
     crystals: 0,
     sleeveLost: 0,
@@ -274,14 +270,10 @@ export function newRun(
   return run;
 }
 
-/** The rank's gifts, once, as the run begins: each rung up to the run's level hands over its bonus (the deck, the stationery and the HP the hero starts with). */
+/** The rank's gifts, once, as the run begins: each rung up to the run's level hands over its bonus (the HP and the mana the hero starts with are `rankStart`'s, the run is dealt them here and above). */
 function grantRank(run: RunState): void {
   for (const e of rankEffects(run.hero, run.level, 'bonus')) {
     switch (e.kind) {
-      case 'maxHp':
-        run.maxHp += e.n;
-        run.hp += e.n;
-        break;
       case 'crystal':
         run.crystals += e.n;
         break;
@@ -305,18 +297,19 @@ function grantRank(run: RunState): void {
         for (const c of picks) run.deck.push(newCard(run, c.id));
         break;
       }
-      // What these change is read while the run is played (`runMods`).
+      // The HP is dealt with the run, and what these change is read while it is played (`runMods`).
+      case 'maxHp':
       case 'abilityCost':
       case 'rewardCards':
       case 'restBoth':
+      case 'manaRegen':
         break;
     }
   }
 }
 
-/** Everything that bends this run: the memos pinned up and the hero's rank. */
-export const runMods = (run: RunState): Mods =>
-  run.mods.length || run.level ? mergeMods(resolveMods(run.mods), rankMods(run.hero, run.level)) : NO_MODS;
+/** Everything that bends this run: the hero's rank. */
+export const runMods = (run: RunState): Mods => rankMods(run.hero, run.level);
 
 /** A room of a lane: its floor (row) and side. */
 type Cell = [row: number, side: number];
@@ -496,7 +489,7 @@ function rngOf(run: RunState): Rng {
   return new Rng(run.rng);
 }
 
-/** Enemy scaling: normal enemies get tougher as the act goes on, and every enemy under the run's memos and rank and the run's adaptive pressure. */
+/** Enemy scaling: normal enemies get tougher as the act goes on, and every enemy under the run's rank and the run's adaptive pressure. */
 export function enemyScale(node: RunNode, m: Mods = NO_MODS, pressure: Pressure = calm()): { hp: number; dmg: number } {
   const f = node.type === 'fight' ? node.floor - 1 : 0;
   const p = pressureScale(pressure, m.hard);
@@ -525,6 +518,7 @@ export function combatSetup(run: RunState): CombatSetup {
     beltMul: m.beltMul,
     canBeg: !m.noBeg,
     abilityCost: m.abilityCost ?? undefined,
+    sleeveBonus: m.sleeve,
     manaSlow: m.manaSlow,
     blockFade: m.blockFade,
     enemyTime: m.enemyTime,
@@ -980,7 +974,6 @@ const runLog = (run: RunState, result: RunLog['result']): RunLog => {
     pay: run.money,
     elites: run.stats.elites,
     damageTaken: run.stats.damageTaken,
-    memos: run.mods.length,
     rank: run.level,
     deck: run.deck.map(({ id, up, perks }) => (perks?.length ? { id, up, perks } : { id, up })),
     relics: [...run.relics],
@@ -1064,7 +1057,6 @@ function parseRun(raw: unknown): RunState | null {
     path,
     stats,
     money,
-    mods,
     level,
     pressure,
     crystals,
@@ -1106,7 +1098,6 @@ function parseRun(raw: unknown): RunState | null {
     stats: { kills, elites, cardsPlayed, damageTaken, time },
     money: isNum(money) ? money : 0,
     uid,
-    mods: isStrings(mods) ? mods.filter((id) => id in MODIFIERS) : [],
     level: Number.isInteger(level) && isNum(level) ? Math.min(Math.max(0, level), rankMax(heroId)) : 0,
     pressure: { hp: clampLevel(pressure.hp), dmg: clampLevel(pressure.dmg) },
     crystals: isNum(crystals) ? Math.max(0, crystals) : 0,

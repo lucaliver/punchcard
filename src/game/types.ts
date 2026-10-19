@@ -484,10 +484,9 @@ export interface RunLog {
   kills: number;
   cards: number;
   pay: number;
-  /** Elites beaten, damage taken and memos pinned: the rest of the payslip. */
+  /** Elites beaten and damage taken: the rest of the payslip. */
   elites: number;
   damageTaken: number;
-  memos: number;
   /** The rank on the hero's career ladder the run was played at (absent in older entries: 0). */
   rank?: number;
   /** The deck and relics it ended with (the detail a tap on the history line opens). */
@@ -502,28 +501,6 @@ export interface RunLog {
 
 /** How a hero is unlocked: finish a run (win or lose) with another hero, reach the boss of an act, beat the boss of an act with every other hero, or (a hero still in the works) only through the debug menu's unlock-all. */
 export type HeroUnlock = { finishRun: HeroId } | { reachBoss: number } | { allStamped: number } | { debug: true };
-
-/**
- * A management memo: an optional handicap for a run, open to a hero that has won a full day. Several can be active at once;
- * multipliers combine by product (omitted = 1), `rewardCards` by sum.
- */
-export interface ModifierDef {
-  id: string;
-  icon: string;
-  /** The number the memo's text shows (`{n}`). */
-  n: number;
-  /** Enemy HP and damage. */
-  enemyHp?: number;
-  enemyDmg?: number;
-  /** Belt speed. */
-  beltMul?: number;
-  /** The hero's max HP (rounded). */
-  heroHp?: number;
-  /** HP a Break Room rest heals. */
-  restHeal?: number;
-  /** Cards on offer after a fight (added to the usual count). */
-  rewardCards?: number;
-}
 
 export interface HeroDef {
   id: HeroId;
