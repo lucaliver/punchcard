@@ -256,7 +256,7 @@ export const CONFIG = {
   staleHours: 24,
   /** Each floor of an act makes normal enemies this much tougher (HP, damage). */
   floorHp: 0.06,
-  floorDmg: 0.04,
+  floorDmg: 0.06,
   /**
    * Adaptive difficulty (`game/pressure.ts`), never shown to the player. After every won fight the run reads how it went: damage dealt per second far above
    * `par.dps` (the enemy's HP and Block it got through, over the fight's time) pushes the next enemies' HP up, HP lost far under `par.loss` (a share of max HP)

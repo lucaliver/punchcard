@@ -1,4 +1,4 @@
-import type { Combat } from '../../game/combat';
+import type { CardTally, Combat } from '../../game/combat';
 import { fightFacts, fightSignals, learn, pressureScale } from '../../game/pressure';
 import { currentNode, enemyScale, pressureLearns, type RunState } from '../../game/run';
 import { settings } from '../../game/settings';
@@ -6,7 +6,7 @@ import { settings } from '../../game/settings';
 /** Temporary debug tool: with the debug menus on, every fight of a run is noted down and the run's end saves the notes as a text file, one JSON object per line. */
 let lines: string[] = [];
 /** What each card did over the whole run, by card id (the fights' `stats.cards` added up). */
-let cards: Record<string, { plays: number; dmg: number; block: number }> = {};
+let cards: Record<string, CardTally> = {};
 
 /** A new run starts a new file. */
 export const resetFightLog = (): void => {
@@ -45,11 +45,12 @@ export function logFight(run: RunState, combat: Combat): void {
   const facts = fightFacts(combat, run.maxHp);
   const learned = win && pressureLearns(run);
   for (const [id, c] of Object.entries(stats.cards)) {
-    const sum = cards[id] ?? { plays: 0, dmg: 0, block: 0 };
+    const sum = cards[id] ?? { plays: 0, dmg: 0, block: 0, poison: 0 };
     cards[id] = sum;
     sum.plays += c.plays;
     sum.dmg += round(c.dmg);
     sum.block += round(c.block);
+    sum.poison += round(c.poison);
   }
   lines.push(
     JSON.stringify({
@@ -75,6 +76,8 @@ export function logFight(run: RunState, combat: Combat): void {
       heroBlocked: round(stats.heroBlocked),
       blockGained: round(stats.blockGained),
       healed: round(stats.healed),
+      /** What the pressure reads as the HP lost: the damage taken minus the healing. */
+      netLoss: round(facts.lost),
       cardsPlayed: combat.cardsPlayed,
       cardsLost: stats.cardsLost,
       abilities: stats.abilities,

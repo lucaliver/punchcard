@@ -39,6 +39,13 @@ const isCurse = (c: CardInst): boolean => CARDS[c.id].type === 'curse';
 
 /** What took the hero's HP (`Combat.stats.takenBy`). */
 type HurtKind = 'hit' | 'dot' | 'self' | 'chore';
+/** What a card did in a fight (`Combat.stats.cards`): `poison` is what it put on the enemy, since the damage a Poison deals is not any card's own. */
+export interface CardTally {
+  plays: number;
+  dmg: number;
+  block: number;
+  poison: number;
+}
 /** Seconds between the HP samples of `Combat.stats.hpTrail`. */
 const HP_TRAIL_EVERY = 10;
 
@@ -149,7 +156,7 @@ export class Combat {
     /** Every chore the fight asked for: done in time or not, its mistakes and the seconds they cost. */
     chores: [] as { id: string; done: boolean; errors: number; fined: number }[],
     /** What each card did in the fight, by card id. */
-    cards: {} as Record<string, { plays: number; dmg: number; block: number }>,
+    cards: {} as Record<string, CardTally>,
     blockGained: 0,
     healed: 0,
     cardsLost: 0,
@@ -1642,8 +1649,8 @@ export class Combat {
     this.hurtLog.push({ t: this.time, n: lost });
   }
 
-  private tally(id: string): { plays: number; dmg: number; block: number } {
-    const tally = this.stats.cards[id] ?? { plays: 0, dmg: 0, block: 0 };
+  private tally(id: string): CardTally {
+    const tally = this.stats.cards[id] ?? { plays: 0, dmg: 0, block: 0, poison: 0 };
     this.stats.cards[id] = tally;
     return tally;
   }
@@ -1925,6 +1932,7 @@ export class Combat {
       if (def.signed ? s.v === 0 : s.v <= 0) delete f.statuses[id];
     }
     if (!silent) this.events.emit({ type: 'status', target: side, id, amount: def.kind === 'timed' ? t || v : v });
+    if (side === 'enemy' && id === 'poison' && v > 0 && this.current) this.tally(this.current.def.id).poison += v;
     if (side === 'enemy' && v > 0) {
       this.heroDef.hooks.onEnemyStatus?.(this, id, v);
       for (const [k, own] of Object.entries(this.hero.statuses)) if (this.has('hero', k)) STATUSES[k].onEnemyStatus?.(this, id, own);

@@ -597,7 +597,7 @@ const defs: EnemyDef[] = [
     hp: 200,
     block: 40,
     art: 'micromanager',
-    main: atk('anyUpdates', 7, 5),
+    main: atk('anyUpdates', 5, 5),
     every: 2,
     specials: [
       { id: 'quickQuestion', intent: 'curse', windup: 6, curse: [{ id: 'godfathersFavour', n: 1, to: 'draw' }], status: [gainStrength] },
@@ -845,7 +845,7 @@ const defs: EnemyDef[] = [
     block: 70,
     art: 'theBoard',
     note: 'gavel',
-    main: atk('gavel', 9, 6, ramp),
+    main: atk('gavel', 12, 6, ramp),
     every: 2,
     specials: [
       { id: 'motionToCut', intent: 'curse', windup: 6, curse: [{ id: 'debt', n: 1, to: 'belt' }], status: [gainStrength] },
@@ -856,11 +856,11 @@ const defs: EnemyDef[] = [
       {
         at: 2 / 3,
         art: 'theBoardTwo',
-        main: atk('gavel', 10, 5, ramp),
+        main: atk('gavel', 13, 5, ramp),
         every: 2,
         specials: [
           { id: 'hostileTakeover', intent: 'steal', windup: 5, steal: 2, status: [gainStrength] },
-          atk('liquidation', 26, 12, { intent: 'charge' }),
+          atk('liquidation', 30, 12, { intent: 'charge' }),
         ],
         belt: { rows: 2, mul: BOARD_FAST },
         block: BOARD_BLOCK,
@@ -868,11 +868,11 @@ const defs: EnemyDef[] = [
       {
         at: 1 / 3,
         art: 'theBoardOne',
-        main: atk('gavel', 11, 5, ramp),
+        main: atk('gavel', 14, 5, ramp),
         every: 2,
         specials: [
           { id: 'payrollAudit', intent: 'charge', windup: AUDIT, dmg: 24, task: 'shells' },
-          atk('liquidation', 26, 12, { intent: 'charge' }),
+          atk('liquidation', 30, 12, { intent: 'charge' }),
         ],
         belt: { rows: 2, mul: 1 },
         block: BOARD_BLOCK,

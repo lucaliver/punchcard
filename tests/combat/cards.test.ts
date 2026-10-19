@@ -477,7 +477,7 @@ describe('pop culture cards', () => {
     expect(c.cardVals({ uid: 0, id: 'youShallNotPass', up: true })[2]).toBe(8);
   });
 
-  it('Turn It Off stuns you for 3s and shuffles Turn It On into the deck, which gives 4 mana', () => {
+  it('Turn It Off stuns you for 3s and shuffles Turn It On into the deck, which gives mana', () => {
     const { c, uid } = ready('turnItOff');
     c.playCard(uid);
     expect(c.has('hero', 'stun')).toBe(true);
@@ -489,7 +489,7 @@ describe('pop culture cards', () => {
     c.hero.maxMana = 10;
     c.addTempCard('turnItOn', 'belt');
     c.playCard(c.belt[c.belt.length - 1].card.uid);
-    expect(c.hero.mana).toBe(4);
+    expect(c.hero.mana).toBe(CARDS.turnItOn.vals[0]);
   });
 
   it('sudo lets cards through any rule, even a stun', () => {

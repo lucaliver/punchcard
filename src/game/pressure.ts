@@ -33,7 +33,7 @@ export interface FightFacts {
   dealt: number;
   /** Seconds the fight took. */
   seconds: number;
-  /** HP the hero lost, against `maxHp`, and what it had left at the end. */
+  /** HP the hero lost net of what it healed meanwhile (a healer is not hurt by the hits it took back), against `maxHp`, and what it had left at the end. */
   lost: number;
   left: number;
   maxHp: number;
@@ -45,7 +45,7 @@ export const fightFacts = (c: Combat, maxHp: number): FightFacts => ({
   tier: c.enemy.def.tier,
   dealt: c.stats.damageDealt + c.stats.enemyBlocked,
   seconds: c.time,
-  lost: c.stats.damageTaken,
+  lost: Math.max(0, c.stats.damageTaken - c.stats.healed),
   left: Math.min(Math.max(0, c.hero.hp), maxHp),
   maxHp,
   begged: c.begged,

@@ -234,13 +234,21 @@ describe('combat engine', () => {
     expect(c.hero.hp).toBe(80 - ENEMIES.snitch.main.dmg!);
   });
 
+  it('the fight notes the Poison each card put on the enemy', () => {
+    const c = setup({ enemy: ENEMIES.snitch, deck: deckOf(['toxicMemo']) });
+    run(c, CONFIG.introTime + 0.01);
+    c.gainMana(3);
+    c.playCard(c.belt[0].card.uid);
+    expect(c.stats.cards.toxicMemo.poison).toBe(CARDS.toxicMemo.vals[1]);
+  });
+
   it('the fight notes what hurt the hero (hits, own HP prices), what each card did and the HP every few seconds', () => {
     const c = setup({ enemy: ENEMIES.snitch, deck: deckOf(['punch', 'punch']) });
     run(c, CONFIG.introTime + 0.01);
     c.gainMana(3);
     const card = c.belt[0].card;
     c.playCard(card.uid);
-    expect(c.stats.cards.punch).toEqual({ plays: 1, dmg: 6, block: 0 });
+    expect(c.stats.cards.punch).toEqual({ plays: 1, dmg: 6, block: 0, poison: 0 });
     c.loseHp(2);
     expect(c.stats.takenBy).toEqual({ hit: 0, dot: 0, self: 2, chore: 0 });
     expect(c.stats.lastHurtBy).toBe('self');

@@ -43,7 +43,7 @@ const warrior: HeroDef = {
   ink: 'var(--p)',
   ability: {
     id: 'picketLine',
-    cost: 6,
+    cost: 5,
     use: (c) => {
       c.applyStatus('hero', 'fortified', 1, PICKET_TIME);
       c.gainBlock('hero', PICKET_BLOCK);
@@ -66,7 +66,7 @@ const mage: HeroDef = {
   ink: 'var(--b)',
   ability: {
     id: 'timeTheft',
-    cost: 6,
+    cost: 5,
     use: (c) => {
       c.applyStatus('enemy', 'stun', 1, TIME_THEFT);
       c.rushBelt(TIME_THEFT);
@@ -104,7 +104,7 @@ const necromancer: HeroDef = {
   ink: 'var(--green)',
   ability: {
     id: 'generalStrike',
-    cost: 6,
+    cost: 5,
     // Double the enemy's Poison.
     use: (c) => c.applyStatus('enemy', 'poison', c.stacks('enemy', 'poison')),
   },
@@ -138,7 +138,7 @@ const rogue: HeroDef = {
   ink: 'var(--rust)',
   ability: {
     id: 'stocktake',
-    cost: 6,
+    cost: 5,
     // Everything on the belt falls at once (each card making a card in the sleeve cheaper) and pays its original cost in mana.
     use: (c) => c.gainMana(c.dropFront(c.belt.length)),
   },

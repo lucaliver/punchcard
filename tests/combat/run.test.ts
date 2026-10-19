@@ -751,6 +751,15 @@ describe('adaptive difficulty', () => {
     expect(fightFacts(fight, 80).dealt).toBe(50);
   });
 
+  it('the HP lost is net of the healing: a hero who healed it all back was not hurt', () => {
+    const fight = new Combat(combatSetup(fightRun()));
+    fight.stats.damageTaken = 30;
+    fight.stats.healed = 12;
+    expect(fightFacts(fight, 80).lost).toBe(18);
+    fight.stats.healed = 45;
+    expect(fightFacts(fight, 80).lost).toBe(0);
+  });
+
   it('each lever follows its own signal', () => {
     const fastButHurt = fightSignals(facts({ dealt: par.normal.dps * 50 * 2, lost: 80 }));
     expect(fastButHurt.hp).toBeGreaterThan(0);
@@ -846,7 +855,7 @@ describe('adaptive difficulty', () => {
     fight.stats.damageDealt = 100;
     fight.stats.damageTaken = 12;
     fight.stats.takenBy.hit = 12;
-    fight.stats.cards.punch = { plays: 3, dmg: 18, block: 0 };
+    fight.stats.cards.punch = { plays: 3, dmg: 18, block: 0, poison: 0 };
     logFight(r, fight);
     logFight(r, fight);
     settings.debugMenus = false;
@@ -868,7 +877,7 @@ describe('adaptive difficulty', () => {
       build: { skips: 0, relics: r.relics },
     });
     // The card totals add up over the run's fights.
-    expect(end).toEqual({ run: 'won', cards: { punch: { plays: 6, dmg: 36, block: 0 } } });
+    expect(end).toEqual({ run: 'won', cards: { punch: { plays: 6, dmg: 36, block: 0, poison: 0 } } });
     resetFightLog();
   });
 
