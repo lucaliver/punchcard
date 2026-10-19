@@ -1897,7 +1897,7 @@ export const ICONS: Record<string, { el: Element; svg: string; wide?: boolean }>
   // The Neighbour's blower: a long nozzle, the motor with its handle, and the gust it throws.
   leafBlower: {
     el: 'nature',
-    svg: `<path d="M2 22h24l8-4v28l-8-4H2z"/><rect x="34" y="16" width="26" height="30" rx="7"/><path d="M40 16v-8h14v8" fill="none" stroke="currentColor" stroke-width="5" stroke-linejoin="round"/><path fill="#16121f" opacity=".4" d="M42 24h10v4H42z"/><path d="M4 52h22M10 58h26" fill="none" stroke="currentColor" stroke-width="4" stroke-linecap="round"/>`,
+    svg: `<path d="M2 22h24l8-4v28l-8-4H2z"/><rect x="34" y="16" width="26" height="30" rx="7"/><path d="M40 16v-8h14v8" fill="none" stroke="currentColor" stroke-width="5" stroke-linejoin="round"/><path fill="#16121f" d="M42 24h10v4H42z"/><path d="M4 52h22M10 58h26" fill="none" stroke="currentColor" stroke-width="4" stroke-linecap="round"/>`,
   },
   // A burger patty with its grill marks (tinted by how cooked it is).
   patty: {
@@ -1913,27 +1913,27 @@ export const ICONS: Record<string, { el: Element; svg: string; wide?: boolean }>
   // A plate with its fork and knife (a clean one).
   plate: {
     el: 'nature',
-    svg: `<circle cx="32" cy="34" r="19"/><circle cx="32" cy="34" r="11" fill="#16121f" opacity=".35"/><path d="M4 8h3v14h2V8h3v14h2V8h3v16c0 4-3 6-5 7v25h-4V31c-2-1-4-3-4-7z"/><path d="M54 8c-5 4-6 12-6 22h5v26h4V8z"/>`,
+    svg: `<circle cx="32" cy="34" r="19"/><circle cx="32" cy="34" r="11" fill="#16121f"/><path d="M4 8h3v14h2V8h3v14h2V8h3v16c0 4-3 6-5 7v25h-4V31c-2-1-4-3-4-7z"/><path d="M54 8c-5 4-6 12-6 22h5v26h4V8z"/>`,
   },
   // An Allen key, the one that comes in the box.
   allenKey: {
     el: 'steel',
-    svg: `<path d="M12 4h9v37h31v9H12z"/><path fill="#fff" opacity=".28" d="M14 6h3v33h31v3H14z"/><path fill="#16121f" opacity=".35" d="M12 50h40v4H12z"/>`,
+    svg: `<path d="M12 4h9v37h31v9H12z"/><path fill="#fff" opacity=".28" d="M14 6h3v33h31v3H14z"/><path fill="#16121f" d="M12 50h40v4H12z"/>`,
   },
   // A tub with a snap-on lid, the sort that never comes home.
   tupperware: {
     el: 'nature',
-    svg: `<rect x="4" y="16" width="56" height="12" rx="3"/><path d="M9 28h46l-4 28c0 2-2 4-4 4H17c-2 0-4-2-4-4z"/><path fill="#16121f" opacity=".4" d="M24 36h16v4H24zM26 44h12v4H26z"/><path fill="#fff" opacity=".3" d="M8 18h48v3H8z"/>`,
+    svg: `<rect x="4" y="16" width="56" height="12" rx="3"/><path d="M9 28h46l-4 28c0 2-2 4-4 4H17c-2 0-4-2-4-4z"/><path fill="#16121f" d="M24 36h16v4H24zM26 44h12v4H26z"/><path fill="#fff" opacity=".3" d="M8 18h48v3H8z"/>`,
   },
   // A pair of screws, the ones left over.
   screws: {
     el: 'steel',
-    svg: `<g transform="rotate(-25 20 32)"><circle cx="20" cy="12" r="9"/><path d="M14 12h12" stroke="#16121f" stroke-width="3"/><path d="M16 21h8v26l-4 8-4-8z"/><path fill="#16121f" opacity=".35" d="M16 28h8M16 34h8M16 40h8" stroke="#16121f" stroke-width="2"/></g><g transform="rotate(25 46 32)"><circle cx="46" cy="14" r="8"/><path d="M41 14h10" stroke="#16121f" stroke-width="3"/><path d="M42 22h8v22l-4 8-4-8z"/></g>`,
+    svg: `<g transform="rotate(-25 20 32)"><circle cx="20" cy="12" r="9"/><path d="M14 12h12" stroke="#16121f" stroke-width="3"/><path d="M16 21h8v26l-4 8-4-8z"/><path fill="#16121f" d="M16 28h8M16 34h8M16 40h8" stroke="#16121f" stroke-width="2"/></g><g transform="rotate(25 46 32)"><circle cx="46" cy="14" r="8"/><path d="M41 14h10" stroke="#16121f" stroke-width="3"/><path d="M42 22h8v22l-4 8-4-8z"/></g>`,
   },
   // A hand microphone.
   microphone: {
     el: 'holy',
-    svg: `<circle cx="22" cy="20" r="15"/><path fill="#16121f" opacity=".4" d="M10 14h24M8 20h28M10 26h24M18 6v28M26 6v28"/><path d="M31 31l23 23-7 7-23-23z"/><path fill="#16121f" opacity=".35" d="M40 40l8-1-1 8z"/>`,
+    svg: `<circle cx="22" cy="20" r="15"/><path fill="#16121f" d="M10 14h24M8 20h28M10 26h24M18 6v28M26 6v28"/><path d="M31 31l23 23-7 7-23-23z"/><path fill="#16121f" d="M40 40l8-1-1 8z"/>`,
   },
   // Monday's alarm clock: twin bells on a round face.
   alarmClock: {
@@ -1943,7 +1943,27 @@ export const ICONS: Record<string, { el: Element; svg: string; wide?: boolean }>
   // Sunday night: a crescent over a pillow, with a Z.
   sundayNight: {
     el: 'shadow',
-    svg: `<path d="M34 4a22 22 0 1 0 24 30A18 18 0 0 1 34 4z"/><path d="M42 6h14v5L47 20h9v5H42v-5l9-9h-9z"/><rect x="6" y="46" width="52" height="14" rx="6"/><path fill="#16121f" opacity=".35" d="M12 52h40v3H12z"/>`,
+    svg: `<path d="M34 4a22 22 0 1 0 24 30A18 18 0 0 1 34 4z"/><path d="M42 6h14v5L47 20h9v5H42v-5l9-9h-9z"/><rect x="6" y="46" width="52" height="14" rx="6"/><path fill="#16121f" d="M12 52h40v3H12z"/>`,
+  },
+  // A baking dish of lasagna, the layers showing.
+  lasagna: {
+    el: 'nature',
+    svg: `<path d="M4 22h56v6l-4 26H8L4 28z"/><path fill="#16121f" d="M8 32h48v3H8zM9 40h46v3H9zM10 48h44v3H10z"/><path d="M8 22c4-8 12-10 16-4 4-8 12-8 16-2 4-6 12-4 16 6z" fill="currentColor"/><path fill="#fff" opacity=".3" d="M12 20c3-4 7-4 10-2z"/>`,
+  },
+  // A slice of tiramisu with cocoa on top.
+  tiramisu: {
+    el: 'holy',
+    svg: `<path d="M6 22l52 8v22L6 52z"/><path fill="#16121f" d="M6 34l52 6v3L6 38zM6 44l52 4v3L6 48z"/><path fill="#16121f" d="M10 22l48 7-3 4-48-7z" opacity=".6"/><circle cx="20" cy="18" r="2" fill="#16121f"/><circle cx="34" cy="21" r="2" fill="#16121f"/><circle cx="46" cy="25" r="2" fill="#16121f"/>`,
+  },
+  // Grandma's recipe: a stained card with a heart and a few lines.
+  recipe: {
+    el: 'holy',
+    svg: `<rect x="8" y="6" width="48" height="52" rx="3" transform="rotate(-4 32 32)"/><path fill="#16121f" d="M16 28h30v3H16zM16 36h30v3H16zM16 44h20v3H16z" transform="rotate(-4 32 32)"/><path fill="#16121f" d="M32 24c-6-4-10-8-8-12 2-3 6-2 8 1 2-3 6-4 8-1 2 4-2 8-8 12z" transform="rotate(-4 32 32) translate(0 1)"/>`,
+  },
+  // A scratch card, half scratched.
+  scratchCard: {
+    el: 'holy',
+    svg: `<rect x="6" y="10" width="52" height="44" rx="4"/><rect x="12" y="20" width="40" height="22" rx="2" fill="#16121f"/><path d="M18 26h8v8h-8zM30 26h8v8h-8zM42 26h6v8h-6z" fill="currentColor"/><circle cx="44" cy="46" r="5" fill="#16121f"/>`,
   },
   // The DJ's mirror ball.
   discoBall: {

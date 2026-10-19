@@ -320,6 +320,24 @@ export const CONFIG = {
   roadCut: 0.5,
   /** Break Room: a rest heals this share of max HP plus this share of the HP missing. */
   restHeal: 0.9,
+  /** Sunday Lunch (weekend room): the dishes you may have of the three on the table, and the max HP the tiramisu adds. */
+  lunch: { dishes: 2, maxHp: 8 },
+  /**
+   * The Corner Shop's scratch cards (weekend room): `scratches` cards at most, the first free and each one after it costing `hpCost` of max HP. A card is `jackpot` (a stationery),
+   * `upgrade` (`upgrades` cards of the deck), `heal` (`heal` of the missing HP) or `blank`, by the weights of `odds`.
+   */
+  lottery: {
+    scratches: 3,
+    hpCost: 0.08,
+    upgrades: 2,
+    heal: 0.5,
+    odds: [
+      ['jackpot', 9],
+      ['upgrade', 26],
+      ['heal', 30],
+      ['blank', 35],
+    ] as const,
+  },
   /** Skipping a card reward: the max HP the first skip of the run pays (every skip after it pays one less, down to 1). */
   skipMaxHp: 6,
   /** Copy Room: a card can't be shredded below this many deck cards; a photocopy costs this much HP (and needs more left). */

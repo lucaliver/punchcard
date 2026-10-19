@@ -27,3 +27,10 @@ Before: one enemy of its own (the Self-Checkout) dealt for every fight, elites a
 - **Monday** (boss, the game's last): one alarm clock in three phases, `mondayOne` / `mondayTwo` / `mondayThree`. Sunday night (slow belt; Sunday Scaries curses, Insomnia blackout), the snooze button (fast belt; Snooze Button heals, *Coffee Before Anything* is the Slaves CEO's coffee chore again, Rise and Grind crunches), nine o'clock (belt rush; *Clock In* is the Punch Clock's badge chore, Stand-Up Meeting clogs the belt with Quick Syncs, All Hands hits hard). +40 Block at each phase.
 - **Curse**: Sunday Scaries (stops your belt when it slips off). **Icons**: alarmClock (also the boss's marker on the map), sundayNight.
 - **Tests / tools**: the bot can now run the weekend (`BotOpts.acts`) and reports each fight (`RunOutcome.fights`); the weekend's enemies hold their own against it like act 3's do.
+
+## Batch 5: the map and two rooms of its own
+- **Scripted weekend map** (`ACT_SCRIPTS[4]`, `SCRIPTED_ACTS` now has act 4): the first time a hero reaches the weekend its map is hand-drawn. Saturday: groceries (Self-Checkout), the Gym Bro or the Corner Shop, the Leaf Blower Neighbour or the Brunch Influencer, a Break Room or a vending machine, then the Wedding DJ (Saturday night) or the Barbecue Dad. Sunday: the dog or the Raffle, the Couch or the Flat-Pack Wardrobe, the Mayor or the Mother-in-Law, then a rest or the Sunday Lunch, and Monday.
+- **Sunday Lunch** (weekend room): three dishes, you may only have two. Lasagna, tiramisu, grandma's recipe. Sprite, icons, tests.
+- **Corner Shop** (weekend room): scratch cards, the first free, the others paid in blood; jackpot, upgrades, a heal or nothing.
+- Later weekend maps (not the first) are dealt like any act's, and always hold both rooms (`WEEKEND_SPECIALS`).
+- Bot walks through both rooms; tests for the dealing, the dishes and the scratch cards.

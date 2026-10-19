@@ -25,7 +25,16 @@ import { ACT_DEFS, MAIN_ACTS } from '../../src/data/acts';
 import {
   applyCombat,
   applyWheel,
+  canEat,
+  canScratch,
+  canUpgrade,
   canWheel,
+  eatDish,
+  LUNCH_DISHES,
+  restHeal,
+  scratchCard,
+  scratchCost,
+  WEEKEND_SPECIALS,
   isFirstRun,
   canCopy,
   combatSetup,
@@ -890,5 +899,97 @@ describe('the debug unlock-all', () => {
       expect(weekendOpen(hd.id), hd.id).toBe(true);
       for (let act = 1; act <= ACT_DEFS.length; act++) expect(hasStamp(hd.id, act), `${hd.id} ${act}`).toBe(true);
     }
+  });
+});
+
+describe('the weekend rooms', () => {
+  const weekend = (seed: number) => newRun('warrior', seed, [], [], ACT_DEFS.length);
+
+  it('every weekend map has a Sunday Lunch and a Corner Shop, and no other act has them', () => {
+    for (let seed = 1; seed <= 25; seed++) {
+      const nodes = weekend(seed).nodes;
+      for (const type of WEEKEND_SPECIALS) {
+        expect(
+          nodes.filter((n) => n.type === type && n.act === ACT_DEFS.length),
+          `${type}, seed ${seed}`,
+        ).toHaveLength(1);
+        expect(nodes.filter((n) => n.type === type && n.act < ACT_DEFS.length)).toHaveLength(0);
+      }
+    }
+  });
+
+  it('Sunday Lunch: the lasagna heals like a nap, the tiramisu adds max HP, the recipe upgrades the card it is for', () => {
+    const r = newRun('warrior', 3);
+    expect(canEat(r, 'lasagna')).toBe(false);
+    r.hp = Math.floor(r.maxHp / 2);
+    const heal = restHeal(r);
+    expect(canEat(r, 'lasagna')).toBe(true);
+    const [hp, max] = [r.hp, r.maxHp];
+    expect(eatDish(r, 'lasagna')).toBe(heal);
+    expect(r.hp).toBe(hp + heal);
+    expect(eatDish(r, 'tiramisu')).toBe(CONFIG.lunch.maxHp);
+    expect(r.maxHp).toBe(max + CONFIG.lunch.maxHp);
+    expect(r.hp).toBe(hp + heal + CONFIG.lunch.maxHp);
+    const card = r.deck.find(canUpgrade)!;
+    expect(canEat(r, 'recipe')).toBe(true);
+    eatDish(r, 'recipe', card.uid);
+    expect(card.up).toBe(true);
+    for (const c of r.deck) c.up = true;
+    expect(canEat(r, 'recipe')).toBe(false);
+    expect(LUNCH_DISHES).toHaveLength(3);
+    expect(CONFIG.lunch.dishes).toBeLessThan(LUNCH_DISHES.length);
+  });
+
+  it('Corner Shop: the first card is free, every other one costs a share of max HP, and the pack runs out', () => {
+    const r = newRun('warrior', 3);
+    expect(scratchCost(r, 0)).toBe(0);
+    expect(scratchCost(r, 1)).toBe(Math.round(r.maxHp * CONFIG.lottery.hpCost));
+    expect(canScratch(r, CONFIG.lottery.scratches)).toBe(false);
+    r.hp = scratchCost(r, 1);
+    expect(canScratch(r, 1)).toBe(false);
+    expect(canScratch(r, 0)).toBe(true);
+    r.hp = r.maxHp;
+    const hp = r.hp;
+    scratchCard(r, 1, new Rng(1));
+    expect(r.hp).toBeLessThanOrEqual(hp - scratchCost(r, 1) + Math.ceil(hp * 0.5));
+  });
+
+  it('a card is a jackpot (a stationery), an upgrade, a small heal or nothing, and every prize does what it says', () => {
+    const seen = new Set<string>();
+    for (let seed = 1; seed <= 200 && seen.size < 4; seed++) {
+      const r = newRun('mage', seed);
+      r.hp = Math.floor(r.maxHp * 0.5);
+      const [hp, relics, ups] = [r.hp, r.relics.length, r.deck.filter((c) => c.up).length];
+      const res = scratchCard(r, 0, new Rng(seed));
+      seen.add(res.kind);
+      expect(res.paid).toBe(0);
+      switch (res.kind) {
+        case 'jackpot':
+          expect(r.relics).toHaveLength(relics + 1);
+          expect(r.relics).toContain(res.relic);
+          break;
+        case 'upgrade':
+          expect(res.upgraded!.length).toBeGreaterThan(0);
+          expect(res.upgraded!.length).toBeLessThanOrEqual(CONFIG.lottery.upgrades);
+          expect(r.deck.filter((c) => c.up)).toHaveLength(ups + res.upgraded!.length);
+          break;
+        case 'heal':
+          expect(res.healed).toBe(Math.round((r.maxHp - hp) * CONFIG.lottery.heal));
+          expect(r.hp).toBe(hp + res.healed!);
+          break;
+        case 'blank':
+          expect(r.hp).toBe(hp);
+          expect(r.relics).toHaveLength(relics);
+          expect(r.deck.filter((c) => c.up)).toHaveLength(ups);
+      }
+    }
+    expect([...seen].sort()).toEqual(['blank', 'heal', 'jackpot', 'upgrade']);
+  });
+
+  it('a prize that nothing can take falls back to the next best one', () => {
+    const r = newRun('mage', 5);
+    for (const c of r.deck) c.up = true;
+    r.hp = Math.floor(r.maxHp / 2);
+    for (let seed = 1; seed <= 80; seed++) expect(scratchCard({ ...r, hp: r.hp, relics: [...r.relics] }, 0, new Rng(seed)).kind).not.toBe('upgrade');
   });
 });

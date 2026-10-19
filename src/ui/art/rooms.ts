@@ -224,6 +224,42 @@ const contractPen = `
 <path d="M150 88h26v24h-26z" fill="#a01060" ${OUT}/><path d="M140 80h36v8h-36z" fill="#ffd900" ${OUT}/>
 </g>`;
 
+/** Sunday Lunch: a table under a red-checked cloth, a lasagna the size of a suitcase with a content little face, a bottle, a basket of bread and a stack of plates nobody will be allowed to leave without using. */
+const sundayLunch = `
+<defs>${lg('sl-c', '#ff6a5a', '#b81818')}${lg('sl-p', '#ffd08a', '#d88a3a')}${lg('sl-g', '#8ae848', '#3a8a18')}</defs>
+${shadow}
+<path d="M24 100h152l10 22H14z" fill="url(#sl-c)" ${OUT}/>
+<g fill="#fff" opacity=".7"><path d="M40 100h14v22H40zM68 100h14v22H68zM96 100h14v22H96zM124 100h14v22h-14zM152 100h14v22h-14z"/></g>
+<path d="M30 122h140v14H30z" fill="url(#sl-c)" ${OUT}/>
+<path d="M44 136l-6 50h14l4-50zM156 136l6 50h-14l-4-50z" fill="#8a5a2a" ${OUT}/>
+<path d="M44 82h112v22H44z" fill="#f6f0e4" ${OUT}/>
+<path d="M50 60h100l6 28H44z" fill="url(#sl-p)" ${OUT}/>
+<path d="M54 68h92M52 76h96" stroke="#c85a1a" stroke-width="5"/><path d="M60 62l8 8M90 62l8 8M120 62l8 8" stroke="#fff4c0" stroke-width="4" stroke-linecap="round" opacity=".8"/>
+<g fill="url(#sl-g)" ${OUT}><path d="M64 58c4-8 10-8 12 0zM100 58c4-10 12-10 14 0zM130 58c4-8 10-8 12 0z"/></g>
+<g class="eye"><circle cx="82" cy="78" r="6" fill="#fff" ${OUT}/><circle cx="118" cy="78" r="6" fill="#fff" ${OUT}/><circle cx="83" cy="79" r="2.5" fill="#120e18"/><circle cx="117" cy="79" r="2.5" fill="#120e18"/></g>
+<path d="M92 84q8 6 16 0" stroke="#120e18" stroke-width="3" fill="none" stroke-linecap="round"/>
+<g class="limb" fill="#f6f0e4" opacity=".9" ${OUT}><path d="M70 40c-6-8 6-12 0-22 8 6 8 14 0 22z" stroke-width="2"/><path d="M104 38c-6-8 6-12 0-22 8 6 8 14 0 22z" stroke-width="2"/><path d="M136 40c-6-8 6-12 0-22 8 6 8 14 0 22z" stroke-width="2"/></g>
+<g ${OUT}><path d="M164 72h12v28h-12z" fill="#3a8a18"/><path d="M167 60h6v12h-6z" fill="#3a8a18"/><rect x="164" y="82" width="12" height="10" fill="#fff"/></g>
+<g ${OUT}><path d="M16 84h22l-3 18H19z" fill="#d88a3a"/><path d="M20 84c0-6 14-6 14 0" fill="#ffd08a"/></g>
+<g ${OUT} fill="#fff"><ellipse cx="60" cy="108" rx="14" ry="4"/><ellipse cx="60" cy="105" rx="14" ry="4"/><ellipse cx="146" cy="108" rx="14" ry="4"/><ellipse cx="146" cy="105" rx="14" ry="4"/></g>`;
+
+/** The Corner Shop's lottery stand: a newsstand with a striped awning, scratch cards pinned in the window, a "€" sign, and a shopkeeper's wary eyes watching from the dark of the hatch. */
+const lotteryStand = `
+<defs>${lg('lt-b', '#6a9af8', '#1c3a98')}${lg('lt-a', '#ff6a8a', '#c8284a')}${lg('lt-y', '#ffe45a', '#d09a20')}</defs>
+${shadow}
+<rect x="30" y="76" width="140" height="110" fill="url(#lt-b)" ${OUT}/>
+<rect x="44" y="104" width="112" height="46" fill="#120e18" ${OUT}/>
+<path d="M22 56h156l-12 30H34z" fill="url(#lt-a)" ${OUT}/><path d="M58 56l-8 30M94 56l-4 30M130 56l4 30M166 56l8 30" stroke="#f6f0e4" stroke-width="10" opacity=".9"/>
+<path d="M22 56h156" stroke="#120e18" stroke-width="3"/>
+<path d="M24 86c6 8 12 8 18 0s12 8 18 0 12 8 18 0 12 8 18 0 12 8 18 0 12 8 18 0 12 8 18 0" fill="none" stroke="#120e18" stroke-width="3"/>
+<rect x="62" y="22" width="76" height="30" rx="4" fill="url(#lt-y)" ${OUT}/><g fill="#ff3d9a" ${OUT}><circle cx="78" cy="37" r="9"/><circle cx="100" cy="37" r="9"/><circle cx="122" cy="37" r="9"/></g><path d="M74 37h8M96 37h8M118 37h8" stroke="#120e18" stroke-width="3" stroke-linecap="round"/>
+<g ${OUT}><rect x="52" y="112" width="22" height="28" fill="#fff8c0" transform="rotate(-6 63 126)"/><rect x="80" y="112" width="22" height="28" fill="#ff8ac8" transform="rotate(4 91 126)"/><rect x="108" y="112" width="22" height="28" fill="#8ae8d0" transform="rotate(-3 119 126)"/></g>
+<g fill="#120e18"><rect x="56" y="118" width="14" height="4" transform="rotate(-6 63 126)"/><rect x="84" y="118" width="14" height="4" transform="rotate(4 91 126)"/><rect x="112" y="118" width="14" height="4" transform="rotate(-3 119 126)"/></g>
+<g class="eye"><circle cx="138" cy="122" r="5" fill="#ffd900"/><circle cx="150" cy="122" r="5" fill="#ffd900"/><circle cx="139" cy="122" r="2" fill="#120e18"/><circle cx="151" cy="122" r="2" fill="#120e18"/></g>
+<rect x="44" y="150" width="112" height="10" fill="#f6f0e4" ${OUT}/><circle cx="60" cy="155" r="3" fill="#ffd900"/><circle cx="72" cy="155" r="3" fill="#ffd900"/>
+<rect x="40" y="168" width="40" height="18" fill="#f6f0e4" ${OUT}/><path d="M46 174h28M46 180h18" stroke="#120e18" stroke-width="3"/>
+<g ${OUT}><path d="M150 172l8-6 8 6v14h-16z" fill="#ffd900"/></g>`;
+
 /** Sprite sources by room type, as the renderer wants them (`room.` keeps them apart from creature ids). */
 export const ROOM_SPRITES: Record<string, string> = {
   'room.rest': coffeeMachine,
@@ -235,6 +271,8 @@ export const ROOM_SPRITES: Record<string, string> = {
   'room.vending': vending,
   'room.restructuring': orgChart(false),
   'room.restructuring.open': orgChart(true),
+  'room.lunch': sundayLunch,
+  'room.lottery': lotteryStand,
 };
 
 /** The studio's mark: a ring, a blue L behind the Aries glyph (a pink ram's horns over a V), the horns ribbed like the studio's old sketch. */

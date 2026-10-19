@@ -49,6 +49,8 @@ export const NODE_TYPES = [
   'crossTraining',
   'restructuring',
   'wheel',
+  'lunch',
+  'lottery',
   'boss',
 ] as const;
 export type NodeType = (typeof NODE_TYPES)[number];
@@ -134,6 +136,8 @@ const LANES: Slot[][] = [
 ];
 /** A `special` slot of a lane becomes one of these when the act is built; one act never deals the same room twice. */
 export const SPECIALS: NodeType[] = ['copy', 'tailor', 'lostFound', 'vending', 'crossTraining', 'restructuring', 'wheel'];
+/** Rooms only the weekend has: each of its maps deals them before any other special room. */
+export const WEEKEND_SPECIALS: NodeType[] = ['lunch', 'lottery'];
 /** Rooms that show up once in a whole run, however many acts it has. */
 const ONCE_PER_RUN: NodeType[] = ['tailor', 'restructuring'];
 /** Floors on a single road at the start of act 1, before the map splits in two (then the lanes skip as many floors). The last of them is always a special room. */
@@ -144,7 +148,7 @@ const LINKS = 2;
 /** Seed of the very first run: its map is always the same, with the enemies in order of difficulty. */
 export const FIRST_RUN_SEED = 1;
 /** Acts whose rooms are fixed the first time a player meets them (see `ACT_SCRIPTS`). */
-export const SCRIPTED_ACTS = [1, 2, 3];
+export const SCRIPTED_ACTS = [1, 2, 3, 4];
 
 /** A room of an act laid out by hand: its floor and column, what it holds and the rooms it leads to (indexes in the act's list). */
 interface ScriptNode {
@@ -217,6 +221,28 @@ export const ACT_SCRIPTS: Record<number, ScriptNode[]> = {
     /* 15 */ { floor: 9, lane: 0, type: 'rest', next: [17] },
     /* 16 */ { floor: 9, lane: 1, type: 'rest', next: [17] },
     /* 17 */ { floor: 10, lane: 0.5, type: 'boss', enemy: 'theBoard', next: [] },
+  ],
+  // Act 4, the weekend, the first time it is reached: Saturday (groceries, the gym, the barbecue, the wedding) then Sunday (the dog, the sofa, the wardrobe, the mayor, the mother-in-law),
+  // with the Corner Shop and the Sunday Lunch on the way, a Break Room on each side, and Monday at the end.
+  4: [
+    /* 0 */ { floor: 1, lane: 0.5, type: 'fight', enemy: 'selfCheckout', next: [1, 2] },
+    /* 1 */ { floor: 2, lane: 0, type: 'fight', enemy: 'gymBro', next: [3] },
+    /* 2 */ { floor: 2, lane: 1, type: 'lottery', next: [4] },
+    /* 3 */ { floor: 3, lane: 0, type: 'fight', enemy: 'leafBlowerNeighbour', next: [5] },
+    /* 4 */ { floor: 3, lane: 1, type: 'fight', enemy: 'brunchInfluencer', next: [6, 5] },
+    /* 5 */ { floor: 4, lane: 0, type: 'rest', next: [7] },
+    /* 6 */ { floor: 4, lane: 1, type: 'vending', next: [8] },
+    /* 7 */ { floor: 5, lane: 0, type: 'elite', enemy: 'weddingDj', next: [9] },
+    /* 8 */ { floor: 5, lane: 1, type: 'fight', enemy: 'grillDad', next: [10, 9] },
+    /* 9 */ { floor: 6, lane: 0, type: 'fight', enemy: 'offLeashDog', next: [11] },
+    /* 10 */ { floor: 6, lane: 1, type: 'wheel', next: [12] },
+    /* 11 */ { floor: 7, lane: 0, type: 'fight', enemy: 'theCouch', next: [13, 14] },
+    /* 12 */ { floor: 7, lane: 1, type: 'fight', enemy: 'flatPackWardrobe', next: [14] },
+    /* 13 */ { floor: 8, lane: 0, type: 'elite', enemy: 'ribbonMayor', next: [15] },
+    /* 14 */ { floor: 8, lane: 1, type: 'elite', enemy: 'motherInLaw', next: [16, 15] },
+    /* 15 */ { floor: 9, lane: 0, type: 'rest', next: [17] },
+    /* 16 */ { floor: 9, lane: 1, type: 'lunch', next: [17] },
+    /* 17 */ { floor: 10, lane: 0.5, type: 'boss', enemy: 'monday', next: [] },
   ],
 };
 
@@ -410,7 +436,11 @@ function addAct(nodes: RunNode[], rng: Rng, act: number, last: RunNode[], taken:
   let bag: EnemyDef[] = [];
   let specials: NodeType[] = [];
   const add = (floor: number, lane: number, slot: Slot): RunNode => {
-    if (slot === 'special' && !specials.length) specials = rng.shuffle(SPECIALS.filter((s) => !(ONCE_PER_RUN.includes(s) && dealt.has(s))));
+    if (slot === 'special' && !specials.length) {
+      const common = rng.shuffle(SPECIALS.filter((s) => !(ONCE_PER_RUN.includes(s) && dealt.has(s))));
+      // The weekend's own rooms come first (the bag is dealt from its end).
+      specials = act > MAIN_ACTS ? [...common, ...rng.shuffle(WEEKEND_SPECIALS)] : common;
+    }
     const type = slot === 'special' ? specials.pop()! : slot;
     dealt.add(type);
     let enemy: string | undefined;
@@ -915,6 +945,102 @@ export function applyWheel(run: RunState, slot: WheelSlot, uids: number[]): { be
   }
   run.cleared = true;
   return changed;
+}
+
+/** The dishes on the table of a Sunday Lunch (you may have `CONFIG.lunch.dishes` of them): the lasagna heals like a rest, the tiramisu adds max HP, grandma's recipe upgrades a card. */
+export const LUNCH_DISHES = ['lasagna', 'tiramisu', 'recipe'] as const;
+export type LunchDish = (typeof LUNCH_DISHES)[number];
+
+/** Whether this dish would change anything now. */
+export function canEat(run: RunState, dish: LunchDish): boolean {
+  switch (dish) {
+    case 'lasagna':
+      return restHeal(run) > 0;
+    case 'tiramisu':
+      return true;
+    case 'recipe':
+      return run.deck.some(canUpgrade);
+  }
+}
+
+/** Has the dish (`uid`: the card the recipe is for); returns the HP gained (the recipe gains none). The room is over once the last dish is eaten (`finishLunch`). */
+export function eatDish(run: RunState, dish: LunchDish, uid?: number): number {
+  switch (dish) {
+    case 'lasagna': {
+      const amount = restHeal(run);
+      run.hp += amount;
+      return amount;
+    }
+    case 'tiramisu':
+      run.maxHp += CONFIG.lunch.maxHp;
+      run.hp += CONFIG.lunch.maxHp;
+      return CONFIG.lunch.maxHp;
+    case 'recipe':
+      if (uid !== undefined) upgradeCard(run, uid);
+      return 0;
+  }
+}
+
+/** The lunch is over: the room is cleared. */
+export function finishLunch(run: RunState): void {
+  run.cleared = true;
+}
+
+/** What a scratch card turned out to be. */
+export type ScratchKind = (typeof CONFIG.lottery.odds)[number][0];
+export interface ScratchResult {
+  kind: ScratchKind;
+  /** HP paid for the card, healed, and the stationery or the cards it brought. */
+  paid: number;
+  healed?: number;
+  relic?: string;
+  upgraded?: { before: CardInst; after: CardInst }[];
+}
+
+/** HP the next scratch card costs, given how many have been scratched (the first is free). */
+export const scratchCost = (run: RunState, scratched: number): number =>
+  scratched === 0 ? 0 : Math.max(1, Math.round(run.maxHp * CONFIG.lottery.hpCost));
+
+/** Whether another card can be scratched: one is left in the pack and the hero would survive paying for it. */
+export const canScratch = (run: RunState, scratched: number): boolean => scratched < CONFIG.lottery.scratches && run.hp > scratchCost(run, scratched);
+
+/** Pays for and scratches a card: what is under it comes from `rng` (the weights of `CONFIG.lottery.odds`), a prize nothing can take falls back to the next best one. */
+export function scratchCard(run: RunState, scratched: number, rng: Rng): ScratchResult {
+  const paid = scratchCost(run, scratched);
+  run.hp -= paid;
+  const total = CONFIG.lottery.odds.reduce((n, [, w]) => n + w, 0);
+  let roll = rng.next() * total;
+  let kind: ScratchKind = 'blank';
+  for (const [k, w] of CONFIG.lottery.odds) {
+    roll -= w;
+    if (roll < 0) {
+      kind = k;
+      break;
+    }
+  }
+  if (kind === 'jackpot' && !canGiftRelic(run)) kind = 'upgrade';
+  if (kind === 'upgrade' && !run.deck.some(canUpgrade)) kind = 'heal';
+  const res: ScratchResult = { kind, paid };
+  if (kind === 'jackpot') res.relic = giftRelic(run);
+  else if (kind === 'upgrade') {
+    res.upgraded = rng
+      .shuffle(run.deck.filter(canUpgrade))
+      .slice(0, CONFIG.lottery.upgrades)
+      .map((c) => {
+        const before = { ...c };
+        upgradeCard(run, c.uid);
+        return { before, after: { ...c } };
+      });
+  } else if (kind === 'heal') {
+    res.healed = Math.round((run.maxHp - run.hp) * CONFIG.lottery.heal);
+    run.hp += res.healed;
+  }
+  return res;
+}
+
+/** The shop is left: the room is cleared. */
+export function finishLottery(run: RunState): void {
+  run.cleared = true;
 }
 
 /** A new shift starts rested: heals fully as the next act's map opens. Returns the HP gained. */

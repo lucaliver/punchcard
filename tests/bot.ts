@@ -18,8 +18,10 @@ import {
   canVend,
   canShred,
   canUpgrade,
+  canEat,
   combatSetup,
   currentNode,
+  eatDish,
   gainRelic,
   rollRelics,
   newRun,
@@ -277,13 +279,22 @@ export function simulateRun(hero: HeroId, seed: number, opts: BotOpts): RunOutco
     } else if (node.type === 'vending') {
       if (canVend(run, 'rare') && run.hp > run.maxHp * 0.7) vend(run, 'rare');
       run.cleared = true;
-    } else if (node.type === 'crossTraining' || node.type === 'restructuring' || node.type === 'wheel') {
+    } else if (node.type === 'crossTraining' || node.type === 'restructuring' || node.type === 'wheel' || node.type === 'lottery') {
       // Off-class cards, a reshuffled deck and a raffle's luck don't help the bot's plan: it walks past.
       run.cleared = true;
     } else if (node.type === 'copy') {
       // Thin the deck: shred a plain starter card (never a mana crystal).
       const weak = run.deck.find((c) => CARDS[c.id].starterOnly);
       if (weak && canShred(run)) shredCard(run, weak.uid);
+      run.cleared = true;
+    } else if (node.type === 'lunch') {
+      // Two helpings: the lasagna when hurt, the recipe otherwise.
+      if (canEat(run, 'lasagna') && run.hp < run.maxHp * 0.8) eatDish(run, 'lasagna');
+      else {
+        const up = run.deck.find(canUpgrade);
+        if (up) eatDish(run, 'recipe', up.uid);
+      }
+      eatDish(run, 'tiramisu');
       run.cleared = true;
     } else if (node.type === 'rest') {
       if (run.hp < run.maxHp * 0.65) rest(run);

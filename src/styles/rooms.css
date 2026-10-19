@@ -317,3 +317,24 @@
 .wheel-result span { display: block; margin-top: 2px; }
 .wheel-result.land { animation: stamp-in 0.2s steps(2) both; }
 .wheel-btn { width: 100%; }
+
+/* The Corner Shop's scratch card: three cells of silver, scratched off one by one */
+.sc-card {
+  margin: 4px auto 0;
+  width: min(100%, 260px);
+  padding: 6px 10px 10px;
+  color: var(--k);
+  background: var(--y);
+  border: var(--line) solid var(--k);
+  box-shadow: var(--off) var(--off) 0 var(--shadow);
+  rotate: -1deg;
+}
+.sc-title { display: block; font-family: var(--font-display); font-size: 14px; font-weight: 400; letter-spacing: 0.06em; text-align: center; }
+.sc-row { display: flex; justify-content: center; gap: 8px; margin-top: 6px; }
+.sc-cell { position: relative; width: 56px; height: 56px; display: flex; align-items: center; justify-content: center; background: var(--paper); border: var(--line) solid var(--k); }
+.sc-cell .pico { width: 40px; height: 40px; color: var(--k); --ink2: var(--p); }
+.sc-cell.win { background: var(--mint); }
+.sc-cell.covered { background: var(--muted); }
+.sc-cell.covered::after { content: ''; position: absolute; inset: 0; background-image: repeating-linear-gradient(45deg, var(--paper2) 0 3px, var(--muted) 3px 6px); }
+.sc-verdict { min-height: 2.4em; }
+.lunch-left { margin: 4px 0; }

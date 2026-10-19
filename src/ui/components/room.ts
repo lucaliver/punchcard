@@ -18,6 +18,8 @@ export const ROOM_SCENE: Partial<Record<NodeType, { anim: string; inks: string[]
   lostFound: { anim: 'flap', inks: ['var(--paper)', 'var(--paper)', 'var(--y)'], alt: true },
   vending: { anim: 'thump', inks: ['var(--paper)', 'var(--p)', 'var(--y)'] },
   restructuring: { anim: 'shuffle', inks: ['var(--paper)', 'var(--paper)', 'var(--p)'], alt: true },
+  lunch: { anim: 'steam', inks: ['var(--paper)', 'var(--y)', 'var(--p)'] },
+  lottery: { anim: 'sway', inks: ['var(--y)', 'var(--p)', 'var(--paper)'] },
 };
 
 const NO_SCENE = { anim: '', inks: [], alt: false };
@@ -39,6 +41,8 @@ const ENTRANCE: Partial<Record<NodeType, { sounds: [ms: number, sound: SoundId][
     ],
   },
   restructuring: { sounds: [[300, 'reshuffle']] },
+  lunch: { sounds: [[200, 'doorBell']] },
+  lottery: { sounds: [[300, 'coin']] },
 };
 
 /** The big picture at the top of a room: its sprite, moving, on a plinth in the act's ink, with motes drifting behind. It comes in its own way (`ENTRANCE`). */
