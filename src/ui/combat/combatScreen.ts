@@ -16,6 +16,7 @@ import { creature } from '../art/creatures';
 import { spriteBox } from '../art/riso';
 import { icon } from '../art/icons';
 import { coach } from '../components/coach';
+import { conditionText } from '../components/condition';
 import { bindMoveDetails, enemyTraits, moveEffect, moveIcon, movePattern } from '../components/moveText';
 import { $, SLACK_MS, cssMs, cssNumber, h, onPress, onTapOrHold } from '../dom';
 import { burst, haptic, shake } from '../fx/fx';
@@ -728,6 +729,22 @@ export function combatScreen(run: RunState, combat: Combat, cb: CombatCallbacks)
             ...traits.map((x) => h('div', { class: 'trait', html: `${icon(x.icon)}<p>${x.name ? `<b>${x.name}</b>` : ''}${x.desc}</p>` })),
           ),
         );
+      // The day's twist on this fight, on a slip of its own above the passives.
+      const today = combat.condition;
+      if (today) {
+        const x = conditionText(today);
+        startWrap.prepend(
+          h(
+            'div',
+            { class: 'foe-traits today' },
+            h('div', { class: 'trait-head' }, t('combat.today')),
+            h('div', {
+              class: 'trait',
+              html: `${icon(today.icon)}<p><b>${x.name}</b>${x.desc}</p>${x.pay ? `<i class="trait-pay">${x.pay}</i>` : ''}`,
+            }),
+          ),
+        );
+      }
       startWrap.querySelector('button')!.addEventListener('click', () => {
         startWrap.remove();
         sfx('button');

@@ -1,6 +1,7 @@
 import { Emitter } from '../core/emitter';
 import { Rng } from '../core/rng';
 import { ANCHOR_POS, BEG_FLAG, CONFIG, EXPIRE_POS, halfAtOf } from '../data/config';
+import type { ConditionDef } from '../data/conditions';
 import { STATUSES } from '../data/statuses';
 import { CARDS, CARD_LIST, CLASS_HIT, cardCostOf, cardKeywordsOf, cardValsOf, fullCostOf, isLarge } from '../data/cards';
 import { HEXES } from '../data/hexes';
@@ -129,6 +130,8 @@ export interface CombatSetup {
   blockFade?: number;
   /** The enemy's moves come this many times as fast (a rank's duty). */
   enemyTime?: number;
+  /** The day's twist on this fight (`data/conditions.ts`): the statuses each side starts with. */
+  condition?: ConditionDef;
 }
 
 interface DamageOpts {
@@ -145,6 +148,8 @@ export class Combat {
   readonly heroDef: HeroDef;
   readonly relics: string[];
   readonly relicFlags: Record<string, number>;
+  /** The day's twist on this fight, if it has one (the screen tells it, the pay follows it). */
+  readonly condition?: ConditionDef;
 
   time = 0;
   /** Running totals of the fight, for the debug recap and the debug log. */
@@ -355,6 +360,9 @@ export class Combat {
     this.minigame = e.minigame ? MINIGAMES[e.minigame](new Rng(this.rng.int(1, 2 ** 31 - 1))) : null;
     this.enemy.move = this.nextEnemyMove();
     for (const s of e.start ?? []) this.applyStatus('enemy', s.id, s.v ?? 1, s.t ?? 0, true);
+    this.condition = setup.condition;
+    for (const s of setup.condition?.enemy ?? []) this.applyStatus('enemy', s.id, s.v, 0, true);
+    for (const s of setup.condition?.hero ?? []) this.applyStatus('hero', s.id, s.v, 0, true);
     const box = e.fillSleeve;
     if (box) this.sleeve = this.sleeve.map(() => ({ uid: -++this.tempUid, id: box, up: false, bonus: 0, temp: true }));
     this.hero.maxMana = Math.min(this.hero.maxMana, this.manaCap());

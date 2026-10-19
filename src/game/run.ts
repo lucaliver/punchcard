@@ -2,6 +2,7 @@ import { Rng } from '../core/rng';
 import { loadRaw, remove, store } from '../core/save';
 import { nextUid, peekUid, resetUid } from '../core/util';
 import { CARD_LIST, CARDS, RARITY_ORDER, cardCostOf, cardKeywordsOf, rewardPool } from '../data/cards';
+import { type ConditionDef, rollCondition } from '../data/conditions';
 import { PERKS } from '../data/perks';
 import { WHEEL, type WheelSlot } from '../data/wheel';
 import { RELIC_LIST, RELICS, abilityEveryFight, relicSum } from '../data/relics';
@@ -531,6 +532,10 @@ export function enemyScale(node: RunNode, m: Mods = NO_MODS, pressure: Pressure 
   };
 }
 
+/** The day's twist on a fight room (`data/conditions.ts`): only ordinary jobs have one, and never the teaching run's. */
+export const conditionFor = (run: RunState, node: RunNode): ConditionDef | undefined =>
+  node.type === 'fight' && !isFirstRun(run) ? rollCondition(run.seed, node.id, node.act) : undefined;
+
 export function combatSetup(run: RunState): CombatSetup {
   const node = currentNode(run);
   const rng = rngOf(run);
@@ -553,6 +558,7 @@ export function combatSetup(run: RunState): CombatSetup {
     manaSlow: m.manaSlow,
     blockFade: m.blockFade,
     enemyTime: m.enemyTime,
+    condition: conditionFor(run, node),
     bonusMaxMana: run.crystals,
     sleeveLost: run.sleeveLost,
     abilitySpent: run.abilityAct === node.act && !abilityEveryFight(run.relics),
@@ -600,7 +606,7 @@ export function applyCombat(run: RunState, combat: Combat): void {
     if (pressureLearns(run)) run.pressure = learn(run.pressure, fightFacts(combat, run.maxHp));
     run.stats.kills++;
     if (combat.enemy.def.tier === 'elite') run.stats.elites++;
-    run.money += fightPay(combat.enemy.def.tier, combat.time);
+    run.money += Math.round(fightPay(combat.enemy.def.tier, combat.time) * (combat.condition?.pay ?? 1));
     if (node.type === 'boss') stampAct(run.hero, node.act);
   }
   run.cleared = true;

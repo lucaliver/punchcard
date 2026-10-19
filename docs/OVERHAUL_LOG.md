@@ -28,3 +28,7 @@ The game was already polished in look and sound, but poor in three places: **nar
 ## Step 5: the rooms talk
 - Each room's picture (Break Room, Promotion, Copy Room, Tailor, Lost & Found, Vending Machine, Restructuring, Sunday Lunch, Corner Shop) now says a line when it comes in and another when a choice is made, in the same speech bubble the enemies use (`quip.<room>.enter.<n>` / `.done.<n>`, 45 lines in four languages). The coffee machine counts your fifteen minutes; the vending machine takes blood.
 - Dev hook `__game.room(type)` opens any room on the current run (for screenshots).
+
+## Step 6: office conditions
+- A share of ordinary fights (35%, never the first run's) come with **the day's twist**, told on a slip over the enemy's passives and in the map's room info: four perk days (Free Coffee Day, Casual Friday, Safety Week, Workers' Comp Wednesday) and four days of trouble that pay 35% more (Understaffed, Mandatory Overtime, Audit Week, Wellness Week). Built from statuses the engine already has, so no new rules in `Combat`; dealt from the run's seed, so nothing is saved.
+- Tests for the dealing, the statuses and the pay.

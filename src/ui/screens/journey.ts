@@ -2,7 +2,7 @@ import { t } from '../../core/i18n';
 import { sfx } from '../../audio/sfx';
 import { haptic } from '../fx/fx';
 import { actDef } from '../../data/acts';
-import { clockAt, currentNode, mapAct, saveRun, startShift, type RunNode, type RunState } from '../../game/run';
+import { clockAt, conditionFor, currentNode, mapAct, saveRun, startShift, type RunNode, type RunState } from '../../game/run';
 import { openModal, type Screen } from '../app';
 import { ENEMIES } from '../../data/enemies';
 import { relicSum } from '../../data/relics';
@@ -19,6 +19,7 @@ import { creature } from '../art/creatures';
 import { heroFaces } from '../components/heroMood';
 import { UNKNOWN } from '../components/cardView';
 import { actArt } from '../art/actArt';
+import { conditionText } from '../components/condition';
 import { type Typing, typeLine } from '../components/typewriter';
 import { pickIntercom } from '../../data/intercom';
 
@@ -311,12 +312,16 @@ export function journeyScreen(run: RunState, onEnter: (to?: number) => void, onH
           return;
         }
         const enemy = n.enemy ? t(`enemy.${n.enemy}.name`) : null;
+        const today = conditionFor(run, n);
         openInfo({
           icon: nodeIcon(n),
           title: label,
           tag: t('common.floor', { n: n.floor }),
           desc: t(`journey.info.${nodeKind(n)}`),
-          extra: enemy ? [t('journey.info.enemy', { name: enemy })] : undefined,
+          extra: [
+            ...(enemy ? [t('journey.info.enemy', { name: enemy })] : []),
+            ...(today ? [t('journey.info.today', { name: conditionText(today).name })] : []),
+          ],
         });
       },
     );
