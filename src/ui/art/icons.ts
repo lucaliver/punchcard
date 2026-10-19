@@ -1907,7 +1907,38 @@ export const ICONS: Record<string, { el: Element; svg: string; wide?: boolean }>
   // The grill: a grate over the coals.
   grill: {
     el: 'fire',
-    svg: `<path d="M4 14h56v6H4z"/><path d="M10 20h4v22h-4zM22 20h4v22h-4zM38 20h4v22h-4zM50 20h4v22h-4z" opacity=".0"/><path d="M8 26h48v5H8zM8 36h48v5H8z"/><path d="M16 46c2 4 2 6 0 10 6-2 8-6 6-12 4 2 6 6 4 12 6-4 8-10 6-16 4 4 6 10 4 16 6-3 8-9 6-14 3 3 4 7 2 12H16z"/>`,
+    svg: `<path d="M6 36a26 26 0 0 1 52 0z"/><rect x="28" y="6" width="8" height="6" rx="2"/><path d="M4 40h56v5H4z"/><path d="M14 47l-6 14M50 47l6 14M30 47h4v14h-4z"/><path fill="#16121f" d="M16 30a18 18 0 0 1 14-12v3a16 16 0 0 0-11 9z" opacity=".35"/>`,
+  },
+
+  // A plate with its fork and knife (a clean one).
+  plate: {
+    el: 'nature',
+    svg: `<circle cx="32" cy="34" r="19"/><circle cx="32" cy="34" r="11" fill="#16121f" opacity=".35"/><path d="M4 8h3v14h2V8h3v14h2V8h3v16c0 4-3 6-5 7v25h-4V31c-2-1-4-3-4-7z"/><path d="M54 8c-5 4-6 12-6 22h5v26h4V8z"/>`,
+  },
+  // An Allen key, the one that comes in the box.
+  allenKey: {
+    el: 'steel',
+    svg: `<path d="M12 4h9v37h31v9H12z"/><path fill="#fff" opacity=".28" d="M14 6h3v33h31v3H14z"/><path fill="#16121f" opacity=".35" d="M12 50h40v4H12z"/>`,
+  },
+  // A tub with a snap-on lid, the sort that never comes home.
+  tupperware: {
+    el: 'nature',
+    svg: `<rect x="4" y="16" width="56" height="12" rx="3"/><path d="M9 28h46l-4 28c0 2-2 4-4 4H17c-2 0-4-2-4-4z"/><path fill="#16121f" opacity=".4" d="M24 36h16v4H24zM26 44h12v4H26z"/><path fill="#fff" opacity=".3" d="M8 18h48v3H8z"/>`,
+  },
+  // A pair of screws, the ones left over.
+  screws: {
+    el: 'steel',
+    svg: `<g transform="rotate(-25 20 32)"><circle cx="20" cy="12" r="9"/><path d="M14 12h12" stroke="#16121f" stroke-width="3"/><path d="M16 21h8v26l-4 8-4-8z"/><path fill="#16121f" opacity=".35" d="M16 28h8M16 34h8M16 40h8" stroke="#16121f" stroke-width="2"/></g><g transform="rotate(25 46 32)"><circle cx="46" cy="14" r="8"/><path d="M41 14h10" stroke="#16121f" stroke-width="3"/><path d="M42 22h8v22l-4 8-4-8z"/></g>`,
+  },
+  // A hand microphone.
+  microphone: {
+    el: 'holy',
+    svg: `<circle cx="22" cy="20" r="15"/><path fill="#16121f" opacity=".4" d="M10 14h24M8 20h28M10 26h24M18 6v28M26 6v28"/><path d="M31 31l23 23-7 7-23-23z"/><path fill="#16121f" opacity=".35" d="M40 40l8-1-1 8z"/>`,
+  },
+  // The DJ's mirror ball.
+  discoBall: {
+    el: 'arcane',
+    svg: `<path d="M30 2h4v10h-4z"/><circle cx="32" cy="36" r="24"/><path fill="#16121f" d="M8 34h48v3H8zM12 22h40v3H12zM12 46h40v3H12zM30 12h3v48h-3zM18 16h3v40h-3zM43 16h3v40h-3z"/>`,
   },
   // A phone held up to take a picture.
   selfie: {

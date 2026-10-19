@@ -235,6 +235,23 @@ export const CONFIG = {
     calm: 3,
   },
   /**
+   * The Wedding DJ's chore (`MoveDef.task` = 'slide', `game/slide.ts`): `calls` moves shouted one after the other, to answer on a pad of four buttons. A call waits `window` s for its answer (from the first number
+   * for the first call to the second for the last: the DJ speeds up); `freezes` of them are "freeze": don't touch anything for `freeze` s. `gap` s of silence between calls. A wrong button, a touch during a freeze
+   * or a call left unanswered is a mistake: it takes `penalty` s off the move's countdown (`penaltyMax` s in all) and costs `wrongHp` HP; `doneHold` s the dance floor is shown; done in time, the DJ is stunned `calm` s.
+   */
+  slide: {
+    calls: 8,
+    window: [2.6, 1.6],
+    freezes: 2,
+    freeze: 1.3,
+    gap: 0.5,
+    wrongHp: 2,
+    doneHold: 1.4,
+    penalty: 1.5,
+    penaltyMax: 6,
+    calm: 3,
+  },
+  /**
    * The Sushi Chef's chore (`MoveDef.task` = 'sushi', `game/sushi.ts`): `slips` orders of `length` pieces (a dish on a coloured plate) each, eaten off the belt in the order of their slip,
    * while the belt serves nothing but sushi and runs from `beltFrom` to `beltTo` times its speed as the pieces go. The chance a plate dealt is a random one instead of one the slips still want
    * starts at `decoy` and grows by `decoyRamp` for every piece eaten (up to `decoyMax`); `fugu` of those random ones are the trap, which hurts when eaten. A wrong plate, or a piece asked for

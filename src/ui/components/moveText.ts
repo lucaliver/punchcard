@@ -175,6 +175,7 @@ export const RULES: Record<string, { icon: string; title: TKey; desc: TKey }> = 
   badge: { icon: 'idBadge', title: 'rule.badge', desc: 'rule.badge.d' },
   checkout: { icon: 'cart', title: 'rule.checkout', desc: 'rule.checkout.d' },
   grill: { icon: 'grill', title: 'rule.grill', desc: 'rule.grill.d' },
+  slide: { icon: 'discoBall', title: 'rule.slide', desc: 'rule.slide.d' },
 };
 
 /** Inside a move description (threat info, handbook): press a curse, status, hex or rule to learn what it does. */

@@ -4,6 +4,7 @@ import { CheckoutLane } from './checkout';
 import { CoffeeTask } from './coffee';
 import { GrillLine } from './grill';
 import { ShellGame } from './shells';
+import { SlideDance } from './slide';
 import { SushiOrder } from './sushi';
 import type { CombatCard, Plate, TaskId } from './types';
 
@@ -26,6 +27,8 @@ export interface Chore {
   fined: number;
   /** Advances by simulated time; true once it is done and has been shown long enough. */
   tick(dt: number): boolean;
+  /** Mistakes the clock made since this was last asked (a patty left to burn, a call left unanswered): `Combat` fines each one like a wrong touch, and the chore forgets them. */
+  lapses?(): number;
 }
 
 /** One entry per `TaskId`: a new chore is a class, an entry here, a window and the config it names. */
@@ -36,4 +39,5 @@ export const CHORES: Record<TaskId, (rng: Rng) => Chore> = {
   badge: (rng) => new BadgeSwipe(rng),
   checkout: (rng) => new CheckoutLane(rng),
   grill: (rng) => new GrillLine(rng),
+  slide: (rng) => new SlideDance(rng),
 };

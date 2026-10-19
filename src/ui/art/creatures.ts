@@ -1628,6 +1628,136 @@ ${shadow}
 <path d="M76 76c6-6 14-4 24-4 10 0 18-2 24 4-2 12-12 18-24 18s-22-6-24-18z" fill="#4a3018" ${OUT}/>
 <path d="M84 80c10 8 22 8 32 0" fill="#fff" stroke="#120e18" stroke-width="3" stroke-linecap="round"/>`;
 
+/** The Flat-Pack Wardrobe: a pale-wood wardrobe with one door hanging off a single hinge, an Allen key stuck in its side, a cross-eyed look in the gap between the doors and a bag of leftover screws at its feet. */
+const flatPackWardrobe = `
+<defs>${rg('fw-w', '#ffe0a8', '#c8884a')}${rg('fw-d', '#ffeec8', '#d8a860')}${glow('fw-g', '#ffd900')}</defs>
+${shadow}
+<path d="M44 178l-4 12h18l2-12zM142 178l2 12h18l-4-12z" fill="#8a5a2a" ${OUT}/>
+<rect x="34" y="20" width="132" height="160" rx="6" fill="url(#fw-w)" ${OUT}/>
+<rect x="26" y="12" width="148" height="14" rx="4" fill="url(#fw-d)" ${OUT}/>
+<rect x="44" y="34" width="52" height="132" fill="#6a3a08" ${OUT}/>
+<rect x="104" y="34" width="52" height="132" fill="#6a3a08" ${OUT}/>
+<path d="M44 100h52M104 100h52" stroke="#c8884a" stroke-width="5"/>
+<g class="eye"><ellipse cx="76" cy="64" rx="13" ry="12" fill="url(#fw-g)"/><ellipse cx="124" cy="64" rx="13" ry="12" fill="url(#fw-g)"/><circle cx="80" cy="64" r="5" fill="#120e18"/><circle cx="120" cy="64" r="5" fill="#120e18"/></g>
+<path d="M58 50l30 8M142 50l-30 8" stroke="#120e18" stroke-width="6" stroke-linecap="round"/>
+<path d="M68 130c10 8 54 8 64 0" fill="none" stroke="#c8884a" stroke-width="4" stroke-linecap="round"/>
+<g class="limb"><path d="M44 34l-30 14 6 124 24-6z" fill="url(#fw-d)" ${OUT}/><circle cx="26" cy="110" r="4" fill="#ffd900" ${OUT}/></g>
+<path d="M96 34l8 2v130l-8 0z" fill="#ffe0a8" ${OUT}/><circle cx="92" cy="108" r="4" fill="#ffd900" ${OUT}/><circle cx="108" cy="108" r="4" fill="#ffd900" ${OUT}/>
+<g class="limb"><path d="M166 96h22l4 6v6h-26z" fill="#8a94a8" ${OUT}/><path d="M166 99l-14 0" stroke="#8a94a8" stroke-width="6" stroke-linecap="round"/></g>
+<g ${OUT}><rect x="132" y="168" width="40" height="18" rx="4" fill="#f6f0e4"/><path d="M138 174h28M138 180h18" stroke="#1c5fd0" stroke-width="3"/></g>
+<g fill="#c8c0d8" ${OUT}><circle cx="46" cy="184" r="3.5"/><circle cx="60" cy="188" r="3.5"/><circle cx="74" cy="185" r="3.5"/></g>`;
+
+/** The Mother-in-Law: a short, round matriarch in a flowery dress and pearls, her bun held with a chopstick, a wooden spoon raised in one hand and a tower of plastic tubs in the other, and a look that says you have not eaten enough. */
+const motherInLaw = `
+<defs>${rg('ml-s', '#ffd0b0', '#d08a6a')}${rg('ml-d', '#ff8ac8', '#b8139b')}${rg('ml-h', '#e8e4f0', '#9a96b0')}${glow('ml-g', '#ff3b3b')}</defs>
+${shadow}
+<ellipse cx="72" cy="182" rx="18" ry="8" fill="#c88a4a" ${OUT}/><ellipse cx="128" cy="182" rx="18" ry="8" fill="#c88a4a" ${OUT}/>
+<path d="M66 150h68l-2 32h-14l-6-8-6 8h-14l-6-8-6 8H68z" fill="#d08a6a" ${OUT}/>
+<path d="M44 132c0-34 20-52 56-52s56 18 56 52l8 46H36z" fill="url(#ml-d)" ${OUT}/>
+<g fill="#fff" ${OUT}><circle cx="62" cy="136" r="7"/><circle cx="92" cy="150" r="7"/><circle cx="128" cy="140" r="7"/><circle cx="108" cy="168" r="7"/><circle cx="64" cy="166" r="7"/></g><g fill="#ffd900"><circle cx="62" cy="136" r="2.5"/><circle cx="92" cy="150" r="2.5"/><circle cx="128" cy="140" r="2.5"/><circle cx="108" cy="168" r="2.5"/><circle cx="64" cy="166" r="2.5"/></g>
+<path d="M72 92c8 12 48 12 56 0" fill="none" stroke="#f6f0e4" stroke-width="7" stroke-linecap="round"/><path d="M72 92c8 12 48 12 56 0" fill="none" stroke="#120e18" stroke-width="2" stroke-dasharray="1 7" stroke-linecap="round"/>
+<g class="limb"><path d="M146 100l22-26 10 10-18 32z" fill="url(#ml-s)" ${OUT}/><g transform="rotate(22 172 70)"><rect x="168" y="14" width="9" height="54" rx="4" fill="#c88a4a" ${OUT}/><ellipse cx="172" cy="16" rx="12" ry="16" fill="#c88a4a" ${OUT}/></g></g>
+<g class="limb"><path d="M54 104l-18 26 14 8 22-24z" fill="url(#ml-s)" ${OUT}/><g ${OUT}><rect x="8" y="140" width="38" height="12" rx="3" fill="#8ac8f8"/><rect x="10" y="128" width="34" height="12" rx="3" fill="#ffe08a"/><rect x="12" y="116" width="30" height="12" rx="3" fill="#8ae8d0"/><rect x="10" y="152" width="36" height="12" rx="3" fill="#ff8ac8"/></g></g>
+<circle cx="100" cy="58" r="12" fill="url(#ml-h)" ${OUT}/><circle cx="100" cy="34" r="16" fill="url(#ml-h)" ${OUT}/><path d="M86 28l30-18" stroke="#c88a4a" stroke-width="4" stroke-linecap="round"/>
+<circle cx="100" cy="68" r="38" fill="url(#ml-s)" ${OUT}/>
+<path d="M64 62c2-24 20-34 36-34s34 10 36 34c-10-14-24-18-36-18s-26 4-36 18z" fill="url(#ml-h)" ${OUT}/>
+<g ${OUT}><circle cx="84" cy="70" r="13" fill="#fff"/><circle cx="116" cy="70" r="13" fill="#fff"/><path d="M97 70h6"/></g>
+<g class="eye"><circle cx="84" cy="71" r="5" fill="#120e18"/><circle cx="116" cy="71" r="5" fill="#120e18"/></g>
+<path d="M68 56l26 6M132 56l-26 6" stroke="#9a96b0" stroke-width="5" stroke-linecap="round"/>
+<path d="M92 82l8 8 8-8" fill="none" stroke="#c8785a" stroke-width="3" stroke-linecap="round"/>
+<path d="M84 94c8 10 24 10 32 0" fill="#ff3b3b" stroke="#120e18" stroke-width="3" stroke-linecap="round"/>
+<circle cx="70" cy="86" r="6" fill="#ff8ac8" opacity=".6"/><circle cx="130" cy="86" r="6" fill="#ff8ac8" opacity=".6"/>`;
+const motherInLawAngry = `${motherInLaw}${rage({
+  eyes: [
+    [84, 71, 7],
+    [116, 71, 7],
+  ],
+  brows: [
+    [66, 54, 94, 66],
+    [134, 54, 106, 66],
+  ],
+  mouth: [82, 118, 92, 12],
+  vein: [128, 40],
+  steam: [
+    [40, 48],
+    [162, 40],
+  ],
+})}`;
+
+/** The Ribbon-Cutting Mayor: a smooth man in a navy suit and a yellow MAYOR sash, a flawless fake smile, comb-over, a pair of giant scissors in one hand and a microphone in the other, a red ribbon across his waist. */
+const ribbonMayor = `
+<defs>${rg('rm-s', '#ffd0b0', '#d08a6a')}${rg('rm-u', '#5a7ac8', '#1a2a6a')}${rg('rm-r', '#ff5a5a', '#b81818')}</defs>
+${shadow}
+<path d="M70 176l-2 12h28l2-12zM108 176l2 12h28l-2-12z" fill="#120e18" ${OUT}/>
+<path d="M72 120h56l-2 58H74z" fill="url(#rm-u)" ${OUT}/>
+<path d="M58 84h84l8 62H50z" fill="url(#rm-u)" ${OUT}/>
+<path d="M88 84l12 28 12-28" fill="#fff" ${OUT}/><path d="M96 90h8l3 38-7 8-7-8z" fill="#ff3d9a" ${OUT}/>
+<path d="M60 84l56 82 22 0L80 84z" fill="#ffd900" ${OUT}/><path d="M92 124l8 4 8-4M88 138l12 6 14-6" stroke="#120e18" stroke-width="2.5" fill="none" opacity=".8"/>
+<g class="limb"><path d="M146 96l24 18-12 12-22-14z" fill="url(#rm-u)" ${OUT}/><circle cx="168" cy="118" r="9" fill="url(#rm-s)" ${OUT}/><rect x="164" y="74" width="9" height="30" rx="3" fill="#2a2a3a" ${OUT}/><circle cx="168" cy="70" r="9" fill="#8a94a8" ${OUT}/></g>
+<g class="limb"><path d="M56 96L30 120l12 12 24-20z" fill="url(#rm-u)" ${OUT}/><circle cx="32" cy="124" r="9" fill="url(#rm-s)" ${OUT}/>
+<path d="M30 120L6 60M30 120L50 64" stroke="#120e18" stroke-width="12" stroke-linecap="round"/><path d="M30 120L6 60M30 120L50 64" stroke="#c8c0d8" stroke-width="6" stroke-linecap="round"/><circle cx="26" cy="132" r="7" fill="none" stroke="#ff3b3b" stroke-width="5"/><circle cx="40" cy="128" r="7" fill="none" stroke="#ff3b3b" stroke-width="5"/></g>
+<g ${OUT}><path d="M60 156h80v14H60z" fill="url(#rm-r)"/><path d="M60 156l-10 18 14-6zM140 156l10 18-14-6z" fill="url(#rm-r)"/></g>
+<rect x="88" y="62" width="24" height="26" fill="url(#rm-s)" ${OUT}/>
+<circle cx="100" cy="46" r="34" fill="url(#rm-s)" ${OUT}/>
+<path d="M68 38c0-22 64-22 64 0-8-8-18-10-32-10s-24 2-32 10z" fill="#8a8aa0" ${OUT}/><path d="M72 30c10-8 36-10 56-2" stroke="#fff" stroke-width="3" fill="none" opacity=".5"/>
+<g class="eye"><circle cx="86" cy="48" r="5" fill="#fff" ${OUT}/><circle cx="114" cy="48" r="5" fill="#fff" ${OUT}/><circle cx="87" cy="49" r="2.2" fill="#120e18"/><circle cx="115" cy="49" r="2.2" fill="#120e18"/></g>
+<path d="M78 38l16 2M122 38l-16 2" stroke="#8a8aa0" stroke-width="5" stroke-linecap="round"/>
+<path d="M76 62c6 18 42 18 48 0z" fill="#fff" ${OUT}/><path d="M82 66h36" stroke="#120e18" stroke-width="2" opacity=".4"/>`;
+const ribbonMayorAngry = `${ribbonMayor}${rage({
+  eyes: [
+    [86, 49, 5],
+    [114, 49, 5],
+  ],
+  brows: [
+    [74, 34, 94, 44],
+    [126, 34, 106, 44],
+  ],
+  mouth: [80, 120, 64, 10],
+  vein: [70, 26],
+  steam: [
+    [44, 40],
+    [158, 36],
+  ],
+})}`;
+
+/** The Wedding DJ: a man in a shiny white suit with a rose in the lapel and sunglasses at night, headphones round his neck, a hand on a turntable and a mirror ball spinning over his head. */
+const weddingDj = `
+<defs>${rg('dj-s', '#ffc8a0', '#c8785a')}${rg('dj-w', '#ffffff', '#b8c0d8')}${rg('dj-b', '#6a9af8', '#1c3a98')}</defs>
+${shadow}
+<path d="M98 0h4v22h-4z" fill="#8a94a8"/><circle cx="100" cy="36" r="16" fill="url(#dj-b)" ${OUT}/><path d="M86 32h28M88 42h24M100 22v28M92 24v24M108 24v24" stroke="#fff" stroke-width="2" opacity=".7"/>
+<path d="M64 176l-2 12h28l2-12zM110 176l2 12h28l-2-12z" fill="#2a2a3a" ${OUT}/>
+<path d="M70 120h60l-2 58H72z" fill="url(#dj-w)" ${OUT}/>
+<path d="M62 78h76l8 58H54z" fill="url(#dj-w)" ${OUT}/>
+<path d="M88 78l12 26 12-26" fill="#d8d0f0" ${OUT}/><path d="M96 84l4 10 4-10z" fill="#ff3d9a" ${OUT}/>
+<g ${OUT}><circle cx="122" cy="100" r="6" fill="#ff3b3b"/><path d="M122 106l-2 8" stroke="#2a8a4a" stroke-width="3"/></g>
+<rect x="14" y="132" width="172" height="48" rx="5" fill="#2a2a3a" ${OUT}/><rect x="14" y="132" width="172" height="8" fill="#ff3d9a"/>
+<g ${OUT}><circle cx="52" cy="158" r="20" fill="#120e18"/><circle cx="148" cy="158" r="20" fill="#120e18"/></g>
+<g class="limb"><circle cx="52" cy="158" r="14" fill="#2a2a3a"/><path d="M52 146v24M40 158h24" stroke="#6a6a8a" stroke-width="3"/><circle cx="52" cy="158" r="4" fill="#ff3d9a"/><circle cx="148" cy="158" r="14" fill="#2a2a3a"/><path d="M148 146v24M136 158h24" stroke="#6a6a8a" stroke-width="3"/><circle cx="148" cy="158" r="4" fill="#ffd900"/></g>
+<rect x="86" y="144" width="28" height="26" rx="3" fill="#8a94a8" ${OUT}/><path d="M92 150v14M100 150v14M108 150v14" stroke="#1cffc0" stroke-width="4"/>
+<g class="limb"><path d="M62 90l-16 44 14 6 14-40z" fill="url(#dj-w)" ${OUT}/><circle cx="52" cy="140" r="9" fill="url(#dj-s)" ${OUT}/></g>
+<g class="limb"><path d="M138 90l16 36-12 8-18-32z" fill="url(#dj-w)" ${OUT}/><circle cx="148" cy="130" r="9" fill="url(#dj-s)" ${OUT}/></g>
+<path d="M78 76c-4 18 4 22 22 22s26-4 22-22" fill="none" stroke="#120e18" stroke-width="9" stroke-linecap="round"/><path d="M78 76c-4 18 4 22 22 22s26-4 22-22" fill="none" stroke="#ff3d9a" stroke-width="4" stroke-linecap="round"/>
+<rect x="88" y="62" width="24" height="18" fill="url(#dj-s)" ${OUT}/>
+<circle cx="100" cy="52" r="26" fill="url(#dj-s)" ${OUT}/>
+<path d="M74 44c0-18 52-18 52 0-10-6-42-6-52 0z" fill="#120e18" ${OUT}/>
+<g ${OUT}><rect x="76" y="44" width="22" height="14" rx="4" fill="#120e18"/><rect x="102" y="44" width="22" height="14" rx="4" fill="#120e18"/><path d="M98 50h4"/></g>
+<path d="M80 48h10M106 48h10" stroke="#ff3d9a" stroke-width="3" stroke-linecap="round" opacity=".8"/>
+<path d="M86 66c8 8 20 8 28 0" fill="#fff" stroke="#120e18" stroke-width="3" stroke-linecap="round"/>`;
+const weddingDjAngry = `${weddingDj}<g ${OUT}><rect x="76" y="44" width="22" height="14" rx="4" fill="#ff3b3b"/><rect x="102" y="44" width="22" height="14" rx="4" fill="#ff3b3b"/></g>${rage(
+  {
+    brows: [
+      [72, 38, 98, 48],
+      [128, 38, 102, 48],
+    ],
+    mouth: [84, 116, 64, 10],
+    vein: [118, 30],
+    steam: [
+      [40, 60],
+      [164, 52],
+    ],
+  },
+)}`;
+
 /** The dog once a squirrel has gone by: eyes fixed on a thought bubble with the squirrel in it, tongue right out. */
 const offLeashDogDistracted = `${offLeashDog}
 <g ${OUT}><circle cx="172" cy="52" r="5" fill="#fff"/><circle cx="160" cy="68" r="3" fill="#fff"/><ellipse cx="164" cy="26" rx="30" ry="24" fill="#fff"/></g>
@@ -1776,6 +1906,13 @@ export const CREATURES: Record<string, string> = {
   offLeashDog,
   offLeashDogDistracted,
   grillDad,
+  flatPackWardrobe,
+  motherInLaw,
+  motherInLawAngry,
+  ribbonMayor,
+  ribbonMayorAngry,
+  weddingDj,
+  weddingDjAngry,
   theCouch,
   brunchInfluencer,
   leafBlowerNeighbour,

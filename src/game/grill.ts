@@ -4,13 +4,15 @@ import type { Chore } from './chore';
 
 /** `raw`: not done on this side yet; `ready`: the moment to act; `burnt`: too late. */
 export type PattyState = 'raw' | 'ready' | 'burnt';
-/** `flip`: the first side was ready and is turned; `serve`: the second one was ready and the burger goes to the plate; `raw` / `burnt`: a mistake; `ignored`: nothing to do there (no penalty). */
-export type GrillResult = 'flip' | 'serve' | 'raw' | 'burnt' | 'ignored';
+/** `flip`: the first side was ready and is turned; `serve`: the second one was ready and the burger goes to the plate; `raw`: a mistake; `binned`: a burnt patty thrown away (the mistake was the burning); `ignored`: nothing to do there (no penalty). */
+export type GrillResult = 'flip' | 'serve' | 'raw' | 'binned' | 'ignored';
 
 export interface Patty {
   /** The side on the fire now, and which sides are done. */
   side: 0 | 1;
   done: [boolean, boolean];
+  /** Whether the burning of this side was already counted as a mistake. */
+  charred: boolean;
   /** Seconds on this side (negative: still to be put on the fire, it counts as raw), and how long this side takes to be ready. */
   t: number;
   cook: number;
@@ -18,7 +20,7 @@ export interface Patty {
 
 /**
  * The Barbecue Dad's chore (`MoveDef.task` = 'grill'): burgers on a grill, each cooked on both sides. Tap a patty while its side is ready to flip it (or serve it, if it is the second side); too early or too late
- * is a mistake, and a burnt one is thrown away and replaced. Done when `patties` have been served. Pure state, driven by `Combat.flip` (which turns a mistake into lost seconds) and ticked by simulated time.
+ * is a mistake (a patty left to burn is one too, `lapses`), and a burnt one is thrown away and replaced. Done when `patties` have been served. Pure state, driven by `Combat.grill` (which turns a mistake into lost seconds) and ticked by simulated time.
  */
 export class GrillLine implements Chore {
   readonly id = 'grill' as const;
@@ -33,6 +35,8 @@ export class GrillLine implements Chore {
   fined = 0;
   /** Seconds since the last burger was served. */
   private t = 0;
+  /** Patties that burnt since `lapses` was last asked. */
+  private burnt = 0;
 
   constructor(private readonly rng: Rng) {
     const c = CONFIG.grill;
@@ -54,12 +58,13 @@ export class GrillLine implements Chore {
     if (state === 'burnt') {
       // Into the bin, and a fresh one in its place.
       this.slots[slot] = this.fresh(0);
-      return 'burnt';
+      return 'binned';
     }
     p.done[p.side] = true;
     if (!p.done[1 - p.side]) {
       p.side = (1 - p.side) as 0 | 1;
       p.t = 0;
+      p.charred = false;
       p.cook = this.cookTime();
       return 'flip';
     }
@@ -78,8 +83,21 @@ export class GrillLine implements Chore {
       this.t += dt;
       return this.t >= CONFIG.grill.doneHold;
     }
-    for (const p of this.slots) if (p) p.t += dt;
+    for (const p of this.slots) {
+      if (!p) continue;
+      p.t += dt;
+      if (!p.charred && this.stateOf(p) === 'burnt') {
+        p.charred = true;
+        this.burnt++;
+      }
+    }
     return false;
+  }
+
+  lapses(): number {
+    const n = this.burnt;
+    this.burnt = 0;
+    return n;
   }
 
   private cookTime(): number {
@@ -88,6 +106,6 @@ export class GrillLine implements Chore {
   }
 
   private fresh(t: number): Patty {
-    return { side: 0, done: [false, false], t, cook: this.cookTime() };
+    return { side: 0, done: [false, false], charred: false, t, cook: this.cookTime() };
   }
 }

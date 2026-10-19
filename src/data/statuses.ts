@@ -79,6 +79,11 @@ export const POSE_TIME = 3;
 export const BLOW_EVERY = 20;
 const BLOW_WARN = 3;
 
+/** Clean Plate: HP healed for each card that slips off the belt (times the stacks). */
+export const PLATE_HEAL = 3;
+/** Flat Pack: another panel clicks into place this often (s). */
+export const PANEL_EVERY = 6;
+
 /** Forty Tabs Open: seconds between two Multitasking charges. */
 export const TABS_EVERY = 4;
 /** Free Coffee: seconds between two cups (each one gives its stacks in mana). */
@@ -1051,6 +1056,31 @@ const defs: StatusDef[] = [
       const left = BLOW_EVERY - ((s.e ?? 0) % BLOW_EVERY);
       return left < BLOW_WARN ? 1 - left / BLOW_WARN : 0;
     },
+  },
+  // Clean plate: every card that slips off the belt is food wasted, and she is happy to finish it for you.
+  {
+    id: 'cleanPlate',
+    tone: 'green',
+    kind: 'stacks',
+    good: true,
+    passive: true,
+    icon: 'plate',
+    onExpire: (c, side, s) => {
+      if (side === 'enemy') c.heal(side, PLATE_HEAL * s.v);
+    },
+  },
+  // Flat pack: it is still being put together, another panel of Block clicks in every few seconds.
+  {
+    id: 'flatPack',
+    tone: 'teal',
+    kind: 'stacks',
+    good: true,
+    passive: true,
+    icon: 'allenKey',
+    progress: cycle(PANEL_EVERY),
+    tick: everySecond((c, side, n, s) => {
+      if (n % PANEL_EVERY === 0) c.gainBlock(side, s.v);
+    }),
   },
   // Swole: thick muscle shrugs off the small stuff, `v` off every hit of your cards.
   { id: 'swole', tone: 'teal', kind: 'stacks', good: true, passive: true, icon: 'muscle', cutsHits: true },

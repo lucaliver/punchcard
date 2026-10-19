@@ -855,6 +855,76 @@
 .gr-done { width: 22px; height: 22px; }
 .gr-done .pico { width: 100%; height: 100%; color: var(--rust); --ink2: var(--k); }
 
+/* The Wedding DJ's dance floor: his call in big letters, the time it gives, a pip per call and the pad of four buttons */
+.sl-stage {
+  flex-direction: column;
+  align-items: stretch;
+  justify-content: space-between;
+  gap: 6px;
+}
+.sl-call {
+  flex: none;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 46px;
+  padding: 2px 8px;
+  text-align: center;
+  color: var(--y);
+  background: var(--k);
+  border: var(--line) solid var(--y);
+}
+.sl-call b { font-family: var(--font-display); font-size: 20px; font-weight: 400; letter-spacing: 0.04em; line-height: 1.1; }
+.sl-call small { font-family: var(--font-ui); font-size: 14px; color: var(--mint); }
+.sl-call b.shout { animation: sl-shout 0.25s steps(3); }
+@keyframes sl-shout {
+  0% { scale: 1.3; }
+}
+.slide-window[data-call='freeze'] .sl-call { color: var(--ice); border-color: var(--ice); }
+.slide-window[data-phase='done'] .sl-call { color: var(--mint); border-color: var(--mint); }
+/* the time left on the call (`--left`), a freeze fills up instead */
+.sl-time { flex: none; height: 6px; width: calc(var(--left, 0) * 100%); max-width: 100%; background: var(--p); }
+.slide-window[data-call='freeze'] .sl-time { background: var(--ice); }
+.sl-pips { flex: none; display: flex; justify-content: center; gap: 4px; }
+.sl-pip { width: 12px; height: 8px; background: var(--k); border: var(--line) solid var(--muted); }
+.sl-pip.freeze { border-color: var(--ice); }
+.sl-pip.done { background: var(--mint); border-color: var(--mint); }
+.sl-pip.now { border-color: var(--y); background: var(--y); }
+.sl-pad {
+  flex: 1;
+  min-height: 0;
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  grid-template-rows: repeat(3, 1fr);
+  gap: 4px;
+  justify-items: center;
+  align-items: stretch;
+}
+.sl-btn {
+  position: relative;
+  width: 100%;
+  max-width: 76px;
+  min-height: 40px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  color: var(--k);
+  background: var(--paper);
+  border: var(--line) solid var(--k);
+  box-shadow: 3px 3px 0 var(--shadow);
+}
+.sl-btn:active { translate: 2px 2px; box-shadow: 1px 1px 0 var(--shadow); }
+.sl-btn .pico { width: 26px; height: 26px; color: var(--k); --ink2: var(--y); }
+.sl-btn small { font-family: var(--font-ui); font-size: 13px; line-height: 1; text-transform: uppercase; }
+.sl-btn[data-step='hop'] { grid-column: 2; grid-row: 1; }
+.sl-btn[data-step='left'] { grid-column: 1; grid-row: 2; }
+.sl-btn[data-step='right'] { grid-column: 3; grid-row: 2; }
+.sl-btn[data-step='right'] .pico { scale: -1 1; }
+.sl-btn[data-step='back'] { grid-column: 2; grid-row: 3; }
+.slide-window[data-call='freeze'] .sl-btn { background: var(--ice); }
+
 /* The Self-Checkout's till: the machine's voice over a basket of groceries to scan, a wait bar for the assistance, and the bagging area they land in */
 .ck-stage {
   flex-direction: column;

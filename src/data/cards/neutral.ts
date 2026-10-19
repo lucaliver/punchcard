@@ -1835,6 +1835,45 @@ export const curseCards: CardDef[] = [
     onExpire: (c, v) => c.applyStatus('hero', 'chill', 1, v[0]),
   },
   {
+    // The Mother-in-Law's: a tub of something nobody asked for. Pay to take it home, or feel faint.
+    id: 'leftovers',
+    face: '{?exit}{!weak:0}',
+    cls: 'curse',
+    type: 'curse',
+    rarity: 'common',
+    cost: 1,
+    vals: [8],
+    keywords: ['exhaust', 'volatile'],
+    art: 'tupperware',
+    play: () => {},
+    onExpire: (c, v) => c.applyStatus('hero', 'weak', 1, v[0]),
+  },
+  {
+    // The Flat-Pack Wardrobe's: its Assembly Required swaps your whole belt and sleeve for a bag of it.
+    id: 'spareParts',
+    face: '{clog}',
+    cls: 'curse',
+    type: 'curse',
+    rarity: 'common',
+    cost: 2,
+    vals: [],
+    keywords: ['exhaust', 'bulky'],
+    art: 'screws',
+    play: () => {},
+  },
+  {
+    // The Mayor's: he talks, you stand there.
+    id: 'pressConference',
+    face: '{clog}',
+    cls: 'curse',
+    type: 'curse',
+    rarity: 'rare',
+    cost: 99,
+    vals: [],
+    keywords: ['unplayable', 'fleeting'],
+    art: 'microphone',
+  },
+  {
     // The Office Chair's: nobody can pay for it, and every fall hurts more than the last.
     id: 'deathMarch',
     face: '{?exit}{!boom:0}|{grow:1}',

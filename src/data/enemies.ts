@@ -26,6 +26,9 @@ const BADGE_SWIPE = 16;
 /** Seconds the Barbecue Dad's burgers take to land: a few of them (two sides each, staggered) and a mistake or two fit in it. */
 const FLIP_BURGERS = 26;
 
+/** Seconds the Wedding DJ's slide takes to land: eight calls (the DJ speeds up) and a mistake or two fit in it. */
+const CHA_CHA = 22;
+
 /** Seconds the Self-Checkout's unexpected item takes to land: a basket of groceries, a couple of lifts and the assistance's wait fit in it with a little to spare. */
 const CHECKOUT = 26;
 
@@ -41,7 +44,16 @@ const AUDIT = 18;
 const OMAKASE = 32;
 
 /** What the half-HP moves bring (their texts quote these, see `data/values.ts`). */
-export const HALF = { securityBlock: 30, slavesStall: 8, complianceSlow: 20, squirrelStun: 5 } as const;
+export const HALF = {
+  securityBlock: 30,
+  slavesStall: 8,
+  complianceSlow: 20,
+  squirrelStun: 5,
+  motherBlock: 40,
+  motherStrength: 2,
+  mayorBlock: 50,
+  djHurry: 10,
+} as const;
 
 /**
  * Every enemy has one steady main attack and, every `every` main attacks, a special move
@@ -968,6 +980,22 @@ const defs: EnemyDef[] = [
     start: [{ id: 'thorns', v: 1 }],
   },
   {
+    // Half-built to begin with, and another panel of Block clicks into place every few seconds: be quick.
+    id: 'flatPackWardrobe',
+    act: 4,
+    tier: 'normal',
+    hp: 140,
+    art: 'flatPackWardrobe',
+    main: atk('slamDoor', 7, 7),
+    every: 2,
+    specials: [
+      { id: 'assemblyRequired', intent: 'curse', windup: 8, swap: 'spareParts' },
+      { id: 'missingScrew', intent: 'debuff', windup: 5, status: [gainStrength, { id: 'slowdown', t: 7, target: 'hero' }] },
+      atk('allenKeyJab', 14, 9, { intent: 'charge' }),
+    ],
+    start: [{ id: 'flatPack', v: 10 }],
+  },
+  {
     // Skin like a block of marble: the small hits do nothing, and his sets come in rapid fire.
     id: 'gymBro',
     act: 4,
@@ -999,6 +1027,67 @@ const defs: EnemyDef[] = [
       { id: 'justOneMoreEpisode', intent: 'debuff', windup: 5, status: [gainStrength, { id: 'stalled', t: 4, target: 'hero' }] },
     ],
     start: [{ id: 'fortified', t: 9999 }],
+  },
+  {
+    // Every card you let slip is food wasted, and she is happy to finish it for you.
+    id: 'motherInLaw',
+    act: 4,
+    tier: 'elite',
+    hp: 180,
+    block: 40,
+    art: 'motherInLaw',
+    main: atk('woodenSpoon', 8, 7, ramp),
+    every: 2,
+    specials: [
+      { id: 'haveYouEaten', intent: 'heal', windup: 6, heal: 16, block: 10, status: [gainStrength] },
+      { id: 'guiltTrip', intent: 'curse', windup: 6, curse: [{ id: 'leftovers', n: 2, to: 'draw' }], status: [{ id: 'weak', t: 8, target: 'hero' }] },
+      { id: 'secondHelping', intent: 'debuff', windup: 7, inflate: 4, status: [gainStrength] },
+    ],
+    start: [{ id: 'cleanPlate' }],
+    halfSpeech: true,
+    halfArt: 'motherInLawAngry',
+    onHalf: (c) => {
+      c.gainBlock('enemy', HALF.motherBlock);
+      c.applyStatus('enemy', 'strength', HALF.motherStrength);
+    },
+  },
+  {
+    // No accountability: now and then nothing sticks to him; and the press conference never ends.
+    id: 'ribbonMayor',
+    act: 4,
+    tier: 'elite',
+    hp: 160,
+    block: 40,
+    art: 'ribbonMayor',
+    main: atk('ribbonCutting', 8, 7, ramp),
+    every: 2,
+    specials: [
+      { id: 'noAccountability', intent: 'buff', windup: 5, block: 15, status: [{ id: 'dodge', t: 5, target: 'enemy' }] },
+      { id: 'pressConferenceCall', intent: 'curse', windup: 6, curse: [{ id: 'pressConference', n: 3, to: 'belt' }], status: [gainStrength] },
+      { id: 'filibuster', intent: 'debuff', windup: 6, status: [{ id: 'stalled', t: 4, target: 'hero' }, gainStrength] },
+    ],
+    halfSpeech: true,
+    halfArt: 'ribbonMayorAngry',
+    onHalf: (c) => c.gainBlock('enemy', HALF.mayorBlock),
+  },
+  {
+    // Before his big move lands you have to follow his calls on the pad: left, right, back, hop, and freeze when he says so.
+    id: 'weddingDj',
+    act: 4,
+    tier: 'elite',
+    hp: 160,
+    block: 35,
+    art: 'weddingDj',
+    note: 'discoBall',
+    main: atk('bassDrop', 8, 6, ramp),
+    every: 2,
+    specials: [
+      { id: 'chaChaSlide', intent: 'charge', windup: CHA_CHA, dmg: 22, task: 'slide' },
+      { id: 'doYouTakeRequests', intent: 'drain', windup: 6, drainMana: 2, status: [gainStrength] },
+    ],
+    halfSpeech: true,
+    halfArt: 'weddingDjAngry',
+    onHalf: (c) => c.applyStatus('hero', 'hurry', 1, HALF.djHurry),
   },
 ];
 
@@ -1059,7 +1148,11 @@ export const DIFFICULTY = [
   'selfCheckout',
   'gymBro',
   'grillDad',
+  'flatPackWardrobe',
   'theCouch',
+  'weddingDj',
+  'ribbonMayor',
+  'motherInLaw',
 ];
 
 /** A dummy for tests in the debug fight menu (200 HP, 10 damage every 10 s): in `ENEMIES` so a fight can load it, but in no list, map, handbook or reward. */

@@ -362,8 +362,8 @@ export interface MoveDef {
   fx?: (c: Combat) => void;
 }
 
-/** The chores a move can set: the Boss's coffee, the Board's shell game with three covered cards, the Sushi Chef's order eaten off the belt, the Punch Clock's badge swipe, the Self-Checkout's scan and bag, or the Barbecue Dad's burgers to flip. */
-export type TaskId = 'coffee' | 'shells' | 'sushi' | 'badge' | 'checkout' | 'grill';
+/** The chores a move can set: the Boss's coffee, the Board's shell game with three covered cards, the Sushi Chef's order eaten off the belt, the Punch Clock's badge swipe, the Self-Checkout's scan and bag, the Barbecue Dad's burgers to flip, or the Wedding DJ's slide to dance. */
+export type TaskId = 'coffee' | 'shells' | 'sushi' | 'badge' | 'checkout' | 'grill' | 'slide';
 
 /** The minigames an enemy can leave open to the hero (`EnemyDef.minigame`): a game of its own that hurts it, played in a window the hero opens and closes at will. */
 export type MinigameId = 'match3';

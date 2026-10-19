@@ -7,7 +7,7 @@ import { Rng } from '../../src/core/rng';
 import { CONFIG } from '../../src/data/config';
 import { BOARD_BLOCK, ENEMIES } from '../../src/data/enemies';
 import { CARDS } from '../../src/data/cards';
-import { setup, run, coffeeOf, shellsOf, sushiOf, badgeOf, checkoutOf, grillOf } from './helpers';
+import { setup, run, coffeeOf, shellsOf, sushiOf, badgeOf, checkoutOf, grillOf, slideOf } from './helpers';
 
 const COFFEE_MOVE = ENEMIES.slavesCeo.specials.find((m) => m.task === 'coffee')!;
 
@@ -745,14 +745,20 @@ describe("the Barbecue Dad's grill", () => {
     expect(line.served).toBe(1);
   });
 
-  it('a burnt patty goes in the bin and a fresh one takes its place, at a price', () => {
+  it('a patty left to burn is a mistake of its own (once), and binning it afterwards is free and brings a fresh one', () => {
     const c = grillFight({ ...flipMove, windup: 999 });
     run(c, CONFIG.introTime + 0.1);
     const line = grillOf(c);
     const patty = line.slots[1]!;
-    patty.t = patty.cook + CONFIG.grill.window + 1;
-    const hp = c.hero.hp;
-    expect(c.grill(1)).toBe('burnt');
+    patty.t = patty.cook + CONFIG.grill.window - 0.01;
+    const [hp, timer] = [c.hero.hp, c.enemy.timer];
+    run(c, 0.1);
+    expect(line.stateOf(patty)).toBe('burnt');
+    expect(c.hero.hp).toBe(hp - CONFIG.grill.wrongHp);
+    expect(c.enemy.timer).toBeGreaterThanOrEqual(timer + CONFIG.grill.penalty);
+    run(c, 0.5);
+    expect(c.hero.hp).toBe(hp - CONFIG.grill.wrongHp);
+    expect(c.grill(1)).toBe('binned');
     expect(c.hero.hp).toBe(hp - CONFIG.grill.wrongHp);
     expect(line.slots[1]).not.toBe(patty);
     expect(line.stateOf(line.slots[1]!)).toBe('raw');
@@ -796,5 +802,128 @@ describe("the Barbecue Dad's grill", () => {
     expect(c.hero.hp).toBeLessThan(80);
     expect(c.chore).toBeNull();
     expect(c.grill(0)).toBeNull();
+  });
+});
+
+describe("the Wedding DJ's dance floor", () => {
+  const danceMove = ENEMIES.weddingDj.specials.find((m) => m.task === 'slide')!;
+  /** The slide is up first, then the DJ idles for good. */
+  const danceFight = (move = danceMove, seed = 42): Combat => {
+    const c = setup({
+      enemy: { ...ENEMIES.weddingDj, start: [], main: { id: 'wait', intent: 'idle', windup: 9999 }, specials: [move], every: 1, onHalf: undefined },
+      hp: 80,
+      maxHp: 80,
+      seed,
+    });
+    c.skipEnemyMove();
+    return c;
+  };
+  /** Answers every call at once, like a dancer who knows the song (and stands still for a freeze). */
+  const dance = (c: Combat): void => {
+    const d = slideOf(c);
+    for (let i = 0; i < 2000 && d.phase !== 'done'; i++) {
+      if (d.call && d.call !== 'freeze') c.slide(d.call);
+      run(c, 0.05);
+    }
+  };
+
+  it('a window covers the belt and the sleeve; the DJ shouts the calls one by one, never the same twice in a row, with a couple of freezes', () => {
+    for (let seed = 1; seed <= 30; seed++) {
+      const c = danceFight(danceMove, seed);
+      run(c, CONFIG.introTime + 0.1);
+      const d = slideOf(c);
+      expect(d.calls).toHaveLength(CONFIG.slide.calls);
+      expect(d.calls.filter((x) => x === 'freeze')).toHaveLength(CONFIG.slide.freezes);
+      d.calls.forEach((x, i) => {
+        if (x !== 'freeze' && d.calls[i - 1] === x) throw new Error(`seed ${seed}: ${x} twice in a row`);
+      });
+      expect(d.calls[0]).not.toBe('freeze');
+    }
+    const c = danceFight();
+    run(c, CONFIG.introTime + 0.1);
+    expect(c.isCovered(c.belt[0].card.uid)).toBe(true);
+  });
+
+  it('there is silence before the first call; a button then is ignored, the right one answers it and the next call follows after a gap', () => {
+    const c = danceFight();
+    run(c, CONFIG.introTime + 0.1);
+    const d = slideOf(c);
+    expect(d.call).toBeNull();
+    expect(c.slide('left')).toBe('ignored');
+    run(c, CONFIG.slide.gap + 0.1);
+    const first = d.call!;
+    expect(first).not.toBe('freeze');
+    const wrong = (['left', 'right', 'back', 'hop'] as const).find((s) => s !== first)!;
+    const hp = c.hero.hp;
+    expect(c.slide(wrong)).toBe('wrong');
+    expect(c.hero.hp).toBe(hp - CONFIG.slide.wrongHp);
+    expect(c.slide(first as 'left')).toBe('ok');
+    expect(d.answered).toBe(1);
+    expect(d.call).toBeNull();
+  });
+
+  it('a call left unanswered is a mistake of its own, and the dance moves on', () => {
+    const c = danceFight({ ...danceMove, windup: 999 });
+    run(c, CONFIG.introTime + CONFIG.slide.gap + 0.1);
+    const d = slideOf(c);
+    const [hp, timer] = [c.hero.hp, c.enemy.timer];
+    run(c, d.window + 0.2);
+    expect(c.hero.hp).toBe(hp - CONFIG.slide.wrongHp);
+    expect(c.enemy.timer).toBeGreaterThanOrEqual(timer + CONFIG.slide.penalty);
+    expect(d.index).toBe(1);
+  });
+
+  it('a freeze asks for nothing: it passes by itself, and a touch is a mistake that starts it again', () => {
+    const c = danceFight({ ...danceMove, windup: 999 });
+    run(c, CONFIG.introTime + 0.1);
+    const d = slideOf(c);
+    // Skip ahead to the first freeze.
+    while (d.calls[d.index] !== 'freeze') {
+      run(c, CONFIG.slide.gap + 0.05);
+      c.slide(d.call as 'left');
+    }
+    run(c, CONFIG.slide.gap + 0.05);
+    expect(d.call).toBe('freeze');
+    run(c, CONFIG.slide.freeze - 0.5);
+    const hp = c.hero.hp;
+    expect(c.slide('hop')).toBe('wrong');
+    expect(c.hero.hp).toBe(hp - CONFIG.slide.wrongHp);
+    expect(d.t).toBe(0);
+    const at = d.index;
+    run(c, CONFIG.slide.freeze - 0.2);
+    expect(d.index).toBe(at);
+    run(c, 0.4);
+    expect(d.index).toBe(at + 1);
+    expect(c.hero.hp).toBe(hp - CONFIG.slide.wrongHp);
+  });
+
+  it('the DJ speeds up: the last call gives less time than the first', () => {
+    const c = danceFight();
+    run(c, CONFIG.introTime + 0.1);
+    const d = slideOf(c);
+    expect(d.window).toBeCloseTo(CONFIG.slide.window[0], 5);
+    d.index = d.calls.length - 1;
+    expect(d.window).toBeCloseTo(CONFIG.slide.window[1], 5);
+  });
+
+  it('the whole dance in time cancels the move and stuns the DJ', () => {
+    const c = danceFight();
+    run(c, CONFIG.introTime + 0.1);
+    const d = slideOf(c);
+    dance(c);
+    expect(d.answered).toBe(CONFIG.slide.calls);
+    expect(c.slide('left')).toBe('ignored');
+    run(c, CONFIG.slide.doneHold + 0.1);
+    expect(c.chore).toBeNull();
+    expect(c.has('enemy', 'stun')).toBe(true);
+    expect(c.hero.hp).toBe(80 - d.errors * CONFIG.slide.wrongHp);
+  });
+
+  it('a move left to land hurts, and the dance goes with it', () => {
+    const c = danceFight();
+    run(c, CONFIG.introTime + danceMove.windup + 0.1);
+    expect(c.hero.hp).toBeLessThan(80);
+    expect(c.chore).toBeNull();
+    expect(c.slide('left')).toBeNull();
   });
 });

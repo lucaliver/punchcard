@@ -10,6 +10,7 @@ import { type CheckoutAction, CheckoutLane, type CheckoutResult } from './checko
 import { CHORES, type Chore } from './chore';
 import { CoffeeTask, type CoffeeAction, type CoffeeResult } from './coffee';
 import { GrillLine, type GrillResult } from './grill';
+import { SlideDance, type SlideResult, type Step } from './slide';
 import { MatchThree, type MoveResult } from './match3';
 import { MINIGAMES, type Minigame } from './minigame';
 import { ShellGame, type ShellResult } from './shells';
@@ -2421,7 +2422,9 @@ export class Combat {
       this.say(`enemy.${id}.order`);
       return;
     }
-    if (!chore.tick(dt)) return;
+    const finished = chore.tick(dt);
+    for (let n = chore.lapses?.() ?? 0; n > 0; n--) this.penalise(chore);
+    if (!finished) return;
     // The chore is done: the move is off, and its maker is left stunned for a moment.
     this.events.emit({ type: 'task', phase: 'done' });
     this.say(`enemy.${id}.calm`);
@@ -2437,6 +2440,13 @@ export class Combat {
     this.chore = null;
     this.taskSeen = false;
     if (phase) this.events.emit({ type: 'task', phase });
+  }
+
+  /** A mistake the clock made (see `Chore.lapses`): the same price as a wrong touch, `wrongHp` included when the chore has one. */
+  private penalise(chore: Chore): void {
+    const c = CONFIG[chore.id];
+    this.fine(chore);
+    if ('wrongHp' in c) this.loseHp(c.wrongHp, 'chore');
   }
 
   /** A mistake in a chore takes its config's `penalty` s off the move's countdown, up to `penaltyMax` in all. */
@@ -2494,15 +2504,24 @@ export class Combat {
     return r;
   }
 
-  /** The hero taps the patty in this place of the grill; a raw or burnt one is fined and costs a little blood. Returns null when there is no grill to tend. */
+  /** The hero taps the patty in this place of the grill; a raw one is fined and costs a little blood. Returns null when there is no grill to tend. */
   grill(slot: number): GrillResult | null {
     const line = this.chore;
     if (!(line instanceof GrillLine) || this.result || this.begging) return null;
     const r = line.flip(slot);
-    if (r === 'raw' || r === 'burnt') {
+    if (r === 'raw') {
       this.fine(line);
       this.loseHp(CONFIG.grill.wrongHp, 'chore');
     }
+    return r;
+  }
+
+  /** The hero presses a button of the dance pad; a wrong one is fined and costs a little blood. Returns null when there is no dance on. */
+  slide(step: Step): SlideResult | null {
+    const dance = this.chore;
+    if (!(dance instanceof SlideDance) || this.result || this.begging) return null;
+    const r = dance.press(step);
+    if (r === 'wrong') this.penalise(dance);
     return r;
   }
 

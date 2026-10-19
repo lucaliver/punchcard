@@ -14,3 +14,11 @@ Before: one enemy of its own (the Self-Checkout) dealt for every fight, elites a
 - **Barbecue chore** (`'grill'`): flip the burgers before the Barbecue Dad's big move lands. Raw / ready / burnt sides on a timer, three patties on the grate at once, a gauge with a marker per patty, a plate that fills. `game/grill.ts`, `ui/combat/grillWindow.ts`, `CONFIG.grill`, `Combat.grill`, rule text, bot support, tests.
 - **Barbecue Dad** (normal): thorns (the hot grill bites), Lighter Fluid (burn), Another Cold One (heal), *Flip the Burgers* (chore).
 - **Art**: `grillDad` sprite, icons `patty` and `grill`.
+
+## Batch 3: the dance floor, the wardrobe and three elites
+- **Chore hook `lapses`**: a mistake the clock makes by itself (a patty left to burn, a call left unanswered) is fined like a wrong touch. The grill now uses it: a burnt patty costs once, binning it is free.
+- **Dance floor chore** (`'slide'`): the Wedding DJ shouts calls, the hero answers on a four-button pad before each times out; "freeze" calls ask for nothing at all. He speeds up. `game/slide.ts`, `slideWindow.ts`, `CONFIG.slide`, `Combat.slide`.
+- **Elites** (their own, no longer borrowed from act 3): *Mother-in-Law* (Clean Plate: heals for every card you let slip; Guilt Trip curses; Second Helping inflates card costs; clutches her chest at half), *Ribbon-Cutting Mayor* (No Accountability: dodges for 5 s; Press Conference clogs the belt; Filibuster stalls it; lobbyists arrive at half), *Wedding DJ* (Cha-Cha Slide chore; Do You Take Requests drains mana; doubles the tempo at half).
+- **Normal**: *Flat-Pack Wardrobe* (Flat Pack: another panel of Block every 6 s; Assembly Required swaps your belt and sleeve for a bag of spare screws).
+- **Curses**: Leftovers (weak when it slips off), Spare Parts (bulky clog), Press Conference (unplayable, fleeting).
+- **Art**: five sprites + angry faces for the three elites, icons plate, allenKey, tupperware, screws, microphone, discoBall, a better grill.

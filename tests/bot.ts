@@ -6,6 +6,7 @@ import { CoffeeTask } from '../src/game/coffee';
 import { BadgeSwipe } from '../src/game/badge';
 import { CheckoutLane } from '../src/game/checkout';
 import { GrillLine } from '../src/game/grill';
+import { SlideDance } from '../src/game/slide';
 import { MatchThree } from '../src/game/match3';
 import { ShellGame } from '../src/game/shells';
 import { SushiOrder } from '../src/game/sushi';
@@ -123,6 +124,12 @@ export function botDecide(c: Combat, rnd: () => number, opts: BotOpts): void {
     const line = c.chore;
     const slot = line.slots.findIndex((p) => p && line.stateOf(p) === 'ready');
     if (slot >= 0) c.grill(slot);
+    return;
+  }
+  // The dance floor: answer the call that is up (and keep still for a freeze), cards are out of reach meanwhile.
+  if (c.chore instanceof SlideDance) {
+    const call = c.chore.call;
+    if (call && call !== 'freeze') c.slide(call);
     return;
   }
   // The coffee chore: one right move per decision (a person takes a moment for each), cards are out of reach meanwhile.

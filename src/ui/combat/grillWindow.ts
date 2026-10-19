@@ -65,7 +65,9 @@ export function createGrillWindow(v: CombatView): { render(): void } {
         } else if (res === 'serve') {
           sfx('served');
           haptic('proc');
-        } else if (res === 'raw' || res === 'burnt') {
+        } else if (res === 'binned') {
+          sfx('tap');
+        } else if (res === 'raw') {
           sfx('denied');
           retrigger(el, 'jolt');
         }
