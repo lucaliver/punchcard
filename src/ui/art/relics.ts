@@ -287,6 +287,109 @@ const companyCard = `
 ${face(130, 106, 14, 4.5)}
 </g>`;
 
+const flexitime = `
+<circle cx="44" cy="44" r="20" fill="#e89400" ${OUT}/><circle cx="156" cy="44" r="20" fill="#e89400" ${OUT}/>
+<path d="M100 20v14" stroke="${INK}" stroke-width="8" stroke-linecap="round"/>
+<path d="M62 168l-12 16M138 168l12 16" stroke="${INK}" stroke-width="10" stroke-linecap="round"/>
+<circle cx="100" cy="108" r="68" fill="#ff3d9a" ${OUT}/>
+<circle cx="100" cy="108" r="54" fill="${PAPER}" ${OUT}/>
+<path d="M100 62v8M100 146v8M54 108h8M138 108h8" stroke="${INK}" stroke-width="5" stroke-linecap="round"/>
+<path d="M100 104V80" stroke="${INK}" stroke-width="7" stroke-linecap="round"/><path d="M100 104l22 12" stroke="${INK}" stroke-width="5" stroke-linecap="round"/>
+<path d="M60 70c6-8 14-14 24-16" stroke="#fff" stroke-width="7" fill="none" stroke-linecap="round" opacity=".8"/>
+${face(100, 134, 18, 4.5)}`;
+
+const justInTime = `
+<path d="M6 108h24M0 130h30M8 152h22" stroke="${INK}" stroke-width="5" stroke-linecap="round"/>
+<path d="M40 82l18-36h84l18 36z" fill="#c68a4e" ${OUT}/>
+<path d="M40 82h120v90H40z" fill="#e0a868" ${OUT}/>
+<path d="M40 100h120v14H40z" fill="#ff3d9a" ${OUT}/>
+<path d="M54 92h22" stroke="#fff2d0" stroke-width="5" stroke-linecap="round"/>
+<circle cx="158" cy="62" r="26" fill="${PAPER}" ${OUT}/>
+<path d="M158 62V46M158 62l11 7" stroke="${INK}" stroke-width="5" stroke-linecap="round"/>
+<circle cx="158" cy="62" r="3.5" fill="#ff3d9a"/>
+${face(98, 142, 22, 5.5)}`;
+
+const stockOptions = `
+<path d="M22 34h156v116H22z" fill="${PAPER}" ${OUT}/>
+<path d="M32 44h136v96H32z" fill="none" stroke="#2e8a4a" stroke-width="3"/>
+<path d="M44 124l30-24 22 14 40-46" stroke="#2e8a4a" stroke-width="8" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M130 60h26v26z" fill="#2e8a4a" ${OUT}/>
+${face(78, 70, 14, 4)}
+<path d="M142 150l-8 30 18-9 18 9-8-30" fill="#ff3d9a" ${OUT}/>
+<circle cx="152" cy="142" r="20" fill="#ffd900" ${OUT}/>
+<polygon points="${star(152, 142, 13, 6)}" fill="${INK}"/>`;
+
+const safetyNet = `
+<g transform="rotate(14 100 34)"><rect x="82" y="8" width="36" height="48" rx="4" fill="${PAPER}" ${OUT}/><path d="M89 22h22M89 32h22M89 42h14" stroke="#1c5fd0" stroke-width="4" stroke-linecap="round"/></g>
+<path d="M44 150l-14 32M156 150l14 32" stroke="${INK}" stroke-width="12" stroke-linecap="round"/>
+<path d="M44 150l-14 32M156 150l14 32" stroke="#3a3450" stroke-width="6" stroke-linecap="round"/>
+<ellipse cx="100" cy="116" rx="82" ry="52" fill="#e9e4d6" ${OUT}/>
+<path d="M18 116h164M100 64v104M34 86c40 22 92 22 132 0M34 146c40-22 92-22 132 0" stroke="#9aa3b5" stroke-width="3" fill="none"/>
+<ellipse cx="100" cy="116" rx="82" ry="52" fill="none" stroke="#ff3d9a" stroke-width="10"/>
+<ellipse cx="100" cy="116" rx="82" ry="52" fill="none" stroke="${INK}" stroke-width="3"/>
+<path d="M52 92c10-8 22-12 36-14" stroke="#fff" stroke-width="6" fill="none" stroke-linecap="round" opacity=".8"/>
+${face(100, 118, 22, 5.5)}`;
+
+const lockerKey = `
+<path d="M62 92c0 10 4 16 10 18" stroke="${INK}" stroke-width="4" fill="none" stroke-linecap="round"/>
+<path d="M84 82L170 168M140 138l18-16M156 154l18-16" stroke="${INK}" stroke-width="26" stroke-linecap="round"/>
+<path d="M84 82L170 168M140 138l18-16M156 154l18-16" stroke="#ffd900" stroke-width="16" stroke-linecap="round"/>
+<circle cx="64" cy="62" r="34" fill="#ffd900" ${OUT}/><circle cx="64" cy="62" r="13" fill="#120e18"/>
+<path d="M42 42c6-8 14-12 24-13" stroke="#fff2a0" stroke-width="7" fill="none" stroke-linecap="round"/>
+<rect x="18" y="108" width="84" height="66" rx="8" fill="${PAPER}" ${OUT}/>
+<path d="M18 116a8 8 0 0 1 8-8h68a8 8 0 0 1 8 8v12H18z" fill="#1c5fd0" ${OUT}/>
+<circle cx="60" cy="118" r="4" fill="${PAPER}"/>
+${face(60, 150, 17, 4.5)}`;
+
+const bulletproofCardigan = `
+<path d="M64 30L100 46 136 30l50 28-12 96-34 8-4-48v88H64v-88l-4 48-34-8L14 58z" fill="#ffd900" ${OUT}/>
+<path d="M74 34l26 52 26-52-26 12z" fill="${PAPER}" ${OUT}/>
+<path d="M100 86v94" stroke="#e89400" stroke-width="4"/>
+<circle cx="100" cy="152" r="6" fill="#ff3d9a" ${OUT}/><circle cx="100" cy="172" r="6" fill="#ff3d9a" ${OUT}/>
+<ellipse cx="34" cy="116" rx="11" ry="15" fill="#1c5fd0" ${OUT}/><ellipse cx="166" cy="116" rx="11" ry="15" fill="#1c5fd0" ${OUT}/>
+<path d="M62 70c4-8 10-14 18-16" stroke="#fff2a0" stroke-width="6" fill="none" stroke-linecap="round"/>
+<circle cx="132" cy="150" r="7" fill="#9aa3b5" ${OUT}/><path d="M129 147l6 6M135 147l-6 6" stroke="${INK}" stroke-width="2.5"/>
+${face(100, 120, 22, 5)}`;
+
+const revengeSpreadsheet = `
+<rect x="22" y="28" width="156" height="148" rx="6" fill="${PAPER}" ${OUT}/>
+<path d="M22 34a6 6 0 0 1 6-6h144a6 6 0 0 1 6 6v32H22z" fill="#ffd900" ${OUT}/>
+<path d="M22 100h156M22 134h156M74 66v110M126 66v110" stroke="#9ab8f0" stroke-width="3"/>
+<rect x="76" y="102" width="48" height="30" fill="#ff3d9a"/><rect x="128" y="136" width="48" height="38" fill="#ff3d9a"/><rect x="24" y="68" width="48" height="30" fill="#ff3d9a"/>
+<path d="M72 40l16 7M128 40l-16 7" stroke="${INK}" stroke-width="5" stroke-linecap="round"/>
+${face(100, 52, 20, 4.5)}`;
+
+const assortedBiscuitTin = `
+<circle cx="64" cy="28" r="17" fill="#d9a066" ${OUT}/><circle cx="58" cy="24" r="3" fill="#5a3418"/><circle cx="70" cy="32" r="3" fill="#5a3418"/>
+<rect x="92" y="10" width="34" height="30" rx="5" fill="#e8b878" ${OUT}/><circle cx="104" cy="22" r="3" fill="#5a3418"/><circle cx="116" cy="30" r="3" fill="#5a3418"/>
+<circle cx="146" cy="30" r="15" fill="#c68a4e" ${OUT}/><circle cx="141" cy="27" r="3" fill="#5a3418"/><circle cx="151" cy="34" r="3" fill="#5a3418"/>
+<path d="M26 74c0-14 22-24 74-24s74 10 74 24v10H26z" fill="#ff3d9a" ${OUT}/>
+<path d="M30 84h140l-8 90c0 8-6 12-14 12H52c-8 0-14-4-14-12z" fill="#1c5fd0" ${OUT}/>
+<path d="M36 128h128" stroke="${PAPER}" stroke-width="5" stroke-dasharray="9 7"/>
+<path d="M44 66c14-6 30-9 46-9" stroke="#ff9ac8" stroke-width="6" fill="none" stroke-linecap="round"/>
+${face(100, 154, 26, 6)}`;
+
+const goldWatch = `
+<circle cx="100" cy="22" r="15" fill="none" stroke="${INK}" stroke-width="10"/><circle cx="100" cy="22" r="15" fill="none" stroke="#e89400" stroke-width="5"/>
+<rect x="86" y="36" width="28" height="20" rx="3" fill="#e89400" ${OUT}/>
+<circle cx="100" cy="122" r="70" fill="#ffd900" ${OUT}/>
+<circle cx="100" cy="122" r="55" fill="${PAPER}" ${OUT}/>
+<path d="M100 76v9M100 159v9M54 122h9M137 122h9" stroke="${INK}" stroke-width="5" stroke-linecap="round"/>
+<path d="M100 120V92" stroke="${INK}" stroke-width="7" stroke-linecap="round"/><path d="M100 120l21 11" stroke="${INK}" stroke-width="5" stroke-linecap="round"/>
+<circle cx="100" cy="120" r="5" fill="#ff3d9a" ${OUT}/>
+<path d="M48 84c6-14 18-24 34-28" stroke="#fff2a0" stroke-width="8" fill="none" stroke-linecap="round"/>
+${face(100, 146, 18, 4.5)}`;
+
+const floorPlan = `
+<rect x="26" y="26" width="148" height="26" rx="13" fill="#e8e0cc" ${OUT}/>
+<path d="M36 48h128v112H36z" fill="#1c5fd0" ${OUT}/>
+<path d="M48 62h36v28H48zM84 62h40v14H84zM124 62h28v28h-28zM84 76h40v14H84z" stroke="${PAPER}" stroke-width="4" fill="none"/>
+<path d="M62 90v6M104 76v-4" stroke="#1c5fd0" stroke-width="5"/>
+<rect x="48" y="106" width="104" height="44" rx="4" fill="${PAPER}" ${OUT}/>
+<rect x="26" y="150" width="148" height="26" rx="13" fill="#e8e0cc" ${OUT}/>
+<path d="M60 160h8M132 160h8" stroke="#b9b09a" stroke-width="3" stroke-linecap="round"/>
+${face(100, 128, 22, 5)}`;
+
 /** Sprite sources by relic id, as the renderer wants them (`relic.` keeps them apart from creature ids). */
 export const RELIC_SPRITES: Record<string, string> = Object.fromEntries(
   Object.entries({
@@ -320,6 +423,16 @@ export const RELIC_SPRITES: Record<string, string> = Object.fromEntries(
     wellnessVoucher,
     correctionFluid,
     cheatSheet,
+    flexitime,
+    justInTime,
+    stockOptions,
+    safetyNet,
+    lockerKey,
+    bulletproofCardigan,
+    revengeSpreadsheet,
+    assortedBiscuitTin,
+    goldWatch,
+    floorPlan,
   }).map(([id, svg]) => [`relic.${id}`, svg]),
 );
 

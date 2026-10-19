@@ -1,6 +1,6 @@
 import type { Combat } from '../game/combat';
 import type { Rarity, RelicDef } from '../game/types';
-import { CARDS } from './cards';
+import { CARDS, cardCostOf } from './cards';
 
 /** A relic shows itself in the fight: a floating name over the hero. */
 const proc = (c: Combat, id: string): void => c.events.emit({ type: 'relic', id });
@@ -39,6 +39,21 @@ const BELL_LOSS = 30;
 export const BELL_STUN = 5;
 /** The smallest hit the Out-of-Office Sign turns away. */
 const OOO_MIN_HIT = 15;
+/** Seconds without a Lost Badge before Flexitime hands out one. */
+const FLEX_EVERY = 15;
+/** The share of the belt, from its exit, where Just-in-Time Delivery halves what a card costs. */
+const JIT_LAST = 0.2;
+/** Cards that would fall which a fight's Safety Net pins at the end of the belt instead. */
+const NET_CARDS = 3;
+const LOCKER_CUT = 1;
+const STOCK_MANA = 2;
+/** The share of max HP the Stock Options cost when they are taken. */
+export const STOCK_HP = 0.25;
+const CARDIGAN_MANA = 2;
+/** The Revenge Spreadsheet gives 1 Strength for each curse an enemy deals, up to this many in a fight. */
+export const REVENGE_MAX = 5;
+/** Rooms more the Floor Plan lets you see on the map. */
+const PLAN_VISION = 2;
 
 /**
  * Relics found in the Lost & Found (and one sold by the Tailor). `n` is the number their text shows (`{n}`); the hooks and
@@ -324,6 +339,114 @@ const defs: RelicDef[] = [
       },
     },
   },
+  { id: 'goldWatch', rarity: 'legendary', n: 0, abilityEveryFight: true },
+  { id: 'floorPlan', rarity: 'rare', n: PLAN_VISION, mods: { vision: PLAN_VISION } },
+  {
+    id: 'stockOptions',
+    rarity: 'epic',
+    n: STOCK_MANA,
+    mods: { maxMana: STOCK_MANA },
+    onGain: (run) => {
+      run.maxHp = Math.max(1, run.maxHp - Math.round(run.maxHp * STOCK_HP));
+      run.hp = Math.min(run.hp, run.maxHp);
+    },
+  },
+  {
+    id: 'flexitime',
+    rarity: 'epic',
+    n: FLEX_EVERY,
+    progress: (c) => (c.mem.flexitime ?? 0) / FLEX_EVERY,
+    hooks: {
+      tick: (c, dt) => {
+        // The clock waits while a badge is up: the next one is FLEX_EVERY s after the last was used.
+        if (c.has('hero', 'lostBadge')) return;
+        c.mem.flexitime = (c.mem.flexitime ?? 0) + dt;
+        if (c.mem.flexitime < FLEX_EVERY) return;
+        c.mem.flexitime = 0;
+        c.applyStatus('hero', 'lostBadge', 1);
+        proc(c, 'flexitime');
+      },
+    },
+  },
+  {
+    id: 'justInTime',
+    rarity: 'epic',
+    n: Math.round(JIT_LAST * 100),
+    hooks: {
+      cost: (c, card, cost) => {
+        if (cost < 2) return cost;
+        const onBelt = c.belt.find((b) => b.card.uid === card.uid);
+        return onBelt && onBelt.pos >= 1 - JIT_LAST ? Math.ceil(cost / 2) : cost;
+      },
+    },
+  },
+  {
+    id: 'safetyNet',
+    rarity: 'rare',
+    n: NET_CARDS,
+    armed: (c) => (c.mem.net ?? 0) < NET_CARDS,
+    hooks: {
+      // Curses and cards nobody can play are left to fall: that is how they leave.
+      anchorCard: (c, card) => {
+        if ((c.mem.net ?? 0) >= NET_CARDS || CARDS[card.id].type === 'curse' || CARDS[card.id].sushi || c.keywords(card).includes('unplayable'))
+          return false;
+        c.mem.net = (c.mem.net ?? 0) + 1;
+        return true;
+      },
+    },
+  },
+  {
+    id: 'lockerKey',
+    rarity: 'rare',
+    n: LOCKER_CUT,
+    hooks: {
+      // The card keeps the discount (`CombatCard.cut`) for the rest of the fight, however often it comes round again.
+      onCardExpired: (c, card) => {
+        if (CARDS[card.id].type === 'curse' || c.keywords(card).includes('fleeting') || cardCostOf(card) < 1) return;
+        card.cut = (card.cut ?? 0) + LOCKER_CUT;
+        proc(c, 'lockerKey');
+      },
+    },
+  },
+  {
+    id: 'bulletproofCardigan',
+    rarity: 'rare',
+    n: CARDIGAN_MANA,
+    hooks: {
+      onHitAbsorbed: (c) => {
+        c.gainMana(CARDIGAN_MANA);
+        proc(c, 'bulletproofCardigan');
+      },
+    },
+  },
+  {
+    id: 'revengeSpreadsheet',
+    rarity: 'epic',
+    n: 1,
+    progress: (c) => (c.mem.revenge ?? 0) / REVENGE_MAX,
+    hooks: {
+      onCurse: (c) => {
+        if ((c.mem.revenge ?? 0) >= REVENGE_MAX) return;
+        c.mem.revenge = (c.mem.revenge ?? 0) + 1;
+        c.applyStatus('hero', 'strength', 1);
+        proc(c, 'revengeSpreadsheet');
+      },
+    },
+  },
+  {
+    id: 'assortedBiscuitTin',
+    rarity: 'rare',
+    n: 0,
+    hooks: {
+      // The first live tick, so the hit is seen (the stage is still dark while the stationery's start hooks run).
+      tick: (c) => {
+        if (c.mem.biscuits) return;
+        c.mem.biscuits = 1;
+        c.damage('hero', 'enemy', c.deckSize(), { raw: true, kind: 'blunt' }, 'hero');
+        proc(c, 'assortedBiscuitTin');
+      },
+    },
+  },
   // The Tailor's: not found in the Lost & Found.
   { id: 'cargoPants', rarity: 'special', n: 1, mods: { sleeve: 1 } },
 ];
@@ -332,8 +455,11 @@ export const RELICS: Record<string, RelicDef> = Object.fromEntries(defs.map((r) 
 export const RELIC_LIST: readonly RelicDef[] = defs;
 
 /** The sum of a numeric modifier over the relics a run holds (the hero sheet shows the stats as the fight will start). */
-export const relicSum = (relics: readonly string[], key: 'sleeve' | 'maxMana' | 'rewardCards' | 'abilityCost'): number =>
+export const relicSum = (relics: readonly string[], key: 'sleeve' | 'maxMana' | 'rewardCards' | 'abilityCost' | 'vision'): number =>
   relics.reduce((s, id) => s + (RELICS[id]?.mods?.[key] ?? 0), 0);
 
 /** What the hero's ability costs with these relics (never under 1). */
 export const abilityCostWith = (cost: number, relics: readonly string[]): number => Math.max(1, cost + relicSum(relics, 'abilityCost'));
+
+/** Whether these relics make the hero's ability ready again at every fight (the Gold Watch), not once per act. */
+export const abilityEveryFight = (relics: readonly string[]): boolean => relics.some((id) => RELICS[id]?.abilityEveryFight);

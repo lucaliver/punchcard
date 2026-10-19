@@ -573,6 +573,14 @@ export interface RelicHooks {
   cancelHit?: (c: Combat, dmg: number) => boolean;
   /** An enemy move is about to put a curse card in the deck: return true to wipe it (the relic flags itself, the engine shows its name). */
   wipeCurse?: (c: Combat) => boolean;
+  /** An enemy move has put a curse card in the piles or on the belt (not one that `wipeCurse` took away). */
+  onCurse?: (c: Combat, card: CombatCard) => void;
+  /** An enemy hit was soaked up whole by the hero's Block (nothing got through). */
+  onHitAbsorbed?: (c: Combat, dmg: number) => void;
+  /** A belt card has reached the end of the belt: return true to pin it there instead of letting it fall, like an Anchor card (the relic flags itself, the engine shows its name). */
+  anchorCard?: (c: Combat, card: CombatCard) => boolean;
+  /** Changes what a card costs now (`Combat.costOf`, after the statuses): return the new cost. Never called for an X card. */
+  cost?: (c: Combat, card: CardInst, cost: number) => number;
 }
 
 export interface RelicDef {
@@ -585,6 +593,8 @@ export interface RelicDef {
   openPool?: boolean;
   /** A Break Room gives both the nap and the training, not one of them. */
   restBoth?: boolean;
+  /** The hero's ability is ready again at every fight, not once per act. */
+  abilityEveryFight?: boolean;
   /** Static modifiers applied to combat setup. */
   mods?: Partial<{
     maxMana: number;
@@ -600,6 +610,8 @@ export interface RelicDef {
     rewardCards: number;
     /** Added to the hero's ability cost (negative: cheaper). */
     abilityCost: number;
+    /** Rooms more on the map in sight (the fog starts this many doors further). */
+    vision: number;
   }>;
   hooks?: RelicHooks;
   /** For a relic that triggers every so often: how full its bar is (0..1) in the fight. It gets a chip with a filling bar. */

@@ -6,7 +6,18 @@ import { STICKY_FINGERS, THICK_SKIN, TIME_THEFT, VIRULENCE_START, PICKET_BLOCK, 
 import { COPIER_LINE, MATCH_LINE, STAMP_LINE } from '../game/match3';
 import { PERKS } from './perks';
 import { PLAN_CAP } from './statuses';
-import { BELL_STUN, CLOCK_BLOCK, MUG_MANA, NAME_TAG_TIME, PLANT_HEAL, PUNCH_DAMAGE, SHREDDER_BLOCK, STAPLER_DAMAGE } from './relics';
+import {
+  BELL_STUN,
+  CLOCK_BLOCK,
+  MUG_MANA,
+  NAME_TAG_TIME,
+  PLANT_HEAL,
+  PUNCH_DAMAGE,
+  REVENGE_MAX,
+  SHREDDER_BLOCK,
+  STAPLER_DAMAGE,
+  STOCK_HP,
+} from './relics';
 import {
   ASLEEP,
   AWAKE,
@@ -148,6 +159,8 @@ export const VALUES = {
   mugMana: MUG_MANA,
   clockBlock: CLOCK_BLOCK,
   staplerDamage: STAPLER_DAMAGE,
+  stockHpPct: pct(STOCK_HP),
+  revengeMax: REVENGE_MAX,
   shredderBlock: SHREDDER_BLOCK,
   performancePlanCap: PLAN_CAP,
   plantHeal: PLANT_HEAL,

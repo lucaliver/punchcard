@@ -22,6 +22,19 @@ test('title, hero select and journey render without errors', async ({ page }) =>
   expect(problems).toEqual([]);
 });
 
+test('a Floor Plan lifts the fog from more rooms of the map', async ({ page }) => {
+  const problems = await freshGame(page);
+  await page.getByRole('button', { name: /new run/i }).click();
+  await page.getByRole('button', { name: /start shift/i }).click();
+  await expect(page.locator('.node.current')).toBeVisible();
+  const fog = (): Promise<number> => page.locator('.node.fog').count();
+  const before = await fog();
+  expect(before).toBeGreaterThan(0);
+  await page.evaluate("(() => { const g = window.__game; g.run.relics.push('floorPlan'); g.goJourney(); })()");
+  await expect.poll(fog).toBeLessThan(before);
+  expect(problems).toEqual([]);
+});
+
 test('the poster boss and the icons are there when the home opens straight after a reload', async ({ page }) => {
   const problems = await freshGame(page);
   await page.reload();

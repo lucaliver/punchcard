@@ -4,7 +4,7 @@ import { nextUid, peekUid, resetUid } from '../core/util';
 import { CARD_LIST, CARDS, RARITY_ORDER, cardCostOf, cardKeywordsOf, rewardPool } from '../data/cards';
 import { PERKS } from '../data/perks';
 import { WHEEL, type WheelSlot } from '../data/wheel';
-import { RELIC_LIST, RELICS, relicSum } from '../data/relics';
+import { RELIC_LIST, RELICS, abilityEveryFight, relicSum } from '../data/relics';
 import { ACT_DEFS, actDef, MAIN_ACTS } from '../data/acts';
 import {
   BEG_FLAG,
@@ -459,7 +459,7 @@ export function combatSetup(run: RunState): CombatSetup {
     canBeg: true,
     bonusMaxMana: run.crystals,
     sleeveLost: run.sleeveLost,
-    abilitySpent: run.abilityAct === node.act,
+    abilitySpent: run.abilityAct === node.act && !abilityEveryFight(run.relics),
     playedIds: run.playedIds,
     seed,
   };

@@ -2295,6 +2295,46 @@ export const ICONS: Record<string, { el: Element; svg: string; wide?: boolean }>
     el: 'steel',
     svg: `<rect x="4" y="12" width="56" height="40" rx="5"/><path fill="#16121f" d="M4 20h56v8H4z"/><rect x="10" y="36" width="14" height="10" rx="2" fill="#16121f"/><path fill="#16121f" d="M30 40h24v3H30z"/>`,
   },
+  'relic.flexitime': {
+    el: 'steel',
+    svg: `<circle cx="14" cy="12" r="8"/><circle cx="50" cy="12" r="8"/><circle cx="32" cy="38" r="23"/><path fill="#16121f" d="M30 22h4v14h9v4H30z"/>`,
+  },
+  'relic.justInTime': {
+    el: 'steel',
+    svg: `<path d="M4 22L12 8h40l8 14z"/><path d="M4 24h56v34H4z"/><path fill="#16121f" d="M24 24h16v14H24z"/>`,
+  },
+  'relic.stockOptions': {
+    el: 'steel',
+    svg: `<path d="M6 6h52v52H6z"/><path fill="none" stroke="#16121f" stroke-width="5" stroke-linecap="round" stroke-linejoin="round" d="M14 46l14-14 10 8 12-18"/><path fill="#16121f" d="M40 16h14v14z"/>`,
+  },
+  'relic.safetyNet': {
+    el: 'steel',
+    svg: `<rect x="24" y="2" width="16" height="20" rx="2"/><ellipse cx="32" cy="42" rx="29" ry="17"/><path fill="none" stroke="#16121f" stroke-width="3" d="M4 42h56M32 26v32M10 34c14 6 30 6 44 0M10 50c14-6 30-6 44 0"/>`,
+  },
+  'relic.lockerKey': {
+    el: 'steel',
+    svg: `<circle cx="18" cy="18" r="14"/><circle cx="18" cy="18" r="5" fill="#16121f"/><path d="M28 26l30 30-6 6-6-6-4 4-6-6 4-4-8-8z"/>`,
+  },
+  'relic.bulletproofCardigan': {
+    el: 'steel',
+    svg: `<path d="M20 4l12 8 12-8 18 10-6 36-10 2-2-14v26H20V38l-2 14-10-2-6-36z"/><path fill="#16121f" d="M31 14h2v46h-2z"/><circle cx="32" cy="34" r="2.5" fill="#16121f"/><circle cx="32" cy="46" r="2.5" fill="#16121f"/>`,
+  },
+  'relic.revengeSpreadsheet': {
+    el: 'steel',
+    svg: `<rect x="6" y="6" width="52" height="52" rx="3"/><path fill="none" stroke="#16121f" stroke-width="3" d="M6 20h52M6 34h52M6 48h52M23 6v52M40 6v52"/><path fill="#16121f" d="M25 36h14v10H25z"/>`,
+  },
+  'relic.assortedBiscuitTin': {
+    el: 'steel',
+    svg: `<circle cx="20" cy="8" r="6"/><circle cx="38" cy="6" r="6"/><path d="M6 22c0-6 8-10 26-10s26 4 26 10v6H6z"/><path d="M9 30h46l-3 26c0 4-3 6-6 6H18c-3 0-6-2-6-6z"/><circle cx="32" cy="46" r="6" fill="#16121f"/>`,
+  },
+  'relic.goldWatch': {
+    el: 'steel',
+    svg: `<rect x="27" y="2" width="10" height="9"/><circle cx="32" cy="37" r="26"/><circle cx="32" cy="37" r="19" fill="#16121f"/><path d="M30 23h4v15h9v4H30z"/>`,
+  },
+  'relic.floorPlan': {
+    el: 'steel',
+    svg: `<rect x="4" y="8" width="56" height="48" rx="2"/><path fill="none" stroke="#16121f" stroke-width="3" d="M12 16h24v14H12zM36 16h16v10H36zM36 26h16v20H36zM12 30h16v18H12z"/>`,
+  },
 };
 
 export const INTENT_ICON: Record<string, string> = {

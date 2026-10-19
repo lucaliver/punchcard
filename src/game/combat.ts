@@ -13,7 +13,7 @@ import { MatchThree, type MoveResult } from './match3';
 import { MINIGAMES, type Minigame } from './minigame';
 import { ShellGame, type ShellResult } from './shells';
 import { SushiOrder } from './sushi';
-import { RELICS, abilityCostWith } from '../data/relics';
+import { RELICS, abilityCostWith, abilityEveryFight } from '../data/relics';
 import type { TKey } from '../core/i18n';
 import type {
   BeltCard,
@@ -442,7 +442,7 @@ export class Combat {
     const cost = cardCostOf(card);
     if (cost < 0) return cost;
     for (const [id, s] of Object.entries(this.hero.statuses)) if (STATUSES[id].flatCost && this.has('hero', id)) return s.v;
-    return Math.max(0, cost - this.firstPlayCut(card));
+    return this.relics.reduce((now, id) => RELICS[id]?.hooks?.cost?.(this, card, now) ?? now, Math.max(0, cost - this.firstPlayCut(card)));
   }
 
   /** What a card's first play of the fight takes off its cost (`StatusDef.firstPlayCut`). */
@@ -968,6 +968,7 @@ export class Combat {
         const hex = cu.hex ? { id: cu.hex, left: HEXES[cu.hex].taps, t: HEXES[cu.hex].thaw } : undefined;
         const card = this.addTempCard(cu.id, cu.to, false, cu.to === 'belt' ? -queued++ * gap : 0, hex ? { hex } : {});
         if (hex) this.events.emit({ type: 'hexed', card });
+        for (const id of this.relics) RELICS[id]?.hooks?.onCurse?.(this, card);
       }
     }
     if (m.steal) for (let i = 0; i < m.steal; i++) this.stealCard();
@@ -977,6 +978,14 @@ export class Combat {
     if (m.infect) this.infectCards(m.infect);
     if (m.swap) this.swapCards(m.swap);
     m.fx?.(this);
+  }
+
+  /** A relic pins a card that reached the end of the belt (Safety Net). Not one the hand is holding. */
+  private relicAnchors(card: CombatCard): boolean {
+    if (card.uid === this.dragged) return false;
+    const id = this.relics.find((r) => RELICS[r]?.hooks?.anchorCard?.(this, card));
+    if (id) this.events.emit({ type: 'relic', id });
+    return !!id;
   }
 
   /** A relic wipes the curse an enemy move was about to deal (Correction Fluid). */
@@ -1010,7 +1019,7 @@ export class Combat {
         b.pos = Math.min(b.pos, EXPIRE_POS - move);
       }
       // An Anchor card never falls: where the belt ends it stays, pinned.
-      if (!b.pinned && b.pos >= ANCHOR_POS && this.keywords(b.card).includes('anchor')) {
+      if (!b.pinned && b.pos >= ANCHOR_POS && (this.keywords(b.card).includes('anchor') || this.relicAnchors(b.card))) {
         b.pos = ANCHOR_POS;
         b.pinned = true;
         // It has ridden the whole belt: a Pending card is approved.
@@ -1544,6 +1553,11 @@ export class Combat {
     return found.length;
   }
 
+  /** The hero's ability comes back at every fight, not once per act (the Gold Watch). */
+  get abilityEveryFight(): boolean {
+    return abilityEveryFight(this.relics);
+  }
+
   abilityCost(): number {
     return abilityCostWith(this.heroDef.ability.cost, this.relics);
   }
@@ -1702,6 +1716,7 @@ export class Combat {
     if (lost > 0 && to === 'hero') this.hurtHero(source === 'enemy' ? 'hit' : 'dot', lost);
 
     if (source === 'enemy' && to === 'hero') {
+      if (dmg > 0 && blocked >= dmg) for (const id of this.relics) RELICS[id]?.hooks?.onHitAbsorbed?.(this, dmg);
       this.heroDef.hooks.onHeroHit?.(this, lost);
       for (const [held, hd] of this.held()) hd.inSleeve?.onHeroHit?.(this, this.cardVals(held), held, lost);
       const thorns = this.stacks('hero', 'thorns');

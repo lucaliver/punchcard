@@ -5,6 +5,7 @@ import { actDef } from '../../data/acts';
 import { clockAt, currentNode, mapAct, saveRun, startShift, type RunNode, type RunState } from '../../game/run';
 import { openModal, type Screen } from '../app';
 import { ENEMIES } from '../../data/enemies';
+import { relicSum } from '../../data/relics';
 import { settings } from '../../game/settings';
 import { foeView } from '../components/moveText';
 import { $, h, onPress, onTapOrHold, setText } from '../dom';
@@ -40,7 +41,7 @@ export const nodeIcon = (n: RunNode): string => (n.type === 'boss' ? (actDef(n.a
 /** Height of one floor on the map (px); a room takes most of it, the rest is corridor. */
 const ROW_H = 100;
 const laneX = (lane: number): number => 22 + lane * 56;
-/** Rooms more than this many doors ahead are lost in fog: only the ones the player can go to next are in sight. */
+/** Rooms more than this many doors ahead are lost in fog: only the ones the player can go to next are in sight (the Floor Plan sees further). */
 const VISION = 1;
 /** Footsteps along a walked corridor: one every so many px. The map is about this wide (px), to measure the turns. */
 const STEP_PX = 12;
@@ -109,13 +110,14 @@ export function journeyScreen(run: RunState, onEnter: (to?: number) => void, onH
     for (const nx of run.nodes[id].next) walk(nx);
   };
   for (const id of run.cleared ? options : cur.next) walk(id);
-  // Fog: how many doors away each room is; the ones past VISION can't be made out (the boss is always in sight).
+  // Fog: how many doors away each room is; the ones past the vision can't be made out (the boss is always in sight).
+  const vision = VISION + relicSum(run.relics, 'vision');
   const seenFrom = (start: number): Map<number, number> => {
     const dist = new Map<number, number>();
     const look = (id: number, d: number): void => {
       if ((dist.get(id) ?? Infinity) <= d) return;
       dist.set(id, d);
-      if (d < VISION) for (const nx of run.nodes[id].next) look(nx, d + 1);
+      if (d < vision) for (const nx of run.nodes[id].next) look(nx, d + 1);
     };
     look(start, 0);
     return dist;

@@ -3,8 +3,8 @@ import type { Combat } from '../../src/game/combat';
 import { CONFIG } from '../../src/data/config';
 import { HEROES } from '../../src/data/heroes';
 import { CARDS } from '../../src/data/cards';
-import { RELICS, abilityCostWith } from '../../src/data/relics';
-import { rewardChoices, rollRewards, gainRelic, hasRelic, newRun } from '../../src/game/run';
+import { RELICS, REVENGE_MAX, STOCK_HP, abilityCostWith, relicSum } from '../../src/data/relics';
+import { combatSetup, currentNode, rewardChoices, rollRewards, gainRelic, hasRelic, newRun } from '../../src/game/run';
 import { deckOf, plainBoomer, setup, run } from './helpers';
 
 describe('relics', () => {
@@ -201,5 +201,121 @@ describe('relics', () => {
     expect(setup().abilityCost()).toBe(HEROES.warrior.ability.cost);
     expect(setup({ relics: ['cheatSheet'] }).abilityCost()).toBe(HEROES.warrior.ability.cost - 1);
     expect(abilityCostWith(1, ['cheatSheet', 'cheatSheet'])).toBe(1);
+  });
+});
+
+describe('the stationery of the second batch', () => {
+  const punches = (n = 12) => deckOf(Array(n).fill('punch'));
+
+  it('Flexitime hands out a Lost Badge every so often and waits until it is used', () => {
+    const c = setup({ relics: ['flexitime'] });
+    run(c, CONFIG.introTime + RELICS.flexitime.n + 0.5);
+    expect(c.stacks('hero', 'lostBadge')).toBe(1);
+    run(c, 2 * RELICS.flexitime.n);
+    expect(c.stacks('hero', 'lostBadge')).toBe(1);
+  });
+
+  it('Just-in-Time Delivery halves a cost (rounded up) only in the last stretch of the belt', () => {
+    const c = setup({ relics: ['justInTime'], deck: deckOf(['printerSmash', 'punch', 'coffee', 'printerSmash', 'punch', 'coffee']) });
+    run(c, CONFIG.introTime + 0.1);
+    const costs = (pos: number): number[] => {
+      for (const b of c.belt) b.pos = pos;
+      return c.belt.map((b) => c.costOf(b.card));
+    };
+    const full = costs(0.5);
+    const late = costs(0.8);
+    expect(late).toEqual(full.map((n) => (n < 2 ? n : Math.ceil(n / 2))));
+    expect(late).not.toEqual(full);
+    const { card } = c.belt[0];
+    const price = c.costOf(card);
+    c.hero.mana = 5;
+    expect(c.playCard(card.uid)).toBe(true);
+    expect(c.hero.mana).toBe(5 - price);
+  });
+
+  it('Stock Options give mana for good and take a share of the max HP when they are taken', () => {
+    const r = newRun('warrior', 3);
+    const before = r.maxHp;
+    gainRelic(r, 'stockOptions');
+    expect(r.maxHp).toBe(before - Math.round(before * STOCK_HP));
+    expect(r.hp).toBe(r.maxHp);
+    expect(setup({ relics: ['stockOptions'] }).hero.maxMana).toBe(setup().hero.maxMana + RELICS.stockOptions.n);
+  });
+
+  it('a Safety Net pins the first cards of a fight that reach the end of the belt, and the rest fall', () => {
+    const fight = (relics: string[]) => {
+      const c = setup({ relics, deck: punches(20), hp: 900, maxHp: 900 });
+      run(c, 50);
+      return c;
+    };
+    const bare = fight([]);
+    expect(bare.belt.some((b) => b.pinned)).toBe(false);
+    const c = fight(['safetyNet']);
+    expect(c.belt.filter((b) => b.pinned)).toHaveLength(RELICS.safetyNet.n);
+    expect(c.stats.cardsLost).toBeGreaterThan(0);
+  });
+
+  it('a Safety Net lets a curse fall', () => {
+    const c = setup({ relics: ['safetyNet'], deck: punches(12), hp: 900, maxHp: 900 });
+    c.addTempCard('gossip', 'belt', false, 0.99);
+    run(c, 4);
+    expect(c.belt.some((b) => b.pinned && CARDS[b.card.id].type === 'curse')).toBe(false);
+  });
+
+  it('a Locker Key keeps a fallen card cheaper for the rest of the fight', () => {
+    const c = setup({ relics: ['lockerKey'], deck: punches() });
+    const card = c.dropOldest()!;
+    expect(c.costOf(card)).toBe(CARDS.punch.cost - RELICS.lockerKey.n);
+    expect(setup({ deck: punches() }).dropOldest()).not.toBeNull();
+  });
+
+  it('the Bulletproof Cardigan pays mana only when Block takes a whole hit', () => {
+    const c = setup({ relics: ['bulletproofCardigan'] });
+    run(c, CONFIG.introTime + 0.1);
+    c.hero.mana = 0;
+    c.hero.block = 4;
+    c.damage('enemy', 'hero', 10, { raw: true }, 'enemy');
+    expect(c.hero.mana).toBe(0);
+    c.hero.block = 50;
+    c.damage('enemy', 'hero', 10, { raw: true }, 'enemy');
+    expect(c.hero.mana).toBe(RELICS.bulletproofCardigan.n);
+  });
+
+  it('the Revenge Spreadsheet turns every curse into Strength, up to a cap', () => {
+    const nagging = {
+      ...plainBoomer,
+      main: { id: 'gripe', intent: 'curse' as const, windup: 1, curse: [{ id: 'gossip', n: 2, to: 'draw' as const }] },
+      specials: [],
+    };
+    const c = setup({ enemy: nagging, relics: ['revengeSpreadsheet'], hp: 900, maxHp: 900 });
+    run(c, 4);
+    expect(c.stacks('hero', 'strength')).toBeGreaterThanOrEqual(2);
+    run(c, 40);
+    expect(c.stacks('hero', 'strength')).toBe(REVENGE_MAX);
+  });
+
+  it('the Assorted Biscuit Tin hits the enemy for the size of the deck as the fight starts', () => {
+    const c = setup({ relics: ['assortedBiscuitTin'] });
+    const hp = c.enemy.hp;
+    expect(c.deckSize()).toBe(HEROES.warrior.startDeck.length);
+    run(c, CONFIG.introTime + 0.2);
+    expect(c.enemy.hp).toBe(hp - HEROES.warrior.startDeck.length);
+    run(c, 3);
+    expect(c.enemy.hp).toBe(hp - HEROES.warrior.startDeck.length);
+  });
+
+  it('the Gold Watch gives the ability back at every fight', () => {
+    const r = newRun('warrior', 3);
+    r.abilityAct = currentNode(r).act;
+    expect(combatSetup(r).abilitySpent).toBe(true);
+    gainRelic(r, 'goldWatch');
+    expect(combatSetup(r).abilitySpent).toBe(false);
+    expect(setup({ relics: ['goldWatch'] }).abilityEveryFight).toBe(true);
+    expect(setup().abilityEveryFight).toBe(false);
+  });
+
+  it('the Floor Plan sees further on the map', () => {
+    expect(relicSum([], 'vision')).toBe(0);
+    expect(relicSum(['floorPlan'], 'vision')).toBe(RELICS.floorPlan.n);
   });
 });
