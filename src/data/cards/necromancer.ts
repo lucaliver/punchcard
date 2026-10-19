@@ -531,8 +531,8 @@ export const necromancerCards: CardDef[] = [
     type: 'attack',
     rarity: 'epic',
     cost: 4,
-    vals: [6, 3, 3],
-    upVals: [9, 4, 2],
+    vals: [9, 3, 3],
+    upVals: [13, 3, 2],
     art: 'sedativeInTheCoffee',
     play: (c, v) => {
       c.applyStatus('enemy', 'poison', v[0]);
