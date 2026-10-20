@@ -50,7 +50,6 @@ let bar = 0;
 let rng = new Rng(1);
 let intensity = 0;
 let want: TrackId | null = null;
-let suspended = false;
 
 const freqAt = (tr: Track, degree: number): number => {
   const oct = Math.floor(degree / 5);
@@ -96,7 +95,7 @@ function scheduleStep(tr: Track, t0: number, ctxTime: number): void {
 
 function pump(): void {
   const g = audioGraph();
-  if (!g || !current || suspended) return;
+  if (!g || !current) return;
   const tr = TRACKS[current];
   const eighth = 60 / tr.bpm / 2;
   if (nextTime < g.ctx.currentTime) nextTime = g.ctx.currentTime + 0.05;
@@ -128,19 +127,7 @@ export function playMusic(id: TrackId): void {
   });
 }
 
-export function stopMusic(): void {
-  want = null;
-  current = null;
-  clearInterval(timer);
-}
-
-export const musicTrack = (): TrackId | null => want;
-
 /** 0..1: how hard the fight is pressing; the drums answer. */
 export function setIntensity(k: number): void {
   intensity = Math.max(0, Math.min(1, k));
-}
-
-export function suspendMusic(on: boolean): void {
-  suspended = on;
 }

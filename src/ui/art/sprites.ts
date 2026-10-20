@@ -8,8 +8,6 @@ for (const group of Object.values(ALL_ART)) for (const [id, svg] of Object.entri
 const urls = new Map<string, string>();
 const images = new Map<string, HTMLImageElement>();
 
-export const hasArt = (id: string): boolean => markup.has(id);
-
 /** The drawing as a data URL. An unknown id gives the lantern, never a broken picture. */
 export function artUrl(id: string): string {
   let url = urls.get(id);

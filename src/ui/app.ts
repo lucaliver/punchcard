@@ -31,9 +31,6 @@ export function initApp(el: HTMLElement): void {
 export const pico = (id: string, cls = ''): HTMLImageElement =>
   h('img', { class: `pico ${cls}`.trim(), src: artUrl(id), alt: '', draggable: 'false' });
 
-/** The same as markup, for strings that go through `innerHTML`. */
-export const picoHtml = (id: string, cls = ''): string => `<img class="pico ${cls}" src="${artUrl(id)}" alt="" draggable="false">`;
-
 const wait = (ms: number): Promise<void> => new Promise((r) => setTimeout(r, ms));
 
 /** Swaps to another screen behind two sliding paper doors (at once with reduced motion or `instant`). */
@@ -69,8 +66,6 @@ export async function show(screen: Screen, opts: { instant?: boolean } = {}): Pr
   doors.remove();
   changing = false;
 }
-
-export const currentScreen = (): Screen | null => current;
 
 export interface ModalAction {
   label: string;

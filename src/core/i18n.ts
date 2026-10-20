@@ -57,8 +57,6 @@ export function setLocale(code: string): void {
   }
 }
 
-export const getLocale = (): string => current;
-
 /** Does the key exist (in the current language or the fallback)? For optional lines. */
 export const hasKey = (key: TKey): boolean => key in locales[current].dict || key in locales[fallback].dict;
 

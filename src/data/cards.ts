@@ -24,7 +24,7 @@ const charm = (
 ): CardDef => ({ id, kind: 'charm', keeper, rarity, cost, aim, fx, art: id, ...extra });
 
 /** A decoy of leaves: the Tanuki's starter and what the Parade makes. */
-export const LEAF_DECOY = (up: boolean): SpiritDef => ({
+const LEAF_DECOY = (up: boolean): SpiritDef => ({
   art: 'leafDecoy',
   hp: up ? 14 : 10,
   lifespan: up ? 14 : 12,

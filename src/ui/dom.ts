@@ -35,10 +35,6 @@ export function setText(el: Element, text: string | number): void {
   if (el.textContent !== s) el.textContent = s;
 }
 
-export function setHtml(el: Element, html: string): void {
-  if (el.innerHTML !== html) el.innerHTML = html;
-}
-
 export function toggle(el: Element, cls: string, on: boolean): void {
   if (el.classList.contains(cls) !== on) el.classList.toggle(cls, on);
 }
@@ -51,19 +47,6 @@ export const cssMs = (token: string): number => {
 
 /** A token of the stylesheet, so scripts paint with the same inks as the CSS. */
 export const cssVar = (token: string): string => getComputedStyle(document.documentElement).getPropertyValue(token).trim();
-
-/** Restarts a one-shot CSS animation class on an element, and drops the class when it ends. */
-export function retrigger(target: Element, cls: string): void {
-  target.classList.remove(cls);
-  void (target as HTMLElement).offsetWidth;
-  target.classList.add(cls);
-  const done = (e: Event): void => {
-    if (e.target !== target) return;
-    target.classList.remove(cls);
-    target.removeEventListener('animationend', done);
-  };
-  target.addEventListener('animationend', done);
-}
 
 /** A short buzz, when the player has not turned it off. */
 export function haptic(ms: number | number[] = 12): void {

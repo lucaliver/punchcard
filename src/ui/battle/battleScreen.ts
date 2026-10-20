@@ -1,4 +1,5 @@
-import { sfx, unlockAudio, suspendAudio } from '../../audio/sfx';
+import { setIntensity } from '../../audio/music';
+import { sfx, suspendAudio, unlockAudio } from '../../audio/sfx';
 import { t } from '../../core/i18n';
 import { CONFIG } from '../../data/config';
 import { CARDS, card } from '../../data/cards';
@@ -820,6 +821,7 @@ export function battleScreen(o: BattleScreenOpts): Screen {
       document.removeEventListener('visibilitychange', visibility);
       clearTimeout(hintTimer);
       suspendAudio(false);
+      setIntensity(0);
     },
     frame(rawDt) {
       const running = !isPaused() && !ended;
@@ -841,7 +843,12 @@ export function battleScreen(o: BattleScreenOpts): Screen {
       }
       syncHand();
       updateHud();
-      if (running) tips(dt);
+      if (running) {
+        tips(dt);
+        let deepest = 0;
+        for (const f of b.foes) deepest = Math.max(deepest, f.y);
+        setIntensity(Math.min(1, (deepest / ROWS) * 0.7 + (1 - b.flame / b.maxFlame) * 0.5));
+      }
       field.frame(isPaused() ? 0 : dt);
     },
   };

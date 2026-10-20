@@ -175,8 +175,6 @@ export function genMap(seed: number, act: number, first: boolean): RunNode[] {
   return nodes;
 }
 
-export const nodeOf = (run: RunState, id: number): RunNode => run.map[id];
-
 /** The rooms that can be entered now. */
 export function reachable(run: RunState): RunNode[] {
   if (run.at === null) return run.map.filter((n) => n.row === 0);

@@ -122,8 +122,3 @@ export function makeStage(opts: StageOpts): StageDef {
     boss,
   };
 }
-
-/** Sum of the foes' leaks if none were stopped: a rough measure of how heavy a night is. */
-export function stageThreat(stage: StageDef): number {
-  return stage.spawns.reduce((s, sp) => s + FOES[sp.foe].leak, 0);
-}

@@ -71,7 +71,7 @@ export function mapScreen(o: MapOpts): Screen {
       );
     }
   }
-  board.append(roads as unknown as Node);
+  board.append(roads);
 
   const drawRoad = (a: { x: number; y: number }, b: { x: number; y: number }, cls: string): void => {
     const path = document.createElementNS(svgNS, 'path');

@@ -149,8 +149,3 @@ export function logRun(log: RunLog): KeeperId | null {
   saveMeta();
   return fresh;
 }
-
-export function resetMeta(): void {
-  Object.assign(meta, defaults());
-  saveMeta();
-}
