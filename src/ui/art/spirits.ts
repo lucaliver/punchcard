@@ -3,6 +3,138 @@ import { blush, C, circ, ell, eye, INK, ln, p, rect, solid, svg } from './kit';
 /** The spirits that answer the lantern: rounder, warmer and friendlier than the parade. */
 
 export const SPIRIT_ART: Record<string, string> = {
+  /** A shikigami: a paper servant, folded into a person, with a talisman for a face. */
+  shikigami: svg(
+    [
+      p('M28 90 L34 64 H66 L72 90Z', C.cream, { w: 3.4 }),
+      ln('M40 64 L38 90 M60 64 L62 90', '#d9c9a0', 2),
+      p('M22 60 Q10 58 8 74 M78 60 Q90 58 92 74', C.cream, { w: 4.6 }),
+      solid('M30 56 Q30 18 50 14 Q70 18 70 56 Q70 66 50 66 Q30 66 30 56Z', C.cream),
+      p('M42 24 H58 V52 H42Z', C.red, { w: 2.6 }),
+      circ(50, 32, 3.2, C.cream, { w: 0 }),
+      ln('M46 40 H54 M46 45 H54', C.cream, 2.4),
+      ln('M34 20 L30 8 M66 20 L70 8', INK, 3),
+      circ(30, 7, 2.4, C.red, { w: 1.6 }),
+      circ(70, 7, 2.4, C.red, { w: 1.6 }),
+    ].join(''),
+  ),
+
+  /** A paper warrior with a paper sword: it cuts, in a way. */
+  paperWarrior: svg(
+    [
+      p('M24 90 L30 58 H70 L76 90Z', '#d8c8a0', { w: 3.4 }),
+      ln('M32 66 H68 M34 76 H66 M36 86 H64', '#a8925f', 2.4),
+      p('M70 50 L96 22 L98 28 L76 60Z', C.cream, { w: 3 }),
+      p('M66 56 L76 50 L80 58 L70 64Z', C.red, { w: 2.6 }),
+      solid('M30 54 Q30 14 50 10 Q70 14 70 54 Q70 62 50 62 Q30 62 30 54Z', C.cream),
+      p('M26 24 Q50 -6 74 24 L70 30 Q50 14 30 30Z', '#8a2f2f', { w: 3 }),
+      ln('M36 38 L46 40 M64 38 L54 40', INK, 3.2),
+      circ(42, 44, 2.2, INK, { w: 0 }),
+      circ(58, 44, 2.2, INK, { w: 0 }),
+      ln('M44 52 H56', INK, 2.4),
+    ].join(''),
+  ),
+
+  /** A raven drawn in one stroke of ink, wings still wet. */
+  inkRaven: svg(
+    [
+      p('M50 40 Q22 12 4 30 Q20 30 22 42 Q10 48 14 60 Q30 50 42 58Z', '#26213a', { w: 3.2 }),
+      p('M50 40 Q78 12 96 30 Q80 30 78 42 Q90 48 86 60 Q70 50 58 58Z', '#26213a', { w: 3.2 }),
+      solid('M38 36 Q38 22 50 22 Q62 22 62 36 L62 62 Q62 78 50 80 Q38 78 38 62Z', '#34304a'),
+      p('M44 78 L40 90 M56 78 L60 90', '#34304a', { w: 3.4 }),
+      p('M44 32 L50 42 L56 32Z', '#d8c8a0', { w: 3 }),
+      eye(45, 30, 4.4, { look: [0.3, 0.3] }),
+      eye(55, 30, 4.4, { look: [-0.3, 0.3] }),
+      circ(18, 74, 3, INK, { w: 0, op: 0.7 }),
+      circ(84, 80, 4, INK, { w: 0, op: 0.7 }),
+      circ(10, 86, 2, INK, { w: 0, op: 0.7 }),
+    ].join(''),
+  ),
+
+  /** A hitogata: a paper person cut out to take the blow instead of you. */
+  hitogata: svg(
+    [
+      p(
+        'M50 8 Q64 8 64 22 Q64 32 56 34 L82 44 L78 54 L60 50 L66 92 L52 92 L50 66 L48 92 L34 92 L40 50 L22 54 L18 44 L44 34 Q36 32 36 22 Q36 8 50 8Z',
+        C.cream,
+        { w: 3.6 },
+      ),
+      p('M44 18 H56 V30 H44Z', C.red, { w: 0, op: 0.85 }),
+      circ(46, 24, 1.8, INK, { w: 0 }),
+      circ(54, 24, 1.8, INK, { w: 0 }),
+      ln('M46 70 H54 M46 78 H54', '#d9c9a0', 2),
+    ].join(''),
+  ),
+
+  /** A kuda-gitsune: a tiny fox that lives in a bamboo pipe and is not to be mentioned at dinner. */
+  kudagitsune: svg(
+    [
+      p('M18 92 L26 44 H74 L82 92Z', '#8cc152', { w: 3.6 }),
+      ln('M22 70 H78 M24 56 H76', '#5d8a2a', 2.6),
+      ell(50, 92, 30, 4, '#000', { w: 0, op: 0.2 }),
+      solid('M32 46 L30 20 L42 30 Q50 28 58 30 L70 20 L68 46 Q66 60 50 62 Q34 60 32 46Z', '#e8a24c'),
+      p('M34 30 L34 24 L40 30Z M66 30 L66 24 L60 30Z', C.pink, { w: 1.6 }),
+      ell(50, 52, 10, 7, C.cream, { w: 0 }),
+      eye(41, 42, 4.4, { look: [0.2, 0.3] }),
+      eye(59, 42, 4.4, { look: [-0.2, 0.3] }),
+      p('M47 48 L50 51 L53 48Z', INK, { w: 2 }),
+      ln('M44 55 Q50 58 56 55', INK, 2),
+    ].join(''),
+  ),
+
+  /** The wheel of the five elements: wood, fire, earth, metal, water. */
+  gogyo: svg(
+    [
+      ...[
+        ['#6fb04a', 0],
+        ['#e4452f', 72],
+        ['#e8b83a', 144],
+        ['#e8ecf6', 216],
+        ['#3a6fd0', 288],
+      ].map(
+        ([c, a]) =>
+          `<path d="M50 50 L50 8 A42 42 0 0 1 89.9 37Z" fill="${c}" stroke="${INK}" stroke-width="3.4" stroke-linejoin="round" transform="rotate(${a} 50 50)"/>`,
+      ),
+      circ(50, 50, 13, C.cream, { w: 3.6 }),
+      circ(50, 50, 5, INK, { w: 0 }),
+      ...[0, 72, 144, 216, 288].map((a) =>
+        circ(50 + Math.sin((a * Math.PI) / 180) * 28, 50 - Math.cos((a * Math.PI) / 180) * 28, 3.4, C.cream, { w: 2.2 }),
+      ),
+      eye(44, 80, 3.4),
+      eye(56, 80, 3.4),
+    ].join(''),
+  ),
+
+  /** Abe no Seimei, in the middle of a five-pointed star: the court wizard of a thousand years ago. */
+  seimei: svg(
+    [
+      ell(50, 72, 38, 14, '#8cc8f0', { w: 0, op: 0.35 }),
+      p('M50 62 L56 78 L72 80 L60 90 L64 98 L50 92 L36 98 L40 90 L28 80 L44 78Z', '#ffd36a', { w: 3, op: 0.9 }),
+      p('M24 92 Q22 60 38 54 H62 Q78 60 76 92Z', '#e8ecf6', { w: 3.4 }),
+      p('M40 54 H60 L55 68 H45Z', '#2c3a78', { w: 3 }),
+      solid('M30 38 Q30 16 50 14 Q70 16 70 38 Q70 54 50 56 Q30 54 30 38Z', C.skin),
+      p('M28 22 L32 -4 Q50 -10 68 -4 L72 22 Q50 14 28 22Z', INK, { w: 3 }),
+      ln('M36 34 L44 37 M64 34 L56 37', INK, 2.6),
+      eye(42, 40, 4, { iris: '#2c3a78', look: [0.3, 0.2] }),
+      eye(58, 40, 4, { iris: '#2c3a78', look: [-0.3, 0.2] }),
+      ln('M44 49 Q50 52 56 49', C.red, 2.2),
+      p('M70 56 L92 34 L96 44 L78 66Z', C.cream, { w: 3 }),
+      ln('M76 54 L88 42', C.red, 2.4),
+    ].join(''),
+  ),
+
+  /** A little paper bird of the Swarm. */
+  paperBird: svg(
+    [
+      p('M14 56 L50 44 L86 56 L50 76Z', C.cream, { w: 3.4 }),
+      p('M34 52 L18 24 L50 46Z', '#fffaf0', { w: 3.2 }),
+      p('M66 52 L82 24 L50 46Z', '#f0e6cf', { w: 3.2 }),
+      p('M60 46 L80 38 L74 52Z', C.red, { w: 3 }),
+      circ(70, 46, 2, INK, { w: 0 }),
+      p('M14 56 L4 68 L30 62Z', '#e8dcc0', { w: 3 }),
+    ].join(''),
+  ),
+
   /** A kyūdō archer: a great bow, a calm face, and nothing else in the world. */
   kyudo: svg(
     [

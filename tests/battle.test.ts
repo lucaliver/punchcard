@@ -210,3 +210,32 @@ describe('recall', () => {
     expect(b.recall(decoy.uid)).toBe(-1);
   });
 });
+
+describe('the onmyōji', () => {
+  it('a roaming spirit slides to the lane where the parade is thicker', () => {
+    const b = battle(
+      ['shikigami'],
+      stage([
+        { t: 0.1, lane: 1, foe: 'nopperabo' },
+        { t: 0.2, lane: 1, foe: 'nopperabo' },
+      ]),
+      'onmyoji',
+    );
+    hold(b, 'shikigami');
+    b.play(0, 2, 5);
+    run(b, 12);
+    const u = b.units.find((x) => x.cardId === 'shikigami');
+    expect(u?.lane).toBe(1);
+  });
+
+  it('the first card of a fight costs nothing', () => {
+    const b = battle(['kuzunoha', 'crane', 'crane', 'crane', 'crane'], stage(), 'onmyoji');
+    hold(b, 'kuzunoha');
+    b.oil = 0;
+    expect(b.cardCost(b.hand[0] as never)).toBe(0);
+    expect(b.play(0, 2, 5)).toBe(true);
+    hold(b, 'kuzunoha');
+    b.oil = 0;
+    expect(b.check(0, 3, 5)).toEqual({ ok: false, reason: 'oil' });
+  });
+});

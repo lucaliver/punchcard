@@ -19,6 +19,7 @@ export const screens: Record<keyof typeof en, string> = {
   'keepers.locked': 'Custode sconosciuto',
   'keepers.cooldown': 'Si ricarica in {secs} s.',
   'keepers.unlock.ronin': 'Batti il boss della prima notte',
+  'keepers.unlock.onmyoji': 'Tieni accesa la lanterna fino alla terza alba',
   'keepers.unlock.tanuki': 'Batti il boss della seconda notte',
 
   'act.1.intro1': 'Ogni notte d’estate la strada si riempie di lanterne che nessuno ha acceso. Camminano.',

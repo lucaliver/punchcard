@@ -340,7 +340,7 @@ function finishRun(won: boolean): void {
     showTitle();
     return;
   }
-  logRun({
+  const fresh = logRun({
     keeper: r.keeper,
     won,
     act: r.act,
@@ -351,6 +351,7 @@ function finishRun(won: boolean): void {
     relics: [...r.relics],
     at: Date.now(),
   });
+  if (fresh) unlocked = fresh;
   meta.introDone = true;
   settings.seenTour = true;
   saveSettings();

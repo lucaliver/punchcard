@@ -69,4 +69,25 @@ export const KEEPER_ART: Record<string, string> = {
       rect(8, 78, 14, 20, '#c4883a', { w: 3, r: 6 }),
     ].join(''),
   ),
+
+  /** Seimei, the onmyōji: a tall black hat, a pale robe, a paper talisman between two fingers. */
+  onmyoji: svg(
+    [
+      p('M6 100 Q6 66 30 60 H70 Q94 66 94 100Z', '#e8ecf6', { w: 3.6 }),
+      ln('M50 62 L36 100 M50 62 L64 100', '#9aa5c4', 2.6),
+      p('M40 60 H60 L54 76 H46Z', '#2c3a78', { w: 3 }),
+      p('M72 66 L90 52', C.skin, { w: 5 }),
+      p('M84 38 H98 V58 H84Z', C.cream, { w: 2.6, x: 'transform="rotate(14 91 48)"' }),
+      p('M88 42 H94 V47 H88Z', C.red, { w: 0, x: 'transform="rotate(14 91 48)"' }),
+      p('M22 64 Q6 66 10 92 Q18 84 22 74Z M78 64 Q94 66 90 92 Q82 84 78 74Z', INK, { w: 2.4 }),
+      solid('M28 42 Q28 18 50 18 Q72 18 72 42 Q72 64 50 66 Q28 64 28 42Z', C.skin),
+      p('M24 46 Q18 74 30 84 Q26 62 30 46Z M76 46 Q82 74 70 84 Q74 62 70 46Z', INK, { w: 2.4 }),
+      p('M30 22 L34 -4 Q50 -10 66 -4 L70 22 Q50 14 30 22Z', INK, { w: 3 }),
+      p('M40 8 H60', C.red, { w: 0 }),
+      ln('M34 38 L44 41 M66 38 L56 41', INK, 2.6),
+      eye(42, 44, 4.2, { iris: '#2c3a78', look: [0.3, 0.2] }),
+      eye(58, 44, 4.2, { iris: '#2c3a78', look: [-0.3, 0.2] }),
+      ln('M44 56 Q50 59 56 56', C.red, 2.4),
+    ].join(''),
+  ),
 };

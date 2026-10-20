@@ -53,6 +53,7 @@ const en = {
   'stat.sticky': 'Foes that strike it are **slowed** {pct} for {secs} s.',
   'stat.revive': 'Stands back up once with {pct} of its HP.',
   'stat.trap': 'Goes off for {dmg} damage when a foe comes close.',
+  'stat.roam': 'Every {every} s it slides into the next lane if the parade is clearly thicker there.',
   'stat.lifespan': 'Lasts {secs} s.',
   'stat.onDeath': 'When it falls: {what}',
   'rule.merge': 'Play it on its twin to merge: up to level {max}, stronger each time.',

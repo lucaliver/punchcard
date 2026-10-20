@@ -31,6 +31,23 @@ export const LEAF_DECOY = (up: boolean): SpiritDef => ({
   onDeath: [{ k: 'burst', dmg: up ? 4 : 3, radius: 1.25 }],
 });
 
+/** A paper warrior for the keeper's ability and the like: it fights a while, then comes apart. */
+export const PAPER_WARRIOR = (up: boolean, lifespan = 12): SpiritDef => ({
+  art: 'paperWarrior',
+  hp: up ? 12 : 9,
+  atk: { kind: 'melee', dmg: up ? 6 : 4, every: 1.1, range: 0.95 },
+  roam: { every: 5 },
+  lifespan,
+});
+
+const PAPER_BIRD = (up: boolean): SpiritDef => ({
+  art: 'paperBird',
+  hp: 3,
+  atk: { kind: 'shot', dmg: up ? 3 : 2, every: 0.9, range: 5 },
+  roam: { every: 3 },
+  lifespan: 14,
+});
+
 const list: CardDef[] = [
   // ——— neutral spirits ———
   spirit('kodama', 'any', 'common', 1, (u) => ({ art: 'kodama', hp: 5, oil: { n: 1, every: u ? 6.5 : 8 } })),
@@ -160,6 +177,46 @@ const list: CardDef[] = [
   charm('dice', 'tanuki', 'common', 1, 'none', (u) => [{ k: 'gamble', win: u ? 7 : 5, lose: 0 }], { vanish: true }),
   spirit('takarabune', 'tanuki', 'legend', 5, (u) => ({ art: 'takarabune', hp: u ? 24 : 18, oil: { n: u ? 4 : 3, every: u ? 2.6 : 3.2 } })),
   spirit('kettle', 'tanuki', 'epic', 4, (u) => ({ art: 'kettle', hp: 20, oil: { n: 2, every: u ? 3 : 3.8 } })),
+
+  // ——— Seimei the onmyōji: paper servants that go where the parade is thickest ———
+  spirit(
+    'shikigami',
+    'onmyoji',
+    'common',
+    2,
+    (u) => ({ art: 'shikigami', hp: 4, atk: { kind: 'shot', dmg: u ? 3.2 : 2.2, every: 1.1, range: 5 }, roam: { every: u ? 5 : 6 } }),
+    { starter: true },
+  ),
+  spirit('paperWarrior', 'onmyoji', 'common', 2, (u) => ({ ...PAPER_WARRIOR(u, undefined), lifespan: undefined, roam: { every: u ? 6 : 7 } }), {
+    starter: true,
+  }),
+  spirit('hitogata', 'onmyoji', 'common', 1, (u) => ({ art: 'hitogata', hp: u ? 13 : 9, onDeath: [{ k: 'mend', hp: u ? 5 : 3, scope: 'all' }] })),
+  charm('goma', 'onmyoji', 'common', 2, 'lane', (u) => [{ k: 'hit', dmg: u ? 6 : 4, scope: 'lane', burn: [2, 3] }]),
+  spirit('inkRaven', 'onmyoji', 'rare', 3, (u) => ({
+    art: 'inkRaven',
+    hp: 5,
+    atk: { kind: 'pierce', dmg: u ? 4 : 3, every: 1.4, range: 6 },
+    roam: { every: 5 },
+  })),
+  charm('kekkai', 'onmyoji', 'rare', 2, 'lane', (u) => [
+    { k: 'zone', slow: 0.6, secs: u ? 12 : 8 },
+    { k: 'stun', secs: 1, scope: 'lane' },
+  ]),
+  spirit('kudagitsune', 'onmyoji', 'rare', 2, (u) => ({
+    art: 'kudagitsune',
+    hp: 3,
+    atk: { kind: 'shot', dmg: u ? 1.6 : 1.2, every: 0.5, range: 5 },
+    roam: { every: 7 },
+  })),
+  spirit('gogyo', 'onmyoji', 'rare', 3, (u) => ({ art: 'gogyo', hp: 10, aura: { to: 'all', rate: u ? 0.25 : 0.15, dmg: u ? 0.15 : 0.1 } })),
+  charm('shikiSwarm', 'onmyoji', 'rare', 3, 'none', (u) => [{ k: 'summon', spirit: PAPER_BIRD(u), n: u ? 4 : 3, at: 'random' }]),
+  charm('pentagram', 'onmyoji', 'epic', 3, 'none', (u) => [{ k: 'hit', dmg: u ? 8 : 5, scope: 'all', slow: [0.4, 4] }]),
+  spirit('seimei', 'onmyoji', 'legend', 5, (u) => ({
+    art: 'seimei',
+    hp: u ? 22 : 16,
+    atk: { kind: 'pierce', dmg: u ? 8 : 6, every: 1.2, range: 7 },
+    aura: { to: 'all', dmg: u ? 0.3 : 0.2 },
+  })),
 ];
 
 export const CARDS: Record<string, CardDef> = Object.fromEntries(list.map((c) => [c.id, c]));

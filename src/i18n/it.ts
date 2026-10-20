@@ -53,6 +53,7 @@ const it: Record<EnKey, string> = {
   'stat.sticky': 'I nemici che lo colpiscono sono **rallentati** del {pct} per {secs} s.',
   'stat.revive': 'Si rialza una volta con il {pct} dei suoi PV.',
   'stat.trap': 'Scatta infliggendo {dmg} danni quando un nemico si avvicina.',
+  'stat.roam': 'Ogni {every} s scivola nella corsia accanto se la parata lì è decisamente più fitta.',
   'stat.lifespan': 'Dura {secs} s.',
   'stat.onDeath': 'Quando cade: {what}',
   'rule.merge': 'Giocalo sul suo gemello per fonderli: fino al livello {max}, più forte ogni volta.',

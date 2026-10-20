@@ -50,12 +50,12 @@ export const CONFIG = {
     /** Seconds until dawn: normal, elite, boss. */
     duration: { watch: 62, elite: 78, boss: 96 },
     /** Wave budget (foe `cost`) of a fight: base + perFloor * floor + perAct * (act - 1). */
-    budget: { base: 22, perFloor: 2.4, perAct: 22, elite: 1.25, boss: 1 },
+    budget: { base: 22, perFloor: 2.4, perAct: 24, elite: 1.25, boss: 1 },
     /** Foes beyond this many in a lane at once are held back a few seconds. */
     rocks: [0, 3] as [number, number],
     shrines: [0, 2] as [number, number],
     /** Foe hit points and spirit-facing damage grow this much per act and per floor. */
-    foeHpAct: 0.26,
+    foeHpAct: 0.28,
     foeHpFloor: 0.02,
   },
 

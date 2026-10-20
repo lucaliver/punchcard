@@ -174,7 +174,9 @@ export class Field {
   }
 
   private unitXY(u: Unit): { x: number; y: number } {
-    return { x: (u.lane + 0.5) * this.g.tw, y: (u.row + 0.5) * this.g.th };
+    const v = this.view(u.uid);
+    if (v.x < 0) v.x = u.lane;
+    return { x: (v.x + 0.5) * this.g.tw, y: (u.row + 0.5) * this.g.th };
   }
 
   private foeXY(f: Foe): { x: number; y: number } {
@@ -310,6 +312,11 @@ export class Field {
           gravity: 140,
         });
         this.views.delete(e.unit.uid);
+        break;
+      }
+      case 'move': {
+        const { x, y } = this.unitXY(e.unit);
+        this.fx.burst(x, y + th * 0.3, 8, { color: '#fff3d6', shape: 'spark', speed: 90, life: 0.3, size: 2.2 });
         break;
       }
       case 'revive': {
@@ -775,6 +782,8 @@ export class Field {
   private drawUnit(u: Unit): void {
     const { tw, th } = this.g;
     const v = this.view(u.uid);
+    v.x += (u.lane - (v.x < 0 ? u.lane : v.x)) * 0.22;
+    if (v.x < 0) v.x = u.lane;
     const { x } = this.unitXY(u);
     const size = Math.min(tw * 1.08, th * 1.12);
     const baseY = (u.row + 0.92) * th;

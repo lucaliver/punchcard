@@ -14,11 +14,16 @@ export interface KeeperOpts {
   onBack(): void;
 }
 
-const UNLOCK_HINT: Record<KeeperId, string> = { miko: '', ronin: 'keepers.unlock.ronin', tanuki: 'keepers.unlock.tanuki' };
+const UNLOCK_HINT: Record<KeeperId, string> = {
+  miko: '',
+  ronin: 'keepers.unlock.ronin',
+  tanuki: 'keepers.unlock.tanuki',
+  onmyoji: 'keepers.unlock.onmyoji',
+};
 
 function passiveText(id: KeeperId): string {
   const p = KEEPERS[id].passive;
-  const n = p.k === 'hardy' ? Math.round(p.n * 100) : p.n;
+  const n = p.k === 'hardy' ? Math.round(p.n * 100) : 'n' in p ? p.n : 0;
   return t(`keeper.${id}.passive.d`, { n });
 }
 

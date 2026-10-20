@@ -114,6 +114,29 @@ export const content = {
   'card.kettle.flavor': 'A kettle the size of a shrine, with the profit margin of one.',
 
   // — the parade —
+  'card.shikigami.name': 'Paper Shikigami',
+  'card.shikigami.flavor': 'Folded by someone who owed you a favour. And paper.',
+  'card.paperWarrior.name': 'Paper Warrior',
+  'card.paperWarrior.flavor': 'A sword, a helmet, and a deep fear of rain.',
+  'card.hitogata.name': 'Hitogata Doll',
+  'card.hitogata.flavor': 'Takes the blame so you do not have to.',
+  'card.goma.name': 'Goma Fire',
+  'card.goma.flavor': 'A small, sacred, extremely focused bonfire.',
+  'card.inkRaven.name': 'Ink Raven',
+  'card.inkRaven.flavor': 'Drawn in one stroke. Flies in one, too.',
+  'card.kekkai.name': 'Kekkai Barrier',
+  'card.kekkai.flavor': 'A boundary, politely but audibly enforced.',
+  'card.kudagitsune.name': 'Kuda-gitsune',
+  'card.kudagitsune.flavor': 'Lives in a pipe. Rent is not discussed.',
+  'card.gogyo.name': 'Wheel of Five Elements',
+  'card.gogyo.flavor': 'Wood feeds fire, fire makes earth, and everybody gets a bonus.',
+  'card.shikiSwarm.name': 'Shiki Swarm',
+  'card.shikiSwarm.flavor': 'One sleeve. Many birds. No questions.',
+  'card.pentagram.name': 'Seimei’s Pentagram',
+  'card.pentagram.flavor': 'Five points, no mercy, and a good grasp of geometry.',
+  'card.seimei.name': 'Abe no Seimei',
+  'card.seimei.flavor': 'The court wizard of a thousand years ago, still taking appointments.',
+
   'foe.karakasa.name': 'Karakasa',
   'foe.karakasa.lore': 'An umbrella that learned to hop. It never returns borrowed owners.',
   'foe.chochin.name': 'Chōchin Ghost',
@@ -224,6 +247,13 @@ export const content = {
   'keeper.tanuki.ability': 'Leaf Shuffle',
 
   // — the nights —
+  'keeper.onmyoji.name': 'Seimei',
+  'keeper.onmyoji.title': 'Onmyōji',
+  'keeper.onmyoji.blurb': 'Folds the night into paper servants and sends them wherever the trouble is.',
+  'keeper.onmyoji.passive': 'Opening fortune',
+  'keeper.onmyoji.passive.d': 'The first card played in every fight costs nothing.',
+  'keeper.onmyoji.ability': 'Paper Storm',
+
   'act.1.name': 'The Village Road',
   'act.1.sub': 'First night · dusk',
   'act.2.name': 'The Bamboo & the Marsh',

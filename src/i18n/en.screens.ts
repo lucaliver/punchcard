@@ -19,6 +19,7 @@ export const screens = {
   'keepers.locked': 'Unknown keeper',
   'keepers.cooldown': 'Recharges in {secs} s.',
   'keepers.unlock.ronin': 'Beat the first night’s boss',
+  'keepers.unlock.onmyoji': 'Hold the lantern until the third dawn',
   'keepers.unlock.tanuki': 'Beat the second night’s boss',
 
   // — the nights —

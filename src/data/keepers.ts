@@ -1,4 +1,5 @@
 import type { KeeperDef, KeeperId } from '../game/types';
+import { PAPER_WARRIOR } from './cards';
 
 /** The lantern keepers. The first is open from the start; the others are won by beating a night's boss. */
 export const KEEPERS: Record<KeeperId, KeeperDef> = {
@@ -26,7 +27,7 @@ export const KEEPERS: Record<KeeperId, KeeperDef> = {
     ability: { cd: 40, fx: [{ k: 'hit', dmg: 14, scope: 'fronts' }] },
     ink: '#3f6fd6',
     unlock: 'boss1',
-    passive: { k: 'hardy', n: 0.25 },
+    passive: { k: 'hardy', n: 0.4 },
   },
   tanuki: {
     id: 'tanuki',
@@ -41,6 +42,19 @@ export const KEEPERS: Record<KeeperId, KeeperDef> = {
     unlock: 'boss2',
     passive: { k: 'purse', n: 14 },
   },
+  onmyoji: {
+    id: 'onmyoji',
+    flame: 12,
+    oil: 4,
+    maxOil: 10,
+    hand: 4,
+    deck: ['shikigami', 'shikigami', 'shikigami', 'paperWarrior', 'paperWarrior', 'hitogata', 'hitogata', 'goma', 'kodama', 'oilJar'],
+    /** Paper Storm: three paper warriors come out of the sleeve and fight for a while. */
+    ability: { cd: 38, fx: [{ k: 'summon', spirit: PAPER_WARRIOR(false), n: 3, at: 'random' }] },
+    ink: '#8a6fd0',
+    unlock: 'win',
+    passive: { k: 'firstFree' },
+  },
 };
 
-export const KEEPER_IDS: KeeperId[] = ['miko', 'ronin', 'tanuki'];
+export const KEEPER_IDS: KeeperId[] = ['miko', 'ronin', 'tanuki', 'onmyoji'];

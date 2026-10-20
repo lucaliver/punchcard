@@ -11,7 +11,7 @@ export const ROWS = 7;
 /** Spirits can be set only from this row down: the top rows are the road the parade walks in on. */
 export const PLACE_ROW = 2;
 
-export type KeeperId = 'miko' | 'ronin' | 'tanuki';
+export type KeeperId = 'miko' | 'ronin' | 'tanuki' | 'onmyoji';
 export type Rarity = 'common' | 'rare' | 'epic' | 'legend';
 export type CardKind = 'spirit' | 'charm';
 export type Terrain = 'ground' | 'rock' | 'shrine';
@@ -86,6 +86,8 @@ export interface SpiritDef {
   onDeath?: Effect[];
   /** Foes hit by it are slowed (a sticky wall). */
   sticky?: [factor: number, secs: number];
+  /** Slides into the next lane when the parade is thicker there. */
+  roam?: { every: number };
 }
 
 export interface CardDef {
@@ -204,7 +206,7 @@ export interface KeeperDef {
   ability: { cd: number; fx: Effect[] };
   /** The keeper's colour, in CSS. */
   ink: string;
-  unlock: 'start' | 'boss1' | 'boss2';
+  unlock: 'start' | 'boss1' | 'boss2' | 'win';
   /** Passive (read by the engine as flags). */
   passive: KeeperPassive;
 }
@@ -215,7 +217,9 @@ export type KeeperPassive =
   /** Spirits have more HP (a share). */
   | { k: 'hardy'; n: number }
   /** Coins at the end of a fight. */
-  | { k: 'purse'; n: number };
+  | { k: 'purse'; n: number }
+  /** The first card played in a fight costs nothing. */
+  | { k: 'firstFree' };
 
 export interface RelicDef {
   id: string;

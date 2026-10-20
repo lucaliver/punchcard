@@ -139,6 +139,7 @@ export function spiritLines(sd: SpiritDef): string[] {
   if (sd.sticky) lines.push(t('stat.sticky', { pct: pct(sd.sticky[0]), secs: fmt(sd.sticky[1]) }));
   if (sd.revive) lines.push(t('stat.revive', { pct: pct(sd.revive) }));
   if (sd.trap) lines.push(t('stat.trap', { dmg: fmt(sd.trap.dmg) }));
+  if (sd.roam) lines.push(t('stat.roam', { every: fmt(sd.roam.every) }));
   if (sd.lifespan) lines.push(t('stat.lifespan', { secs: fmt(sd.lifespan) }));
   for (const fx of sd.onDeath ?? []) lines.push(t('stat.onDeath', { what: effectLine(fx) }));
   return lines;

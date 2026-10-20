@@ -49,6 +49,8 @@ export interface Unit {
   cd: number;
   prodT: number;
   healT: number;
+  /** Seconds until it may slide to another lane. */
+  roamT: number;
   /** Seconds it has left (a decoy), or null. */
   life: number | null;
   fx: UnitFx;
@@ -107,6 +109,7 @@ export type BattleEvent =
   | { type: 'foeDied'; foe: Foe; dawn: boolean }
   | { type: 'unitDied'; unit: Unit; expired: boolean }
   | { type: 'revive'; unit: Unit }
+  | { type: 'move'; unit: Unit; from: number }
   | { type: 'leak'; foe: Foe; dmg: number; spared: boolean }
   | { type: 'oil'; n: number; lane: number | null; row: number | null }
   | { type: 'heal'; unit: Unit; hp: number }
@@ -322,6 +325,7 @@ export class Battle {
     const base = costOf(c);
     const keeper = KEEPERS[this.keeperId];
     if (keeper.passive.k === 'charmCut' && card(c.id).kind === 'charm' && base > 1) return base - keeper.passive.n;
+    if (keeper.passive.k === 'firstFree' && this.stats.played === 0) return 0;
     return base;
   }
 
@@ -404,6 +408,7 @@ export class Battle {
       cd: sd.atk ? sd.atk.every * 0.5 : 0,
       prodT: 0,
       healT: 0,
+      roamT: 0,
       life: sd.lifespan ?? null,
       fx: { stun: 0, web: 0, bless: 0, blessT: 0 },
       revived: false,
@@ -699,6 +704,13 @@ export class Battle {
           for (const b of this.neighbours(u, u.def.heal.to)) this.healUnit(b, u.def.heal.hp * k);
         }
       }
+      if (u.def.roam) {
+        u.roamT += dt;
+        if (u.roamT >= u.def.roam.every) {
+          u.roamT = 0;
+          this.roam(u);
+        }
+      }
       if (u.def.trap) {
         const hot = this.foes.find((f) => !f.dead && f.lane === u.lane && Math.abs(f.y - (u.row + 0.5)) < 0.9);
         if (hot) {
@@ -714,6 +726,26 @@ export class Battle {
       if (this.strike(u, boost)) u.cd = atk.every;
       else u.cd = 0;
     }
+  }
+
+  /** A roaming spirit slides to the next lane when the parade is clearly thicker there (and the tile is free). */
+  private roam(u: Unit): void {
+    const here = this.laneThreat(u.lane);
+    let best = -1;
+    let bestThreat = here * 1.3 + 2;
+    for (const l of [u.lane - 1, u.lane + 1]) {
+      if (l < 0 || l >= COLS || !this.tileFree(l, u.row)) continue;
+      const threat = this.laneThreat(l);
+      if (threat > bestThreat) {
+        best = l;
+        bestThreat = threat;
+      }
+    }
+    if (best < 0) return;
+    const from = u.lane;
+    u.lane = best;
+    u.shrine = this.terrain[best][u.row] === 'shrine';
+    this.events.emit({ type: 'move', unit: u, from });
   }
 
   /** The foes a spirit's attack can reach, nearest first. */

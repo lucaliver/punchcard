@@ -6,6 +6,54 @@ const tag = (x: number, y: number, w: number, h: number, rot = 0): string =>
   `<g transform="rotate(${rot} ${x + w / 2} ${y + h / 2})">${rect(x, y, w, h, C.cream, { w: 3.2, r: 2 })}${rect(x + w * 0.3, y + h * 0.18, w * 0.4, h * 0.2, C.red, { w: 0 })}${ln(`M${x + w * 0.5} ${y + h * 0.42} V${y + h * 0.86}`, INK, 2.6)}${ln(`M${x + w * 0.3} ${y + h * 0.58} H${x + w * 0.7}`, INK, 2.2)}</g>`;
 
 export const CHARM_ART: Record<string, string> = {
+  /** A goma fire: flames in a bowl, with a talisman held over them. */
+  goma: svg(
+    [
+      p('M14 74 Q50 100 86 74 L80 62 H20Z', '#6a3a22', { w: 3.6 }),
+      solid('M50 6 Q70 28 74 46 Q78 66 50 68 Q22 66 26 46 Q30 36 40 28 Q42 40 50 36 Q52 22 50 6Z', '#f5662a'),
+      ell(50, 50, 9, 12, '#ffd36a', { w: 0 }),
+      tag(66, 20, 20, 36, 12),
+    ].join(''),
+  ),
+
+  /** A kekkai: a barrier of light, square and sealed. */
+  kekkai: svg(
+    [
+      rect(10, 10, 80, 80, 'rgba(140,200,240,0.35)', { w: 4, r: 6 }),
+      ln('M10 36 H90 M10 64 H90 M36 10 V90 M64 10 V90', '#bfe6ff', 2.6),
+      circ(50, 50, 16, C.cream, { w: 3.4 }),
+      ln('M50 38 V62 M38 50 H62', C.red, 4),
+    ].join(''),
+  ),
+
+  /** The pentagram of Seimei: five points in a ring of light. */
+  pentagram: svg(
+    [
+      circ(50, 52, 40, 'rgba(255,211,106,0.25)', { w: 4 }),
+      circ(50, 52, 33, 'none', { w: 2.4, stroke: C.gold }),
+      p('M50 14 L62 72 L14 36 L86 36 L38 72Z', 'rgba(255,243,214,0.5)', { w: 4 }),
+      ...[0, 72, 144, 216, 288].map((a) =>
+        circ(50 + Math.sin((a * Math.PI) / 180) * 33, 52 - Math.cos((a * Math.PI) / 180) * 33, 4, C.red, { w: 2.2 }),
+      ),
+    ].join(''),
+  ),
+
+  /** The Shiki Swarm: paper birds, a whole flock of them, from one sleeve. */
+  shikiSwarm: svg(
+    [
+      ...[
+        [10, 20, 0.6],
+        [46, 8, 0.7],
+        [64, 40, 0.55],
+        [20, 54, 0.75],
+        [48, 66, 0.6],
+      ].map(
+        ([x, y, k]) =>
+          `<g transform="translate(${x} ${y}) scale(${k})">${p('M0 40 L36 28 L72 40 L36 60Z', C.cream, { w: 4 })}${p('M20 36 L4 8 L36 30Z', '#fffaf0', { w: 4 })}${p('M52 36 L68 8 L36 30Z', '#f0e6cf', { w: 4 })}${p('M46 30 L66 22 L60 36Z', C.red, { w: 3.6 })}</g>`,
+      ),
+    ].join(''),
+  ),
+
   /** The sun goddess: a disc of light with rays, and a mirror at its heart. */
   amaterasu: svg(
     [

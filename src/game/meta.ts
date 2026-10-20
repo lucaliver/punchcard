@@ -2,7 +2,7 @@ import { loadRaw, store } from '../core/save';
 import { CARDS } from '../data/cards';
 import { CONFIG } from '../data/config';
 import { FOES } from '../data/foes';
-import { KEEPER_IDS } from '../data/keepers';
+import { KEEPER_IDS, KEEPERS } from '../data/keepers';
 import { MAX_MOON } from '../data/moons';
 import { RELICS } from '../data/relics';
 import type { KeeperId } from './types';
@@ -115,28 +115,39 @@ export function discover(kind: 'seenCards' | 'seenFoes' | 'seenRelics', ids: rea
   return fresh;
 }
 
-const UNLOCK_BY_BOSS: Partial<Record<number, KeeperId>> = { 1: 'ronin', 2: 'tanuki' };
+/** The keepers a trigger (a boss of a night, or a whole climb won) opens, by their `unlock` in the data. */
+function openBy(trigger: 'boss1' | 'boss2' | 'win'): KeeperId | null {
+  for (const id of KEEPER_IDS) {
+    if (KEEPERS[id].unlock === trigger && !meta.unlocked.includes(id)) {
+      meta.unlocked.push(id);
+      return id;
+    }
+  }
+  return null;
+}
 
 /** A boss of the night fell. Returns the keeper it unlocks, if any is new. */
 export function bossDown(act: number): KeeperId | null {
   if (!meta.bosses.includes(act)) meta.bosses.push(act);
-  const k = UNLOCK_BY_BOSS[act] ?? null;
-  const fresh = k && !meta.unlocked.includes(k) ? k : null;
-  if (fresh) meta.unlocked.push(fresh);
+  const fresh = act === 1 ? openBy('boss1') : act === 2 ? openBy('boss2') : null;
   saveMeta();
   return fresh;
 }
 
-export function logRun(log: RunLog): void {
+/** Records a finished run. Returns the keeper a won climb opens, if any is new. */
+export function logRun(log: RunLog): KeeperId | null {
   meta.runs++;
+  let fresh: KeeperId | null = null;
   if (log.won) {
     meta.wins++;
+    fresh = openBy('win');
     if (log.level >= meta.moon && meta.moon < MAX_MOON) meta.moon = log.level + 1;
   }
   meta.bestAct = Math.max(meta.bestAct, log.act);
   meta.history.unshift(log);
   meta.history.length = Math.min(meta.history.length, CONFIG.historyMax);
   saveMeta();
+  return fresh;
 }
 
 export function resetMeta(): void {
