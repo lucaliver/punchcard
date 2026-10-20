@@ -50,7 +50,7 @@ export function detectLocale(): string {
 export function setLocale(code: string): void {
   if (locales[code]) {
     current = code;
-    document.documentElement.lang = code;
+    if (typeof document !== 'undefined') document.documentElement.lang = code;
   }
 }
 

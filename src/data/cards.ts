@@ -69,6 +69,19 @@ const list: CardDef[] = [
   charm('maneki', 'any', 'rare', 1, 'none', () => [{ k: 'redeal' }], { upCost: 0 }),
   charm('oilJar', 'any', 'common', 1, 'none', (u) => [{ k: 'oil', n: u ? 5 : 4 }], { vanish: true }),
   charm('riceBall', 'any', 'rare', 1, 'none', (u) => [{ k: 'flame', n: u ? 2 : 1 }], { vanish: true }),
+  charm(
+    'amaterasu',
+    'any',
+    'legend',
+    5,
+    'none',
+    (u) => [
+      { k: 'hit', dmg: u ? 12 : 8, scope: 'all', stun: u ? 3 : 2 },
+      { k: 'mend', hp: u ? 12 : 8, scope: 'all' },
+      { k: 'flame', n: u ? 2 : 1 },
+    ],
+    { vanish: true },
+  ),
   charm('talismanStorm', 'any', 'epic', 3, 'none', (u) => [{ k: 'hit', dmg: u ? 5 : 3, scope: 'all', stun: 0.5 }]),
 
   // ——— Miko Hanae: purification ———
@@ -90,6 +103,7 @@ const list: CardDef[] = [
   spirit('torii', 'miko', 'rare', 3, (u) => ({ art: 'torii', hp: 18, atk: { kind: 'pulse', dmg: u ? 3 : 2, every: 0.7, range: 1.4 } })),
   charm('shide', 'miko', 'common', 2, 'lane', (u) => [{ k: 'hit', dmg: u ? 4 : 3, scope: 'lanes3' }]),
   spirit('kuzunoha', 'miko', 'epic', 4, (u) => ({ art: 'kuzunoha', hp: 7, atk: { kind: 'pierce', dmg: u ? 8 : 6, every: 1.1, range: 7 } })),
+  spirit('inari', 'miko', 'legend', 5, (u) => ({ art: 'inari', hp: u ? 26 : 20, aura: { to: 'all', rate: u ? 0.35 : 0.25, dmg: u ? 0.3 : 0.2 } })),
   charm('exorcism', 'miko', 'epic', 4, 'none', (u) => [{ k: 'hit', dmg: u ? 22 : 15, scope: 'strongest' }]),
 
   // ——— Ronin Ichi: steel and patience ———
@@ -116,6 +130,11 @@ const list: CardDef[] = [
     { k: 'bless', atk: u ? 0.7 : 0.5, secs: 8, scope: 'all' },
     { k: 'mend', hp: u ? 10 : 6, scope: 'all' },
   ]),
+  spirit('swordSaint', 'ronin', 'legend', 5, (u) => ({
+    art: 'swordSaint',
+    hp: u ? 36 : 28,
+    atk: { kind: 'melee', dmg: u ? 16 : 12, every: 0.9, range: 0.95, cleave: true },
+  })),
   spirit('brawler', 'ronin', 'common', 2, (u) => ({ art: 'brawler', hp: 10, atk: { kind: 'melee', dmg: u ? 4 : 3, every: 0.7, range: 0.95 } })),
 
   // ——— Tanuki Bunbuku: tricks and trade ———
@@ -138,6 +157,7 @@ const list: CardDef[] = [
   spirit('sakeStall', 'tanuki', 'common', 2, (u) => ({ art: 'sakeStall', hp: 11, heal: { hp: u ? 2 : 1, every: 1, to: 'adjacent' } })),
   charm('parade', 'tanuki', 'rare', 3, 'none', (u) => [{ k: 'summon', spirit: LEAF_DECOY(false), n: u ? 4 : 3, at: 'random' }]),
   charm('dice', 'tanuki', 'common', 1, 'none', (u) => [{ k: 'gamble', win: u ? 5 : 4, lose: 1 }]),
+  spirit('takarabune', 'tanuki', 'legend', 5, (u) => ({ art: 'takarabune', hp: u ? 24 : 18, oil: { n: u ? 4 : 3, every: u ? 3 : 3.5 } })),
   spirit('kettle', 'tanuki', 'epic', 4, (u) => ({ art: 'kettle', hp: 20, oil: { n: 2, every: u ? 3.5 : 4.5 } })),
 ];
 

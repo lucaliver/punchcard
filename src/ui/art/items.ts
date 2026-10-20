@@ -6,6 +6,19 @@ const tag = (x: number, y: number, w: number, h: number, rot = 0): string =>
   `<g transform="rotate(${rot} ${x + w / 2} ${y + h / 2})">${rect(x, y, w, h, C.cream, { w: 3.2, r: 2 })}${rect(x + w * 0.3, y + h * 0.18, w * 0.4, h * 0.2, C.red, { w: 0 })}${ln(`M${x + w * 0.5} ${y + h * 0.42} V${y + h * 0.86}`, INK, 2.6)}${ln(`M${x + w * 0.3} ${y + h * 0.58} H${x + w * 0.7}`, INK, 2.2)}</g>`;
 
 export const CHARM_ART: Record<string, string> = {
+  /** The sun goddess: a disc of light with rays, and a mirror at its heart. */
+  amaterasu: svg(
+    [
+      ...Array.from({ length: 12 }, (_, i) => p('M46 6 L50 -2 L54 6Z', '#ffd36a', { w: 3, x: `transform="rotate(${i * 30} 50 50)"` })),
+      ...Array.from({ length: 12 }, (_, i) => ln('M50 14 V26', '#fff1a8', 3, `transform="rotate(${i * 30 + 15} 50 50)"`)),
+      circ(50, 50, 32, '#ffc23a', { w: 4.4 }),
+      circ(50, 50, 24, '#fff3d6', { w: 3.4 }),
+      circ(50, 50, 15, '#e8f2f8', { w: 3 }),
+      ln('M42 44 Q48 38 56 42', C.white, 3.4),
+      circ(50, 50, 4, C.red, { w: 2.4 }),
+    ].join(''),
+  ),
+
   ofuda: svg([tag(30, 10, 40, 80, 0), circ(50, 24, 5, C.red, { w: 2.4 })].join('')),
 
   sake: svg(

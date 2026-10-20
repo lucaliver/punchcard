@@ -106,6 +106,15 @@ const en = {
   'ui.lanternOut': 'The lantern is out',
   'ui.outSub': 'The parade walks on.',
   'ui.continue': 'Continue',
+  'ui.letsGo': 'Let’s go',
+  'stat.level': 'Level {n}: everything is {pct} stronger.',
+  'tour.field': 'The parade walks down this road from the top. Every foe that reaches your lantern at the bottom costs flame.',
+  'tour.gauges': 'This is your flame (your life) and your oil. Cards cost oil, and it refills by itself.',
+  'tour.hand': 'Drag a spirit card onto the garden to call it. Hold any card to read what it does.',
+  'tour.ability': 'Your keeper has a special move. When it glows, tap it.',
+  'tip.ability': 'Your ability is ready: tap the bell!',
+  'tip.merge': 'A twin is on the table: play this card onto it to merge them.',
+  'tip.leak': 'Hold a foe on the field to read what it does.',
 } as const;
 
 export type EnKey = keyof typeof en;

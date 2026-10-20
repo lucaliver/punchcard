@@ -91,6 +91,17 @@ test.describe('a run', () => {
   });
 });
 
+test('the first fight has a short tour before it starts', async ({ page }) => {
+  await freshGame(page, {}, true);
+  await startRun(page);
+  await page.locator('.m-node.reach').first().click();
+  await page.click('.start-panel .btn');
+  await expect(page.locator('.coach')).toBeVisible();
+  for (let i = 0; i < 4; i++) await page.locator('.coach .btn').click();
+  await expect(page.locator('.coach')).toHaveCount(0);
+  await expect.poll(() => page.evaluate(() => (window as unknown as { __battle: { state: string } }).__battle.state)).toBe('playing');
+});
+
 test.describe('rooms', () => {
   for (const room of ['rest', 'shrine', 'treasure', 'market']) {
     test(`the ${room} opens and can be left`, async ({ page }) => {

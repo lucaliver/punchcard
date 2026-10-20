@@ -8,10 +8,12 @@ import { COLS, PLACE_ROW, ROWS, type CardInst } from '../../game/types';
 import type { FightKind } from '../../game/waves';
 import { openModal, pico, type Screen } from '../app';
 import { artUrl } from '../art/sprites';
-import { openCardDetail, openFoeDetail } from '../components/cardShow';
+import { openCardDetail, openFoeDetail, openUnitDetail } from '../components/cardShow';
+import { runCoach } from '../components/coach';
 import { cardView, cardArtId } from '../components/cardView';
 import { costText } from '../components/cardText';
 import { h, haptic, setText, toggle } from '../dom';
+import { saveSettings, settings } from '../../game/settings';
 import { Field } from './field';
 
 export interface BattleResult {
@@ -228,8 +230,29 @@ export function battleScreen(o: BattleScreenOpts): Screen {
     unlockAudio();
     overlay.replaceChildren();
     overlay.classList.remove('on');
-    b.start();
-    syncHand();
+    const go = (): void => {
+      b.start();
+      syncHand();
+    };
+    if (!o.tour) {
+      go();
+      return;
+    }
+    runCoach(
+      el,
+      [
+        { target: () => fieldWrap, text: t('tour.field'), place: 'below' },
+        { target: () => status, text: t('tour.gauges'), place: 'above' },
+        { target: () => handEl, text: t('tour.hand'), place: 'above' },
+        { target: () => abilityBtn, text: t('tour.ability'), place: 'above' },
+      ],
+      b.keeperId,
+      () => {
+        settings.seenTour = true;
+        saveSettings();
+        go();
+      },
+    );
   }
 
   // ——— playing a card ———
@@ -270,11 +293,34 @@ export function battleScreen(o: BattleScreenOpts): Screen {
 
   let hintTimer = 0;
   const hintEl = h('div', { class: 'b-hint' });
-  function showHint(text: string): void {
+  function showHint(text: string, ms = 1400): void {
     hintEl.textContent = text;
     hintEl.classList.add('on');
     clearTimeout(hintTimer);
-    hintTimer = window.setTimeout(() => hintEl.classList.remove('on'), 1400);
+    hintTimer = window.setTimeout(() => hintEl.classList.remove('on'), ms);
+  }
+  /** A hint that shows once, ever. */
+  function tip(key: string, text: string): void {
+    if (settings.tips.includes(key)) return;
+    settings.tips.push(key);
+    saveSettings();
+    showHint(text, 4200);
+  }
+  let tipClock = 0;
+  function tips(dt: number): void {
+    tipClock += dt;
+    if (tipClock < 0.6) return;
+    tipClock = 0;
+    if (b.state !== 'playing') return;
+    if (b.abilityReady) tip('ability', t('tip.ability'));
+    for (const c of b.hand) {
+      if (!c || card(c.id).kind !== 'spirit') continue;
+      if (b.units.some((u) => u.cardId === c.id && u.level < CONFIG.maxLevel) && b.oil >= b.cardCost(c)) {
+        tip('merge', t('tip.merge'));
+        break;
+      }
+    }
+    if (b.stats.leaks > 0) tip('leak', t('tip.leak'));
   }
   fieldWrap.append(hintEl);
 
@@ -421,12 +467,40 @@ export function battleScreen(o: BattleScreenOpts): Screen {
   }
 
   // ——— input on the field ———
+  let fieldTimer = 0;
+  let fieldHeld = false;
+  let fx0 = 0;
+  let fy0 = 0;
+  fieldWrap.addEventListener('pointerdown', (e) => {
+    fieldHeld = false;
+    fx0 = e.clientX;
+    fy0 = e.clientY;
+    clearTimeout(fieldTimer);
+    fieldTimer = window.setTimeout(() => {
+      const hit = field.entityAt(fx0, fy0);
+      if (!hit.unit && !hit.foe) return;
+      fieldHeld = true;
+      haptic(18);
+      inspecting++;
+      const done = (): void => {
+        inspecting--;
+      };
+      if (hit.foe) openFoeDetail(hit.foe.def, b.stage.hpMul, done);
+      else if (hit.unit) openUnitDetail(hit.unit.cardId, hit.unit.def, hit.unit.level, hit.unit.hp, hit.unit.maxHp, done);
+    }, CONFIG.longPressMs);
+  });
+  for (const ev of ['pointerup', 'pointerleave', 'pointercancel']) fieldWrap.addEventListener(ev, () => clearTimeout(fieldTimer));
   fieldWrap.addEventListener('pointermove', (e) => {
+    if (Math.hypot(e.clientX - fx0, e.clientY - fy0) > CONFIG.tapSlop) clearTimeout(fieldTimer);
     if (armed < 0) return;
     hover = field.tileAt(e.clientX, e.clientY);
     updateHint();
   });
   fieldWrap.addEventListener('click', (e) => {
+    if (fieldHeld) {
+      fieldHeld = false;
+      return;
+    }
     if (armed < 0 || ended) return;
     const tile = field.tileAt(e.clientX, e.clientY);
     if (!tile) return disarm();
@@ -678,6 +752,7 @@ export function battleScreen(o: BattleScreenOpts): Screen {
       }
       syncHand();
       updateHud();
+      if (running) tips(dt);
       field.frame(isPaused() ? 0 : dt);
     },
   };

@@ -13,6 +13,8 @@ export interface Settings {
   shake: boolean;
   /** The very first fight has had its tour. */
   seenTour: boolean;
+  /** One-time hints already shown. */
+  tips: string[];
   /** The language screen of a first launch was answered. */
   localeChosen: boolean;
   debug: boolean;
@@ -26,6 +28,7 @@ const defaults: Settings = {
   reduceMotion: false,
   shake: true,
   seenTour: false,
+  tips: [],
   localeChosen: false,
   debug: false,
 };
@@ -43,6 +46,7 @@ function validate(raw: Partial<Record<keyof Settings, unknown>>): Settings {
     reduceMotion: flag(raw.reduceMotion, defaults.reduceMotion),
     shake: flag(raw.shake, defaults.shake),
     seenTour: flag(raw.seenTour, defaults.seenTour),
+    tips: Array.isArray(raw.tips) ? raw.tips.filter((x): x is string => typeof x === 'string').slice(0, 40) : [],
     localeChosen: flag(raw.localeChosen, defaults.localeChosen),
     debug: flag(raw.debug, defaults.debug),
   };

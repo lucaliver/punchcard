@@ -1,10 +1,11 @@
 import { t, hasKey } from '../../core/i18n';
 import { card } from '../../data/cards';
 import { RELICS } from '../../data/relics';
-import type { CardInst, FoeDef } from '../../game/types';
+import { CONFIG } from '../../data/config';
+import type { CardInst, FoeDef, SpiritDef } from '../../game/types';
 import { artUrl } from '../art/sprites';
 import { cardView } from './cardView';
-import { cardLines, foeLines, rich } from './cardText';
+import { cardLines, fmt, foeLines, rich, spiritLines } from './cardText';
 import { type ModalAction, openModal } from '../app';
 import { h } from '../dom';
 
@@ -48,4 +49,18 @@ export function openRelicDetail(id: string, onClose?: () => void): () => void {
     h('p', { html: rich(t(`relic.${id}.d`, { n: def.n })) }),
   );
   return openModal({ title: t(`relic.${id}.name`), body, onClose, cls: 'detail-modal' });
+}
+
+/** A spirit on the field: what it is and what state it is in. */
+export function openUnitDetail(cardId: string, def: SpiritDef, level: number, hp: number, maxHp: number, onClose?: () => void): () => void {
+  const lines = spiritLines(def).map((l) => h('li', { html: rich(l) }));
+  if (level > 1) lines.unshift(h('li', { html: rich(t('stat.level', { n: level, pct: `${Math.round(CONFIG.levelGrowth * (level - 1) * 100)}%` })) }));
+  const body = h(
+    'div',
+    { class: 'detail' },
+    h('div', { class: 'detail-foe' }, h('img', { src: artUrl(def.art), alt: '' })),
+    h('div', { class: 'detail-kind' }, `${t('stat.hp', { n: `${fmt(Math.ceil(hp))}/${fmt(maxHp)}` })}`),
+    h('ul', { class: 'detail-lines' }, ...lines),
+  );
+  return openModal({ title: t(`card.${cardId}.name`), body, onClose, cls: 'detail-modal' });
 }

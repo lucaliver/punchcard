@@ -523,3 +523,44 @@
   color: var(--ink-soft);
   text-align: center;
 }
+
+/* ——— the guided tour ——— */
+.coach {
+  position: absolute;
+  inset: 0;
+  z-index: var(--z-modal);
+}
+.coach-spot {
+  position: absolute;
+  border: 3px dashed var(--gold-light);
+  border-radius: 14px;
+  box-shadow: 0 0 0 9999px rgba(8, 10, 28, 0.78);
+  pointer-events: none;
+  transition: left 200ms, top 200ms, width 200ms, height 200ms;
+}
+.coach-bubble {
+  position: absolute;
+  left: 14px;
+  right: 14px;
+  display: flex;
+  gap: 10px;
+  align-items: center;
+  animation: pop var(--dur-pop) cubic-bezier(0.2, 1.4, 0.4, 1);
+}
+.coach-bubble img {
+  width: 64px;
+  height: 64px;
+  flex: none;
+  object-fit: contain;
+}
+.coach-body {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 8px;
+  font-size: 15px;
+  font-weight: 700;
+}
+.coach-text {
+  align-self: stretch;
+}

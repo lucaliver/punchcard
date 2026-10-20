@@ -3,6 +3,62 @@ import { blush, C, circ, ell, eye, INK, ln, p, rect, solid, svg } from './kit';
 /** The spirits that answer the lantern: rounder, warmer and friendlier than the parade. */
 
 export const SPIRIT_ART: Record<string, string> = {
+  /** A fox shrine statue: the god's messenger, with a key in its mouth and a bib that is not red by accident. */
+  inari: svg(
+    [
+      p('M20 92 H80 V82 H20Z', '#8e9ab0', { w: 3.4 }),
+      solid('M26 82 Q24 56 36 52 H64 Q76 56 74 82Z', '#e8ecf4'),
+      p('M36 56 H64 L60 70 H40Z', C.red, { w: 3.4 }),
+      circ(50, 66, 4, C.gold, { w: 2.4 }),
+      solid('M28 40 L24 8 L42 22 Q50 20 58 22 L76 8 L72 40 Q74 58 50 60 Q26 58 28 40Z', '#f4f6fb'),
+      p('M31 22 L30 12 L38 21Z M69 22 L70 12 L62 21Z', C.red, { w: 1.8 }),
+      ln('M32 38 L42 42 M68 38 L58 42', C.red, 3),
+      eye(42, 41, 4.6, { iris: '#c9602a', look: [0, 0.3] }),
+      eye(58, 41, 4.6, { iris: '#c9602a', look: [0, 0.3] }),
+      p('M45 49 L50 53 L55 49Z', INK, { w: 2 }),
+      p('M46 54 H54 V64 H46Z', C.gold, { w: 2.6 }),
+      circ(50, 12, 3, C.red, { w: 2.2 }),
+      p('M14 44 Q4 40 8 24 M86 44 Q96 40 92 24', C.red, { w: 4 }),
+    ].join(''),
+  ),
+
+  /** The sword saint: two blades, no hurry. */
+  swordSaint: svg(
+    [
+      p('M6 84 L40 34 L46 40 L14 92Z', C.ghost, { w: 3.4 }),
+      p('M94 84 L60 34 L54 40 L86 92Z', C.ghost, { w: 3.4 }),
+      p('M14 92 L4 98 L8 84Z M86 92 L96 98 L92 84Z', C.red, { w: 3 }),
+      p('M24 92 Q22 62 38 56 H62 Q78 62 76 92Z', '#2c3a78', { w: 3.4 }),
+      p('M30 78 H70 V86 H30Z', C.gold, { w: 0, op: 0.8 }),
+      p('M40 56 H60 L55 70 H45Z', C.paper, { w: 3 }),
+      solid('M28 36 Q28 14 50 12 Q72 14 72 36 Q70 54 50 56 Q30 54 28 36Z', C.skin),
+      p('M24 32 Q22 6 50 4 Q78 6 76 32 Q70 18 50 20 Q30 18 24 32Z', '#e8e0d0', { w: 2.4 }),
+      p('M44 4 L50 -6 L56 4Z', '#e8e0d0', { w: 2.4 }),
+      ln('M34 33 L44 37 M66 33 L56 37', INK, 3.2),
+      circ(42, 40, 2.4, INK, { w: 0 }),
+      circ(58, 40, 2.4, INK, { w: 0 }),
+      ln('M43 49 Q50 52 57 49', INK, 2.4),
+    ].join(''),
+  ),
+
+  /** The Treasure Ship: a boat of luck with a sail and a heap of coins. */
+  takarabune: svg(
+    [
+      p('M8 62 Q50 96 92 62 L84 54 H16Z', C.brown, { w: 3.6 }),
+      ln('M20 66 Q50 82 80 66', '#5e3a1c', 2.4),
+      ln('M50 54 V8', '#5e3a1c', 5),
+      p('M50 10 H86 L74 28 L86 46 H50Z', C.cream, { w: 3.4 }),
+      p('M50 14 L16 34 L50 46Z', C.red, { w: 3.4 }),
+      circ(30, 50, 9, C.gold, { w: 3 }),
+      circ(44, 48, 9, C.goldLight, { w: 3 }),
+      circ(62, 48, 9, C.gold, { w: 3 }),
+      rect(56, 40, 12, 16, '#a8742a', { w: 2.4, r: 2 }),
+      circ(50, 6, 4, C.gold, { w: 2.6 }),
+      eye(38, 70, 3.4),
+      eye(62, 70, 3.4),
+    ].join(''),
+  ),
+
   /** A tree spirit, white and hollow-eyed, with a sprout. */
   kodama: svg(
     [

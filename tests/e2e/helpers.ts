@@ -1,18 +1,21 @@
 import { expect, type Page } from '@playwright/test';
 
 /** Opens the game with an empty save. */
-export async function freshGame(page: Page, save: Record<string, unknown> = {}): Promise<void> {
-  await page.addInitScript((extra) => {
-    if (!sessionStorage.getItem('hyakki-test-init')) {
-      localStorage.clear();
-      sessionStorage.setItem('hyakki-test-init', '1');
-      localStorage.setItem(
-        'hyakki:settings',
-        JSON.stringify({ reduceMotion: true, sfx: 0, music: 0, localeChosen: true, seenTour: true, locale: 'en' }),
-      );
-      for (const [k, v] of Object.entries(extra)) localStorage.setItem(`hyakki:${k}`, JSON.stringify(v));
-    }
-  }, save);
+export async function freshGame(page: Page, save: Record<string, unknown> = {}, tour = false): Promise<void> {
+  await page.addInitScript(
+    ([extra, withTour]) => {
+      if (!sessionStorage.getItem('hyakki-test-init')) {
+        localStorage.clear();
+        sessionStorage.setItem('hyakki-test-init', '1');
+        localStorage.setItem(
+          'hyakki:settings',
+          JSON.stringify({ reduceMotion: true, sfx: 0, music: 0, localeChosen: true, seenTour: !withTour, locale: 'en' }),
+        );
+        for (const [k, v] of Object.entries(extra)) localStorage.setItem(`hyakki:${k}`, JSON.stringify(v));
+      }
+    },
+    [save, tour] as const,
+  );
   await page.goto('/');
   await expect(page.locator('.title')).toBeVisible();
 }

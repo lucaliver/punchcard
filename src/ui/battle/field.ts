@@ -118,6 +118,27 @@ export class Field {
     return { lane, row };
   }
 
+  /** The foe or spirit under a client point (a foe wins when it is close to the finger), for a hold to inspect. */
+  entityAt(clientX: number, clientY: number): { unit: Unit | null; foe: Foe | null } {
+    const r = this.canvas.getBoundingClientRect();
+    const x = clientX - r.left;
+    const y = clientY - r.top;
+    const { tw, th } = this.g;
+    let foe: Foe | null = null;
+    let best = th * 0.75;
+    for (const f of this.battle.foes) {
+      const d = Math.hypot(this.foeXY(f).x - x, f.y * th - y);
+      if (d < best) {
+        best = d;
+        foe = f;
+      }
+    }
+    if (foe) return { unit: null, foe };
+    const lane = Math.floor(x / tw);
+    const row = Math.floor(y / th);
+    return { unit: this.battle.unitAt(lane, row), foe: null };
+  }
+
   resize(w: number, h: number): void {
     this.dpr = Math.min(2.5, window.devicePixelRatio || 1);
     this.g = geometry(w, h);

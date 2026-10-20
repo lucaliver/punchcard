@@ -37,6 +37,8 @@ export const content = {
   'card.oilJar.flavor': 'One use, and it was worth it.',
   'card.riceBall.name': 'Rice Ball',
   'card.riceBall.flavor': 'A small kindness for a flame that is trying its best.',
+  'card.amaterasu.name': 'Dawn of Amaterasu',
+  'card.amaterasu.flavor': 'The sun goddess answers the door. She was not asleep this time.',
   'card.talismanStorm.name': 'Talisman Storm',
   'card.talismanStorm.flavor': 'A paper cut, but on a national scale.',
 
@@ -58,6 +60,8 @@ export const content = {
   'card.shide.flavor': 'Zigzag paper that says: not today.',
   'card.kuzunoha.name': 'Kuzunoha',
   'card.kuzunoha.flavor': 'A fox who married a man, then taught his enemies about regret.',
+  'card.inari.name': 'Inari’s Messenger',
+  'card.inari.flavor': 'Rice, foxes, and a quiet certainty that you are doing well.',
   'card.exorcism.name': 'Exorcism Rite',
   'card.exorcism.flavor': 'Reserved for whoever has been rudest all night.',
 
@@ -79,6 +83,8 @@ export const content = {
   'card.oniMask.flavor': 'Tried the mask on as a joke. Has not taken it off.',
   'card.lastStand.name': 'Last Stand',
   'card.lastStand.flavor': 'The banner stays up. So do you.',
+  'card.swordSaint.name': 'Sword Saint',
+  'card.swordSaint.flavor': 'Two blades, no hurry, and a silence that cuts.',
   'card.brawler.name': 'Gourd Brawler',
   'card.brawler.flavor': 'Fights better than he walks, and walks better than he thinks.',
 
@@ -100,6 +106,8 @@ export const content = {
   'card.parade.flavor': 'Three of him. Only one is real. None of them.',
   'card.dice.name': 'Lucky Dice',
   'card.dice.flavor': 'Heads I win, tails I ask for best of three.',
+  'card.takarabune.name': 'Takarabune',
+  'card.takarabune.flavor': 'The treasure ship arrives once a year. It brought a coupon.',
   'card.kettle.name': 'Great Kettle',
   'card.kettle.flavor': 'A kettle the size of a shrine, with the profit margin of one.',
 
