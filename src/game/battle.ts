@@ -664,6 +664,11 @@ export class Battle {
 
   // ————— units —————
 
+  /** The spirits an aura reaches (for drawing its links). */
+  auraTargets(a: Unit): Unit[] {
+    return a.def.aura && !a.dead ? this.neighbours(a, a.def.aura.to) : [];
+  }
+
   private neighbours(a: Unit, to: 'adjacent' | 'lane' | 'all'): Unit[] {
     return this.units.filter(
       (b) =>

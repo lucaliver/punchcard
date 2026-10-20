@@ -69,7 +69,15 @@ async function boot(): Promise<void> {
     const k = KEEPERS[keeper];
     let uid = 1;
     const deck: CardInst[] = k.deck.map((id) => ({ uid: uid++, id, up: false }));
-    const battle = new Battle({ seed, keeper, deck, relics: (q.get('relics') ?? '').split(',').filter(Boolean), stage: makeStage({ act, floor, kind, seed }), flame: k.flame, maxFlame: k.flame });
+    const battle = new Battle({
+      seed,
+      keeper,
+      deck,
+      relics: (q.get('relics') ?? '').split(',').filter(Boolean),
+      stage: makeStage({ act, floor, kind, seed }),
+      flame: k.flame,
+      maxFlame: k.flame,
+    });
     (window as unknown as { __battle: Battle }).__battle = battle;
     await show(battleScreen({ battle, act, kind, title: 'Debug watch', onEnd: () => location.reload(), onAbandon: () => location.reload() }), {
       instant: true,

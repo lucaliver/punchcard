@@ -540,6 +540,7 @@ export class Field {
     items.sort((a, c) => a.y - c.y);
     for (const it of items) it.draw();
 
+    this.drawAuras();
     this.drawLights();
     this.fx.drawShots(ctx);
     this.fx.drawParticles(ctx);
@@ -907,6 +908,45 @@ export class Field {
       ctx.drawImage(w, -gh.size / 2, -gh.size * 0.94, gh.size, gh.size);
       ctx.restore();
     }
+  }
+
+  /** Links from a spirit's aura to the spirits it helps, and the ring of a foe that hurries its friends. */
+  private drawAuras(): void {
+    const { ctx } = this;
+    const { tw, th } = this.g;
+    ctx.save();
+    ctx.lineWidth = 2;
+    ctx.setLineDash([4, 5]);
+    ctx.lineDashOffset = -this.t * 12;
+    for (const u of this.battle.units) {
+      if (!u.def.aura) continue;
+      const a = this.unitXY(u);
+      ctx.strokeStyle = 'rgba(255,224,138,0.35)';
+      if (u.def.aura.to === 'all') {
+        ctx.beginPath();
+        ctx.ellipse(a.x, a.y + th * 0.3, tw * 0.5, th * 0.16, 0, 0, 6.283);
+        ctx.stroke();
+        continue;
+      }
+      for (const v of this.battle.auraTargets(u)) {
+        const b = this.unitXY(v);
+        ctx.beginPath();
+        ctx.moveTo(a.x, a.y + th * 0.25);
+        ctx.lineTo(b.x, b.y + th * 0.25);
+        ctx.stroke();
+      }
+    }
+    ctx.setLineDash([]);
+    for (const f of this.battle.foes) {
+      const ab = f.def.abilities?.find((x) => x.k === 'hasten');
+      if (!ab || ab.k !== 'hasten') continue;
+      const p = this.foeXY(f);
+      ctx.strokeStyle = 'rgba(255,120,90,0.3)';
+      ctx.beginPath();
+      ctx.arc(p.x, p.y, Math.min(ab.radius * Math.min(tw, th), tw * 3), 0, 6.283);
+      ctx.stroke();
+    }
+    ctx.restore();
   }
 
   private drawLights(): void {
