@@ -14,6 +14,10 @@ const list: RelicDef[] = [
   { id: 'incense', rarity: 'rare', n: 5, art: 'incense', hook: { k: 'killOil', every: 5 } },
   { id: 'redLantern', rarity: 'rare', n: 1, art: 'redLantern', hook: { k: 'dawnMend' } },
   { id: 'samuraiSeal', rarity: 'rare', n: 35, art: 'samuraiSeal', hook: { k: 'abilityFast', n: 0.35 } },
+  { id: 'windChime', rarity: 'common', n: 1, art: 'windChime', hook: { k: 'chime' } },
+  { id: 'koiBanner', rarity: 'rare', n: 1, art: 'koiBanner', mods: { charmCut: 1 } },
+  { id: 'sakeGourd', rarity: 'rare', n: 0.4, art: 'sakeGourd', mods: { regenHp: 0.4 } },
+  { id: 'darumaEye', rarity: 'epic', n: 1, art: 'darumaEye', hook: { k: 'lastBreath' } },
   { id: 'mamori', rarity: 'epic', n: 4, art: 'mamori', hook: { k: 'leakSpare', every: 4 } },
   { id: 'wideSleeve', rarity: 'epic', n: 1, art: 'wideSleeve', mods: { hand: 1 } },
   { id: 'amaterasuMirror', rarity: 'boss', n: 4, m: 0.1, art: 'mirror', mods: { flame: 4, regen: 0.1 } },
@@ -28,7 +32,20 @@ export type RelicMods = Required<NonNullable<RelicDef['mods']>>;
 
 /** The sum of what a set of relics does by plain numbers. */
 export function relicMods(ids: readonly string[]): RelicMods {
-  const sum: RelicMods = { maxOil: 0, startOil: 0, regen: 0, hand: 0, flame: 0, drawCut: 0, hp: 0, dmg: 0, coins: 0, rewardCards: 0 };
+  const sum: RelicMods = {
+    maxOil: 0,
+    startOil: 0,
+    regen: 0,
+    hand: 0,
+    flame: 0,
+    drawCut: 0,
+    hp: 0,
+    dmg: 0,
+    coins: 0,
+    rewardCards: 0,
+    charmCut: 0,
+    regenHp: 0,
+  };
   for (const id of ids) for (const [k, v] of Object.entries(RELICS[id]?.mods ?? {})) sum[k as keyof RelicMods] += v;
   return sum;
 }

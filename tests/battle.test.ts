@@ -239,3 +239,43 @@ describe('the onmyōji', () => {
     expect(b.check(0, 3, 5)).toEqual({ ok: false, reason: 'oil' });
   });
 });
+
+describe('more trinkets', () => {
+  it('the wind chime pushes the lane back when a spirit falls', () => {
+    const b = battle(['bambooWall'], stage([{ t: 0.1, lane: 2, foe: 'kappa' }]), 'miko', ['windChime']);
+    hold(b, 'bambooWall');
+    b.play(0, 2, 2);
+    const seen: string[] = [];
+    b.events.on((e) => {
+      if (e.type === 'unitDied') seen.push('died');
+      if (e.type === 'effect' && e.fx.k === 'push') seen.push('push');
+    });
+    (b.unitAt(2, 2) as { hp: number }).hp = 1;
+    run(b, 20);
+    expect(seen).toEqual(['died', 'push']);
+  });
+
+  it('the Koi Banner makes dear charms cheaper', () => {
+    const b = battle(['exorcism'], stage(), 'ronin', ['koiBanner']);
+    hold(b, 'exorcism');
+    expect(b.cardCost(b.hand[0] as never)).toBe(3);
+  });
+
+  it('the Sake Gourd mends spirits', () => {
+    const b = battle(['jizo'], stage(), 'miko', ['sakeGourd']);
+    hold(b, 'jizo');
+    b.play(0, 1, 4);
+    const u = b.unitAt(1, 4) as { hp: number; maxHp: number };
+    u.hp = 3;
+    run(b, 5);
+    expect(u.hp).toBeGreaterThan(4.5);
+  });
+
+  it('Daruma’s Eye spares the last flame once a fight', () => {
+    const b = battle([], stage([{ t: 0.1, lane: 0, foe: 'ushioni' }]), 'miko', ['darumaEye']);
+    b.flame = 3;
+    run(b, 60);
+    expect(b.flame).toBe(1);
+    expect(b.state).toBe('playing');
+  });
+});

@@ -1,4 +1,4 @@
-import { C, circ, ell, INK, ln, p, rect, solid, svg } from './kit';
+import { C, circ, ell, eye, INK, ln, p, rect, solid, svg } from './kit';
 
 /** Charms (the pictures of one-shot cards) and trinkets (relics). Objects, so no faces: a shape you read at a glance. */
 
@@ -285,6 +285,51 @@ export const CHARM_ART: Record<string, string> = {
 };
 
 export const RELIC_ART: Record<string, string> = {
+  /** A furin wind chime: a bell of glass and a paper strip that tells the wind what to say. */
+  windChime: svg(
+    [
+      ln('M50 4 V22', INK, 4),
+      solid('M24 56 Q24 24 50 22 Q76 24 76 56 L82 62 H18Z', '#bfe6ff'),
+      circ(50, 66, 4, C.red, { w: 2.4 }),
+      ln('M50 70 V84', INK, 2.4),
+      p('M38 82 H62 V100 L50 94 L38 100Z', C.cream, { w: 3 }),
+      ln('M50 84 V92', C.red, 2.4),
+    ].join(''),
+  ),
+  /** A koinobori carp banner: it swims against the current, on principle. */
+  koiBanner: svg(
+    [
+      ln('M20 6 V96', C.brown, 5),
+      circ(20, 6, 4, C.gold, { w: 3 }),
+      solid('M20 22 Q56 10 82 30 Q94 40 88 52 Q94 62 82 66 Q56 80 20 58Z', '#e4452f'),
+      p('M82 30 L98 24 L96 40Z M82 66 L98 72 L96 56Z', '#c4382a', { w: 3 }),
+      eye(40, 34, 6, { look: [-0.4, 0.2] }),
+      ln('M52 28 Q58 42 52 56 M64 30 Q70 42 64 54', '#f0a58a', 2.4),
+    ].join(''),
+  ),
+  /** A gourd of sake that never quite empties. */
+  sakeGourd: svg(
+    [
+      ln('M50 4 Q56 14 50 22', C.leaf, 4),
+      solid('M36 24 Q36 14 50 14 Q64 14 64 24 Q60 34 66 44 Q82 56 78 72 Q72 94 50 94 Q28 94 22 72 Q18 56 34 44 Q40 34 36 24Z', '#d49a3c'),
+      ln('M40 36 Q50 40 60 36', '#8a5a33', 3),
+      rect(34, 54, 32, 18, C.cream, { w: 2.6, r: 3 }),
+      ln('M40 62 H60', INK, 2.4),
+      p('M44 8 H56 L54 14 H46Z', C.red, { w: 2.6 }),
+    ].join(''),
+  ),
+  /** The Daruma's second eye: the wish was granted, so it watches. */
+  darumaEye: svg(
+    [
+      circ(50, 52, 40, '#e03a2f', { w: 4.4 }),
+      ell(50, 50, 28, 22, C.cream, { w: 3.4 }),
+      circ(50, 50, 11, INK, { w: 0 }),
+      circ(46, 46, 3.4, C.white, { w: 0 }),
+      ln('M26 34 Q36 24 46 30 M74 34 Q64 24 54 30', INK, 3.6),
+      ln('M34 78 H66', C.goldLight, 3.4),
+    ].join(''),
+  ),
+
   oilFlask: svg(
     [
       solid('M38 24 Q18 36 18 62 Q18 90 50 90 Q82 90 82 62 Q82 36 62 24Z', '#d0a038'),

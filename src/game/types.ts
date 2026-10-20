@@ -246,6 +246,10 @@ export interface RelicDef {
     coins: number;
     /** Cards on offer after a fight. */
     rewardCards: number;
+    /** Charms that cost 2 or more cost this much less. */
+    charmCut: number;
+    /** Hit points every spirit mends each second. */
+    regenHp: number;
   }>;
   hook?: RelicHook;
 }
@@ -258,6 +262,10 @@ export type RelicHook =
   /** The lantern burns a little brighter after a won fight: heals `n` flame. */
   | { k: 'dawnMend' }
   /** The keeper's ability recharges this much faster (a share). */
-  | { k: 'abilityFast'; n: number };
+  | { k: 'abilityFast'; n: number }
+  /** A spirit that falls pushes the foes of its lane back a row. */
+  | { k: 'chime' }
+  /** Once a fight, a blow that would put the lantern out leaves it at 1 flame. */
+  | { k: 'lastBreath' };
 
 export type RoomType = 'watch' | 'elite' | 'boss' | 'rest' | 'market' | 'shrine' | 'treasure';

@@ -182,6 +182,7 @@ export class Battle {
   /** The spirit played last (for Henge). */
   lastSpirit: CardInst | null = null;
   private spawnIdx = 0;
+  private lastBreathUsed = false;
   private killCount = 0;
   private leakCount = 0;
   private acc = 0;
@@ -218,6 +219,10 @@ export class Battle {
       this.hand.push(this.drawPile.shift() ?? null);
       this.refill.push(0);
     }
+  }
+
+  private hasHook(k: NonNullable<(typeof RELICS)[string]['hook']>['k']): boolean {
+    return this.relics.some((id) => RELICS[id]?.hook?.k === k);
   }
 
   private abilityFast(): number {
@@ -322,9 +327,12 @@ export class Battle {
 
   /** What a card costs the keeper right now. */
   cardCost(c: CardInst): number {
-    const base = costOf(c);
+    let base = costOf(c);
     const keeper = KEEPERS[this.keeperId];
-    if (keeper.passive.k === 'charmCut' && card(c.id).kind === 'charm' && base > 1) return base - keeper.passive.n;
+    if (card(c.id).kind === 'charm' && base > 1) {
+      if (keeper.passive.k === 'charmCut') base = Math.max(1, base - keeper.passive.n);
+      base = Math.max(1, base - this.mods.charmCut);
+    }
     if (keeper.passive.k === 'firstFree' && this.stats.played === 0) return 0;
     return base;
   }
@@ -674,6 +682,7 @@ export class Battle {
     for (const u of this.units) {
       if (u.dead) continue;
       u.age += dt;
+      if (this.mods.regenHp > 0 && u.hp < u.maxHp) u.hp = Math.min(u.maxHp, u.hp + this.mods.regenHp * dt);
       if (u.fx.stun > 0) u.fx.stun = Math.max(0, u.fx.stun - dt);
       if (u.fx.web > 0) u.fx.web = Math.max(0, u.fx.web - dt);
       if (u.fx.blessT > 0) {
@@ -858,6 +867,7 @@ export class Battle {
     if (!expired) this.stats.spiritsLost++;
     this.events.emit({ type: 'unitDied', unit: u, expired });
     if (!silent && u.def.onDeath) this.applyEffects(u.def.onDeath, u.lane, u.row, u);
+    if (!expired && this.hasHook('chime')) this.applyEffect({ k: 'push', rows: 1, scope: 'lane' }, u.lane, u.row, null);
   }
 
   // ————— foes —————
@@ -968,6 +978,14 @@ export class Battle {
     }
     this.events.emit({ type: 'leak', foe: f, dmg: f.def.leak, spared });
     if (spared) return;
+    if (f.def.leak >= this.flame && !this.lastBreathUsed && this.hasHook('lastBreath')) {
+      this.lastBreathUsed = true;
+      this.flame = 1;
+      this.stats.leaks++;
+      this.stats.flameLost += f.def.leak - 1;
+      this.events.emit({ type: 'flame', n: 0 });
+      return;
+    }
     this.stats.leaks++;
     this.stats.flameLost += f.def.leak;
     this.flame = Math.max(0, this.flame - f.def.leak);
