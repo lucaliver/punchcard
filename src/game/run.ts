@@ -3,6 +3,7 @@ import { loadRaw, remove, store } from '../core/save';
 import { CARDS, card } from '../data/cards';
 import { CONFIG } from '../data/config';
 import { KEEPERS } from '../data/keepers';
+import { MAX_MOON, moonMods } from '../data/moons';
 import { RELICS, relicMods } from '../data/relics';
 import type { BattleSetup, BattleStats } from './battle';
 import type { CardInst, KeeperId, RelicDef, Rarity, RoomType } from './types';
@@ -13,7 +14,7 @@ import { type FightKind, makeStage } from './waves';
  * flow is testable; the screens only show it. Dice come from `run.seed` plus a counter that is saved, so a reload deals the same offers.
  */
 
-export const SAVE_VERSION = 1;
+export const SAVE_VERSION = 2;
 
 export interface RunNode {
   id: number;
@@ -83,6 +84,8 @@ export interface RunState {
   first: boolean;
   /** Act whose intro has been shown. */
   introAct: number;
+  /** The moon phase the run is played at (0 = none). */
+  level: number;
 }
 
 // ——— dice ———
@@ -182,8 +185,9 @@ export function reachable(run: RunState): RunNode[] {
 
 // ——— starting ———
 
-export function newRun(keeper: KeeperId, seed: number, first: boolean): RunState {
+export function newRun(keeper: KeeperId, seed: number, first: boolean, level = 0): RunState {
   const k = KEEPERS[keeper];
+  const flame = Math.max(6, k.flame + moonMods(level).flame);
   const run: RunState = {
     version: SAVE_VERSION,
     seed,
@@ -194,8 +198,8 @@ export function newRun(keeper: KeeperId, seed: number, first: boolean): RunState
     inRoom: null,
     deck: [],
     relics: [],
-    flame: k.flame,
-    maxFlame: k.flame,
+    flame,
+    maxFlame: flame,
     mon: CONFIG.run.startCoins,
     counter: 0,
     uid: 0,
@@ -208,6 +212,7 @@ export function newRun(keeper: KeeperId, seed: number, first: boolean): RunState
     shop: null,
     first,
     introAct: 0,
+    level,
   };
   run.deck = k.deck.map((id) => instance(run, id));
   run.map = genMap(seed, 1, first);
@@ -239,7 +244,14 @@ export function battleSetup(run: RunState, node: RunNode): BattleSetup {
     keeper: run.keeper,
     deck: run.deck.map((c) => ({ ...c })),
     relics: [...run.relics],
-    stage: makeStage({ act: run.act, floor: floorOf(node), kind, seed: node.seed ^ run.seed, gentle: run.first && run.act === 1 && node.row === 0 }),
+    stage: makeStage({
+      act: run.act,
+      floor: floorOf(node),
+      kind,
+      seed: node.seed ^ run.seed,
+      gentle: run.first && run.act === 1 && node.row === 0,
+      moon: run.level,
+    }),
     flame: run.flame,
     maxFlame: run.maxFlame,
   };
@@ -404,7 +416,8 @@ export function removePrice(run: RunState): number {
 
 export function stockShop(run: RunState): ShopStock {
   const rng = rngFor(run, 'shop');
-  const spread = (p: number): number => Math.round(p * (1 + (rng.next() * 2 - 1) * CONFIG.run.priceSpread));
+  const dear = 1 + moonMods(run.level).price;
+  const spread = (p: number): number => Math.round(p * dear * (1 + (rng.next() * 2 - 1) * CONFIG.run.priceSpread));
   const price = CONFIG.run.price;
   const cards = rollCards(run, 5, 'elite').map((c) => ({ card: c, price: spread(price[card(c.id).rarity]) * (c.up ? 1.5 : 1), sold: false }));
   for (const sc of cards) sc.price = Math.round(sc.price);
@@ -493,6 +506,7 @@ export function loadRun(): RunState | null {
       shop,
       first: raw.first === true,
       introAct: raw.introAct as number,
+      level: isNum(raw.level) ? Math.max(0, Math.min(MAX_MOON, Math.floor(raw.level))) : 0,
     };
   } catch {
     return null;

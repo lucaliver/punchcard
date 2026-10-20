@@ -57,6 +57,20 @@ export function mapScreen(o: MapOpts): Screen {
   roads.setAttribute('viewBox', `0 0 100 ${height}`);
   roads.setAttribute('preserveAspectRatio', 'none');
   const board = h('div', { class: 'm-board', style: { height: `${height}px` } });
+  // the mountain behind the road, and stone lanterns lighting its edges
+  board.append(h('div', { class: 'm-mountain' }), h('div', { class: 'm-torii' }));
+  for (let r = 0; r < rows; r++) {
+    for (const side of ['l', 'r']) {
+      board.append(
+        h('img', {
+          class: `m-toro ${side}`,
+          src: artUrl('toro'),
+          alt: '',
+          style: { top: `${height - 90 - r * ROW_H - 20}px`, '--d': `${(r % 3) * 0.6}s` },
+        }),
+      );
+    }
+  }
   board.append(roads as unknown as Node);
 
   const drawRoad = (a: { x: number; y: number }, b: { x: number; y: number }, cls: string): void => {

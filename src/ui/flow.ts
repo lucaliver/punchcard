@@ -124,8 +124,8 @@ function chooseKeeper(): void {
   void show(
     keepersScreen({
       onBack: showTitle,
-      onPick: (keeper) => {
-        run = newRun(keeper, randomSeed(), !meta.introDone);
+      onPick: (keeper, moon) => {
+        run = newRun(keeper, randomSeed(), !meta.introDone, moon);
         unlocked = null;
         saveRun(run);
         intro();
@@ -344,6 +344,7 @@ function finishRun(won: boolean): void {
     act: r.act,
     fights: r.fights,
     kills: r.kills,
+    level: r.level,
     deck: r.deck.map((c) => c.id).filter((id) => CARDS[id]),
     relics: [...r.relics],
     at: Date.now(),

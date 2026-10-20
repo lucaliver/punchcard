@@ -59,6 +59,15 @@ export const CONFIG = {
     foeHpFloor: 0.02,
   },
 
+  /** The moon ladder: each phase adds a rule to a run, on top of the ones below it. Shares are added to 1. */
+  moons: [{ hp: 0.1 }, { flame: -2 }, { elite: 0.25 }, { price: 0.3 }, { speed: 0.12 }] as {
+    hp?: number;
+    flame?: number;
+    elite?: number;
+    price?: number;
+    speed?: number;
+  }[],
+
   run: {
     acts: 3,
     /** Columns of the map. */

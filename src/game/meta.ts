@@ -3,6 +3,7 @@ import { CARDS } from '../data/cards';
 import { CONFIG } from '../data/config';
 import { FOES } from '../data/foes';
 import { KEEPER_IDS } from '../data/keepers';
+import { MAX_MOON } from '../data/moons';
 import { RELICS } from '../data/relics';
 import type { KeeperId } from './types';
 
@@ -15,6 +16,8 @@ export interface RunLog {
   act: number;
   fights: number;
   kills: number;
+  /** The moon phase it was played at. */
+  level: number;
   deck: string[];
   relics: string[];
   at: number;
@@ -33,6 +36,8 @@ export interface Meta {
   history: RunLog[];
   /** The first guided run has been played to its end. */
   introDone: boolean;
+  /** The highest moon phase a run may be started at. */
+  moon: number;
 }
 
 const defaults = (): Meta => ({
@@ -46,6 +51,7 @@ const defaults = (): Meta => ({
   bestAct: 0,
   history: [],
   introDone: false,
+  moon: 0,
 });
 
 const strings = (v: unknown, known: Record<string, unknown>): string[] =>
@@ -70,6 +76,7 @@ function validate(raw: Record<string, unknown> | null): Meta {
   m.wins = typeof raw.wins === 'number' && raw.wins >= 0 ? Math.floor(raw.wins) : 0;
   m.bestAct = typeof raw.bestAct === 'number' ? Math.max(0, Math.min(CONFIG.run.acts, Math.floor(raw.bestAct))) : 0;
   m.introDone = raw.introDone === true;
+  m.moon = typeof raw.moon === 'number' ? Math.max(0, Math.min(MAX_MOON, Math.floor(raw.moon))) : 0;
   if (Array.isArray(raw.history)) {
     for (const h of raw.history.slice(0, CONFIG.historyMax) as Record<string, unknown>[]) {
       if (!h || !KEEPER_IDS.includes(h.keeper as KeeperId) || typeof h.at !== 'number') continue;
@@ -78,6 +85,7 @@ function validate(raw: Record<string, unknown> | null): Meta {
         won: h.won === true,
         act: typeof h.act === 'number' ? h.act : 1,
         fights: typeof h.fights === 'number' ? h.fights : 0,
+        level: typeof h.level === 'number' ? h.level : 0,
         kills: typeof h.kills === 'number' ? h.kills : 0,
         deck: strings(h.deck, CARDS),
         relics: strings(h.relics, RELICS),
@@ -121,7 +129,10 @@ export function bossDown(act: number): KeeperId | null {
 
 export function logRun(log: RunLog): void {
   meta.runs++;
-  if (log.won) meta.wins++;
+  if (log.won) {
+    meta.wins++;
+    if (log.level >= meta.moon && meta.moon < MAX_MOON) meta.moon = log.level + 1;
+  }
   meta.bestAct = Math.max(meta.bestAct, log.act);
   meta.history.unshift(log);
   meta.history.length = Math.min(meta.history.length, CONFIG.historyMax);

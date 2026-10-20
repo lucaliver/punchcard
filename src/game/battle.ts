@@ -2,7 +2,7 @@ import { Emitter } from '../core/emitter';
 import { Rng } from '../core/rng';
 import { nextUid } from '../core/util';
 import { CONFIG } from '../data/config';
-import { card, costOf, fxOf, spiritOf } from '../data/cards';
+import { CARDS, card, costOf, fxOf, spiritOf } from '../data/cards';
 import { foe as foeDef } from '../data/foes';
 import { KEEPERS } from '../data/keepers';
 import { RELICS, relicMods } from '../data/relics';
@@ -566,6 +566,22 @@ export class Battle {
     return true;
   }
 
+  /** Takes a spirit back off the field for half of what it cost (its levels included). Returns the oil, or -1 if it cannot be taken back. */
+  recall(uid: number): number {
+    if (this.state !== 'playing') return -1;
+    const u = this.units.find((x) => x.uid === uid && !x.dead);
+    if (!u || !CARDS[u.cardId]) return -1;
+    const refund = Math.floor(card(u.cardId).cost * u.level * 0.5);
+    this.killUnit(u, true, true);
+    if (refund > 0) this.gainOil(refund, u.lane, u.row);
+    return refund;
+  }
+
+  /** What recalling a spirit would give back. */
+  recallValue(u: Unit): number {
+    return CARDS[u.cardId] ? Math.floor(card(u.cardId).cost * u.level * 0.5) : 0;
+  }
+
   get abilityReady(): boolean {
     return this.state === 'playing' && this.abilityCd <= 0;
   }
@@ -598,7 +614,7 @@ export class Battle {
 
   spawnFoe(id: string, lane: number, y: number): Foe {
     const def = foeDef(id);
-    const maxHp = Math.max(1, Math.round(def.hp * this.stage.hpMul));
+    const maxHp = Math.max(1, Math.round(def.hp * this.stage.hpMul * (def.tier === 'elite' || def.tier === 'boss' ? this.stage.eliteMul : 1)));
     const f: Foe = {
       uid: nextUid(),
       def,
@@ -869,7 +885,7 @@ export class Battle {
   }
 
   private speedOf(f: Foe): number {
-    let s = f.def.speed * (1 + f.boost);
+    let s = f.def.speed * (1 + f.boost) * this.stage.speedMul;
     if (f.fx.slowT > 0) s *= 1 - f.fx.slow;
     const z = this.zone[f.lane];
     if (z.t > 0) s *= 1 - z.slow;

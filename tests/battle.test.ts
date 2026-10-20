@@ -188,3 +188,25 @@ describe('determinism', () => {
     expect(a.foes.map((f) => f.y)).toEqual(c.foes.map((f) => f.y));
   });
 });
+
+describe('recall', () => {
+  it('takes a spirit back for half of what it cost, levels included', () => {
+    const b = battle(['kuzunoha']);
+    hold(b, 'kuzunoha');
+    b.play(0, 2, 4);
+    b.oil = 0;
+    const u = b.unitAt(2, 4);
+    expect(b.recallValue(u as never)).toBe(2);
+    expect(b.recall((u as { uid: number }).uid)).toBe(2);
+    expect(b.oil).toBe(2);
+    expect(b.units.length).toBe(0);
+  });
+
+  it('a summoned decoy has nothing to give back', () => {
+    const b = battle(['parade']);
+    hold(b, 'parade');
+    b.play(0);
+    const decoy = b.units[0];
+    expect(b.recall(decoy.uid)).toBe(-1);
+  });
+});

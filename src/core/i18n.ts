@@ -23,7 +23,8 @@ type DynamicPrefix =
   | 'reward'
   | 'how'
   | 'keepers'
-  | 'almanac';
+  | 'almanac'
+  | 'moon';
 export type TKey = EnKey | `${DynamicPrefix}.${string}`;
 export type Params = Record<string, string | number>;
 

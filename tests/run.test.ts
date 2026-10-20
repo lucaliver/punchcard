@@ -118,3 +118,26 @@ describe('a night', () => {
     expect(makeStage({ act: 2, floor: 6, kind: 'boss', seed: 1 }).spawns.filter((s) => s.foe === 'orochi').length).toBe(5);
   });
 });
+
+describe('moon phases', () => {
+  it('each phase adds its rule on top of the ones below', async () => {
+    const { moonMods, MAX_MOON } = await import('../src/data/moons');
+    expect(moonMods(0)).toEqual({ hp: 0, flame: 0, elite: 0, price: 0, speed: 0 });
+    expect(moonMods(1).hp).toBeGreaterThan(0);
+    expect(moonMods(2).flame).toBeLessThan(0);
+    expect(moonMods(2).hp).toBe(moonMods(1).hp);
+    expect(moonMods(MAX_MOON).speed).toBeGreaterThan(0);
+    expect(moonMods(99)).toEqual(moonMods(MAX_MOON));
+  });
+
+  it('a higher phase starts the keeper with less flame and makes tougher nights', () => {
+    const plain = newRun('miko', 4, false, 0);
+    const hard = newRun('miko', 4, false, 2);
+    expect(hard.maxFlame).toBeLessThan(plain.maxFlame);
+    const a = makeStage({ act: 2, floor: 3, kind: 'watch', seed: 9 });
+    const b = makeStage({ act: 2, floor: 3, kind: 'watch', seed: 9, moon: 5 });
+    expect(b.hpMul).toBeGreaterThan(a.hpMul);
+    expect(b.speedMul).toBeGreaterThan(a.speedMul);
+    expect(b.eliteMul).toBeGreaterThan(a.eliteMul);
+  });
+});

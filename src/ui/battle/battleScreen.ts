@@ -1,7 +1,7 @@
 import { sfx, unlockAudio, suspendAudio } from '../../audio/sfx';
 import { t } from '../../core/i18n';
 import { CONFIG } from '../../data/config';
-import { card } from '../../data/cards';
+import { CARDS, card } from '../../data/cards';
 import { foe as foeDef } from '../../data/foes';
 import type { Battle, BattleEvent, BattleStats } from '../../game/battle';
 import { COLS, PLACE_ROW, ROWS, type CardInst } from '../../game/types';
@@ -508,7 +508,31 @@ export function battleScreen(o: BattleScreenOpts): Screen {
         inspecting--;
       };
       if (hit.foe) openFoeDetail(hit.foe.def, b.stage.hpMul, done);
-      else if (hit.unit) openUnitDetail(hit.unit.cardId, hit.unit.def, hit.unit.level, hit.unit.hp, hit.unit.maxHp, done);
+      else if (hit.unit) {
+        const u = hit.unit;
+        const refund = b.recallValue(u);
+        const recallable = b.state === 'playing' && u.age > 0.5 && Object.hasOwn(CARDS, u.cardId);
+        openUnitDetail(
+          u.cardId,
+          u.def,
+          u.level,
+          u.hp,
+          u.maxHp,
+          done,
+          recallable
+            ? [
+                {
+                  label: t('ui.recall', { n: refund }),
+                  cls: 'gold',
+                  onClick: () => {
+                    b.recall(u.uid);
+                  },
+                },
+                { label: t('ui.close'), cls: 'paper' },
+              ]
+            : undefined,
+        );
+      }
     }, CONFIG.longPressMs);
   });
   for (const ev of ['pointerup', 'pointerleave', 'pointercancel']) fieldWrap.addEventListener(ev, () => clearTimeout(fieldTimer));

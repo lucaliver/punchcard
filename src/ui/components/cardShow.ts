@@ -53,7 +53,15 @@ export function openRelicDetail(id: string, onClose?: () => void): () => void {
 }
 
 /** A spirit on the field: what it is and what state it is in. */
-export function openUnitDetail(cardId: string, def: SpiritDef, level: number, hp: number, maxHp: number, onClose?: () => void): () => void {
+export function openUnitDetail(
+  cardId: string,
+  def: SpiritDef,
+  level: number,
+  hp: number,
+  maxHp: number,
+  onClose?: () => void,
+  actions?: ModalAction[],
+): () => void {
   const lines = spiritLines(def).map((l) => h('li', { html: rich(l) }));
   if (level > 1) lines.unshift(h('li', { html: rich(t('stat.level', { n: level, pct: `${Math.round(CONFIG.levelGrowth * (level - 1) * 100)}%` })) }));
   const body = h(
@@ -63,7 +71,7 @@ export function openUnitDetail(cardId: string, def: SpiritDef, level: number, hp
     h('div', { class: 'detail-kind' }, `${t('stat.hp', { n: `${fmt(Math.ceil(hp))}/${fmt(maxHp)}` })}`),
     h('ul', { class: 'detail-lines' }, ...lines),
   );
-  return openModal({ title: t(`card.${cardId}.name`), body, onClose, cls: 'detail-modal' });
+  return openModal({ title: t(`card.${cardId}.name`), body, onClose, cls: 'detail-modal', actions });
 }
 
 /** The keeper's ability: what it does and how long it takes to come back. */

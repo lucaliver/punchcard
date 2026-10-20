@@ -1,6 +1,7 @@
 import { t } from '../../core/i18n';
 import { KEEPERS, KEEPER_IDS } from '../../data/keepers';
-import { isUnlocked } from '../../game/meta';
+import { MAX_MOON, moonMods } from '../../data/moons';
+import { isUnlocked, meta } from '../../game/meta';
 import type { KeeperId } from '../../game/types';
 import { type Screen, pico } from '../app';
 import { artUrl } from '../art/sprites';
@@ -9,7 +10,7 @@ import { cardView } from '../components/cardView';
 import { h } from '../dom';
 
 export interface KeeperOpts {
-  onPick(k: KeeperId): void;
+  onPick(k: KeeperId, moon: number): void;
   onBack(): void;
 }
 
@@ -74,6 +75,44 @@ export function keepersScreen(o: KeeperOpts): Screen {
   const track = h('div', { class: 'k-track' }, ...pages);
   const dots = h('div', { class: 'k-dots' }, ...KEEPER_IDS.map((_, i) => h('i', { class: i === 0 ? 'on' : '' })));
   const go = h('button', { class: 'btn big' }, pico('flame'), t('keepers.begin'));
+  let moon = meta.moon;
+  const moonName = h('b', { class: 'title-font' });
+  const moonText = h('span', {});
+  const moonLess = h('button', { class: 'k-arrow-s' }, pico('back'));
+  const moonMore = h('button', { class: 'k-arrow-s right' }, pico('back'));
+  const moonBox = h(
+    'div',
+    { class: 'k-moon panel' },
+    moonLess,
+    h('div', { class: 'k-moon-text' }, h('div', { class: 'k-moon-head' }, pico('moon'), moonName), moonText),
+    moonMore,
+  );
+  const paintMoon = (): void => {
+    moonName.textContent = `${t('moon.run', { n: moon })} · ${t(`moon.${moon}.name` as 'moon.0.name')}`;
+    const m = moonMods(moon);
+    const n =
+      moon === 1
+        ? Math.round(m.hp * 100)
+        : moon === 2
+          ? Math.abs(m.flame)
+          : moon === 3
+            ? Math.round(m.elite * 100)
+            : moon === 4
+              ? Math.round(m.price * 100)
+              : Math.round(m.speed * 100);
+    moonText.textContent = t(`moon.${moon}.d` as 'moon.0.d', { n });
+    moonLess.classList.toggle('off', moon === 0);
+    moonMore.classList.toggle('off', moon >= Math.min(meta.moon, MAX_MOON));
+  };
+  moonLess.addEventListener('click', () => {
+    moon = Math.max(0, moon - 1);
+    paintMoon();
+  });
+  moonMore.addEventListener('click', () => {
+    moon = Math.min(meta.moon, moon + 1);
+    paintMoon();
+  });
+  paintMoon();
   const back = h('button', { class: 'icon-btn', 'aria-label': t('ui.back') }, pico('back'));
   const prev = h('button', { class: 'k-arrow left' }, pico('back'));
   const next = h('button', { class: 'k-arrow right' }, pico('back'));
@@ -102,13 +141,13 @@ export function keepersScreen(o: KeeperOpts): Screen {
   prev.addEventListener('click', () => scrollTo(index - 1));
   next.addEventListener('click', () => scrollTo(index + 1));
   back.addEventListener('click', o.onBack);
-  go.addEventListener('click', () => o.onPick(KEEPER_IDS[index]));
+  go.addEventListener('click', () => o.onPick(KEEPER_IDS[index], moon));
   const el = h(
     'div',
     { class: 'screen keepers' },
     h('div', { class: 'k-head' }, back, h('div', { class: 'k-heading title-font' }, t('keepers.title'))),
     h('div', { class: 'k-stage' }, track, prev, next),
-    h('div', { class: 'k-foot' }, dots, go),
+    h('div', { class: 'k-foot' }, dots, meta.moon > 0 ? moonBox : null, go),
   );
   paint();
   return { el };

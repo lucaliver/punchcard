@@ -13,7 +13,16 @@ export const flatTerrain = (): Terrain[][] => Array.from({ length: COLS }, () =>
  */
 export function stage(spawns: Spawn[] = [], over: Partial<StageDef> = {}): StageDef {
   const duration = over.duration ?? 600;
-  return { act: 1, duration, spawns: [...spawns, { t: duration + 100, lane: 0, foe: 'zori' }], terrain: flatTerrain(), hpMul: 1, ...over };
+  return {
+    act: 1,
+    duration,
+    spawns: [...spawns, { t: duration + 100, lane: 0, foe: 'zori' }],
+    terrain: flatTerrain(),
+    hpMul: 1,
+    eliteMul: 1,
+    speedMul: 1,
+    ...over,
+  };
 }
 
 export function battle(deck: string[], st: StageDef = stage(), keeper: KeeperId = 'miko', relics: string[] = []): Battle {

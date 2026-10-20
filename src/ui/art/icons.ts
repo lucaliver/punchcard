@@ -94,6 +94,14 @@ export const ICON_ART: Record<string, string> = {
       circ(50, 50, 8, 'none', { w: 3, stroke: '#dfe6f0' }),
     ].join(''),
   ),
+  /** A moon phase (the difficulty ladder). */
+  moon: svg(
+    [
+      solid('M64 8 Q30 12 26 50 Q24 88 66 92 Q40 76 44 50 Q48 24 64 8Z', '#f6e8b8'),
+      circ(74, 26, 2.4, C.goldLight, { w: 0 }),
+      circ(82, 46, 1.8, C.goldLight, { w: 0 }),
+    ].join(''),
+  ),
   /** The lantern the keeper carries: a standing lantern whose flame the field draws live. */
   lantern: svg(
     [

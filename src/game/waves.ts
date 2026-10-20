@@ -1,5 +1,6 @@
 import { Rng } from '../core/rng';
 import { CONFIG } from '../data/config';
+import { moonMods } from '../data/moons';
 import { BOSS_OF_ACT, FOES } from '../data/foes';
 import { COLS, type FoeDef, PLACE_ROW, ROWS, type Spawn, type StageDef, type Terrain } from './types';
 
@@ -13,6 +14,8 @@ export interface StageOpts {
   seed: number;
   /** A tamer first fight: the guided one. */
   gentle?: boolean;
+  /** The moon phase of the run (0 = none). */
+  moon?: number;
 }
 
 /** Foes an act deals as ordinary company, with the ones it introduces counted double. */
@@ -46,6 +49,7 @@ function terrainFor(rng: Rng, boss: boolean): Terrain[][] {
 export function makeStage(opts: StageOpts): StageDef {
   const rng = new Rng(opts.seed ^ 0x9e3779b9);
   const { act, floor, kind } = opts;
+  const moon = moonMods(opts.moon ?? 0);
   const cfg = CONFIG.stage;
   const duration = cfg.duration[kind] + (act - 1) * 4;
   let budget = cfg.budget.base + cfg.budget.perFloor * floor + cfg.budget.perAct * (act - 1);
@@ -112,7 +116,9 @@ export function makeStage(opts: StageOpts): StageDef {
     duration,
     spawns,
     terrain: terrainFor(rng, kind === 'boss'),
-    hpMul: 1 + cfg.foeHpAct * (act - 1) + cfg.foeHpFloor * floor,
+    hpMul: (1 + cfg.foeHpAct * (act - 1) + cfg.foeHpFloor * floor) * (1 + moon.hp),
+    eliteMul: 1 + moon.elite,
+    speedMul: 1 + moon.speed,
     boss,
   };
 }

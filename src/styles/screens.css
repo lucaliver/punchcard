@@ -1569,3 +1569,94 @@
   width: 100%;
   margin-top: 6px;
 }
+
+/* the mountain behind the map's road */
+.m-mountain {
+  position: absolute;
+  left: -10%;
+  right: -10%;
+  top: 0;
+  height: 46%;
+  background: linear-gradient(rgba(255, 255, 255, 0.06), rgba(255, 255, 255, 0));
+  clip-path: polygon(0 100%, 8% 50%, 18% 70%, 34% 22%, 46% 48%, 50% 6%, 58% 40%, 70% 18%, 82% 58%, 92% 36%, 100% 100%);
+  pointer-events: none;
+}
+.m-torii {
+  position: absolute;
+  left: 50%;
+  top: 0;
+  width: 220px;
+  height: 120px;
+  margin-left: -110px;
+  opacity: 0.35;
+  background:
+    linear-gradient(var(--red-dark), var(--red-dark)) 14% 100% / 14px 78% no-repeat,
+    linear-gradient(var(--red-dark), var(--red-dark)) 86% 100% / 14px 78% no-repeat,
+    linear-gradient(var(--red-dark), var(--red-dark)) 50% 30% / 92% 12px no-repeat,
+    linear-gradient(var(--ink-2), var(--ink-2)) 50% 8% / 100% 16px no-repeat;
+  pointer-events: none;
+}
+.m-toro {
+  position: absolute;
+  width: 26px;
+  height: 26px;
+  opacity: 0.5;
+  pointer-events: none;
+  filter: drop-shadow(0 0 8px rgba(255, 200, 100, 0.8));
+  animation: glowpulse 3s ease-in-out var(--d, 0s) infinite;
+}
+.m-toro.l {
+  left: 3%;
+}
+.m-toro.r {
+  right: 3%;
+}
+
+/* the moon selector on the keeper screen */
+.k-moon {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  width: min(100%, 360px);
+  padding: 6px 8px;
+}
+.k-moon-text {
+  flex: 1;
+  text-align: center;
+  font-size: 14px;
+  min-width: 0;
+}
+.k-moon-head {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 6px;
+  font-size: 17px;
+}
+.k-moon-head b {
+  font-weight: 400;
+  color: var(--red-dark);
+}
+.k-moon-head .pico {
+  width: 22px;
+  height: 22px;
+}
+.k-arrow-s {
+  width: 34px;
+  height: 40px;
+  display: grid;
+  place-items: center;
+  flex: none;
+}
+.k-arrow-s .pico {
+  width: 22px;
+  height: 22px;
+  filter: invert(1) brightness(0.3);
+}
+.k-arrow-s.right .pico {
+  transform: scaleX(-1);
+}
+.k-arrow-s.off {
+  opacity: 0.2;
+  pointer-events: none;
+}

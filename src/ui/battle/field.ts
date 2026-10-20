@@ -2,6 +2,7 @@ import { settings } from '../../game/settings';
 import type { Battle, BattleEvent, Foe, Unit } from '../../game/battle';
 import { CONFIG } from '../../data/config';
 import { COLS, PLACE_ROW, ROWS } from '../../game/types';
+import { FOES } from '../../data/foes';
 import { artImage } from '../art/sprites';
 import { BASE_ROWS, type Geometry, geometry, paintBackdrop, THEMES } from './backdrop';
 import { FxLayer } from './fx';
@@ -575,13 +576,13 @@ export class Field {
       ctx.fillStyle = `rgba(255,60,40,${0.12 + 0.1 * Math.sin(this.t * 22)})`;
       ctx.fillRect(l * tw, 0, tw, ROWS * th);
     }
-    // The next foes walking in: a lantern at the top of their lane that swells as it nears.
+    // The next foes walking in: a lantern at the top of their lane with the foe's own shape in it, swelling as it nears.
     for (const inc of this.battle.incoming()) {
       const k = 1 - Math.max(0, inc.in) / CONFIG.warn;
       const x = (inc.lane + 0.5) * tw;
-      const y = th * 0.42;
-      const s = 14 + k * 12;
-      ctx.globalAlpha = 0.5 + 0.5 * k;
+      const y = th * 0.5;
+      const s = 16 + k * 14;
+      ctx.globalAlpha = 0.55 + 0.45 * k;
       const glow = ctx.createRadialGradient(x, y, 0, x, y, s * 2.4);
       glow.addColorStop(0, 'rgba(255,90,70,0.9)');
       glow.addColorStop(1, 'rgba(255,90,70,0)');
@@ -591,7 +592,34 @@ export class Field {
       ctx.fill();
       const img = artImage('nodeWatch');
       if (img) ctx.drawImage(img, x - s / 2, y - s / 2 + Math.sin(this.t * 6 + inc.lane) * 2, s, s);
+      const foe = artImage(FOES[inc.foe]?.art ?? '');
+      if (foe) {
+        const fs = Math.min(tw * 0.62, 30 + k * 12);
+        ctx.globalAlpha = 0.5 + 0.4 * k;
+        ctx.drawImage(foe, x - fs / 2, y + s * 0.5, fs, fs);
+      }
       ctx.globalAlpha = 1;
+    }
+    // A foe about to slip past: red chevrons over the lantern's line in its lane.
+    const seen = new Set<number>();
+    for (const f of this.battle.foes) {
+      if (f.dead || f.y < ROWS - 1.7 || f.engaged !== null || seen.has(f.lane)) continue;
+      seen.add(f.lane);
+      const x = (f.lane + 0.5) * tw;
+      const y = ROWS * th - th * 0.28;
+      const pulse = 0.5 + 0.5 * Math.sin(this.t * 14);
+      ctx.fillStyle = `rgba(255,70,50,${0.5 + 0.45 * pulse})`;
+      for (let i = 0; i < 2; i++) {
+        ctx.beginPath();
+        ctx.moveTo(x - 11, y - 8 + i * 9);
+        ctx.lineTo(x, y + 2 + i * 9);
+        ctx.lineTo(x + 11, y - 8 + i * 9);
+        ctx.lineTo(x + 11, y - 3 + i * 9);
+        ctx.lineTo(x, y + 7 + i * 9);
+        ctx.lineTo(x - 11, y - 3 + i * 9);
+        ctx.closePath();
+        ctx.fill();
+      }
     }
   }
 

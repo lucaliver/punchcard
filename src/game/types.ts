@@ -179,6 +179,9 @@ export interface StageDef {
   terrain: Terrain[][];
   /** Foe hit points are multiplied by this (the act and the floor make fights tougher). */
   hpMul: number;
+  /** The same for elites and bosses on top of `hpMul`, and every foe's walking speed (the moon's doing). */
+  eliteMul: number;
+  speedMul: number;
   boss?: string;
 }
 
