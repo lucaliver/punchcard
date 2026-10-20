@@ -77,7 +77,7 @@ export interface Geometry {
 }
 
 /** Height of the lantern's slab below the last row, in tiles. */
-export const BASE_ROWS = 1.0;
+export const BASE_ROWS = 1.3;
 
 export function geometry(w: number, h: number): Geometry {
   const th = h / (ROWS + BASE_ROWS);

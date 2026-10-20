@@ -39,7 +39,7 @@ export function cardView(c: CardInst, opts: CardViewOpts = {}): HTMLElement {
     },
     h('div', { class: 'c-art' }, h('img', { class: 'c-sprite', src: artUrl(cardArtId(c.id)), alt: '', draggable: 'false' })),
     h('div', { class: 'c-cost num' }, opts.cost !== undefined ? String(opts.cost) : costText(c)),
-    h('div', { class: 'c-name' }, t(`card.${c.id}.name`)),
+    h('div', { class: `c-name ${t(`card.${c.id}.name`).length > 11 ? 'long' : ''}`.trim() }, t(`card.${c.id}.name`)),
     h(
       'div',
       { class: 'c-chips' },

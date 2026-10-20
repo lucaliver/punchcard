@@ -4,7 +4,7 @@ import type { KeeperDef, KeeperId } from '../game/types';
 export const KEEPERS: Record<KeeperId, KeeperDef> = {
   miko: {
     id: 'miko',
-    flame: 10,
+    flame: 14,
     oil: 3,
     maxOil: 10,
     hand: 4,
@@ -17,11 +17,11 @@ export const KEEPERS: Record<KeeperId, KeeperDef> = {
   },
   ronin: {
     id: 'ronin',
-    flame: 11,
+    flame: 15,
     oil: 3,
     maxOil: 10,
     hand: 4,
-    deck: ['wanderer', 'wanderer', 'wanderer', 'bambooWall', 'bambooWall', 'bambooWall', 'kunai', 'kunai', 'kodama', 'ofuda'],
+    deck: ['wanderer', 'wanderer', 'wanderer', 'bambooWall', 'bambooWall', 'crane', 'kunai', 'kunai', 'kodama', 'ofuda'],
     /** Iai: one drawn cut that falls on the front foe of every lane. */
     ability: { cd: 40, fx: [{ k: 'hit', dmg: 14, scope: 'fronts' }] },
     ink: '#3f6fd6',
@@ -30,7 +30,7 @@ export const KEEPERS: Record<KeeperId, KeeperDef> = {
   },
   tanuki: {
     id: 'tanuki',
-    flame: 9,
+    flame: 12,
     oil: 4,
     maxOil: 10,
     hand: 4,

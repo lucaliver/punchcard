@@ -3,7 +3,7 @@ import type { Battle, BattleEvent, Foe, Unit } from '../../game/battle';
 import { CONFIG } from '../../data/config';
 import { COLS, PLACE_ROW, ROWS } from '../../game/types';
 import { artImage } from '../art/sprites';
-import { type Geometry, geometry, paintBackdrop, THEMES } from './backdrop';
+import { BASE_ROWS, type Geometry, geometry, paintBackdrop, THEMES } from './backdrop';
 import { FxLayer } from './fx';
 
 /**
@@ -618,8 +618,8 @@ export class Field {
     const { w, th } = this.g;
     const b = this.battle;
     const cx = w / 2;
-    const base = (ROWS + 0.88) * th;
-    const size = th * 1.9;
+    const base = (ROWS + BASE_ROWS - 0.08) * th;
+    const size = th * 1.72;
     const low = b.flame / b.maxFlame;
     const flick = 1 + 0.06 * Math.sin(this.t * (low < CONFIG.lowFlame ? 22 : 9)) + 0.04 * Math.sin(this.t * 3.1);
     const glowR = th * (1.5 + 2.6 * low) * flick;

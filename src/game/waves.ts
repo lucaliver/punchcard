@@ -50,7 +50,7 @@ export function makeStage(opts: StageOpts): StageDef {
   const duration = cfg.duration[kind] + (act - 1) * 4;
   let budget = cfg.budget.base + cfg.budget.perFloor * floor + cfg.budget.perAct * (act - 1);
   if (kind === 'elite') budget *= cfg.budget.elite;
-  if (kind === 'boss') budget *= 0.85;
+  if (kind === 'boss') budget *= 0.65;
   if (opts.gentle) budget *= 0.6;
 
   const normals = pool(act, 'normal');

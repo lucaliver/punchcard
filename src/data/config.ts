@@ -55,8 +55,8 @@ export const CONFIG = {
     rocks: [0, 3] as [number, number],
     shrines: [0, 2] as [number, number],
     /** Foe hit points and spirit-facing damage grow this much per act and per floor. */
-    foeHpAct: 0.3,
-    foeHpFloor: 0.025,
+    foeHpAct: 0.26,
+    foeHpFloor: 0.02,
   },
 
   run: {
