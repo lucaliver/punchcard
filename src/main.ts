@@ -58,6 +58,7 @@ async function boot(): Promise<void> {
   paintWashi();
   await Promise.all([preloadArt(), document.fonts?.ready]);
   applyVolumes();
+  root.querySelector('.boot')?.remove();
 
   const q = new URLSearchParams(location.search);
   if (import.meta.env.DEV && q.has('fight')) {

@@ -13,11 +13,18 @@
     <meta name="format-detection" content="telephone=no" />
     <meta name="description" content="Hyakki: hold the lantern until dawn. A real-time deckbuilding defense against the Night Parade of a Hundred Demons." />
     <link rel="icon" href="./icon.svg" type="image/svg+xml" />
+    <link rel="apple-touch-icon" href="./icon-180.png" />
     <link rel="manifest" href="./manifest.webmanifest" />
     <title>Hyakki</title>
+    <style>
+      html, body { margin: 0; background: #0a0d22; }
+      .boot { position: fixed; inset: 0; display: grid; place-items: center; background: #0a0d22; }
+      .boot i { width: 46px; height: 46px; border-radius: 50%; background: radial-gradient(circle, #fff3b0, #ffc23a 55%, rgba(255, 150, 60, 0) 72%); animation: boot 1.2s ease-in-out infinite; }
+      @keyframes boot { 50% { transform: scale(1.35); opacity: 0.7; } }
+    </style>
   </head>
   <body>
-    <main id="app"></main>
+    <main id="app"><div class="boot" aria-hidden="true"><i></i></div></main>
     <noscript>Hyakki needs JavaScript to run.</noscript>
     <script type="module" src="/src/main.ts"></script>
   </body>
