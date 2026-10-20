@@ -19,6 +19,7 @@ import { creature } from '../art/creatures';
 import { heroFaces } from '../components/heroMood';
 import { UNKNOWN } from '../components/cardView';
 import { actArt } from '../art/actArt';
+import { ROOM_SPRITES, roomArt } from '../art/rooms';
 
 export const NODE_ICON: Record<RunNode['type'], string> = {
   fight: 'toolbox',
@@ -43,6 +44,14 @@ export const nodeIcon = (n: RunNode): string => (n.type === 'boss' ? (actDef(n.a
 /** Height of one floor on the map (px); a room takes most of it, the rest is corridor. */
 const ROW_H = 100;
 const laneX = (lane: number): number => 22 + lane * 56;
+/** Free floor under the first room: the entrance, where the hero's pawn waits when a shift begins (px). */
+const LOBBY_H = 56;
+/** The pawn stands on its room's top-left corner, half out of the wall so it leaves the room's shape in view: this far in from the wall and this far down over it (px; the stylesheet reads them too). */
+const PAWN_DX = 2;
+const PAWN_DY = 30;
+/** One hop of the pawn along a corridor: how long it takes (ms) and how far it goes (px). */
+const HOP_MS = 100;
+const HOP_PX = 22;
 /** Rooms more than this many doors ahead are lost in fog: only the ones the player can go to next are in sight (the Floor Plan sees further). */
 const VISION = 1;
 /** Footsteps along a walked corridor: one every so many px. The map is about this wide (px), to measure the turns. */
@@ -61,6 +70,13 @@ const scrollToCentre = (scroll: HTMLElement, room: HTMLElement): number => {
   const [s, r] = [scroll.getBoundingClientRect(), room.getBoundingClientRect()];
   return scroll.scrollTop + r.top - s.top - (s.height - r.height) / 2;
 };
+/** What a room in sight shows on the map: the shape of what waits in it, a black shadow against the door: its enemy, or the room's own picture (a room with none keeps its icon). */
+function silhouette(n: RunNode): string {
+  const foe = n.enemy ? ENEMIES[n.enemy] : undefined;
+  if (foe) return creature(foe.art, 'sil');
+  if (`room.${n.type}` in ROOM_SPRITES) return roomArt(n.type, 'sil');
+  return icon(nodeIcon(n));
+}
 const easeInOut = (x: number): number => (x < 0.5 ? 4 * x ** 3 : 1 - (-2 * x + 2) ** 3 / 2);
 
 /** The player's own clock, as text (e.g. 14:05): what the time card is stamped with, whatever hour the game's workday is at. */
@@ -104,6 +120,11 @@ export function journeyScreen(run: RunState, onEnter: (to?: number) => void, onH
   const minFloor = Math.min(...nodes.map((n) => n.floor));
   let picked: number | null = !run.cleared ? cur.id : options.length === 1 ? options[0] : null;
   const y = (n: RunNode): number => (floors - n.floor + 0.5) * ROW_H;
+  const floorH = (floors - minFloor + 1) * ROW_H;
+  // The pawn waits at the entrance, under the first room, when a shift begins (a new act, or the run's first floor); otherwise on the room it last cleared.
+  const fromLobby = act !== cur.act || (run.path.length === 1 && !run.cleared);
+  const entry = run.cleared ? (run.nodes[options[0]] ?? cur) : cur;
+  const lobbyY = floorH + LOBBY_H - 10;
   // Nodes still ahead on some path from here; everything else is out of reach and dimmed.
   const reachable = new Set<number>();
   const walk = (id: number): void => {
@@ -170,6 +191,48 @@ export function journeyScreen(run: RunState, onEnter: (to?: number) => void, onH
       .join('');
 
   const enterBtn = h('button', { class: 'btn block' });
+  /** The hero's pawn, and whether it is on its way (a second press then does nothing). */
+  let walking = false;
+  const pawn = h(
+    'div',
+    {
+      class: `pawn ${fromLobby ? 'lobby' : ''}`,
+      style: {
+        left: `${laneX((fromLobby ? entry : cur).lane)}%`,
+        top: `${fromLobby ? lobbyY : y(cur)}px`,
+        '--dx': `${PAWN_DX}px`,
+        '--dy': `${PAWN_DY}px`,
+      },
+    },
+    h('div', { class: 'pawn-in' }, h('div', { class: 'pawn-face faces', html: heroFaces(run.hero) })),
+  );
+  const hopTimers: number[] = [];
+  /** The pawn walks to a room, a hop at a time along the straight corridor, then `then` goes on. */
+  const walkTo = (id: number, then: () => void): void => {
+    const room = nodeEls.get(id);
+    if (!room || settings.reduceMotion) {
+      then();
+      return;
+    }
+    const [at, to] = [pawn.getBoundingClientRect(), room.getBoundingClientRect()];
+    const dx = to.left + PAWN_DX - (at.left + at.width / 2);
+    const dy = to.top + PAWN_DY - at.bottom;
+    // Already on the room: a couple of hops on the spot, as a knock at the door (at least two hops).
+    const hops = Math.max(2, Math.round(Math.hypot(dx, dy) / HOP_PX));
+    walking = true;
+    pawn.classList.add('walking');
+    pawn.classList.toggle('west', dx < -2);
+    for (let k = 0; k < hops; k++) hopTimers.push(window.setTimeout(() => sfx('tap', 0.5), k * HOP_MS));
+    const move = pawn.animate([{ transform: 'translate(0, 0)' }, { transform: `translate(${dx}px, ${dy}px)` }], {
+      duration: hops * HOP_MS,
+      easing: `steps(${hops}, end)`,
+      fill: 'forwards',
+    });
+    move.onfinish = () => {
+      pawn.classList.remove('walking');
+      then();
+    };
+  };
   const nodeEls = new Map<number, HTMLElement>();
   const refresh = (): void => {
     for (const [id, el] of nodeEls) el.classList.toggle('current', id === picked);
@@ -180,10 +243,11 @@ export function journeyScreen(run: RunState, onEnter: (to?: number) => void, onH
     enterBtn.textContent = target ? t('journey.enter', { n: target.floor }) : t('journey.choose');
   };
   const go = (): void => {
-    if (picked === null) return;
+    if (picked === null || walking) return;
     sfx('button');
     haptic('tap');
-    onEnter(picked === cur.id ? undefined : picked);
+    const room = picked;
+    walkTo(room, () => onEnter(room === cur.id ? undefined : room));
   };
   enterBtn.onclick = go;
 
@@ -203,8 +267,18 @@ export function journeyScreen(run: RunState, onEnter: (to?: number) => void, onH
     return face;
   };
 
-  const path = h('div', { class: 'path', style: { height: `${(floors - minFloor + 1) * ROW_H}px` } });
-  path.innerHTML = `<svg class="links" viewBox="0 0 100 ${(floors - minFloor + 1) * ROW_H}" preserveAspectRatio="none" aria-hidden="true">${hallSvg('hall')}${hallSvg('hall-mid')}</svg>`;
+  const path = h('div', { class: 'path', style: { height: `${floorH + LOBBY_H}px` } });
+  // The corridor from the entrance mat to the first room (or rooms) is trod once the shift is under way.
+  const firstRooms = nodes.filter((n) => n.floor === minFloor);
+  const entryHall = (cls: string): string =>
+    firstRooms
+      .map(
+        (n) =>
+          `<polyline class="${cls} ${fromLobby ? '' : 'trod'}" points="${laneX(n.lane)},${lobbyY} ${laneX(n.lane)},${y(n)}" vector-effect="non-scaling-stroke"/>`,
+      )
+      .join('');
+  path.innerHTML = `<svg class="links" viewBox="0 0 100 ${floorH + LOBBY_H}" preserveAspectRatio="none" aria-hidden="true">${entryHall('hall')}${hallSvg('hall')}${entryHall('hall-mid')}${hallSvg('hall-mid')}</svg>`;
+  path.append(h('i', { class: 'mat', style: { left: `${laneX((fromLobby ? entry : firstRooms[0]).lane)}%`, top: `${lobbyY}px` } }));
   for (let f = minFloor; f <= floors; f++) path.append(h('span', { class: 'num', style: { top: `${(floors - f + 0.5) * ROW_H}px` } }, f));
   /** Dots along the corridor from a to b, one every STEP_PX, appearing one after the other from `after` ms (`gap` ms apart). Returns when the last one is in. */
   const trail = (a: RunNode, b: RunNode, cls: string, after: number, gap: number): number => {
@@ -266,9 +340,11 @@ export function journeyScreen(run: RunState, onEnter: (to?: number) => void, onH
             ? icon('question')
             : foe
               ? `${creature(foe.art)}<i class="done-tick">${icon('check')}</i>`
-              : past || !(n.type === 'boss' && !!actDef(n.act).bossClock)
-                ? icon(past ? 'check' : nodeIcon(n))
-                : undefined,
+              : past
+                ? icon('check')
+                : n.type === 'boss' && actDef(n.act).bossClock
+                  ? undefined
+                  : silhouette(n),
         }),
         h('span', { class: 'label' }, label),
       ),
@@ -318,6 +394,7 @@ export function journeyScreen(run: RunState, onEnter: (to?: number) => void, onH
     nodeEls.set(n.id, el);
     path.append(el);
   }
+  path.append(pawn);
   refresh();
 
   // Pay earned so far (the run's score), then Settings (Main menu is in there).
@@ -416,6 +493,7 @@ export function journeyScreen(run: RunState, onEnter: (to?: number) => void, onH
     el,
     leave() {
       clearTimeout(revealTimer);
+      for (const id of hopTimers) clearTimeout(id);
       cancelAnimationFrame(glideId);
     },
     enter() {

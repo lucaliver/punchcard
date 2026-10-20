@@ -138,7 +138,7 @@ con cura o stordimento vanno pensate con un freno incluso.
 
 - **Avvio:** contratto di assunzione da firmare tenendo premuto; poi un manifesto di propaganda con il boss e il
   cartellino da timbrare (*New run* o *Back to work*).
-- **Mappa:** la pianta dell'ufficio con nebbia sulle stanze lontane; il boss è un orologio che segna l'ora del turno.
+- **Mappa:** la pianta dell'ufficio con nebbia sulle stanze lontane; le stanze in vista mostrano la sagoma di ciò che le aspetta e il cartellino dell'eroe, come una pedina, cammina fino a quella scelta; il boss è un orologio che segna l'ora del turno.
 - **Scontro:** si entra da una doppia porta d'ufficio; tutto ciò che serve (nemico, minaccia, vita, nastro, mana, sleeve)
   sta in una colonna sola, senza distogliere lo sguardo dalle carte.
 - **Fine run:** busta paga stampata, timbrata *Paid* o *Void*, condivisibile; se sblocca un eroe, un biglietto lo presenta.

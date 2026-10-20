@@ -420,6 +420,7 @@ test('the fight waits for Start; meanwhile things can be held to read them', asy
   await page.getByRole('button', { name: /new run/i }).click();
   await page.getByRole('button', { name: /start shift/i }).click();
   await page.getByRole('button', { name: /enter floor 1/i }).click();
+  await expect(page.locator('.combat')).toBeVisible();
   const clock = () => page.evaluate('window.__combat.time + window.__combat.intro');
   const before = await clock();
   await page.waitForTimeout(600);
@@ -451,6 +452,7 @@ test('keyboard: Space starts the fight, then pauses and resumes it; D opens the 
   await page.getByRole('button', { name: /new run/i }).click();
   await page.getByRole('button', { name: /start shift/i }).click();
   await page.getByRole('button', { name: /enter floor 1/i }).click();
+  await expect(page.locator('.combat')).toBeVisible();
   await page.keyboard.press('Space');
   await expect(page.locator('.js-start')).toHaveCount(0);
   // The fight runs once the clock-in card is away.
@@ -777,6 +779,8 @@ test('map: where the road splits, the player picks one of the two lanes and ente
     .locator('.journey:not(.leaving)')
     .getByRole('button', { name: /enter floor 4/i })
     .click();
+  // The pawn walks to the room first.
+  await expect.poll(() => page.evaluate('window.__game.run.path.length')).toBe(4);
   const at = (await page.evaluate('({ floor: window.__game.run.nodes[window.__game.run.current].floor, path: window.__game.run.path.length })')) as {
     floor: number;
     path: number;
@@ -1545,6 +1549,7 @@ test('a full mana bar blinks only once the fight has started', async ({ page }) 
   await page.getByRole('button', { name: /new run/i }).click();
   await page.getByRole('button', { name: /start shift/i }).click();
   await page.getByRole('button', { name: /enter floor 1/i }).click();
+  await expect(page.locator('.combat')).toBeVisible();
   await combat(page, 'c.hero.mana = c.hero.maxMana;');
   await page.waitForTimeout(200);
   await expect(page.locator('.mana-row')).not.toHaveClass(/full/);
@@ -1686,6 +1691,7 @@ test('Power Socket: the belt goes dead and a crank knob turns it, both rows', as
   await page.getByRole('button', { name: /start shift/i }).click();
   await page.evaluate('(() => { const g = window.__game; g.run.nodes[g.run.current].enemy = "powerSocket"; })()');
   await page.getByRole('button', { name: /enter floor 1/i }).click();
+  await expect(page.locator('.combat')).toBeVisible();
   const start = page.locator('.js-start');
   if (await start.count()) await start.click();
   await expect.poll(() => combat(page, 'return c.intro <= 0')).toBe(true);

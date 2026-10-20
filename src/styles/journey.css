@@ -29,9 +29,12 @@
 .hero-chip { position: relative; width: 62px; height: 62px; padding: 0; overflow: hidden; justify-content: center; }
 .hero-chip .riso { width: 100%; height: 100%; }
 /* a bust like the fight's portrait: zoomed, it breathes and blinks now and then */
-.hero-chip > .riso { scale: 1.3; transform-origin: 50% 22%; animation: idle 2.4s steps(1) infinite; }
-.hero-chip > .riso:not(.mood, .mood-blink) { animation: idle 2.4s steps(1) infinite, chip-open 4.8s steps(1) infinite; }
-.hero-chip > .mood-blink { animation: idle 2.4s steps(1) infinite, chip-blink 4.8s steps(1) infinite; }
+.hero-chip > .riso,
+.pawn-face > .riso { scale: 1.3; transform-origin: 50% 22%; animation: idle 2.4s steps(1) infinite; }
+.hero-chip > .riso:not(.mood, .mood-blink),
+.pawn-face > .riso:not(.mood, .mood-blink) { animation: idle 2.4s steps(1) infinite, chip-open 4.8s steps(1) infinite; }
+.hero-chip > .mood-blink,
+.pawn-face > .mood-blink { animation: idle 2.4s steps(1) infinite, chip-blink 4.8s steps(1) infinite; }
 @keyframes chip-blink {
   92%, 96% { visibility: visible; }
 }
@@ -145,6 +148,9 @@
    fog over the rooms out of sight */
 .path {
   position: relative;
+  /* a room: the room's shape on top and a name plate of up to two lines under it (the pawn is placed against these) */
+  --node-w: clamp(92px, 32%, 126px);
+  --node-h: 88px;
   /* the stamps and rings of a room coming out of the fog grow past the walls: clipped, so the map doesn't gain a sideways scroll while they play (and slide back after) */
   overflow-x: clip;
   margin: 8px 0 12px;
@@ -220,9 +226,7 @@
   position: absolute;
   z-index: 1;
   translate: -50% -50%;
-  width: clamp(92px, 32%, 126px);
-  /* the icon on top and a name plate of up to two lines under it */
-  --node-h: 74px;
+  width: var(--node-w);
 }
 .node .dot {
   position: relative;
@@ -246,7 +250,13 @@
   display: grid;
   place-items: center;
   width: 100%;
-  height: 32px;
+  height: 46px;
+}
+/* a room in sight shows the shape of what waits in it, as a black shadow with the room's ink printed off to one side */
+.node .ico .riso.sil {
+  width: 46px;
+  height: 46px;
+  filter: brightness(0) drop-shadow(2px 2px 0 var(--sil, var(--ink2)));
 }
 .node .label {
   width: 100%;
@@ -273,20 +283,21 @@
   top: calc(var(--safe-t) + 70px);
   right: 6px;
 }
-.node.elite .dot { color: var(--purple); }
-.node.boss .dot { color: var(--p); }
-.node.promotion .dot { color: var(--b); }
-.node.rest .dot { color: var(--red); }
-.node.copy .dot { color: var(--green); }
+.node.elite .dot { color: var(--purple); --sil: var(--purple); }
+.node.boss .dot { color: var(--p); --sil: var(--p); }
+.node.promotion .dot { color: var(--b); --sil: var(--b); }
+.node.rest .dot { color: var(--red); --sil: var(--red); }
+.node.copy .dot { color: var(--green); --sil: var(--green); }
 /* rooms already done, or out of reach, are dimmed (opaque: the footsteps on the corridors stop at their walls) */
 .node.done .dot { background: var(--map-done); box-shadow: none; }
 .node.done .label { color: var(--map-done-ink); }
 /* a fight won: the enemy's little portrait on the dot, with a tick in its corner */
-.node.beaten .ico { position: relative; height: 40px; overflow: hidden; }
-.node.beaten .ico .riso { width: 40px; height: 40px; scale: 1.25; transform-origin: 50% 70%; }
+.node.beaten .ico { position: relative; overflow: hidden; }
+.node.beaten .ico .riso { width: 46px; height: 46px; scale: 1.2; transform-origin: 50% 70%; }
 .node.beaten .ico .done-tick { position: absolute; right: 14%; bottom: 0; display: grid; font-size: 16px; --ink2: var(--map-done); }
 .node.missed .dot { color: var(--map-missed-line); background: var(--map-missed); border-color: var(--map-missed-line); box-shadow: none; }
 .node.missed .label { color: var(--map-missed-ink); }
+.node.missed .ico { opacity: 0.35; }
 /* elite and boss floors are vaults: a second wall around the room */
 .node.elite .dot,
 .node.boss .dot { outline: 3px solid var(--muted-d); outline-offset: 3px; }
@@ -301,6 +312,44 @@
   --ink2: var(--bg);
 }
 .node.fog .label { color: var(--muted-d); }
+/* the entrance under the first room: a doormat where the hero's pawn waits when a shift begins */
+.path .mat {
+  position: absolute;
+  width: 64px;
+  height: 8px;
+  translate: -50% 0;
+  background: var(--map-trod);
+  border: 2px solid var(--map-mid);
+  pointer-events: none;
+}
+/* the hero's pawn: a badge of the hero's face standing on its room's top-left corner (its offsets are set by the screen), hopping when it walks;
+   at the entrance it stands on the mat */
+.pawn {
+  position: absolute;
+  z-index: 3;
+  width: 42px;
+  height: 42px;
+  translate: -50% -100%;
+  margin: calc(var(--node-h) / -2 + var(--dy)) 0 0 calc(var(--node-w) / -2 + var(--dx));
+  pointer-events: none;
+}
+.pawn.lobby { margin: 0; }
+.pawn-in { width: 100%; height: 100%; }
+.pawn-face {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  background: var(--y);
+  border: var(--line) solid var(--k);
+  box-shadow: 3px 3px 0 var(--p);
+}
+.pawn-face .riso { width: 100%; height: 100%; }
+.pawn.west .pawn-face { scale: -1 1; box-shadow: -3px 3px 0 var(--p); }
+.pawn.walking .pawn-in { animation: pawn-hop 0.2s steps(2) infinite; }
+@keyframes pawn-hop {
+  50% { translate: 0 -6px; }
+}
 /* doors on the walls where corridors enter */
 .door {
   position: absolute;
