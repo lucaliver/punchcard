@@ -1,16 +1,15 @@
 import { t, hasKey } from '../../core/i18n';
 import { card } from '../../data/cards';
 import { RELICS } from '../../data/relics';
-import { FOES } from '../../data/foes';
 import type { CardInst, FoeDef } from '../../game/types';
 import { artUrl } from '../art/sprites';
-import { cardArtId, cardView } from './cardView';
+import { cardView } from './cardView';
 import { cardLines, foeLines, rich } from './cardText';
-import { openModal } from '../app';
+import { type ModalAction, openModal } from '../app';
 import { h } from '../dom';
 
 /** The detail view of a card: the card itself, large, and what it does in words. */
-export function openCardDetail(c: CardInst, onClose?: () => void): () => void {
+export function openCardDetail(c: CardInst, onClose?: () => void, actions?: ModalAction[]): () => void {
   const def = card(c.id);
   const big = cardView(c, { width: 150, full: true });
   const lines = cardLines(c).map((l) => h('li', { html: rich(l) }));
@@ -23,7 +22,7 @@ export function openCardDetail(c: CardInst, onClose?: () => void): () => void {
     h('ul', { class: 'detail-lines' }, ...lines),
     flavor,
   );
-  return openModal({ body, onClose, cls: 'detail-modal' });
+  return openModal({ body, onClose, cls: 'detail-modal', actions });
 }
 
 /** A foe's page: its picture and what it does. */
@@ -50,5 +49,3 @@ export function openRelicDetail(id: string, onClose?: () => void): () => void {
   );
   return openModal({ title: t(`relic.${id}.name`), body, onClose, cls: 'detail-modal' });
 }
-
-export { cardArtId, FOES };

@@ -7,6 +7,7 @@ import { Battle } from './game/battle';
 import { applySettings } from './game/settings';
 import type { CardInst, KeeperId } from './game/types';
 import { makeStage } from './game/waves';
+import { startGame } from './ui/flow';
 import { initApp, show } from './ui/app';
 import { preloadArt } from './ui/art/sprites';
 import { battleScreen } from './ui/battle/battleScreen';
@@ -37,6 +38,7 @@ async function boot(): Promise<void> {
     });
     return;
   }
+  startGame();
 }
 
 void boot();

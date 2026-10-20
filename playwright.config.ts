@@ -1,6 +1,6 @@
 import { defineConfig, devices } from '@playwright/test';
 
-/** Browser smoke tests. They drive the dev server, which exposes `window.__combat` / `window.__game`. */
+/** Browser smoke tests. They drive the dev server, which exposes `window.__battle` / `window.__game`. */
 export default defineConfig({
   testDir: 'tests/e2e',
   timeout: 60_000,

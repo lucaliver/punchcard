@@ -1,8 +1,10 @@
 import { content } from './en.content';
+import { screens } from './en.screens';
 
 /** Every player-facing string of the game, in English (the source). `**word**` marks a keyword. */
 const en = {
   ...content,
+  ...screens,
   'app.title': 'Hyakki',
 
   // — rules text, built from the data —

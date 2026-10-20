@@ -1,3 +1,4 @@
+import { t } from '../core/i18n';
 import { settings } from '../game/settings';
 import { artUrl } from './art/sprites';
 import { cssMs, h } from './dom';
@@ -142,4 +143,16 @@ export function toast(text: string): void {
   const el = h('div', { class: 'toast' }, text);
   (current?.el ?? root).append(el);
   setTimeout(() => el.remove(), 1900);
+}
+
+/** A question with two answers; `onYes` runs on the first. */
+export function confirmModal(title: string, body: string, onYes: () => void): () => void {
+  return openModal({
+    title,
+    body,
+    actions: [
+      { label: t('ui.no'), cls: 'paper' },
+      { label: t('ui.yes'), cls: 'red', onClick: onYes },
+    ],
+  });
 }

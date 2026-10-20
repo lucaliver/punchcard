@@ -318,6 +318,7 @@ export function offerReward(run: RunState, kind: FightKind, flame: number, timeL
     relics,
     taken: false,
   };
+  run.mon += pay.mon;
   run.reward = offer;
   return offer;
 }
