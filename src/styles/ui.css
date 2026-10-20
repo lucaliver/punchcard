@@ -1,0 +1,305 @@
+/* ——— type ——— */
+.title-font {
+  font-family: var(--font-title);
+  font-weight: 400;
+}
+.num {
+  font-family: var(--font-num);
+}
+
+/* ——— buttons: a hanko stamp and a paper tab ——— */
+.btn {
+  --b: var(--red);
+  --b-dark: var(--red-dark);
+  --b-ink: var(--cream);
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  min-height: 48px;
+  padding: 10px 22px;
+  border: var(--line) solid var(--ink);
+  border-radius: 999px;
+  background: var(--b);
+  color: var(--b-ink);
+  font-family: var(--font-title);
+  font-size: 20px;
+  letter-spacing: 0.02em;
+  box-shadow: 0 5px 0 var(--b-dark), 0 5px 0 3px var(--ink);
+  transform: translateY(0);
+  transition: transform 80ms steps(2), box-shadow 80ms steps(2);
+  text-shadow: 0 2px 0 rgba(29, 20, 40, 0.45);
+}
+.btn:active:not(:disabled) {
+  transform: translateY(4px);
+  box-shadow: 0 1px 0 var(--b-dark), 0 1px 0 3px var(--ink);
+}
+.btn.paper {
+  --b: var(--paper);
+  --b-dark: var(--paper-3);
+  --b-ink: var(--ink);
+  text-shadow: none;
+}
+.btn.gold {
+  --b: var(--gold);
+  --b-dark: var(--gold-dark);
+  --b-ink: var(--ink);
+  text-shadow: none;
+}
+.btn.ghost {
+  --b: rgba(243, 231, 207, 0.12);
+  --b-dark: rgba(0, 0, 0, 0.35);
+  --b-ink: var(--paper);
+  font-size: 17px;
+  min-height: 44px;
+}
+.btn.small {
+  min-height: 40px;
+  padding: 6px 16px;
+  font-size: 16px;
+}
+.btn.big {
+  min-height: 60px;
+  padding: 12px 28px;
+  font-size: 22px;
+  white-space: nowrap;
+}
+.btn:disabled {
+  filter: grayscale(0.85) brightness(0.8);
+  cursor: default;
+}
+.btn .pico {
+  width: 1.2em;
+  height: 1.2em;
+}
+.pico {
+  display: inline-block;
+  width: 1em;
+  height: 1em;
+  vertical-align: -0.15em;
+  object-fit: contain;
+  pointer-events: none;
+}
+
+.icon-btn {
+  width: 44px;
+  height: 44px;
+  border-radius: 12px;
+  border: var(--line) solid var(--ink);
+  background: var(--night-2);
+  box-shadow: var(--shadow);
+  display: grid;
+  place-items: center;
+}
+.icon-btn:active {
+  transform: translateY(3px);
+  box-shadow: 0 1px 0 rgba(8, 4, 20, 0.55);
+}
+.icon-btn .pico {
+  width: 24px;
+  height: 24px;
+}
+
+/* ——— paper panels ——— */
+.panel {
+  position: relative;
+  background-color: var(--paper);
+  background-image: var(--washi, none);
+  color: var(--ink);
+  border: var(--line) solid var(--ink);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+  padding: 14px 16px;
+}
+.panel.dark {
+  background-color: var(--night-2);
+  color: var(--paper);
+  background-image: none;
+}
+.panel h2,
+.panel h3 {
+  margin: 0 0 6px;
+  font-family: var(--font-title);
+  font-weight: 400;
+}
+
+/* a brushed rule under headings */
+.rule {
+  height: 6px;
+  margin: 8px 0;
+  background: linear-gradient(90deg, transparent, var(--red) 12%, var(--red) 88%, transparent);
+  border-radius: 3px;
+  clip-path: polygon(0 55%, 8% 20%, 30% 45%, 55% 15%, 80% 50%, 100% 30%, 100% 80%, 75% 100%, 50% 70%, 22% 95%, 0 75%);
+}
+
+/* ——— modals: a paper sheet over the night ——— */
+.modal-back {
+  position: absolute;
+  inset: 0;
+  z-index: var(--z-modal);
+  display: grid;
+  place-items: center;
+  padding: 18px;
+  background: rgba(8, 10, 28, 0.72);
+  animation: fade var(--dur-modal) ease-out;
+}
+.modal {
+  width: min(100%, 420px);
+  max-height: 100%;
+  overflow: auto;
+  animation: pop var(--dur-pop) cubic-bezier(0.2, 1.4, 0.4, 1);
+}
+.modal .title {
+  font-family: var(--font-title);
+  font-size: 26px;
+  margin: 0 0 4px;
+  text-align: center;
+}
+.modal .body {
+  font-size: 16px;
+  margin: 6px 0 12px;
+}
+.modal .actions {
+  display: flex;
+  gap: 10px;
+  justify-content: center;
+  flex-wrap: wrap;
+  margin-top: 12px;
+}
+@keyframes fade {
+  from {
+    opacity: 0;
+  }
+}
+@keyframes pop {
+  from {
+    opacity: 0;
+    transform: scale(0.86) translateY(14px);
+  }
+}
+
+/* ——— shoji: a screen change slides two paper doors shut and open ——— */
+.shoji {
+  position: absolute;
+  inset: 0;
+  z-index: var(--z-shoji);
+  pointer-events: all;
+  overflow: hidden;
+}
+.shoji i {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  width: 50.5%;
+  background-color: var(--paper);
+  background-image:
+    linear-gradient(var(--ink-2) 3px, transparent 3px), linear-gradient(90deg, var(--ink-2) 3px, transparent 3px), var(--washi, none);
+  background-size: 100% 64px, 48px 100%, auto;
+  border: 4px solid var(--ink);
+  transition: transform var(--dur-shoji) cubic-bezier(0.6, 0, 0.3, 1);
+}
+.shoji i:first-child {
+  left: 0;
+  transform: translateX(-101%);
+  border-left: 0;
+}
+.shoji i:last-child {
+  right: 0;
+  transform: translateX(101%);
+  border-right: 0;
+}
+.shoji.closed i {
+  transform: translateX(0);
+}
+.shoji .mark {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: 84px;
+  height: 84px;
+  margin: -42px 0 0 -42px;
+  opacity: 0;
+  transition: opacity 120ms;
+  z-index: 1;
+}
+.shoji.closed .mark {
+  opacity: 1;
+}
+
+/* ——— toasts ——— */
+.toast {
+  position: absolute;
+  left: 50%;
+  bottom: calc(24px + var(--safe-bottom));
+  transform: translateX(-50%);
+  z-index: var(--z-toast);
+  padding: 10px 18px;
+  border: var(--line) solid var(--ink);
+  border-radius: 999px;
+  background: var(--paper);
+  color: var(--ink);
+  font-weight: 700;
+  box-shadow: var(--shadow);
+  animation: toast 1.8s ease-out forwards;
+  pointer-events: none;
+}
+@keyframes toast {
+  0% {
+    opacity: 0;
+    transform: translate(-50%, 12px);
+  }
+  10%,
+  80% {
+    opacity: 1;
+    transform: translate(-50%, 0);
+  }
+  100% {
+    opacity: 0;
+  }
+}
+
+/* ——— pips and bars ——— */
+.pips {
+  display: flex;
+  gap: 3px;
+  align-items: center;
+}
+.pips .pip {
+  width: 14px;
+  height: 14px;
+  background: var(--img) center/contain no-repeat;
+}
+.pips .pip.off {
+  filter: grayscale(1) brightness(0.45);
+  opacity: 0.7;
+}
+
+.chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 2px 9px;
+  border: 2px solid var(--ink);
+  border-radius: 999px;
+  background: var(--paper);
+  color: var(--ink);
+  font-family: var(--font-num);
+  font-size: 13px;
+  line-height: 1.5;
+}
+.chip .pico {
+  width: 1.1em;
+  height: 1.1em;
+}
+
+.scroll {
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+  overscroll-behavior: contain;
+}
+
+.kw {
+  font-weight: 700;
+  color: var(--red-dark);
+}

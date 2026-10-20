@@ -33,12 +33,6 @@ export const C = {
 } as const;
 
 let clipId = 0;
-const attrs = (o: Record<string, string | number | undefined>): string =>
-  Object.entries(o)
-    .filter(([, v]) => v !== undefined)
-    .map(([k, v]) => `${k}="${v}"`)
-    .join(' ');
-
 export interface Look {
   /** Outline width (0 = none). */
   w?: number;

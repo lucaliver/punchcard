@@ -94,6 +94,26 @@ export const ICON_ART: Record<string, string> = {
       circ(50, 50, 8, 'none', { w: 3, stroke: '#dfe6f0' }),
     ].join(''),
   ),
+  /** The lantern the keeper carries: a standing lantern whose flame the field draws live. */
+  lantern: svg(
+    [
+      p('M24 96 H76 V86 H24Z', '#8e9ab0', { w: 3.6 }),
+      p('M40 86 V66 H60 V86Z', '#aab4c4', { w: 3.6 }),
+      p('M22 66 H78 L72 56 H28Z', '#b9c3d2', { w: 3.6 }),
+      rect(30, 24, 40, 32, '#fff3d6', { w: 3.6, r: 3 }),
+      ln('M43 24 V56 M57 24 V56', '#a92b25', 3),
+      solid('M16 28 L50 4 L84 28Z', '#6b4a32'),
+      circ(50, 4, 4, C.gold, { w: 3 }),
+    ].join(''),
+  ),
+  /** Damage handed back to whoever strikes. */
+  thorns: svg(
+    [
+      ...[0, 1, 2, 3, 4, 5, 6, 7].map((i) => p('M42 16 L50 0 L58 16Z', '#cfd6e2', { w: 3.4, x: `transform="rotate(${i * 45} 50 50)"` })),
+      circ(50, 50, 28, '#8e9ab0', { w: 4.4 }),
+      circ(42, 42, 6, '#dfe6f0', { w: 0 }),
+    ].join(''),
+  ),
   /** Map nodes. */
   nodeWatch: svg(
     [

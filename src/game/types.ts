@@ -215,8 +215,9 @@ export type KeeperPassive =
 export interface RelicDef {
   id: string;
   rarity: Rarity | 'boss';
-  /** Number the text shows. */
+  /** Numbers the text shows (`{n}`, and `{m}` for a second one). */
   n: number;
+  m?: number;
   /** Sprite id. */
   art: SpriteId;
   mods?: Partial<{

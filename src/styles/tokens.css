@@ -1,0 +1,90 @@
+/* Fonts: vendored (SIL OFL) under src/assets/fonts. */
+@font-face {
+  font-family: 'Potta One';
+  font-weight: 400;
+  font-display: swap;
+  src: url('../assets/fonts/potta-one-latin-400-normal.woff2') format('woff2');
+}
+@font-face {
+  font-family: 'Dela Gothic One';
+  font-weight: 400;
+  font-display: swap;
+  src: url('../assets/fonts/dela-gothic-one-latin-400-normal.woff2') format('woff2');
+}
+@font-face {
+  font-family: 'Zen Maru Gothic';
+  font-weight: 400;
+  font-display: swap;
+  src: url('../assets/fonts/zen-maru-gothic-latin-400-normal.woff2') format('woff2');
+}
+@font-face {
+  font-family: 'Zen Maru Gothic';
+  font-weight: 700;
+  font-display: swap;
+  src: url('../assets/fonts/zen-maru-gothic-latin-700-normal.woff2') format('woff2');
+}
+
+:root {
+  /* the night */
+  --night-0: #0a0d22;
+  --night-1: #12163a;
+  --night-2: #1b2160;
+  --night-3: #2a3380;
+  --night-4: #3b47a0;
+  /* paper and ink */
+  --paper: #f3e7cf;
+  --paper-2: #e6d5b2;
+  --paper-3: #cdb98f;
+  --paper-shade: #a8925f;
+  --cream: #fff3d6;
+  --ink: #1d1428;
+  --ink-2: #3b2f4a;
+  --ink-soft: #5a4a6a;
+  /* jewels */
+  --red: #e4452f;
+  --red-dark: #a92b25;
+  --gold: #f5b53f;
+  --gold-light: #ffe08a;
+  --gold-dark: #a8742a;
+  --blue: #3a6fd0;
+  --sky: #8cc8f0;
+  --teal: #2fa39a;
+  --moss: #5d9a4f;
+  --leaf: #9ccc5a;
+  --pink: #f08fae;
+  --violet: #7a4fa8;
+  /* rarity */
+  --r-common: #8e8272;
+  --r-rare: #3a6fd0;
+  --r-epic: #8a4fc8;
+  --r-legend: #e8a020;
+  /* card kinds */
+  --k-spirit: #f6dca0;
+  --k-charm: #bcd0f4;
+  /* the lantern's light */
+  --glow: #ffd36a;
+  --glow-soft: rgba(255, 211, 106, 0.35);
+  /* type */
+  --font-title: 'Potta One', 'Hiragino Mincho ProN', 'Yu Mincho', serif;
+  --font-num: 'Dela Gothic One', 'Zen Maru Gothic', sans-serif;
+  --font: 'Zen Maru Gothic', 'Hiragino Maru Gothic ProN', 'Rounded Mplus 1c', system-ui, sans-serif;
+  /* layers */
+  --z-screen: 1;
+  --z-modal: 40;
+  --z-fx: 60;
+  --z-shoji: 80;
+  --z-toast: 90;
+  /* time */
+  --dur-shoji: 380ms;
+  --dur-modal: 180ms;
+  --dur-card: 220ms;
+  --dur-pop: 260ms;
+  /* shape */
+  --radius: 14px;
+  --line: 3px;
+  --shadow: 0 4px 0 rgba(8, 4, 20, 0.55);
+  --safe-top: env(safe-area-inset-top, 0px);
+  --safe-bottom: env(safe-area-inset-bottom, 0px);
+  /* the night turns to day during a fight (set by the battle screen) */
+  --dawn: 0;
+}

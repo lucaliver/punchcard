@@ -7,7 +7,7 @@ export type Dict = Record<string, string>;
  * Prefixes of ids built at runtime (e.g. `card.${id}.name`); they are checked by tests/content.test.ts.
  * Any other key must be a literal id from en.ts, so a typo fails the typecheck.
  */
-type DynamicPrefix = 'card' | 'foe' | 'keeper' | 'relic' | 'node' | 'kw' | 'status' | 'rarity' | 'kind' | 'act' | 'tip' | 'scope' | 'stage' | 'lore';
+type DynamicPrefix = 'card' | 'foe' | 'keeper' | 'relic' | 'node' | 'rarity' | 'kind' | 'act' | 'scope' | 'stat' | 'aim' | 'tip';
 export type TKey = EnKey | `${DynamicPrefix}.${string}`;
 export type Params = Record<string, string | number>;
 

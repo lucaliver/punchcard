@@ -1,0 +1,152 @@
+/* ——— the card: a paper talisman ——— */
+.card {
+  --cw: 80px;
+  --kind: var(--k-spirit);
+  --kind-dark: #b98a3a;
+  --rar: var(--r-common);
+  position: relative;
+  width: var(--cw);
+  height: calc(var(--cw) * 1.42);
+  font-size: calc(var(--cw) * 0.13);
+  border: calc(var(--cw) * 0.036) solid var(--ink);
+  border-radius: calc(var(--cw) * 0.12);
+  background-color: var(--paper);
+  background-image: var(--washi, none);
+  color: var(--ink);
+  box-shadow: 0 calc(var(--cw) * 0.05) 0 rgba(8, 4, 20, 0.6);
+  overflow: visible;
+  flex: none;
+  transition: transform var(--dur-card) cubic-bezier(0.2, 1.3, 0.4, 1), filter 120ms, box-shadow 120ms;
+}
+.card[data-kind='charm'] {
+  --kind: var(--k-charm);
+  --kind-dark: #6f86c8;
+}
+.card[data-rarity='rare'] {
+  --rar: var(--r-rare);
+}
+.card[data-rarity='epic'] {
+  --rar: var(--r-epic);
+}
+.card[data-rarity='legend'] {
+  --rar: var(--r-legend);
+}
+.card .c-art {
+  position: absolute;
+  left: 7%;
+  right: 7%;
+  top: 7%;
+  height: 52%;
+  border-radius: calc(var(--cw) * 0.08);
+  border: calc(var(--cw) * 0.025) solid var(--ink);
+  background:
+    radial-gradient(circle at 50% 70%, var(--glow-soft), transparent 70%),
+    linear-gradient(var(--kind), var(--kind-dark));
+  overflow: hidden;
+}
+.card[data-kind='charm'] .c-art {
+  background:
+    radial-gradient(circle at 50% 60%, rgba(255, 255, 255, 0.55), transparent 65%),
+    linear-gradient(#cfdcf8, #7f98d6);
+}
+.card .c-sprite {
+  position: absolute;
+  inset: -4% 0 -4% 0;
+  width: 100%;
+  height: 108%;
+  object-fit: contain;
+  pointer-events: none;
+}
+.card .c-cost {
+  position: absolute;
+  left: calc(var(--cw) * -0.08);
+  top: calc(var(--cw) * -0.08);
+  width: calc(var(--cw) * 0.34);
+  height: calc(var(--cw) * 0.34);
+  display: grid;
+  place-items: center;
+  border-radius: 50%;
+  border: calc(var(--cw) * 0.03) solid var(--ink);
+  background: radial-gradient(circle at 35% 30%, #ff7a5c, var(--red) 60%, var(--red-dark));
+  color: var(--cream);
+  font-size: calc(var(--cw) * 0.22);
+  line-height: 1;
+  text-shadow: 0 calc(var(--cw) * 0.015) 0 rgba(29, 20, 40, 0.5);
+  z-index: 2;
+}
+.card .c-name {
+  position: absolute;
+  left: 4%;
+  right: 4%;
+  top: 55%;
+  height: 17%;
+  display: grid;
+  place-items: center;
+  padding: 0 4%;
+  background: var(--rar);
+  border-top: calc(var(--cw) * 0.025) solid var(--ink);
+  border-bottom: calc(var(--cw) * 0.025) solid var(--ink);
+  color: var(--cream);
+  font-family: var(--font-title);
+  font-size: 0.82em;
+  line-height: 1;
+  text-align: center;
+  text-shadow: 0 1px 0 rgba(29, 20, 40, 0.6);
+  overflow: hidden;
+}
+.card .c-chips {
+  position: absolute;
+  left: 5%;
+  right: 5%;
+  bottom: 3%;
+  height: 22%;
+  display: flex;
+  flex-wrap: wrap;
+  align-content: center;
+  justify-content: center;
+  gap: 1% 3%;
+}
+.card .c-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 2%;
+  font-size: 0.86em;
+  line-height: 1.15;
+  white-space: nowrap;
+}
+.card .c-chip .pico {
+  width: 1.15em;
+  height: 1.15em;
+}
+.card .c-up {
+  position: absolute;
+  right: calc(var(--cw) * -0.06);
+  top: calc(var(--cw) * -0.06);
+  width: calc(var(--cw) * 0.26);
+  height: calc(var(--cw) * 0.26);
+  display: grid;
+  place-items: center;
+  border-radius: 50%;
+  border: calc(var(--cw) * 0.03) solid var(--ink);
+  background: var(--gold);
+  font-size: calc(var(--cw) * 0.2);
+  line-height: 1;
+  z-index: 2;
+}
+.card .c-gem {
+  position: absolute;
+  left: 50%;
+  top: 70.5%;
+  width: calc(var(--cw) * 0.11);
+  height: calc(var(--cw) * 0.11);
+  transform: translate(-50%, -50%) rotate(45deg);
+  background: var(--cream);
+  border: calc(var(--cw) * 0.022) solid var(--ink);
+  display: none;
+}
+.card[data-rarity='legend'] {
+  box-shadow: 0 calc(var(--cw) * 0.05) 0 rgba(8, 4, 20, 0.6), 0 0 calc(var(--cw) * 0.25) rgba(245, 181, 63, 0.7);
+}
+.card[data-rarity='epic'] {
+  box-shadow: 0 calc(var(--cw) * 0.05) 0 rgba(8, 4, 20, 0.6), 0 0 calc(var(--cw) * 0.18) rgba(138, 79, 200, 0.6);
+}

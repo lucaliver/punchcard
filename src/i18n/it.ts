@@ -1,6 +1,2 @@
-import type { EnKey } from './en';
-
-const it: Record<EnKey, string> = {
-  'app.title': 'Hyakki',
-};
+const it: Record<string, string> = {};
 export default it;
