@@ -203,8 +203,10 @@
   margin: 4px 0;
   font-size: 16px;
 }
-.end-panel .btn {
+.end-panel .btn,
+.start-panel .btn {
   margin-top: 12px;
+  width: 100%;
 }
 
 .b-hint {

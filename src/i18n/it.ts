@@ -14,7 +14,7 @@ const it: Record<EnKey, string> = {
   'scope.lanes3': 'ogni nemico della corsia e delle due accanto',
   'scope.all': 'ogni nemico',
   'scope.strongest': 'il nemico più tosto',
-  'fx.hit': 'Infligge {dmg} danni a {scope}.',
+  'fx.hit': 'Colpisce {scope} con {dmg} danni.',
   'fx.andStun': '**Stordisce** anche per {secs} s.',
   'fx.andSlow': '**Rallenta** anche del {pct} per {secs} s.',
   'fx.andBurn': '**Brucia** anche per {dps} al secondo, {secs} s.',
