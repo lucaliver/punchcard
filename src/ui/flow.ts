@@ -92,11 +92,16 @@ function debugMenu(): void {
   });
 }
 
+function savedInfo(): { keeper: string; act: number; flame: number; max: number } | null {
+  const r = loadRun();
+  return r ? { keeper: r.keeper, act: r.act, flame: Math.ceil(r.flame), max: r.maxFlame } : null;
+}
+
 export function showTitle(): void {
   playMusic('title');
   void show(
     titleScreen({
-      hasRun: loadRun() !== null,
+      saved: savedInfo(),
       onPlay: () => {
         unlockAudio();
         const go = (): void => chooseKeeper();

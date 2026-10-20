@@ -1674,3 +1674,21 @@
   width: min(190px, 24vh);
   height: min(190px, 24vh);
 }
+
+.saved-run {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 4px 14px 4px 6px;
+  border: var(--line) solid var(--ink);
+  border-radius: 999px;
+  background: rgba(10, 13, 34, 0.7);
+  color: var(--paper);
+  font-size: 13px;
+  font-weight: 700;
+}
+.saved-run img {
+  width: 34px;
+  height: 34px;
+  object-fit: contain;
+}

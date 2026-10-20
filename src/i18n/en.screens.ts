@@ -10,6 +10,7 @@ export const screens = {
   'title.tagline': 'Hold the lantern until dawn',
   'title.record': '{wins} dawns held · {runs} climbs',
   'title.fresh': 'The mountain is waiting',
+  'title.saved': '{name} · night {act} · flame {flame}/{max}',
   'title.newRunQ': 'Start a new climb?',
   'title.newRunBody': 'The climb in progress will be forgotten.',
 

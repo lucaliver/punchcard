@@ -8,8 +8,8 @@ import { artUrl } from '../art/sprites';
 import { h } from '../dom';
 
 export interface TitleOpts {
-  /** A run is saved: the main button continues it. */
-  hasRun: boolean;
+  /** A run is saved: the main button continues it, and a small card says whose it is. */
+  saved: { keeper: string; act: number; flame: number; max: number } | null;
   onPlay(): void;
   onContinue(): void;
   onAlmanac(): void;
@@ -63,15 +63,32 @@ export function titleScreen(o: TitleOpts): Screen {
   );
   const play = h(
     'button',
-    { class: 'btn big title-play', onclick: o.hasRun ? o.onContinue : o.onPlay },
+    { class: 'btn big title-play', onclick: o.saved ? o.onContinue : o.onPlay },
     pico('flame'),
-    o.hasRun ? t('title.continue') : t('title.play'),
+    o.saved ? t('title.continue') : t('title.play'),
   );
   const menu = h(
     'div',
     { class: 'title-menu' },
     play,
-    o.hasRun ? h('button', { class: 'btn paper', onclick: o.onPlay }, t('title.newRun')) : null,
+    o.saved
+      ? h(
+          'div',
+          { class: 'saved-run' },
+          h('img', { src: artUrl(o.saved.keeper), alt: '' }),
+          h(
+            'span',
+            {},
+            t('title.saved', {
+              name: t(`keeper.${o.saved.keeper}.name` as 'keeper.miko.name'),
+              act: o.saved.act,
+              flame: o.saved.flame,
+              max: o.saved.max,
+            }),
+          ),
+        )
+      : null,
+    o.saved ? h('button', { class: 'btn paper', onclick: o.onPlay }, t('title.newRun')) : null,
     h(
       'div',
       { class: 'title-row' },

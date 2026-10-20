@@ -11,6 +11,7 @@ export const screens: Record<keyof typeof en, string> = {
   'title.tagline': 'Tieni accesa la lanterna fino all’alba',
   'title.record': '{wins} albe tenute · {runs} salite',
   'title.fresh': 'La montagna aspetta',
+  'title.saved': '{name} · notte {act} · fiamma {flame}/{max}',
   'title.newRunQ': 'Iniziare una nuova salita?',
   'title.newRunBody': 'La salita in corso verrà dimenticata.',
 

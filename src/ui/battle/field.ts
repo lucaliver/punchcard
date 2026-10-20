@@ -507,6 +507,9 @@ export class Field {
     this.leakFlash = Math.max(0, this.leakFlash - dt);
     this.abilityFlash = Math.max(0, this.abilityFlash - dt);
     this.shake = Math.max(0, this.shake - dt * 22);
+    if (this.act === 3 && dt > 0 && Math.random() < dt * 5) {
+      this.fx.burst(Math.random() * this.g.w, -6, 1, { color: '#f2a7c8', shape: 'leaf', speed: 14, life: 7, size: 3.2, gravity: 22 });
+    }
     this.draw();
   }
 
@@ -541,6 +544,7 @@ export class Field {
     this.fx.drawShots(ctx);
     this.fx.drawParticles(ctx);
     this.drawFireflies(dawn);
+    this.drawMist(dawn);
     this.fx.drawFloaters(ctx);
 
     // Dawn: a warm light creeps over the field from the top.
@@ -849,7 +853,8 @@ export class Field {
     const fly = f.def.fly ? -th * 0.28 - Math.sin(this.t * 4 + v.phase) * 3 : 0;
     const lunge = v.strike < 0.2 ? Math.sin((v.strike / 0.2) * Math.PI) * th * 0.12 : 0;
     const fade = Math.min(1, v.born / 0.3);
-    const o = { sx: 1 / squash, sy: squash, rot };
+    const flap = f.def.fly ? Math.sin(this.t * 15 + v.phase) : 0;
+    const o = { sx: (1 + flap * 0.14) / squash, sy: squash * (1 - flap * 0.08), rot };
     this.shadow(x, baseY - 3, size * 0.3 * (f.def.fly ? 0.7 : 1));
     this.sprite(f.def.art, x, baseY + fly + lunge, size, { ...o, alpha: fade });
     this.flash(f.def.art, x, baseY + fly + lunge, size, Math.max(0, 0.75 - v.hit * 4), o);
@@ -924,6 +929,24 @@ export class Field {
     for (const f of this.battle.foes) {
       const c = LIGHTS[f.def.id];
       if (c) glow((this.view(f.uid).x + 0.5) * tw, f.y * th, th * 1.3, c);
+    }
+    ctx.restore();
+  }
+
+  /** Act two's fog: a few pale banks drifting across the field. */
+  private drawMist(dawn: number): void {
+    if (this.act !== 2) return;
+    const { ctx } = this;
+    const { w, h } = this.g;
+    ctx.save();
+    for (let i = 0; i < 4; i++) {
+      const x = ((this.t * (8 + i * 3) + i * w * 0.37) % (w * 1.6)) - w * 0.3;
+      const y = h * (0.18 + i * 0.2);
+      const g = ctx.createRadialGradient(x, y, 0, x, y, w * 0.55);
+      g.addColorStop(0, `rgba(200,240,230,${0.1 * (1 - dawn * 0.6)})`);
+      g.addColorStop(1, 'rgba(200,240,230,0)');
+      ctx.fillStyle = g;
+      ctx.fillRect(x - w * 0.6, y - w * 0.3, w * 1.2, w * 0.6);
     }
     ctx.restore();
   }
