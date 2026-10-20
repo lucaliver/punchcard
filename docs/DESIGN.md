@@ -41,9 +41,15 @@ Procedural: koto/shamisen plucks, taiko, wooden blocks, wind; a pentatonic gener
 
 ## Plan / status
 
-1. [x] Engine (`game/battle.ts`), data (cards, foes, keepers, relics), waves, bot + sim.
-2. [ ] Art system (sprites, backdrops, card faces, icons).
-3. [ ] Battle screen (canvas field, hand with drag and drop, HUD, effects, sfx).
-4. [ ] Run layer (map, rewards, rest, market, shrine, relics, saves, end).
-5. [ ] Menus (title, keepers, settings, almanac, how to play).
-6. [ ] Music, polish, Italian text, e2e tests, balance pass.
+1. [x] Engine (`game/battle.ts`), data (cards, foes, keepers, relics), waves, bot + sim, whole-run bot.
+2. [x] Art system: ~110 SVG drawings from a small kit (`ui/art/kit.ts`), backdrops painted per night, card faces, icons.
+3. [x] Battle screen: canvas field, drag and drop hand, gauges, boss bar, banners, guided first fight, hold to inspect.
+4. [x] Run layer: map, rewards, campfire, market, shrine, cache, relics, saves, end, meta (unlocks, almanac).
+5. [x] Menus: title with a marching parade, keepers, settings, how to play, almanac, shoji transitions.
+6. [x] Music, Italian text, content and engine tests, e2e smoke, balance passes with the bots.
+7. [ ] Ideas not done: a difficulty ladder (moon phases), a fourth keeper (the Onmyoji), recalling a spirit, daily seed.
+
+## Balance notes
+
+`tests/balance.runs.test.ts` plays whole runs with a plain bot (`tests/runbot.ts`): about 30–50% clears with each keeper at the
+time of writing, the second night's boss being the usual wall. Tune with `CONFIG.stage` (budget and foe HP growth) and the foe records.

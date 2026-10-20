@@ -42,6 +42,54 @@ let unlocked: KeeperId | null = null;
 
 const NIGHT_TRACK = { 1: 'night1', 2: 'night2', 3: 'night3' } as const;
 
+/** Tools for trying the game out: only reachable once the version line has been tapped enough times. */
+function debugMenu(): void {
+  const act = (label: string, fn: () => void): { label: string; cls: string; onClick: () => boolean } => ({
+    label,
+    cls: 'paper',
+    onClick: () => {
+      fn();
+      return true;
+    },
+  });
+  const r = run;
+  openModal({
+    title: t('settings.debug'),
+    actions: [
+      act('Unlock all keepers', () => {
+        for (const k of ['miko', 'ronin', 'tanuki'] as const) if (!meta.unlocked.includes(k)) meta.unlocked.push(k);
+        saveMeta();
+        showTitle();
+      }),
+      ...(r
+        ? [
+            act('+100 mon', () => {
+              r.mon += 100;
+              saveRun(r);
+              goMap();
+            }),
+            act('Mend the lantern', () => {
+              r.flame = r.maxFlame;
+              saveRun(r);
+              goMap();
+            }),
+            act('Skip to night 2', () => {
+              startAct(r, 2);
+              saveRun(r);
+              intro();
+            }),
+            act('Skip to night 3', () => {
+              startAct(r, 3);
+              saveRun(r);
+              intro();
+            }),
+          ]
+        : []),
+      { label: t('ui.close'), cls: 'red' },
+    ],
+  });
+}
+
 export function showTitle(): void {
   playMusic('title');
   void show(
@@ -61,11 +109,11 @@ export function showTitle(): void {
         unlockAudio();
         void show(almanacScreen(showTitle));
       },
-      onSettings: () => openSettings({ onLocale: showTitle, onReset: () => undefined, onDebug: () => undefined }),
+      onSettings: () => openSettings({ onLocale: showTitle, onReset: () => undefined, onDebug: debugMenu }),
       onHow: () => openHowTo(),
       onDebug: () => {
         saveSettings();
-        openSettings({ onLocale: showTitle, onReset: () => undefined });
+        debugMenu();
       },
     }),
   );

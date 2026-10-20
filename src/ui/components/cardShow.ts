@@ -1,11 +1,12 @@
 import { t, hasKey } from '../../core/i18n';
 import { card } from '../../data/cards';
+import { KEEPERS } from '../../data/keepers';
 import { RELICS } from '../../data/relics';
 import { CONFIG } from '../../data/config';
-import type { CardInst, FoeDef, SpiritDef } from '../../game/types';
+import type { CardInst, FoeDef, KeeperId, SpiritDef } from '../../game/types';
 import { artUrl } from '../art/sprites';
 import { cardView } from './cardView';
-import { cardLines, fmt, foeLines, rich, spiritLines } from './cardText';
+import { cardLines, effectLine, fmt, foeLines, rich, spiritLines } from './cardText';
 import { type ModalAction, openModal } from '../app';
 import { h } from '../dom';
 
@@ -63,4 +64,21 @@ export function openUnitDetail(cardId: string, def: SpiritDef, level: number, hp
     h('ul', { class: 'detail-lines' }, ...lines),
   );
   return openModal({ title: t(`card.${cardId}.name`), body, onClose, cls: 'detail-modal' });
+}
+
+/** The keeper's ability: what it does and how long it takes to come back. */
+export function openAbilityDetail(id: KeeperId, cd: number, onClose?: () => void): () => void {
+  const k = KEEPERS[id];
+  const body = h(
+    'div',
+    { class: 'detail' },
+    h('div', { class: 'detail-foe' }, h('img', { src: artUrl(id), alt: '' })),
+    h(
+      'ul',
+      { class: 'detail-lines' },
+      ...k.ability.fx.map((fx) => h('li', { html: rich(effectLine(fx)) })),
+      h('li', {}, t('keepers.cooldown', { secs: fmt(Math.round(cd)) })),
+    ),
+  );
+  return openModal({ title: t(`keeper.${id}.ability`), body, onClose, cls: 'detail-modal' });
 }

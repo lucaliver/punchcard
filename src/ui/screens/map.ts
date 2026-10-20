@@ -37,8 +37,8 @@ const xOf = (n: RunNode): number => (n.type === 'boss' ? 0.5 : COLS_X[n.col] + (
 export function mapScreen(o: MapOpts): Screen {
   const run = o.run;
   const rows = CONFIG.run.mapRows + 1;
-  const height = rows * ROW_H + 120;
-  const yOf = (n: RunNode): number => height - 70 - n.row * ROW_H;
+  const height = rows * ROW_H + 150;
+  const yOf = (n: RunNode): number => height - 100 - n.row * ROW_H;
   const reach = new Set(reachable(run).map((n) => n.id));
   const done = new Set<number>();
   // every room on the way to where the keeper stands counts as done
@@ -69,7 +69,7 @@ export function mapScreen(o: MapOpts): Screen {
   };
 
   // the foot of the mountain: where the keeper starts
-  const gate = { x: 0.5, y: height - 14 };
+  const gate = { x: 0.5, y: height - 24 };
   for (const n of run.map.filter((m) => m.row === 0)) drawRoad(gate, { x: xOf(n), y: yOf(n) }, run.at === null ? 'live' : 'done');
   for (const n of run.map) {
     for (const id of n.next) {

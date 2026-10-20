@@ -210,7 +210,7 @@
 .b-hint {
   position: absolute;
   left: 50%;
-  top: 14px;
+  top: 52px;
   transform: translateX(-50%) translateY(-8px);
   padding: 6px 14px;
   border: 2px solid var(--ink);
@@ -223,7 +223,9 @@
   pointer-events: none;
   transition: opacity 120ms, transform 120ms;
   z-index: 4;
-  white-space: nowrap;
+  width: max-content;
+  max-width: calc(100% - 28px);
+  text-align: center;
 }
 .b-hint.on {
   opacity: 1;
@@ -563,4 +565,67 @@
 }
 .coach-text {
   align-self: stretch;
+}
+
+/* ——— boss bar and banners ——— */
+.b-boss {
+  position: absolute;
+  left: 10px;
+  right: 10px;
+  top: 8px;
+  z-index: 3;
+  display: none;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
+  pointer-events: none;
+}
+.b-boss.on {
+  display: flex;
+}
+.b-boss span {
+  font-size: 16px;
+  color: var(--cream);
+  text-shadow: 0 2px 0 var(--ink), 0 0 8px rgba(0, 0, 0, 0.6);
+}
+.b-boss .bar {
+  width: 100%;
+  height: 12px;
+  border: 3px solid var(--ink);
+  border-radius: 999px;
+  background: #2a1a40;
+  overflow: hidden;
+}
+.b-boss .fill {
+  height: 100%;
+  background: linear-gradient(#ff8a6a, #e4452f);
+  transition: width 160ms;
+}
+.b-banner {
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 34%;
+  z-index: 4;
+  padding: 10px 14px;
+  text-align: center;
+  font-size: 28px;
+  color: var(--cream);
+  background: linear-gradient(90deg, transparent, rgba(29, 20, 40, 0.88) 14%, rgba(29, 20, 40, 0.88) 86%, transparent);
+  text-shadow: 0 3px 0 var(--ink);
+  opacity: 0;
+  transform: scaleY(0.4);
+  pointer-events: none;
+  transition: opacity 180ms, transform 180ms;
+}
+.b-banner.on {
+  opacity: 1;
+  transform: none;
+}
+.b-banner.boss {
+  color: var(--gold-light);
+}
+.b-banner.elite {
+  color: #ffb4a0;
+  font-size: 24px;
 }

@@ -107,6 +107,8 @@ const en = {
   'ui.outSub': 'The parade walks on.',
   'ui.continue': 'Continue',
   'ui.letsGo': 'Let’s go',
+  'ui.bossWarn': '{name} approaches',
+  'ui.eliteWarn': '{name} joins the parade',
   'stat.level': 'Level {n}: everything is {pct} stronger.',
   'tour.field': 'The parade walks down this road from the top. Every foe that reaches your lantern at the bottom costs flame.',
   'tour.gauges': 'This is your flame (your life) and your oil. Cards cost oil, and it refills by itself.',

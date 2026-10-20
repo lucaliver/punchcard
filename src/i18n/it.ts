@@ -105,6 +105,8 @@ const it: Record<EnKey, string> = {
   'ui.outSub': 'La parata prosegue.',
   'ui.continue': 'Continua',
   'ui.letsGo': 'Andiamo',
+  'ui.bossWarn': '{name} si avvicina',
+  'ui.eliteWarn': '{name} si unisce alla parata',
   'stat.level': 'Livello {n}: tutto è {pct} più forte.',
   'tour.field': 'La parata scende lungo questa strada dall’alto. Ogni nemico che raggiunge la tua lanterna in basso costa fiamma.',
   'tour.gauges': 'Questa è la tua fiamma (la tua vita) e il tuo olio. Le carte costano olio, che si ricarica da solo.',

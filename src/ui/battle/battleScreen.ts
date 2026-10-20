@@ -8,11 +8,11 @@ import { COLS, PLACE_ROW, ROWS, type CardInst } from '../../game/types';
 import type { FightKind } from '../../game/waves';
 import { openModal, pico, type Screen } from '../app';
 import { artUrl } from '../art/sprites';
-import { openCardDetail, openFoeDetail, openUnitDetail } from '../components/cardShow';
+import { openAbilityDetail, openCardDetail, openFoeDetail, openUnitDetail } from '../components/cardShow';
 import { runCoach } from '../components/coach';
 import { cardView, cardArtId } from '../components/cardView';
 import { costText } from '../components/cardText';
-import { h, haptic, setText, toggle } from '../dom';
+import { h, haptic, onTapOrHold, setText, toggle } from '../dom';
 import { saveSettings, settings } from '../../game/settings';
 import { Field } from './field';
 
@@ -75,7 +75,11 @@ export function battleScreen(o: BattleScreenOpts): Screen {
   const dawn = h('div', { class: 'b-dawn' }, h('div', { class: 'track' }, dawnFill, marks, sun), timeLeft);
   const top = h('div', { class: 'b-top' }, pauseBtn, dawn);
 
-  const fieldWrap = h('div', { class: 'b-field' }, field.canvas);
+  const bossFill = h('div', { class: 'fill' });
+  const bossName = h('span', { class: 'title-font' });
+  const bossBar = h('div', { class: 'b-boss' }, bossName, h('div', { class: 'bar' }, bossFill));
+  const banner = h('div', { class: 'b-banner title-font' });
+  const fieldWrap = h('div', { class: 'b-field' }, field.canvas, bossBar, banner);
 
   const flamePips = h('div', { class: 'pips b-flame-pips' });
   const flameNum = h('span', { class: 'num b-flame-num' });
@@ -113,6 +117,14 @@ export function battleScreen(o: BattleScreenOpts): Screen {
       case 'start':
         sfx('start');
         break;
+      case 'spawn': {
+        const def = e.foe.def;
+        if (b.time > 1 && (def.tier === 'boss' || def.tier === 'elite') && !announced.has(def.id)) {
+          announced.add(def.id);
+          announce(t(def.tier === 'boss' ? 'ui.bossWarn' : 'ui.eliteWarn', { name: t(`foe.${def.id}.name`) }), def.tier);
+        }
+        break;
+      }
       case 'place':
         sfx(e.merged ? 'merge' : 'place');
         haptic(8);
@@ -174,6 +186,16 @@ export function battleScreen(o: BattleScreenOpts): Screen {
         break;
     }
   };
+
+  let bannerTimer = 0;
+  const announced = new Set<string>();
+  function announce(text: string, tier: string): void {
+    banner.textContent = text;
+    banner.className = `b-banner title-font on ${tier}`;
+    clearTimeout(bannerTimer);
+    bannerTimer = window.setTimeout(() => banner.classList.remove('on'), 2600);
+    sfx('slamWarn');
+  }
 
   // ——— state ———
   let armed = -1;
@@ -509,13 +531,20 @@ export function battleScreen(o: BattleScreenOpts): Screen {
     else tryPlay(armed, tile.lane, tile.row);
   });
 
-  // ——— the ability ———
-  abilityBtn.addEventListener('click', () => {
-    if (!b.useAbility()) {
-      sfx('deny');
-      showHint(t('ui.abilityCooling'));
-    }
-  });
+  // ——— the ability: a tap uses it, a hold reads it ———
+  onTapOrHold(
+    abilityBtn,
+    () => {
+      if (!b.useAbility()) {
+        sfx('deny');
+        showHint(t('ui.abilityCooling'));
+      }
+    },
+    () => {
+      inspecting++;
+      openAbilityDetail(b.keeperId, b.abilityMax, () => inspecting--);
+    },
+  );
 
   // ——— pause ———
   function pause(): void {
@@ -527,6 +556,18 @@ export function battleScreen(o: BattleScreenOpts): Screen {
       dismiss: false,
       actions: [
         { label: t('ui.resume'), cls: 'red' },
+        ...(settings.debug
+          ? [
+              {
+                label: 'Debug: dawn now',
+                cls: 'paper',
+                onClick: () => {
+                  b.stage.spawns.length = 0;
+                  b.stage.duration = b.time + 2.5;
+                },
+              },
+            ]
+          : []),
         {
           label: t('ui.abandon'),
           cls: 'paper',
@@ -572,7 +613,7 @@ export function battleScreen(o: BattleScreenOpts): Screen {
       return;
     }
     if (e.key.toLowerCase() === 'a') {
-      abilityBtn.click();
+      if (!b.useAbility()) sfx('deny');
       return;
     }
     const n = Number(e.key);
@@ -672,6 +713,21 @@ export function battleScreen(o: BattleScreenOpts): Screen {
       toggle(cell, 'price', i < price);
     }
     setText(oilNum, `${Math.floor(b.oil)}`);
+
+    let bossHp = 0;
+    let bossMax = 0;
+    let bossId = '';
+    for (const f of b.foes) {
+      if (f.def.tier !== 'boss' || f.dead) continue;
+      bossHp += Math.max(0, f.hp);
+      bossMax += f.maxHp;
+      bossId = f.def.id;
+    }
+    toggle(bossBar, 'on', bossMax > 0);
+    if (bossMax > 0) {
+      bossFill.style.width = `${((bossHp / bossMax) * 100).toFixed(1)}%`;
+      setText(bossName, t(`foe.${bossId}.name`));
+    }
 
     const ready = b.abilityReady;
     toggle(abilityBtn, 'ready', ready);
