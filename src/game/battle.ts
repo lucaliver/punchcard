@@ -488,6 +488,9 @@ export class Battle {
       case 'oil':
         this.gainOil(fx.n, null, null);
         break;
+      case 'bounty':
+        this.gainOil(Math.min(fx.max, fx.per * this.foes.filter((f) => !f.dead).length), null, null);
+        break;
       case 'redeal':
         this.redeal();
         break;

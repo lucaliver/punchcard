@@ -73,6 +73,9 @@ export function botAct(b: Battle): boolean {
         case 'oil':
           if (b.oil < b.maxOil - 4 && b.play(s)) return true;
           break;
+        case 'bounty':
+          if (foes.length >= 3 && b.play(s)) return true;
+          break;
         case 'redeal':
           if (b.oil < 3 && b.play(s)) return true;
           break;

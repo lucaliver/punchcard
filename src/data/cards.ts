@@ -33,7 +33,7 @@ export const LEAF_DECOY = (up: boolean): SpiritDef => ({
 
 const list: CardDef[] = [
   // ——— neutral spirits ———
-  spirit('kodama', 'any', 'common', 1, (u) => ({ art: 'kodama', hp: 5, oil: { n: 1, every: u ? 4.8 : 6 } })),
+  spirit('kodama', 'any', 'common', 1, (u) => ({ art: 'kodama', hp: 5, oil: { n: 1, every: u ? 6.5 : 8 } })),
   spirit('jizo', 'any', 'common', 2, (u) => ({ art: 'jizo', hp: u ? 34 : 25, thorns: u ? 2 : 1 })),
   spirit('crane', 'any', 'common', 2, (u) => ({ art: 'crane', hp: 4, atk: { kind: 'shot', dmg: u ? 4 : 3, every: 1.1, range: 6 } })),
   spirit('mochi', 'any', 'common', 1, (u) => ({ art: 'mochi', hp: u ? 22 : 15, sticky: [0.6, 2] })),
@@ -51,13 +51,13 @@ const list: CardDef[] = [
   spirit('bambooCannon', 'any', 'rare', 3, (u) => ({
     art: 'bambooCannon',
     hp: 5,
-    atk: { kind: 'lob', dmg: u ? 6 : 4, every: 2.3, range: 7, splash: 0.9 },
+    atk: { kind: 'lob', dmg: u ? 8 : 5, every: 2, range: 7, splash: 0.9 },
   })),
   spirit('daruma', 'any', 'rare', 2, (u) => ({ art: 'daruma', hp: u ? 20 : 16, revive: u ? 0.9 : 0.6 })),
   spirit('bell', 'any', 'rare', 3, (u) => ({
     art: 'bell',
     hp: 14,
-    atk: { kind: 'pulse', dmg: u ? 5 : 3, every: 5, range: 5, stun: 0.6 },
+    atk: { kind: 'pulse', dmg: u ? 8 : 6, every: 4.5, range: 5, stun: 0.8 },
   })),
   spirit('kamaitachi', 'any', 'rare', 2, (u) => ({ art: 'kamaitachi', hp: 4, atk: { kind: 'pierce', dmg: u ? 3 : 2, every: 1.3, range: 5 } })),
 
@@ -66,8 +66,8 @@ const list: CardDef[] = [
   charm('sake', 'any', 'common', 1, 'none', (u) => [{ k: 'mend', hp: u ? 9 : 6, scope: 'all' }]),
   charm('gust', 'any', 'common', 2, 'lane', (u) => [{ k: 'push', rows: u ? 3 : 2, scope: 'lane' }]),
   charm('fireFan', 'any', 'common', 2, 'lane', (u) => [{ k: 'hit', dmg: u ? 7 : 5, scope: 'lane', burn: [2, 3] }]),
-  charm('maneki', 'any', 'rare', 1, 'none', () => [{ k: 'redeal' }], { upCost: 0 }),
-  charm('oilJar', 'any', 'common', 1, 'none', (u) => [{ k: 'oil', n: u ? 5 : 4 }], { vanish: true }),
+  charm('maneki', 'any', 'rare', 1, 'none', (u) => [{ k: 'redeal' }, { k: 'oil', n: u ? 2 : 1 }], { upCost: 0 }),
+  charm('oilJar', 'any', 'common', 1, 'none', (u) => [{ k: 'oil', n: u ? 4 : 3 }], { vanish: true }),
   charm('riceBall', 'any', 'rare', 1, 'none', (u) => [{ k: 'flame', n: u ? 2 : 1 }], { vanish: true }),
   charm(
     'amaterasu',
@@ -98,12 +98,12 @@ const list: CardDef[] = [
   ),
   charm('sacredRope', 'miko', 'rare', 1, 'lane', (u) => [{ k: 'zone', slow: 0.5, secs: u ? 13 : 9 }]),
   charm('salt', 'miko', 'common', 1, 'lane', (u) => [{ k: 'hit', dmg: u ? 9 : 6, scope: 'front' }]),
-  spirit('kagura', 'miko', 'rare', 3, (u) => ({ art: 'kagura', hp: 7, aura: { to: 'lane', dmg: u ? 0.45 : 0.3 } })),
+  spirit('kagura', 'miko', 'rare', 3, (u) => ({ art: 'kagura', hp: 7, aura: { to: 'lane', dmg: u ? 0.6 : 0.4, rate: 0.1 } })),
   charm('omamori', 'miko', 'common', 2, 'none', (u) => [{ k: 'bless', atk: u ? 0.4 : 0.3, secs: u ? 12 : 10, scope: 'all' }]),
   spirit('torii', 'miko', 'rare', 3, (u) => ({ art: 'torii', hp: 18, atk: { kind: 'pulse', dmg: u ? 3 : 2, every: 0.7, range: 1.4 } })),
   charm('shide', 'miko', 'common', 2, 'lane', (u) => [{ k: 'hit', dmg: u ? 4 : 3, scope: 'lanes3' }]),
   spirit('kuzunoha', 'miko', 'epic', 4, (u) => ({ art: 'kuzunoha', hp: 7, atk: { kind: 'pierce', dmg: u ? 8 : 6, every: 1.1, range: 7 } })),
-  spirit('inari', 'miko', 'legend', 5, (u) => ({ art: 'inari', hp: u ? 26 : 20, aura: { to: 'all', rate: u ? 0.35 : 0.25, dmg: u ? 0.3 : 0.2 } })),
+  spirit('inari', 'miko', 'legend', 5, (u) => ({ art: 'inari', hp: u ? 30 : 24, aura: { to: 'all', rate: u ? 0.45 : 0.3, dmg: u ? 0.35 : 0.25 } })),
   charm('exorcism', 'miko', 'epic', 4, 'none', (u) => [{ k: 'hit', dmg: u ? 22 : 15, scope: 'strongest' }]),
 
   // ——— Ronin Ichi: steel and patience ———
@@ -116,6 +116,7 @@ const list: CardDef[] = [
     { starter: true },
   ),
   spirit('bambooWall', 'ronin', 'common', 1, (u) => ({ art: 'bambooWall', hp: u ? 22 : 16, thorns: u ? 2 : 1 }), { starter: true }),
+  spirit('kyudo', 'ronin', 'rare', 3, (u) => ({ art: 'kyudo', hp: 8, atk: { kind: 'shot', dmg: u ? 10 : 7, every: 2.2, range: 7 } })),
   spirit('iaido', 'ronin', 'rare', 3, (u) => ({ art: 'iaido', hp: 10, atk: { kind: 'melee', dmg: u ? 20 : 13, every: 3, range: 0.95 } })),
   spirit('swordRack', 'ronin', 'common', 2, (u) => ({ art: 'swordRack', hp: 10, aura: { to: 'adjacent', dmg: u ? 0.5 : 0.35 } })),
   charm('kunai', 'ronin', 'common', 1, 'lane', (u) => [{ k: 'hit', dmg: u ? 6 : 4, scope: 'front' }]),
@@ -145,20 +146,20 @@ const list: CardDef[] = [
   spirit('teapot', 'tanuki', 'common', 2, (u) => ({
     art: 'teapot',
     hp: 6,
-    atk: { kind: 'lob', dmg: u ? 4 : 3, every: 2, range: 6, splash: 0.8, burn: [u ? 3 : 2, 3] },
+    atk: { kind: 'lob', dmg: u ? 4 : 3, every: 2.4, range: 6, splash: 0.65, burn: [u ? 2.5 : 1.5, 3] },
   })),
-  charm('pouch', 'tanuki', 'common', 1, 'none', (u) => [{ k: 'oil', n: u ? 3 : 2 }]),
+  charm('pouch', 'tanuki', 'common', 1, 'none', (u) => [{ k: 'bounty', per: 1, max: u ? 6 : 4 }], { vanish: true }),
   charm('henge', 'tanuki', 'rare', 2, 'tile', () => [{ k: 'copyLast' }], { upCost: 1 }),
   spirit('bellyDrum', 'tanuki', 'rare', 3, (u) => ({
     art: 'bellyDrum',
     hp: 14,
-    atk: { kind: 'pulse', dmg: 1, every: u ? 3.5 : 4.5, range: 2.4, stun: 0.9 },
+    atk: { kind: 'pulse', dmg: 1, every: u ? 3.2 : 4, range: 2.4, stun: 1.2 },
   })),
   spirit('sakeStall', 'tanuki', 'common', 2, (u) => ({ art: 'sakeStall', hp: 11, heal: { hp: u ? 2 : 1, every: 1, to: 'adjacent' } })),
   charm('parade', 'tanuki', 'rare', 3, 'none', (u) => [{ k: 'summon', spirit: LEAF_DECOY(false), n: u ? 4 : 3, at: 'random' }]),
-  charm('dice', 'tanuki', 'common', 1, 'none', (u) => [{ k: 'gamble', win: u ? 5 : 4, lose: 1 }]),
-  spirit('takarabune', 'tanuki', 'legend', 5, (u) => ({ art: 'takarabune', hp: u ? 24 : 18, oil: { n: u ? 4 : 3, every: u ? 3 : 3.5 } })),
-  spirit('kettle', 'tanuki', 'epic', 4, (u) => ({ art: 'kettle', hp: 20, oil: { n: 2, every: u ? 3.5 : 4.5 } })),
+  charm('dice', 'tanuki', 'common', 1, 'none', (u) => [{ k: 'gamble', win: u ? 7 : 5, lose: 0 }], { vanish: true }),
+  spirit('takarabune', 'tanuki', 'legend', 5, (u) => ({ art: 'takarabune', hp: u ? 24 : 18, oil: { n: u ? 4 : 3, every: u ? 2.6 : 3.2 } })),
+  spirit('kettle', 'tanuki', 'epic', 4, (u) => ({ art: 'kettle', hp: 20, oil: { n: 2, every: u ? 3 : 3.8 } })),
 ];
 
 export const CARDS: Record<string, CardDef> = Object.fromEntries(list.map((c) => [c.id, c]));

@@ -45,6 +45,8 @@ function effectChip(fx: Effect): Chip | null {
       return { icon: 'burn', text: fmt(fx.dmg) };
     case 'oil':
       return { icon: 'oil', text: `+${fmt(fx.n)}` };
+    case 'bounty':
+      return { icon: 'oil', text: `0-${fmt(fx.max)}` };
     case 'redeal':
       return { icon: 'cards', text: '' };
     case 'mend':
@@ -92,6 +94,8 @@ export function effectLine(fx: Effect): string {
       return t('fx.burst', { dmg: fmt(fx.dmg) });
     case 'oil':
       return t('fx.oil', { n: fmt(fx.n) });
+    case 'bounty':
+      return t('fx.bounty', { per: fmt(fx.per), max: fmt(fx.max) });
     case 'redeal':
       return t('fx.redeal');
     case 'mend':
@@ -107,7 +111,7 @@ export function effectLine(fx: Effect): string {
     case 'copyLast':
       return t('fx.copyLast');
     case 'gamble':
-      return t('fx.gamble', { win: fmt(fx.win), lose: fmt(fx.lose) });
+      return fx.lose > 0 ? t('fx.gamble', { win: fmt(fx.win), lose: fmt(fx.lose) }) : t('fx.gambleSafe', { win: fmt(fx.win) });
   }
 }
 

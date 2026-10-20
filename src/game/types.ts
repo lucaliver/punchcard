@@ -30,6 +30,8 @@ export type Effect =
   /** Damages the foes within `radius` tiles of the spirit this goes off from (its tile, or the one picked). */
   | { k: 'burst'; dmg: number; radius: number }
   | { k: 'oil'; n: number }
+  /** Oil for every foe on the field, up to `max`. */
+  | { k: 'bounty'; per: number; max: number }
   /** Throws the rest of the hand away and deals a whole new one at once. */
   | { k: 'redeal' }
   | { k: 'mend'; hp: number; scope: 'all' | 'lane' }

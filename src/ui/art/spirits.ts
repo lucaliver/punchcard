@@ -3,6 +3,27 @@ import { blush, C, circ, ell, eye, INK, ln, p, rect, solid, svg } from './kit';
 /** The spirits that answer the lantern: rounder, warmer and friendlier than the parade. */
 
 export const SPIRIT_ART: Record<string, string> = {
+  /** A kyūdō archer: a great bow, a calm face, and nothing else in the world. */
+  kyudo: svg(
+    [
+      p('M22 92 Q20 64 36 58 H64 Q80 64 78 92Z', C.white, { w: 3.4 }),
+      p('M30 76 H70 L74 92 H26Z', '#2c3a78', { w: 3.4 }),
+      p('M40 58 H60 L56 70 H44Z', '#2c3a78', { w: 3 }),
+      solid('M30 36 Q30 14 50 12 Q70 14 70 36 Q68 54 50 56 Q32 54 30 36Z', C.skin),
+      p('M26 32 Q24 6 50 4 Q76 6 74 32 Q68 18 50 20 Q32 18 26 32Z', INK, { w: 2.4 }),
+      p('M46 4 L50 -6 L54 4Z', INK, { w: 2.4 }),
+      ln('M36 34 L44 37 M64 34 L56 37', INK, 3),
+      circ(42, 40, 2.4, INK, { w: 0 }),
+      circ(58, 40, 2.4, INK, { w: 0 }),
+      ln('M44 48 H56', INK, 2.4),
+      ln('M84 6 Q104 50 84 94', C.brown, 5),
+      ln('M84 6 L66 50 L84 94', C.white, 1.8),
+      p('M30 52 H90', C.white, { w: 2.4 }),
+      p('M86 46 L96 52 L86 58Z', C.red, { w: 2 }),
+      p('M24 56 L36 62', C.skin, { w: 5 }),
+    ].join(''),
+  ),
+
   /** A fox shrine statue: the god's messenger, with a key in its mouth and a bib that is not red by accident. */
   inari: svg(
     [

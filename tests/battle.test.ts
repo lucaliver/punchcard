@@ -58,8 +58,8 @@ describe('spirits', () => {
     hold(b, 'kodama');
     b.play(0, 0, 6);
     b.oil = 0;
-    run(b, 6.2);
-    expect(b.oil).toBeGreaterThan(CONFIG.oil.regen * 6 + 0.9);
+    run(b, 8.2);
+    expect(b.oil).toBeGreaterThan(CONFIG.oil.regen * 8 + 0.9);
   });
 
   it('a shooter kills a foe walking down its lane', () => {
