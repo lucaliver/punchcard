@@ -144,7 +144,7 @@ function resume(): void {
     return;
   }
   unlocked = null;
-  if (run.reward && !run.reward.taken) {
+  if (run.reward && (!run.reward.taken || run.reward.relics.length > 0)) {
     rewardFlow(run.map[run.at ?? 0]);
     return;
   }
@@ -314,6 +314,7 @@ function rewardFlow(node: RunNode): void {
     rewardScreen({
       run: r,
       offer,
+      onChange: () => saveRun(r),
       onDone: () => {
         r.reward = null;
         if (node.type === 'boss') {

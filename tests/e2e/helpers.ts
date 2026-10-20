@@ -4,6 +4,7 @@ import { expect, type Page } from '@playwright/test';
 export async function freshGame(page: Page, save: Record<string, unknown> = {}, tour = false): Promise<void> {
   await page.addInitScript(
     ([extra, withTour]) => {
+      // only the very first load of a test starts from an empty save: a reload keeps the run
       if (!sessionStorage.getItem('hyakki-test-init')) {
         localStorage.clear();
         sessionStorage.setItem('hyakki-test-init', '1');

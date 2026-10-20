@@ -187,6 +187,8 @@ export const screens = {
   'crash.title': 'The lantern flickered',
   'crash.body': 'Something went wrong. Your climb is saved after every room; reload to carry on.',
   'crash.reload': 'Reload',
+  'rotate.title': 'Turn your phone upright',
+  'rotate.body': 'The night is played standing up. The fight waits for you.',
   'ui.back': 'Back',
   'ui.cancel': 'Cancel',
   'ui.choose': 'Choose',

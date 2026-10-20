@@ -181,6 +181,8 @@ export const screens: Record<keyof typeof en, string> = {
   'crash.title': 'La lanterna ha tremato',
   'crash.body': 'Qualcosa è andato storto. La salita è salvata dopo ogni stanza: ricarica per continuare.',
   'crash.reload': 'Ricarica',
+  'rotate.title': 'Raddrizza il telefono',
+  'rotate.body': 'La notte si gioca in piedi. Lo scontro ti aspetta.',
   'ui.back': 'Indietro',
   'ui.cancel': 'Annulla',
   'ui.choose': 'Scegli',

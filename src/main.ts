@@ -39,8 +39,19 @@ function catchCrashes(): void {
   addEventListener('unhandledrejection', (e) => show(e.reason));
 }
 
+/** A phone held sideways gets a curtain asking to turn it upright (CSS shows it; the fight pauses behind it). */
+function rotateBanner(): void {
+  const el = document.createElement('div');
+  el.className = 'rotate-banner';
+  el.innerHTML = '<div class="panel"><div class="title-font"></div><p></p></div>';
+  (el.querySelector('.title-font') as HTMLElement).textContent = t('rotate.title');
+  (el.querySelector('p') as HTMLElement).textContent = t('rotate.body');
+  document.body.append(el);
+}
+
 async function boot(): Promise<void> {
   catchCrashes();
+  rotateBanner();
   applySettings();
   const root = document.getElementById('app') as HTMLElement;
   initApp(root);

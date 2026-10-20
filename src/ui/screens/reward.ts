@@ -13,6 +13,8 @@ export interface RewardOpts {
   run: RunState;
   offer: RewardOffer;
   onDone(): void;
+  /** Called after each choice, so the run is saved with it. */
+  onChange(): void;
 }
 
 /** After a won fight: the receipt, a trinket if one is owed, and a card to take or skip. */
@@ -72,6 +74,8 @@ export function rewardScreen(o: RewardOpts): Screen {
       row.append(
         relicTile(id, () => {
           takeRelic(run, id);
+          offer.relics = [];
+          o.onChange();
           sfx('buy');
           relicDone = true;
           row.replaceChildren(h('div', { class: 'room-result panel' }, t('treasure.took', { name: t(`relic.${id}.name`) })));
@@ -114,6 +118,7 @@ export function rewardScreen(o: RewardOpts): Screen {
       if (!chosen) return;
       takeCard(run, chosen);
       offer.taken = true;
+      o.onChange();
       cardDone = true;
       sfx('buy');
       cardsRow.replaceChildren(h('div', { class: 'room-result panel' }, t('reward.took', { name: t(`card.${chosen.id}.name`) })));
@@ -123,6 +128,7 @@ export function rewardScreen(o: RewardOpts): Screen {
     skipBtn.addEventListener('click', () => {
       run.mon += CONFIG.run.skipPay;
       offer.taken = true;
+      o.onChange();
       cardDone = true;
       sfx('coin');
       cardsRow.replaceChildren(h('div', { class: 'room-result panel' }, t('reward.skipped', { n: CONFIG.run.skipPay })));

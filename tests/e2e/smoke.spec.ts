@@ -102,6 +102,30 @@ test('the first fight has a short tour before it starts', async ({ page }) => {
   await expect.poll(() => page.evaluate(() => (window as unknown as { __battle: { state: string } }).__battle.state)).toBe('playing');
 });
 
+test('a reload brings the climb back where it was: the same reward on the table', async ({ page }) => {
+  await freshGame(page);
+  await startRun(page);
+  await page.locator('.m-node.reach').first().click();
+  await page.click('.start-panel .btn');
+  await winFight(page);
+  await expect(page.locator('.end-panel')).toBeVisible({ timeout: 15000 });
+  await page.click('.end-panel .btn');
+  await expect(page.locator('.reward')).toBeVisible();
+  const names = await page.locator('.reward-card .c-name').allTextContents();
+  await page.reload();
+  await expect(page.locator('.title-screen')).toBeVisible();
+  await page.getByRole('button', { name: 'Continue the climb' }).click();
+  await expect(page.locator('.reward')).toBeVisible();
+  expect(await page.locator('.reward-card .c-name').allTextContents()).toEqual(names);
+  // take a card, reload again: the map, with the card in the deck
+  await page.locator('.reward-card').first().click();
+  await page.getByText('Take it').click();
+  await page.reload();
+  await page.getByRole('button', { name: 'Continue the climb' }).click();
+  await expect(page.locator('.map')).toBeVisible();
+  await expect(page.locator('.m-deck')).toContainText('11');
+});
+
 test.describe('rooms', () => {
   for (const room of ['rest', 'shrine', 'treasure', 'market']) {
     test(`the ${room} opens and can be left`, async ({ page }) => {

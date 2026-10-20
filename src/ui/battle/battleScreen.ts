@@ -209,7 +209,8 @@ export function battleScreen(o: BattleScreenOpts): Screen {
   let drag: Drag | null = null;
   const closers: (() => void)[] = [];
 
-  const isPaused = (): boolean => paused || inspecting > 0 || document.hidden;
+  const sideways = window.matchMedia('(orientation: landscape) and (max-height: 500px)');
+  const isPaused = (): boolean => paused || inspecting > 0 || document.hidden || sideways.matches;
 
   // ——— the start panel ———
   function startPanel(): HTMLElement {

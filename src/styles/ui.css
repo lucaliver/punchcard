@@ -332,3 +332,25 @@
   white-space: pre-wrap;
   user-select: text;
 }
+
+/* a phone held sideways */
+.rotate-banner {
+  position: fixed;
+  inset: 0;
+  z-index: 300;
+  display: none;
+  place-items: center;
+  padding: 18px;
+  background: var(--night-0);
+}
+.rotate-banner .panel {
+  text-align: center;
+}
+.rotate-banner .title-font {
+  font-size: 26px;
+}
+@media (orientation: landscape) and (max-height: 500px) {
+  .rotate-banner {
+    display: grid;
+  }
+}
