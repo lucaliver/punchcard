@@ -25,7 +25,7 @@ export function onAudioUnlock(fn: () => void): void {
 
 export function applyVolumes(): void {
   if (sfxBus) sfxBus.gain.value = settings.sfx;
-  if (musicBus) musicBus.gain.value = settings.music * 0.7;
+  if (musicBus) musicBus.gain.value = settings.music * 1.5;
 }
 
 export function unlockAudio(): void {
