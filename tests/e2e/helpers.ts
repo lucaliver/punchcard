@@ -17,7 +17,7 @@ export async function freshGame(page: Page, save: Record<string, unknown> = {}, 
     [save, tour] as const,
   );
   await page.goto('/');
-  await expect(page.locator('.title')).toBeVisible();
+  await expect(page.locator('.title-screen')).toBeVisible();
 }
 
 /** Title → keeper → intro → map, with the keeper at `index`. */

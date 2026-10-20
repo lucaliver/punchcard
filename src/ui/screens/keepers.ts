@@ -31,7 +31,7 @@ function page(id: KeeperId): HTMLElement {
     'div',
     { class: 'k-deck' },
     ...[...counts.entries()].map(([cid, n]) => {
-      const cv = cardView({ uid: 0, id: cid, up: false }, { width: 54 });
+      const cv = cardView({ uid: 0, id: cid, up: false }, { width: 46 });
       return h('div', { class: 'k-card' }, cv, n > 1 ? h('span', { class: 'num k-n' }, `×${n}`) : null);
     }),
   );

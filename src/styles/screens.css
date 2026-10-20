@@ -1,22 +1,22 @@
 /* screens */
 
 /* ——— the title: a night over the village, the parade on the ridge ——— */
-.title {
+.title-screen {
   background: linear-gradient(#0a0d22 0%, #1b2160 38%, #5a3a7a 62%, #c8624f 78%, #f2a35a 88%, #2a1a40 88.1%);
 }
-.title .sky,
-.title .moon,
-.title .ridge,
-.title .parade,
-.title .torii-frame,
-.title .rope {
+.title-screen .sky,
+.title-screen .moon,
+.title-screen .ridge,
+.title-screen .parade,
+.title-screen .torii-frame,
+.title-screen .rope {
   position: absolute;
   pointer-events: none;
 }
-.title .sky {
+.title-screen .sky {
   inset: 0 0 40% 0;
 }
-.title .star {
+.title-screen .star {
   position: absolute;
   width: var(--s);
   height: var(--s);
@@ -29,7 +29,7 @@
     opacity: 0.25;
   }
 }
-.title .moon {
+.title-screen .moon {
   left: 50%;
   top: 9%;
   width: 150px;
@@ -39,25 +39,25 @@
   background: radial-gradient(circle at 38% 34%, #fffbe8 0 46%, #f6e8b8 70%, #e9cf88);
   box-shadow: 0 0 60px 20px rgba(255, 230, 160, 0.38), 0 0 160px 60px rgba(255, 200, 120, 0.16);
 }
-.title .ridge {
+.title-screen .ridge {
   left: -5%;
   right: -5%;
   background: #1d1a48;
   clip-path: polygon(0 100%, 0 42%, 9% 30%, 17% 38%, 27% 18%, 38% 34%, 49% 24%, 60% 40%, 71% 16%, 82% 33%, 91% 26%, 100% 38%, 100% 100%);
 }
-.title .ridge.far {
+.title-screen .ridge.far {
   bottom: 30%;
   height: 26%;
   background: #2a2a6a;
   opacity: 0.75;
 }
-.title .ridge.near {
+.title-screen .ridge.near {
   bottom: 12%;
   height: 30%;
   background: #14123a;
   clip-path: polygon(0 100%, 0 52%, 12% 40%, 24% 50%, 36% 32%, 50% 46%, 63% 30%, 76% 48%, 88% 36%, 100% 46%, 100% 100%);
 }
-.title .parade {
+.title-screen .parade {
   left: 0;
   right: 0;
   bottom: 36%;
@@ -100,23 +100,23 @@
     transform: translateY(-12px);
   }
 }
-.title .torii-frame {
+.title-screen .torii-frame {
   inset: 0;
 }
-.title .torii-frame svg {
+.title-screen .torii-frame svg {
   position: absolute;
   left: 0;
   top: -4%;
   width: 100%;
   height: 108%;
 }
-.title .rope {
+.title-screen .rope {
   left: 0;
   right: 0;
   top: 11%;
   height: 60px;
 }
-.title .rope .swing {
+.title-screen .rope .swing {
   position: absolute;
   top: 0;
   left: calc(14% + var(--i) * 18%);
@@ -125,7 +125,7 @@
   transform-origin: 50% 0;
   animation: sway 3.4s ease-in-out calc(var(--i) * -0.7s) infinite;
 }
-.title .rope .swing .pico {
+.title-screen .rope .swing .pico {
   width: 100%;
   height: 100%;
   filter: drop-shadow(0 0 8px rgba(255, 200, 100, 0.8));
@@ -139,7 +139,7 @@
     transform: rotate(-5deg);
   }
 }
-.title .logo {
+.title-screen .logo {
   position: absolute;
   left: 0;
   right: 0;
@@ -147,7 +147,7 @@
   text-align: center;
   z-index: 2;
 }
-.title .logo .seal {
+.title-screen .logo .seal {
   display: inline-grid;
   place-items: center;
   width: 54px;
@@ -159,11 +159,11 @@
   transform: rotate(-6deg);
   box-shadow: var(--shadow);
 }
-.title .logo .seal .pico {
+.title-screen .logo .seal .pico {
   width: 36px;
   height: 36px;
 }
-.title h1 {
+.title-screen h1 {
   margin: 0;
   font-size: 66px;
   line-height: 1;
@@ -173,14 +173,14 @@
   -webkit-text-stroke: 3px var(--ink);
   paint-order: stroke fill;
 }
-.title .tagline {
+.title-screen .tagline {
   margin-top: 6px;
   font-weight: 700;
   font-size: 15px;
   color: var(--gold-light);
   text-shadow: 0 2px 0 var(--ink);
 }
-.title .title-menu {
+.title-screen .title-menu {
   position: absolute;
   left: 0;
   right: 0;
@@ -191,16 +191,16 @@
   gap: 12px;
   z-index: 2;
 }
-.title .title-menu .btn.big {
+.title-screen .title-menu .btn.big {
   min-width: 270px;
 }
-.title .title-row {
+.title-screen .title-row {
   display: flex;
   gap: 8px;
   flex-wrap: wrap;
   justify-content: center;
 }
-.title .title-foot {
+.title-screen .title-foot {
   position: absolute;
   left: 0;
   right: 0;
@@ -1659,4 +1659,18 @@
 .k-arrow-s.off {
   opacity: 0.2;
   pointer-events: none;
+}
+
+.story-parade {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 21%;
+  height: 56px;
+  overflow: hidden;
+  pointer-events: none;
+}
+.k-portrait {
+  width: min(190px, 24vh);
+  height: min(190px, 24vh);
 }

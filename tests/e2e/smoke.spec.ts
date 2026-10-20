@@ -87,7 +87,7 @@ test.describe('a run', () => {
     await page.click('.end-panel .btn');
     await expect(page.locator('.end')).toBeVisible();
     await page.getByText('Back to the title').click();
-    await expect(page.locator('.title')).toBeVisible();
+    await expect(page.locator('.title-screen')).toBeVisible();
   });
 });
 
@@ -136,4 +136,49 @@ test.describe('rooms', () => {
       expect(errors).toEqual([]);
     });
   }
+});
+
+test('a whole climb through the screens: three nights, three bosses, the end, and the next moon', async ({ page }) => {
+  test.setTimeout(150_000);
+  const errors: string[] = [];
+  page.on('pageerror', (e) => errors.push(e.message));
+  await freshGame(page);
+  await startRun(page);
+  for (let step = 0; step < 160; step++) {
+    if (await page.locator('.end.won').count()) break;
+    if (await page.locator('.story:not(.end) .story-go').count()) {
+      await page.locator('.story-go').click();
+    } else if (await page.locator('.map').count()) {
+      await page.locator('.m-node.reach').last().click();
+    } else if (await page.locator('.battle').count()) {
+      if (await page.locator('.start-panel').count()) await page.click('.start-panel .btn');
+      await winFight(page);
+      await expect(page.locator('.end-panel')).toBeVisible({ timeout: 15000 });
+      await page.click('.end-panel .btn');
+    } else if (await page.locator('.reward').count()) {
+      for (const t of await page.locator('.relic-tile .btn:not(:disabled)').all()) {
+        await t.click();
+        break;
+      }
+      await page.locator('.reward-card').first().click();
+      await page.getByText('Take it').click();
+      await page.getByRole('button', { name: 'Continue' }).click();
+    } else if (await page.locator('.room.market').count()) {
+      await page.getByRole('button', { name: 'Leave the market' }).click();
+    } else if (await page.locator('.room.rest, .room.shrine, .room.treasure').count()) {
+      await page.locator('.choice:not(:disabled)').first().click();
+      if (await page.locator('.deck-modal').count()) {
+        await page.locator('.deck-cell:not(.dim)').first().click();
+        await page.locator('.deck-modal .btn.red').click();
+      }
+      if (await page.locator('.relic-tile .btn').count()) await page.locator('.relic-tile .btn').first().click();
+      await page.getByRole('button', { name: 'Continue' }).click();
+    } else {
+      await page.waitForTimeout(300);
+    }
+  }
+  await expect(page.locator('.end.won')).toBeVisible();
+  await page.getByText('Climb again').click();
+  await expect(page.locator('.k-moon')).toBeVisible();
+  expect(errors).toEqual([]);
 });

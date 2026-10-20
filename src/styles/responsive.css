@@ -1,1 +1,69 @@
-/* responsive */
+/* ——— short phones (375×620 and under 700 px tall) ——— */
+@media (max-height: 700px) {
+  .title-screen h1 {
+    font-size: 54px;
+  }
+  .title-screen .logo {
+    top: 20%;
+  }
+  .title-screen .moon {
+    width: 110px;
+    height: 110px;
+    margin-left: -55px;
+  }
+  .title-screen .title-menu {
+    gap: 8px;
+  }
+  .k-blurb {
+    display: none;
+  }
+  .k-name {
+    font-size: 32px;
+  }
+  .room-scene {
+    min-height: 96px;
+    height: 18%;
+  }
+  .room-title {
+    font-size: 26px;
+  }
+  .story .story-card {
+    top: 17%;
+  }
+  .story .story-moon {
+    width: 80px;
+    height: 80px;
+    margin-left: -40px;
+  }
+  .modal-back {
+    padding: 10px;
+  }
+  .deck-scroll {
+    max-height: 46vh;
+  }
+}
+
+/* ——— a window much wider than a phone: the column stands in the middle of the waves ——— */
+@media (min-width: 560px) {
+  .screen {
+    border-radius: 18px;
+    top: 8px;
+    bottom: 8px;
+  }
+}
+@media (min-width: 560px) and (max-height: 760px) {
+  .screen {
+    top: 0;
+    bottom: 0;
+    border-radius: 0;
+  }
+}
+
+/* ——— reduced motion: the parade stands in a row instead of walking ——— */
+.reduce-motion .marcher {
+  animation: none !important;
+  left: calc(var(--i, 0) * 20% + 6%);
+}
+.reduce-motion .marcher img {
+  animation: none !important;
+}

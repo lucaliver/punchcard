@@ -3,6 +3,8 @@ import { playMusic } from '../audio/music';
 import { randomSeed } from '../core/rng';
 import { t } from '../core/i18n';
 import { CARDS } from '../data/cards';
+import { FOES } from '../data/foes';
+import { RELICS } from '../data/relics';
 import { CONFIG } from '../data/config';
 import { Battle } from '../game/battle';
 import { bossDown, discover, logRun, meta, saveMeta } from '../game/meta';
@@ -386,5 +388,20 @@ if (import.meta.env.DEV) {
       }
     },
     map: () => goMap(),
+    act: (n: number) => {
+      if (!run) return;
+      startAct(run, n);
+      intro();
+    },
+    /** Marks every card, foe and trinket as met (for looking at the almanac). */
+    seeAll: () => {
+      discover('seenCards', Object.keys(CARDS));
+      discover('seenFoes', Object.keys(FOES));
+      discover('seenRelics', Object.keys(RELICS));
+    },
+    deck: (ids: string[]) => {
+      if (!run) return;
+      for (const id of ids) run.deck.push({ uid: ++run.uid, id, up: false });
+    },
   };
 }

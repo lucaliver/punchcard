@@ -1,10 +1,18 @@
 import { sfx } from '../../audio/sfx';
 import { t } from '../../core/i18n';
+import { FOES } from '../../data/foes';
 import { RELICS } from '../../data/relics';
 import type { RunLog } from '../../game/meta';
 import { type Screen, pico } from '../app';
 import { artUrl } from '../art/sprites';
 import { h } from '../dom';
+
+/** Who walks along the ridge behind each night's opening. */
+const WALKERS: Record<number, string[]> = {
+  1: ['karakasa', 'chochin', 'kappa', 'zori', 'karasu'],
+  2: ['bakeneko', 'nureonna', 'tengu', 'kitsunebi', 'tsuchigumo'],
+  3: ['hannya', 'bones', 'onibrute', 'biwa', 'tamamo'],
+};
 
 /** The opening of a night: a painting, its name, and a few lines. A tap goes on. */
 export function actIntroScreen(act: number, onDone: () => void): Screen {
@@ -15,6 +23,17 @@ export function actIntroScreen(act: number, onDone: () => void): Screen {
     h('div', { class: 'story-sky' }),
     h('div', { class: 'story-moon' }),
     h('div', { class: 'story-ridge' }),
+    h(
+      'div',
+      { class: 'story-parade' },
+      ...(WALKERS[act] ?? []).map((id, i) =>
+        h(
+          'div',
+          { class: `marcher ${i % 2 ? 'hop' : 'walk'}`, style: { '--delay': `${-i * 10}s`, '--size': '46px', '--i': String(i) } },
+          h('img', { src: artUrl(FOES[id].art), alt: '' }),
+        ),
+      ),
+    ),
     h('div', { class: 'story-ridge near' }),
     h(
       'div',

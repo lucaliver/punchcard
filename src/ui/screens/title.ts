@@ -48,10 +48,10 @@ export function titleScreen(o: TitleOpts): Screen {
   const parade = h(
     'div',
     { class: 'parade' },
-    ...MARCHERS.map((m) =>
+    ...MARCHERS.map((m, i) =>
       h(
         'div',
-        { class: `marcher ${m.hop ? 'hop' : 'walk'}`, style: { '--delay': `${m.delay}s`, '--size': `${m.size}px` } },
+        { class: `marcher ${m.hop ? 'hop' : 'walk'}`, style: { '--delay': `${m.delay}s`, '--size': `${m.size}px`, '--i': String(i % 5) } },
         h('img', { src: artUrl(m.art), alt: '' }),
       ),
     ),
@@ -92,7 +92,7 @@ export function titleScreen(o: TitleOpts): Screen {
   });
   const el = h(
     'div',
-    { class: 'screen title' },
+    { class: 'screen title-screen' },
     h('div', { class: 'sky' }, ...stars),
     h('div', { class: 'moon' }),
     h('div', { class: 'ridge far' }),
