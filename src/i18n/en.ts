@@ -110,6 +110,7 @@ const en = {
   'ui.lanternOut': 'The lantern is out',
   'ui.outSub': 'The parade walks on.',
   'ui.continue': 'Continue',
+  'ui.new': 'New',
   'ui.letsGo': 'Let’s go',
   'ui.bossWarn': '{name} approaches',
   'ui.eliteWarn': '{name} joins the parade',

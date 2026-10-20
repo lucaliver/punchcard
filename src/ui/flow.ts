@@ -275,7 +275,9 @@ function fight(node: RunNode): void {
   if (!r) return;
   const kind = fightKind(node);
   const battle = new Battle(battleSetup(r, node));
-  discover('seenFoes', [...new Set(battle.stage.spawns.map((s) => s.foe))]);
+  const tonight = [...new Set(battle.stage.spawns.map((s) => s.foe))];
+  const fresh = tonight.filter((id) => !meta.seenFoes.includes(id));
+  discover('seenFoes', tonight);
   playMusic(kind === 'boss' ? 'boss' : NIGHT_TRACK[r.act as 1 | 2 | 3]);
   if (import.meta.env.DEV) (window as unknown as { __battle: Battle }).__battle = battle;
   const title = kind === 'boss' ? t(`act.${r.act}.boss`) : kind === 'elite' ? t('node.elite') : t('node.watch');
@@ -286,6 +288,7 @@ function fight(node: RunNode): void {
       kind,
       title,
       tour: !settings.seenTour && r.first,
+      fresh,
       onAbandon: () => finishRun(false),
       onEnd: (res) => {
         if (!res.won) {

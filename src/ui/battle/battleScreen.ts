@@ -36,6 +36,8 @@ export interface BattleScreenOpts {
   onAbandon(): void;
   /** The guided first fight. */
   tour?: boolean;
+  /** Foes of tonight's parade the player has never met (marked NEW on the start panel). */
+  fresh?: string[];
 }
 
 interface Slot {
@@ -236,6 +238,7 @@ export function battleScreen(o: BattleScreenOpts): Screen {
           },
           h('img', { src: artUrl(def.art), alt: '' }),
           h('span', { class: 'num' }, `×${counts.get(id)}`),
+          o.fresh?.includes(id) ? h('i', { class: 'new' }, t('ui.new')) : null,
         );
       }),
     );

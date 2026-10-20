@@ -108,6 +108,7 @@ const it: Record<EnKey, string> = {
   'ui.lanternOut': 'La lanterna si è spenta',
   'ui.outSub': 'La parata prosegue.',
   'ui.continue': 'Continua',
+  'ui.new': 'Nuovo',
   'ui.letsGo': 'Andiamo',
   'ui.bossWarn': '{name} si avvicina',
   'ui.eliteWarn': '{name} si unisce alla parata',
