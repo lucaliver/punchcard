@@ -1346,13 +1346,13 @@
 }
 .al-tab {
   flex: none;
-  padding: 7px 12px;
+  padding: 6px 10px;
   border: 2px solid var(--ink);
   border-radius: 999px;
   background: var(--night-2);
   color: var(--paper-2);
   font-weight: 700;
-  font-size: 14px;
+  font-size: 13px;
 }
 .al-tab.on {
   background: var(--paper);
@@ -1532,10 +1532,12 @@
   display: flex;
   gap: 6px;
 }
-.reset {
+.btn.ghost.reset {
   margin-top: 8px;
   width: 100%;
+  --b: rgba(228, 69, 47, 0.1);
   --b-ink: var(--red-dark);
+  text-shadow: none;
 }
 .how {
   display: flex;

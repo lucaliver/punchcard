@@ -354,3 +354,11 @@
     display: grid;
   }
 }
+
+/* a ghost button on a paper sheet reads in ink */
+.panel .btn.ghost {
+  --b: rgba(29, 20, 40, 0.08);
+  --b-dark: rgba(29, 20, 40, 0.25);
+  --b-ink: var(--ink);
+  text-shadow: none;
+}
