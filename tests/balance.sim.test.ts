@@ -1,41 +1,25 @@
 import { describe, expect, it } from 'vitest';
-import { simulateRun } from './bot';
-import type { HeroId } from '../src/game/types';
+import { KEEPERS, KEEPER_IDS } from '../src/data/keepers';
+import { winRate } from './sim';
 
-/**
- * Balance smoke test: a decent bot should never do worse than a sloppy one, hero by hero (play with `npm run sim`).
- * Prints a report so tuning changes can be compared run to run.
- */
-const N = 120;
-
-function report(hero: HeroId, reaction: number, sloppiness: number, level = 0) {
-  let wins = 0;
-  const floors: number[] = [];
-  const times: number[] = [];
-  for (let i = 0; i < N; i++) {
-    const r = simulateRun(hero, 1000 + i, { reaction, sloppiness, level });
-    if (r.won) wins++;
-    floors.push(r.floor);
-    times.push(...r.combatTimes);
+describe('balance (bot, starter decks)', () => {
+  for (const k of KEEPER_IDS) {
+    it(`${k} starter deck`, () => {
+      const rows: string[] = [];
+      for (const [act, floor, kind] of [
+        [1, 0, 'watch'],
+        [1, 4, 'watch'],
+        [1, 5, 'elite'],
+        [1, 6, 'boss'],
+        [2, 2, 'watch'],
+        [2, 5, 'elite'],
+        [3, 2, 'watch'],
+      ] as const) {
+        const r = winRate(k, KEEPERS[k].deck, act, floor, kind, 20);
+        rows.push(`a${act}f${floor}${kind[0]}: ${(r.win * 100).toFixed(0)}%/${r.flameLeft.toFixed(1)}`);
+      }
+      console.log(k.padEnd(7), rows.join('  '));
+      expect(true).toBe(true);
+    });
   }
-  const avg = (a: number[]) => a.reduce((s, x) => s + x, 0) / a.length;
-  const res = { hero, reaction, sloppiness, level, winRate: wins / N, avgFloor: avg(floors), avgCombatSec: avg(times) };
-  console.log(JSON.stringify(res));
-  return res;
-}
-
-describe('balance', () => {
-  it('a good bot wins at least as often as a sloppy one', () => {
-    for (const hero of ['warrior', 'mage', 'necromancer', 'rogue'] as HeroId[]) {
-      const good = report(hero, 0.35, 0.1);
-      const sloppy = report(hero, 0.9, 0.5);
-      expect(good.winRate).toBeGreaterThanOrEqual(sloppy.winRate);
-    }
-  }, 300_000);
-
-  it("the top rank of a career ladder is harder than the plain shift (the bot doesn't use the ability or the Break Room's training, so it undervalues the perks)", () => {
-    const plain = report('warrior', 0.35, 0.1, 0);
-    const top = report('warrior', 0.35, 0.1, 10);
-    expect(top.winRate).toBeLessThan(plain.winRate);
-  }, 300_000);
 });

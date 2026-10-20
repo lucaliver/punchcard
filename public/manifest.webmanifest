@@ -1,19 +1,14 @@
 {
   "id": "./",
-  "name": "Punchcard",
-  "short_name": "Punchcard Game",
-  "description": "A real-time deckbuilding roguelike that feels like a job.",
+  "name": "Hyakki",
+  "short_name": "Hyakki",
+  "description": "Hold the lantern until dawn: a real-time deckbuilding defense against the Night Parade of a Hundred Demons.",
   "lang": "en",
   "start_url": "./",
   "display": "fullscreen",
   "orientation": "portrait",
-  "background_color": "#0d0b14",
-  "theme_color": "#0d0b14",
+  "background_color": "#0e1228",
+  "theme_color": "#0e1228",
   "categories": ["games"],
-  "icons": [
-    { "src": "icon.svg", "sizes": "any", "type": "image/svg+xml", "purpose": "any" },
-    { "src": "icon-192.png", "sizes": "192x192", "type": "image/png", "purpose": "any" },
-    { "src": "icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any" },
-    { "src": "icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable" }
-  ]
+  "icons": [{ "src": "icon.svg", "sizes": "any", "type": "image/svg+xml", "purpose": "any" }]
 }

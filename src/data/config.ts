@@ -1,507 +1,108 @@
-import type { Rarity } from '../game/types';
-
-/** Global tuning constants. Times are in seconds at 1× speed. */
+/** Every tuning number of the game. Rules text never types one: it reads it from here or from the records. */
 export const CONFIG = {
-  /** The made-up voice that reads a speech bubble: base pitch range (Hz, picked per speaker) and ms per letter. */
-  voicePitch: [150, 420],
-  voiceMs: 42,
-  /** Milliseconds an enemy's speech bubble stays up once all its text is there. */
-  speechHold: 2500,
-  /** The hero's own lines (`shout`): how long a line stays once typed out, and how long it takes to type. */
-  shoutHold: 900,
-  shoutMs: 500,
-  /** An enemy under this many HP (and alive) is heard breathing: a heartbeat every `heartbeatGap` seconds until it falls. */
-  enemyLowHp: 15,
-  heartbeatGap: 0.9,
-  /** Milliseconds under which a light vibration is dropped if another has just fired (patterns and heavy knocks always go through). */
-  hapticGap: 30,
-  /** A click on a button adds a knock only when nothing has vibrated for this long (ms): a press that already did is not doubled on release. */
-  buttonHapticQuiet: 300,
-  /** Milliseconds a press must last to count as "hold to inspect" (every screen). */
-  longPressMs: 350,
-  /** A press shows the ring that fills towards a hold only after this many ms (a tap never does). */
-  holdRingDelayMs: 120,
-  /** Taps on the version line in Settings that reveal the Debug menus switch. */
-  debugTaps: 4,
-  /** The hero's portrait sweats under this share of max HP. */
-  heroLowHp: 0.3,
-  /** Cards played one after another climb a scale: each one within `windowMs` of the last is a step higher (semitones), the top step holding. */
-  chain: { windowMs: 1800, steps: [0, 2, 4, 5, 7, 9, 11, 12] },
-  /** The music gets heavier as the hero's HP falls: nothing above this share of max HP, all of it at (and below) the second one. */
-  heavyMusic: [0.7, 0.2],
-  /**
-   * An enemy tenses up before its move lands: from this many seconds left (or half the wind-up, if shorter) it winds up, and from `hard` it shakes harder and rims pink.
-   * Before that, a hostile move `charge`s over the last share of its wind-up (an aura growing in `chargeSteps` steps), a big count shows over the enemy for the last `count`
-   * seconds, and a hit that takes `heavy` of the hero's max HP (or all of what is left) has a bigger, redder aura.
-   */
-  anticipate: { soft: 1.5, hard: 0.6, charge: 0.5, chargeSteps: 4, count: 3, heavy: 0.3 },
-  /** The rust mop: grime a stroke as long as the belt is wide takes off a spot (a spot is 1), and how far (px) past a spot its head still reaches. */
-  mop: { scrubPerBelt: 5, reach: 8 },
-  /** Seconds before a hostile move lands that its bar turns pink and shakes (at most half of the move's wind-up, so a quick move isn't alarmed all along). */
-  urgentAt: 3,
-  /** How far along the belt (in belt widths) a card with a tip has come when the fight stops to explain it. */
-  tipPos: 0.25,
-  /** Milliseconds between the end of the fight and leaving it (the enemy finishes dying). */
-  endMs: { lose: 1500, win: 2200, boss: 3400 },
-  /** Beg to stay (the first time a run's hero would be let go): the Dodge seconds, the Strength and the mana crystals it brings back. */
-  beg: { dodge: 10, strength: 10, crystals: 1 },
-  /** Runs the handbook's history keeps (the newest). */
-  historyMax: 30,
-  /** Debug fight option: the hero's HP. */
-  debugHp: 500,
-  /** Debug sliders for the pace of a fight: seconds per mana (0 = the hero's own) and a multiplier on the belt's speed (1 = normal). */
-  debugPace: {
-    regen: { min: 0.25, max: 3, step: 0.05, start: 1 },
-    belt: { min: 0.5, max: 1.5, step: 0.05 },
+  /** Fixed engine step, in seconds. */
+  tick: 1 / 60,
+
+  oil: {
+    start: 3,
+    max: 10,
+    /** Oil per second. */
+    regen: 0.55,
   },
-  /** Runs finished (won, lost or abandoned) before the home asks for a rating. */
-  ratingAfterRuns: 2,
-  /** Stars from which a rating counts as a good one (the review asks what was liked, not what was not). */
-  ratingGood: 4,
-  /** Longest review text kept (characters). */
-  reviewMax: 500,
-  /** Longest crash report (characters) sent to the `crashes` collection. */
-  crashMax: 2000,
-  /** Seconds between two stats hits (`src/analytics/`): a burst is spread out instead of sent at once. */
-  statsGap: 0.4,
-  /** Seconds for a card to cross one full belt width, at full belt speed. */
-  beltTime: 7.7,
-  /** How fast every belt runs, as a share of full speed (the base of `Combat.beltRate`). */
-  beltSpeed: 0.9,
-  /** Seconds per mana point, for every hero (`HeroDef.regen` takes it unless a hero needs its own). */
-  manaRegen: 1.25,
-  /** Card width as a fraction of the belt width (the UI mirrors this). */
-  cardWidth: 0.25,
-  /** Minimum gap between spawns, in belt widths. */
-  spacing: 0.27,
-  /** Never spawn a card closer than this to the previous one of its row (more than a card width, so cards never overlap,
-   * e.g. when curses queued on one row send every draw to the other). */
-  minGap: 0.26,
-  /** When the belt reverses, no card ends up past the new exit: the turn itself never throws a card off (only a card still sliding in is nudged). */
-  reverseMaxPos: 1,
-  /** The belt stands still this long before it turns around, so no card seems to jump (Paradigm Shift). */
-  beltTurnPause: 0.5,
-  /** A card expires once its left edge is this far past the belt's left edge (fraction of card width). */
-  expireOverhang: 0.1,
-  /** Seconds before an enemy steals a card that a hand is shown over it. */
-  stealWarn: 0.5,
-  /** Belt speed multiplier while rushed (Time Slip, Time Warp). */
-  beltRush: 1.5,
-  /** Seconds a card that slips off the end of the belt is still within reach (it tips over meanwhile; you can stash it). */
-  fallGrace: 0.35,
-  /** Seconds a card dragged at the end of the belt is still kept in the hand before it falls off. */
-  dragGrace: 2,
-  /** Belt speed multipliers imposed by enemies: Hurry (faster) and Slowdown. */
-  beltHurry: 1.5,
-  beltSlow: 0.6,
-  /** Crunch (the CEO's Crunch Time): the belt runs at twice the speed. */
-  beltCrunch: 2,
-  /** Global difficulty knobs applied to every enemy (the records hold the real numbers, so keep them at 1 unless testing). */
-  enemyHp: 1,
-  enemyDmg: 1,
-  maxManaCap: 10,
-  /** Damage multiplier of a critical attack (Critical status). */
-  critMult: 2,
-  /** Seconds a virus card rides the belt before it infects the card behind it. */
-  virusDelay: 4,
-  startMana: 0,
-  dotInterval: 1.5,
-  multitaskingWindow: 2.5,
-  multitaskingMax: 5,
-  /** At the start of a fight the belt has already run until the first card is this far in (belt widths): a couple of cards. */
-  prewarm: 0.25,
-  /** Seconds of "Fight!" intro before the clock starts. */
-  introTime: 1.2,
-  /** Seconds the enemy's first move starts late: the belt and the mana run first, so the hero gets a head start. */
-  enemyDelay: 0.9,
-  /** Cap on cards per belt row. */
-  maxHandBelt: 7,
-  /** Belt rows: two is the standard layout (cards alternate between them). */
-  beltRows: 2,
-  /** Belt widths the belt moves for one full clockwise turn of the crank knob (`EnemyDef.beltOff`): small, so it takes many turns. */
-  crankTurn: 0.1,
-  /** Mana a tap on the button gives (`EnemyDef.manaTap`): about four taps a second match the usual regeneration. */
-  manaTapAmount: 0.2,
-  /** Degrees of crank turn between two buzzes of the phone. */
-  crankBuzz: 24,
-  /** Seconds between the lower part of the screen sinking (`EnemyDef.deepBelt`) and the extra belt row opening in its place. */
-  sinkTime: 1,
-  /** With two rows each row runs at this fraction of the one-row speed. */
-  twoRowSpeed: 0.8,
-  /** Share of the belt's speed-up (Rush, Hurry, Slowdown) the music follows: 1 = the same change (a 1.5× rush, 1.5× music). */
-  musicFollowsBelt: 1,
-  /** Pay for a won fight (the run's score): a base by enemy tier, plus `perSecond` for every second under `par`. */
-  pay: { normal: 10, elite: 25, boss: 50, par: 60, perSecond: 1 },
-  /**
-   * Block decay: it holds for `blockGrace` s after Block is gained, then loses points per second: `blockDecayMin`, or `blockDecayLin` per point held if that is more,
-   * plus `blockDecayQuad` times the square of what is held above `blockDecayKnee` (so a big wall falls ever faster). A fighter's pace (`blockDecay`: `enemyBlockDecay` for an enemy, the hero's on its
-   * `HeroDef`) is how many seconds it takes to lose what the reference pace (`heroBlockDecay`) loses in one.
-   */
-  blockGrace: 0.5,
-  blockDecayMin: 1,
-  blockDecayLin: 0.08,
-  blockDecayKnee: 30,
-  blockDecayQuad: 0.0004,
-  enemyBlockDecay: 0.6,
-  heroBlockDecay: 1,
-  /** Mana more a card costs for each Inflation it carries, and while it is infected with a Virus. */
-  inflationCost: 1,
-  virusCost: 1,
-  /** An update window's buttons answer only after it has been up this long (s), so a tap meant for a card doesn't answer it. */
-  popupArm: 0.4,
-  /**
-   * The coffee chore (`MoveDef.task`, `game/coffee.ts`): `brewTime` s the machine takes to pour and `doneHold` s the finished cup stays up; a mistake takes `penalty` s off the move's countdown
-   * (`penaltyMax` s in all); the Boss then `calm`s down (the enemy is stunned that long). The order: a `price` ([min, max] cents) paid with `payCoins` ([min, max]) coins, `decoys` more in the purse (no fewer than `minCoins` of them ever make the price),
-   * a `codeLength` keys code on a pad of `keys`, `sugar` ([min, max]) sugars out of a dial that goes up to `maxSugar`.
-   */
-  coffee: {
-    brewTime: 5,
-    doneHold: 1.6,
-    penalty: 2,
-    penaltyMax: 8,
-    calm: 3,
-    price: [60, 250],
-    payCoins: [4, 5],
-    minCoins: 4,
-    decoys: 3,
-    codeLength: 3,
-    keys: 9,
-    sugar: [1, 3],
-    maxSugar: 4,
+
+  hand: {
+    size: 4,
+    /** Seconds before the slot of a played card is filled again. */
+    drawDelay: 0.9,
+    /** Extra wait when the draw pile has to be shuffled back in. */
+    shuffleDelay: 0.8,
   },
-  /**
-   * The Board's chore (`MoveDef.task` = 'shells', `game/shells.ts`): `cards` covered cards show their faces for `showTime` s, then swap places `swaps` times, `swapTime` s each;
-   * a wrong pick is shown for `revealTime` s and the round restarts, the right one stays up `doneHold` s. A mistake takes `penalty` s off the move's countdown (`penaltyMax` s in all);
-   * done in time, the Board is stunned `calm` s.
-   */
-  shells: {
-    cards: 3,
-    showTime: 1.5,
-    swaps: 7,
-    swapTime: 0.45,
-    revealTime: 1.1,
-    doneHold: 1.4,
-    penalty: 2,
-    penaltyMax: 6,
-    calm: 3,
+
+  /** Spirits of the same kind merge up to this level. */
+  maxLevel: 3,
+  /** Hit points and damage grow by this share of the base for every level above the first. */
+  levelGrowth: 0.65,
+  /** A spirit on a shrine tile hits and works this much harder. */
+  shrineBoost: 0.3,
+
+  /** How long before a foe walks in its lantern shows at the top of its lane. */
+  warn: 2.6,
+  /** A foe is stopped by a spirit when its centre is within `reach` of the spirit's; fliers go over. */
+  contactSlack: 0.05,
+  /** Spirits strike a foe this far past their own centre (a fly just overhead). */
+  behindRange: 0.35,
+  /** Starting y of a foe (just above the field). */
+  spawnY: -0.6,
+  /** Seconds of quiet at the start of a fight before the first foe. */
+  openingQuiet: 4,
+  /** Seconds before dawn when no new foe is dealt. */
+  tailQuiet: 9,
+
+  /** Share of a stunned or webbed spirit's attack speed that is left when webbed. */
+  webSlow: 0.5,
+  /** Vulnerable foes take this much more damage. */
+  vulnerable: 0.5,
+
+  /** After this many seconds the lantern's flame flickers louder: purely visual. */
+  lowFlame: 0.34,
+
+  stage: {
+    /** Seconds until dawn: normal, elite, boss. */
+    duration: { watch: 62, elite: 78, boss: 96 },
+    /** Wave budget (foe `cost`) of a fight: base + perFloor * floor + perAct * (act - 1). */
+    budget: { base: 22, perFloor: 2.4, perAct: 22, elite: 1.25, boss: 1 },
+    /** Foes beyond this many in a lane at once are held back a few seconds. */
+    rocks: [0, 3] as [number, number],
+    shrines: [0, 2] as [number, number],
+    /** Foe hit points and spirit-facing damage grow this much per act and per floor. */
+    foeHpAct: 0.3,
+    foeHpFloor: 0.025,
   },
-  /**
-   * The Punch Clock's chore (`MoveDef.task` = 'badge', `game/badge.ts`): a swipe has to run at `centre ± tolerance` tracks per second (a share of the reader's track every second), the centre
-   * starting within `target`; after every refusal it drifts by up to `drift` of itself (kept within `target`). The first `glitches` ([min, max]) swipes that would have passed are refused anyway.
-   * `scale` is the top of the gauge (tracks per second). A refusal takes `penalty` s off the move's countdown (`penaltyMax` s in all) and costs `wrongHp` HP; `doneHold` s the read badge is shown; done in time, the clock is stunned `calm` s.
-   */
-  badge: {
-    target: [0.9, 1.5],
-    tolerance: 0.25,
-    drift: 0.2,
-    glitches: [1, 2],
-    scale: 2.4,
-    wrongHp: 3,
-    doneHold: 1.4,
-    penalty: 1.5,
-    penaltyMax: 5,
-    calm: 3,
-  },
-  /**
-   * The Self-Checkout's chore (`MoveDef.task` = 'checkout', `game/checkout.ts`): `items` groceries to scan and bag, one by one. After `trips` ([min, max]) of the scans the machine
-   * complains about an unexpected item in the bagging area: the last item has to be lifted out (it goes back in the basket), and the machine then asks for `assist` s of patience, in which
-   * touching anything is a mistake. A mistake takes `penalty` s off the move's countdown (`penaltyMax` s in all) and costs `wrongHp` HP; `doneHold` s the receipt is shown; done in time, the machine is stunned `calm` s.
-   */
-  checkout: {
-    items: 6,
-    trips: [2, 3],
-    assist: 1.6,
-    wrongHp: 2,
-    doneHold: 1.4,
-    penalty: 1.5,
-    penaltyMax: 6,
-    calm: 3,
-  },
-  /**
-   * The Barbecue Dad's chore (`MoveDef.task` = 'grill', `game/grill.ts`): `patties` burgers to serve off a grill that holds `slots` of them at once. A side takes `cook` ([min, max] s) to be ready, stays ready
-   * `window` s and then burns; a ready side is flipped by a tap and the second one served; a tap on a raw or burnt one is a mistake (a burnt one is thrown away and a fresh patty takes its place). The ones put on
-   * together start `stagger` s apart. A mistake takes `penalty` s off the move's countdown (`penaltyMax` s in all) and costs `wrongHp` HP; `doneHold` s the plate is shown; done in time, the dad is stunned `calm` s.
-   */
-  grill: {
-    patties: 4,
-    slots: 3,
-    cook: [2.4, 3.4],
-    window: 1.6,
-    stagger: 1.1,
-    wrongHp: 2,
-    doneHold: 1.4,
-    penalty: 1.5,
-    penaltyMax: 6,
-    calm: 3,
-  },
-  /**
-   * The Wedding DJ's chore (`MoveDef.task` = 'slide', `game/slide.ts`): `calls` moves shouted one after the other, to answer on a pad of four buttons. A call waits `window` s for its answer (from the first number
-   * for the first call to the second for the last: the DJ speeds up); `freezes` of them are "freeze": don't touch anything for `freeze` s. `gap` s of silence between calls. A wrong button, a touch during a freeze
-   * or a call left unanswered is a mistake: it takes `penalty` s off the move's countdown (`penaltyMax` s in all) and costs `wrongHp` HP; `doneHold` s the dance floor is shown; done in time, the DJ is stunned `calm` s.
-   */
-  slide: {
-    calls: 8,
-    window: [2.6, 1.6],
-    freezes: 2,
-    freeze: 1.3,
-    gap: 0.5,
-    wrongHp: 2,
-    doneHold: 1.4,
-    penalty: 1.5,
-    penaltyMax: 6,
-    calm: 3,
-  },
-  /**
-   * The Sushi Chef's chore (`MoveDef.task` = 'sushi', `game/sushi.ts`): `slips` orders of `length` pieces (a dish on a coloured plate) each, eaten off the belt in the order of their slip,
-   * while the belt serves nothing but sushi and runs from `beltFrom` to `beltTo` times its speed as the pieces go. The chance a plate dealt is a random one instead of one the slips still want
-   * starts at `decoy` and grows by `decoyRamp` for every piece eaten (up to `decoyMax`); `fugu` of those random ones are the trap, which hurts when eaten. A wrong plate, or a piece asked for
-   * now riding off the belt, takes `penalty` s off the move's countdown (`penaltyMax` s in all), and a wrong plate also costs `wrongHp` HP; `doneHold` s the finished order is shown; done in time, the Chef is stunned `calm` s.
-   */
-  sushi: {
-    slips: 2,
-    length: 4,
-    decoy: 0.3,
-    decoyRamp: 0.05,
-    decoyMax: 0.7,
-    fugu: 0.25,
-    wrongHp: 4,
-    beltFrom: 1,
-    beltTo: 2,
-    doneHold: 1.2,
-    penalty: 2,
-    penaltyMax: 8,
-    calm: 3,
-  },
-  /**
-   * The Supervisor's minigame (`EnemyDef.minigame` = 'match3', `game/match3.ts`): a `cols`×`rows` board of `kinds` kinds of office stuff. Every piece cleared takes `tileHp` HP off him (a
-   * share of his max HP when the floor has made him tougher, see `Combat.matchSwap`), and each cascade after the first pays `combo` more (round 2 pays 1 + combo, round 3 1 + 2 × combo…).
-   * Four in a line leaves a stamp that clears its line when it goes, five a copier that clears a whole kind.
-   */
-  match3: {
-    cols: 6,
-    rows: 6,
-    kinds: 5,
-    tileHp: 5,
-    combo: 0.5,
-  },
-  /** The Weak Spot target shows at least this far (share of the sprite) from every edge. */
-  weakSpotMargin: 0.25,
-  /** Hours a page can stay open before the home asks for a reload (the game runs offline, so a forgotten tab misses updates). */
-  staleHours: 24,
-  /** Each floor of an act makes normal enemies this much tougher (HP, damage). */
-  floorHp: 0.06,
-  floorDmg: 0.06,
-  /**
-   * Adaptive difficulty (`game/pressure.ts`), never shown to the player. After every won fight the run reads how it went: damage dealt per second far above
-   * `par.dps` (the enemy's HP and Block it got through, over the fight's time) pushes the next enemies' HP up, HP lost far under `par.loss` (a share of max HP)
-   * pushes their damage up; a weak or costly fight eases the same level back, a hero who begs to stay sends both all the way down, and a win on the last legs (`closeCall`) does the same to the damage level.
-   * The numbers in `par` are what a decent player does (`npm run sim`'s bot, median of won fights).
-   */
-  pressure: {
-    par: {
-      normal: { dps: 2, loss: 0.15 },
-      elite: { dps: 2.3, loss: 0.2 },
-      boss: { dps: 2.3, loss: 0.3 },
+
+  run: {
+    acts: 3,
+    /** Columns of the map. */
+    mapWidth: 3,
+    /** Fights and rooms on a map before the boss, per act. */
+    mapRows: 7,
+    startCoins: 40,
+    /** Mon a won fight pays: base, plus a share for each bit of flame still burning, plus a bonus for beating dawn. */
+    pay: { watch: 18, elite: 34, boss: 60, perFlame: 2, early: 8 },
+    /** Heal at a rest stop (share of max flame). */
+    restHeal: 0.4,
+    /** After a boss the lantern is fed: share of max flame. */
+    bossHeal: 0.5,
+    /** Cards on offer after a fight. */
+    rewardCards: 3,
+    /** Odds of each rarity in a reward, by tier of fight. */
+    odds: {
+      watch: { common: 0.66, rare: 0.28, epic: 0.06, legend: 0 },
+      elite: { common: 0.38, rare: 0.44, epic: 0.15, legend: 0.03 },
+      boss: { common: 0, rare: 0.55, epic: 0.35, legend: 0.1 },
     },
-    /** Distance from par (as a share of it) at which a signal is full, and the stretch around par that counts as on target. */
-    spread: { dps: 0.5, loss: 1 },
-    dead: 0.1,
-    /** A won fight that leaves the hero under this share of its max HP is a close call: the damage level goes all the way down, as if it had begged. */
-    closeCall: 0.15,
-    /** How far a fight pulls the level toward its signal, by tier (a boss or an elite says more than a normal fight). */
-    rate: { normal: 0.25, elite: 0.6, boss: 0.6 },
-    /** The most the multipliers rise or fall at a full level: it climbs much more than it eases, and a run at a rank above the plain shift climbs `rankUp` times as far. */
-    max: { up: 0.2, down: 0.1 },
-    rankUp: 0.5,
+    /** Chance a reward card is already upgraded. */
+    upChance: { watch: 0.08, elite: 0.2, boss: 0.35 },
+    /** Mon: skipping a reward pays this. */
+    skipPay: 10,
+    /** Market prices by rarity, relics and services. */
+    price: { common: 28, rare: 52, epic: 90, legend: 140, relic: 120, bossRelic: 160, remove: 40, removeStep: 15, heal: 30 },
+    /** Mon variation of shop prices (± share). */
+    priceSpread: 0.15,
+    /** Deck limits. */
+    minDeck: 6,
   },
-  /** Chance that a floor of the map swaps its two rooms between the lanes. */
-  laneSwap: 0.3,
-  /** Chance that an act's map has one road between two floors cut, so that lane is crossed to the other and back. */
-  roadCut: 0.5,
-  /** Break Room: a rest heals this share of max HP plus this share of the HP missing. */
-  restHeal: 0.9,
-  /** Sunday Lunch (weekend room): the dishes you may have of the three on the table, and the max HP the tiramisu adds. */
-  lunch: { dishes: 2, maxHp: 8 },
-  /**
-   * The Corner Shop's scratch cards (weekend room): `scratches` cards at most, the first free and each one after it costing `hpCost` of max HP. A card is `jackpot` (a stationery),
-   * `upgrade` (`upgrades` cards of the deck), `heal` (`heal` of the missing HP) or `blank`, by the weights of `odds`.
-   */
-  lottery: {
-    scratches: 3,
-    hpCost: 0.08,
-    upgrades: 2,
-    heal: 0.5,
-    odds: [
-      ['jackpot', 9],
-      ['upgrade', 26],
-      ['heal', 30],
-      ['blank', 35],
-    ] as const,
-  },
-  /** Skipping a card reward: the max HP the first skip of the run pays (every skip after it pays one less, down to 1). */
-  skipMaxHp: 6,
-  /** Copy Room: a card can't be shredded below this many deck cards; a photocopy costs this much HP (and needs more left). */
-  shredMinDeck: 10,
-  copyHpCost: 8,
-  /** Raffle: how many deck cards the result of the wheel is applied to. */
-  wheelCards: 3,
-  /** Raffle: how long the wheel turns (s) and how many full turns it makes before it stops. */
-  wheelSpinTime: 4.2,
-  wheelTurns: 4,
-  /** Restructuring: how many deck cards the player picks to turn into random ones. */
-  restructureCards: 2,
-  /** Tailor: the max HP the let-out uniform gives. */
-  tailorCrystals: 1,
-  /** Lost & Found: how many relics lie in the box. */
-  lostFoundChoices: 3,
-  /** Rewards and the Vending Machine deal a card of the hero's class this many times as likely as a neutral one (a class stays itself). */
-  classCardWeight: 2,
-  /** Cross-Training: how many cards of each of the other classes are on offer. */
-  crossTrainPerClass: 2,
-  /** The first run nudges a player to use the sleeve after this many fights in a row that never touched it. */
-  sleeveHintAfter: 2,
-  /** Vending Machine: the HP a card of each rarity costs (the machine takes blood). */
-  vendingHp: { rare: 6, epic: 12 },
-  /** Vending Machine: how many cards of that rarity drop for the price. */
-  vendingCards: { rare: 2, epic: 1 },
+
+  /** Percent of the max flame a lost fight returns on the meta score. Visual only. */
+  longPressMs: 380,
+  holdRingDelayMs: 120,
+  /** Pixels a press may drift and still be a tap. */
+  tapSlop: 10,
+  /** Screen shake strength on a leak. */
+  shake: 6,
+  /** Undo of a drag: a card dropped on a bad tile goes back. */
+  dragLift: 54,
+  /** The history of runs kept. */
+  historyMax: 12,
+  /** Taps on the version line that open the debug tools. */
+  debugTaps: 7,
 } as const;
-
-export type RewardKind = 'fight' | 'elite' | 'boss';
-
-/** Distinct cards a reward offers (before the rank's perks and the stationery): a normal fight a few, the ones that add a card to the deck one more. */
-export const REWARD_CHOICES: Record<RewardKind, number> = { fight: 3, elite: 4, boss: 4 };
-
-/**
- * Rarity odds (weights) of each card offered after a fight, an elite or an act boss, one entry per act (later acts use the last):
- * the deeper the shift, the better the cards. Legendary cards only drop from elites and bosses.
- */
-const REWARD_ODDS: Record<RewardKind, [Rarity, number][][]> = {
-  fight: [
-    [
-      ['common', 64],
-      ['rare', 29],
-      ['epic', 7],
-    ],
-    [
-      ['common', 50],
-      ['rare', 38],
-      ['epic', 12],
-    ],
-    [
-      ['common', 38],
-      ['rare', 44],
-      ['epic', 18],
-    ],
-    [
-      ['common', 28],
-      ['rare', 46],
-      ['epic', 26],
-    ],
-  ],
-  elite: [
-    [
-      ['common', 30],
-      ['rare', 45],
-      ['epic', 20],
-      ['legendary', 5],
-    ],
-    [
-      ['common', 20],
-      ['rare', 45],
-      ['epic', 28],
-      ['legendary', 7],
-    ],
-    [
-      ['common', 10],
-      ['rare', 40],
-      ['epic', 38],
-      ['legendary', 12],
-    ],
-    [
-      ['common', 5],
-      ['rare', 35],
-      ['epic', 42],
-      ['legendary', 18],
-    ],
-  ],
-  boss: [[['legendary', 1]]],
-};
-
-export const rewardOdds = (kind: RewardKind, act: number): [Rarity, number][] => REWARD_ODDS[kind][Math.min(act, REWARD_ODDS[kind].length) - 1];
-
-/** Chance, per rarity and act (later acts use the last), that a card of a reward offer comes already upgraded: the rarer, the less often. */
-const REWARD_UPGRADE_CHANCE: Record<Rarity, number[]> = {
-  common: [0.25, 0.4, 0.6, 0.75],
-  rare: [0.2, 0.3, 0.5, 0.65],
-  epic: [0.15, 0.25, 0.4, 0.55],
-  legendary: [0.1, 0.15, 0.25, 0.35],
-  special: [0, 0, 0, 0],
-};
-
-export const rewardUpgradeChance = (rarity: Rarity, act: number): number => {
-  const row = REWARD_UPGRADE_CHANCE[rarity];
-  return row[Math.min(act, row.length) - 1];
-};
-
-/** Cards an offer always holds of at least a rarity, per act (later acts use the last); the rest of it follows `rewardOdds`. */
-const REWARD_GUARANTEE: Record<RewardKind, { rarity: Rarity; count: number }[]> = {
-  fight: [
-    { rarity: 'rare', count: 1 },
-    { rarity: 'epic', count: 1 },
-    { rarity: 'epic', count: 2 },
-  ],
-  elite: [{ rarity: 'legendary', count: 2 }],
-  boss: [{ rarity: 'legendary', count: 0 }],
-};
-
-/** Rarity odds (weights) of each stationery in the Lost & Found box, one entry per act (later acts use the last). */
-const RELIC_ODDS: [Rarity, number][][] = [
-  [
-    ['common', 50],
-    ['rare', 40],
-    ['epic', 10],
-  ],
-  [
-    ['common', 35],
-    ['rare', 45],
-    ['epic', 18],
-    ['legendary', 2],
-  ],
-  [
-    ['common', 15],
-    ['rare', 40],
-    ['epic', 37],
-    ['legendary', 8],
-  ],
-  [
-    ['common', 8],
-    ['rare', 34],
-    ['epic', 42],
-    ['legendary', 16],
-  ],
-];
-
-export const relicOdds = (act: number): [Rarity, number][] => RELIC_ODDS[Math.min(act, RELIC_ODDS.length) - 1];
-
-/** The rarity the Lost & Found box always holds at least one stationery of (or above), per act (later acts use the last). */
-const RELIC_GUARANTEE: Rarity[] = ['rare', 'rare', 'epic', 'epic'];
-
-export const relicGuarantee = (act: number): Rarity => RELIC_GUARANTEE[Math.min(act, RELIC_GUARANTEE.length) - 1];
-
-export const rewardGuarantee = (kind: RewardKind, act: number): { rarity: Rarity; count: number } =>
-  REWARD_GUARANTEE[kind][Math.min(act, REWARD_GUARANTEE[kind].length) - 1];
-
-/** Where cards enter (0) and expire, in belt-distance units. */
-/** The per-run flag (`CombatSetup.relicFlags`) set once the hero has begged to stay. */
-export const BEG_FLAG = 'begToStay';
-
-/** Where an Anchor card stops: right at the end of the belt, the whole card still in view. */
-export const ANCHOR_POS = 1;
-
-export const EXPIRE_POS = 1 + CONFIG.cardWidth * CONFIG.expireOverhang;
-
-export const GAME_SPEEDS = [1, 1.5, 2] as const;
-
-/** The share of its HP at which an enemy's `onHalf` trait fires. */
-export const halfAtOf = (e: { halfAt?: number }): number => e.halfAt ?? 0.5;
-export const halfPct = (e: { halfAt?: number }): number => Math.round(halfAtOf(e) * 100);

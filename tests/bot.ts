@@ -1,326 +1,117 @@
-import { Combat } from '../src/game/combat';
-import { MAIN_ACTS } from '../src/data/acts';
-import { CARDS } from '../src/data/cards';
-import { COFFEE_SERVICE } from '../src/data/coffee';
-import { CoffeeTask } from '../src/game/coffee';
-import { BadgeSwipe } from '../src/game/badge';
-import { CheckoutLane } from '../src/game/checkout';
-import { GrillLine } from '../src/game/grill';
-import { SlideDance } from '../src/game/slide';
-import { MatchThree } from '../src/game/match3';
-import { ShellGame } from '../src/game/shells';
-import { SushiOrder } from '../src/game/sushi';
-import {
-  addPerk,
-  advance,
-  applyCombat,
-  canPerk,
-  canVend,
-  canShred,
-  canUpgrade,
-  canEat,
-  combatSetup,
-  currentNode,
-  eatDish,
-  gainRelic,
-  rollRelics,
-  newRun,
-  rest,
-  rollRewards,
-  shredCard,
-  swapCard,
-  upgradeCard,
-  vend,
-  type RunState,
-} from '../src/game/run';
-import type { CombatCard, HeroId } from '../src/game/types';
+import { card } from '../src/data/cards';
+import type { Battle, Unit } from '../src/game/battle';
+import { COLS, PLACE_ROW, ROWS } from '../src/game/types';
 
-export interface BotOpts {
-  /** Seconds between bot decisions (human reaction time). */
-  reaction: number;
-  /** Probability per decision of doing nothing (distraction / misreads). */
-  sloppiness: number;
-  /** The rank on the hero's career ladder to play at (default 0, the plain game). */
-  level?: number;
-  /** How many acts the run has (default the main ones; `ACT_DEFS.length` adds the weekend). */
-  acts?: number;
-  /** The acts laid out by hand (`ACT_SCRIPTS`) instead of dealt. */
-  scripted?: number[];
+/** A plain player for the balance runs: reads the lanes, sets blockers in front and shooters behind, fires charms where the parade is thickest. */
+
+const laneFoes = (b: Battle, lane: number): number => b.foes.filter((f) => f.lane === lane && !f.dead).length;
+
+function bestLane(b: Battle, wantQuiet = false): number {
+  const lanes = Array.from({ length: COLS }, (_, l) => l);
+  const score = (l: number): number => b.laneThreat(l) + laneFoes(b, l) * 2 + (b.units.filter((u: Unit) => u.lane === l).length ? 0 : 0.01);
+  return lanes.reduce((best, l) => ((wantQuiet ? score(l) < score(best) : score(l) > score(best)) ? l : best), 2);
 }
 
-const DT = 1 / 30;
+const isFront = (cardId: string): boolean => {
+  const sd = card(cardId).spirit?.(false);
+  return !!sd && (!!sd.thorns || !!sd.sticky || sd.atk?.kind === 'melee' || !!sd.revive || !!sd.onDeath);
+};
 
-/** A heuristic player: blocks before telegraphed hits, otherwise spends mana on damage. */
-const CRYSTALS = ['coffee', 'italianEspresso'];
-const BLOCKISH = [
-  'bobTheBuilder',
-  'spamFilter',
-  'karlMarx',
-  'pingPongTable',
-  'wallStreet',
-  'digitalDetox',
-  'employeeOfTheMonth',
-  'youShallNotPass',
-  'secondBreakfast',
-  'lookBusy',
-  'hideTheEvidence',
-  'plausibleDeniability',
-  'hushMoney',
-];
-const DEBUFFS = ['karoshi', 'chainSmoking', 'waterCooler', 'blackFriday', 'walkout'];
-
-/** Taps a second the bot gives Conveyor Sis's mana button (about what a thumb does). */
-const TAPS_PER_SECOND = 4;
-/** The bot spends the act's ability in an ordinary fight only when its HP is under this share. */
-const BOT_ABILITY_HP = 0.5;
-
-/** The Supervisor's backlog: the bot keeps the window open `MINIGAME_OPEN` seconds of every `MINIGAME_CYCLE` (the rest it plays its cards) and makes a move every `MINIGAME_GAP` seconds, a person's time to look at a board. */
-const MINIGAME_CYCLE = 9;
-const MINIGAME_OPEN = 6;
-const MINIGAME_GAP = 1.6;
-const lastMatchMove = new WeakMap<Combat, number>();
-
-/** Makes a move on the board (a swap with a special in it first, otherwise any that is allowed) when it is time; returns whether the window is open (then the cards are out of reach). */
-function botMatch(c: Combat, game: MatchThree, rnd: () => number): boolean {
-  const open = c.time % MINIGAME_CYCLE < MINIGAME_OPEN;
-  c.openMinigame(open);
-  if (!open || c.time - (lastMatchMove.get(c) ?? -MINIGAME_GAP) < MINIGAME_GAP) return open;
-  const swaps = game.swaps();
-  const special = swaps.filter(([a, b]) => game.cells[a]?.special || game.cells[b]?.special);
-  const pool = special.length ? special : swaps;
-  const [a, b] = pool[Math.floor(rnd() * pool.length)];
-  c.matchSwap(a, b);
-  lastMatchMove.set(c, c.time);
-  return true;
+function freeRow(b: Battle, lane: number, front: boolean): number {
+  const rows = Array.from({ length: ROWS - PLACE_ROW }, (_, i) => PLACE_ROW + i);
+  const order = front ? rows : rows.reverse();
+  for (const r of order) if (b.tileFree(lane, r)) return r;
+  return -1;
 }
 
-/** The next right move of the Boss's coffee. */
-function botCoffee(c: Combat, task: CoffeeTask): void {
-  if (task.phase === 'code') c.coffee({ kind: 'key', key: task.code[task.keysDone] });
-  else if (task.phase === 'coins') {
-    const coin = task.coins.find((x) => !x.used && task.fits(x));
-    if (coin) c.coffee({ kind: 'coin', id: coin.id });
-  } else if (task.phase === 'place') c.coffee({ kind: 'item', item: COFFEE_SERVICE[task.placed.length] });
-  else if (task.phase === 'sugar') c.coffee(task.dial < task.sugar ? { kind: 'sugar', by: 1 } : { kind: 'start' });
-}
-
-export function botDecide(c: Combat, rnd: () => number, opts: BotOpts): void {
-  for (let i = 0; c.manaTapOn && i < opts.reaction * TAPS_PER_SECOND; i++) c.tapMana();
-  if (rnd() < opts.sloppiness) return;
-  // The ability works once per act: the bot keeps it for the tough fights, or for when it is in trouble.
-  if (c.abilityReady() && (c.enemy.def.tier !== 'normal' || c.hero.hp < c.hero.maxHp * BOT_ABILITY_HP)) c.useAbility();
-  // The shell game: the bot keeps its eye on the right card and picks it as soon as the cards stop.
-  if (c.chore instanceof ShellGame) {
-    if (c.chore.phase === 'pick') c.pickShell(c.chore.prizePlace);
-    return;
-  }
-  // The badge reader: a swipe at the middle of the zone each decision (the reader refuses the first good ones anyway).
-  if (c.chore instanceof BadgeSwipe) {
-    c.swipeBadge((c.chore.min + c.chore.max) / 2);
-    return;
-  }
-  // The self-checkout: scan what is in the basket, lift out what the machine objects to, and wait for the assistance (cards are out of reach meanwhile).
-  if (c.chore instanceof CheckoutLane) {
-    if (c.chore.phase === 'scan') c.checkout({ kind: 'scan', item: 0 });
-    else if (c.chore.phase === 'unexpected') c.checkout({ kind: 'lift' });
-    return;
-  }
-  // The barbecue: tap whichever patty is ready (a person's eye is on all of them), cards are out of reach meanwhile.
-  if (c.chore instanceof GrillLine) {
-    const line = c.chore;
-    const slot = line.slots.findIndex((p) => p && line.stateOf(p) === 'ready');
-    if (slot >= 0) c.grill(slot);
-    return;
-  }
-  // The dance floor: answer the call that is up (and keep still for a freeze), cards are out of reach meanwhile.
-  if (c.chore instanceof SlideDance) {
-    const call = c.chore.call;
-    if (call && call !== 'freeze') c.slide(call);
-    return;
-  }
-  // The coffee chore: one right move per decision (a person takes a moment for each), cards are out of reach meanwhile.
-  if (c.chore instanceof CoffeeTask) {
-    botCoffee(c, c.chore);
-    return;
-  }
-  // The Supervisor's backlog: while its window is open the cards are out of reach.
-  if (c.minigame instanceof MatchThree && botMatch(c, c.minigame, rnd)) return;
-  // The IT guy's window: it postpones it, and plays in the seconds that leaves.
-  if (c.popup) {
-    c.postponeUpdate();
-    return;
-  }
-
-  const cards: { card: CombatCard; pos: number }[] = [
-    ...c.belt.map((b) => ({ card: b.card, pos: b.pos })),
-    ...c.sleeve.filter((x): x is CombatCard => !!x).map((card) => ({ card, pos: -1 })),
-  ];
-  const e = c.enemy;
-  const rate = c.enemyTimeRate();
-  const timeToHit = rate > 0 ? (e.move.windup - e.timer) / rate : Infinity;
-  const incoming = c.intentDamage(e.move) * (e.move.hits ?? 1);
-  // A human taps a petrified card a few times in a row: break one hex per decision.
-  const hexed = c.belt.find((b) => b.card.hex && b.card.hex.left > 0 && !c.isCovered(b.card.uid));
-  if (hexed) {
-    for (let i = 0; i < 5; i++) c.playCard(hexed.card.uid);
-    return;
-  }
-  // The Sushi Chef's slips: eat a piece a slip asks for now, the one nearest the exit first (one tap per decision, then the cards go on).
-  if (c.chore instanceof SushiOrder) {
-    const order = c.chore;
-    const piece = c.belt.filter((b) => order.wants(b.card)).sort((x, y) => y.pos - x.pos)[0];
-    if (piece) {
-      c.playCard(piece.card.uid);
-      return;
+/** Tries to play one card. Returns whether it did. */
+export function botAct(b: Battle): boolean {
+  const foes = b.foes.filter((f) => !f.dead);
+  const deepest = foes.reduce((m, f) => Math.max(m, f.y), 0);
+  if (b.abilityReady && (foes.length >= 3 || deepest > 4.5)) b.useAbility();
+  for (let s = 0; s < b.hand.length; s++) {
+    const c = b.hand[s];
+    if (!c || b.oil + 1e-6 < b.cardCost(c)) continue;
+    const def = card(c.id);
+    if (def.kind === 'spirit') {
+      const sd = def.spirit?.(c.up);
+      if (!sd) continue;
+      const producer = !!sd.oil;
+      // Merge with a twin first when one stands in a lane that matters.
+      const twin = b.units.find((u) => u.cardId === c.id && u.level < 3 && !u.dead);
+      if (twin && !producer && b.check(s, twin.lane, twin.row).ok && b.units.filter((u) => u.cardId === c.id).length >= 2) {
+        b.play(s, twin.lane, twin.row);
+        return true;
+      }
+      const lane = producer ? bestLane(b, true) : bestLane(b);
+      const row = freeRow(b, lane, !producer && isFront(c.id));
+      if (row >= 0 && b.check(s, lane, row).ok) {
+        if (producer && b.units.filter((u) => u.def.oil).length >= 4) continue;
+        b.play(s, lane, row);
+        return true;
+      }
+      // Lane full: try any other.
+      for (let l = 0; l < COLS; l++) {
+        const r = freeRow(b, l, isFront(c.id));
+        if (r >= 0 && b.play(s, l, r)) return true;
+      }
+      continue;
     }
-  }
-  const affordable = cards.filter(
-    ({ card, pos }) =>
-      !card.hex &&
-      !CARDS[card.id].sushi &&
-      c.isPlayable(card) &&
-      !c.isPending(card) &&
-      c.canAfford(card) &&
-      !c.ruleBlock(card) &&
-      (pos < 0 || !c.isCovered(card.uid)),
-  );
-
-  const score = ({ card, pos }: { card: CombatCard; pos: number }): number => {
-    const def = CARDS[card.id];
-    const v = c.cardVals(card);
-    const cost = Math.max(1, c.cardCost(card));
-    const urgency = pos > 0.75 ? 1.5 : 1;
-    switch (def.type) {
-      case 'curse':
-        if (card.id === 'gatekeeping') return 30;
-        return card.id === 'writeUp' && pos > 0.6 ? 50 : c.hero.mana >= c.hero.maxMana - 1 ? 2 : -1;
-      case 'power':
-        return 30;
-      case 'defense':
-      case 'skill': {
-        if (card.id === 'firstAidKit') return c.hero.hp < c.hero.maxHp * 0.5 ? 40 : -1;
-        if (CRYSTALS.includes(card.id)) return 40;
-        const blockish = BLOCKISH.includes(card.id);
-        if (blockish) {
-          const need = incoming > c.hero.block && timeToHit < 1.6;
-          return need ? 25 * urgency : c.hero.mana >= c.hero.maxMana ? 1.5 : -1;
-        }
-        return 6 * urgency;
-      }
-      default: {
-        // Don't feed a Printer while it copies the damage it takes.
-        if (c.enemy.move.absorb) return -1;
-        if (DEBUFFS.includes(card.id)) return 9;
-        if (card.id === 'toxicLeak') return c.stacks('enemy', 'poison') * 0.8;
-        const dmg = def.dmg?.length ? c.previewHeroDamage(v[def.dmg[0]], def) * (card.id === 'replyAll' ? v[1] : 1) : 8;
-        return (dmg / cost) * urgency;
-      }
-    }
-  };
-
-  const best = affordable
-    .map((x) => ({ x, s: score(x) }))
-    .filter((o) => o.s > 0)
-    .sort((a, b) => b.s - a.s)[0];
-  if (best) {
-    c.playCard(best.x.card.uid);
-    return;
-  }
-  // Stash a strong card that's about to leave and can't be afforded yet.
-  const leaving = c.belt.find((b) => b.pos > 0.8 && c.cardCost(b.card) >= 2 && CARDS[b.card.id].type !== 'curse');
-  if (leaving && c.sleeve.includes(null)) c.stash(leaving.card.uid);
-}
-
-export function simulateCombat(c: Combat, rnd: () => number, opts: BotOpts, maxTime = 300): void {
-  let acc = 0;
-  while (!c.result && c.time < maxTime) {
-    c.tick(DT);
-    acc += DT;
-    if (acc >= opts.reaction) {
-      acc = 0;
-      botDecide(c, rnd, opts);
-    }
-  }
-}
-
-export interface RunOutcome {
-  won: boolean;
-  act: number;
-  floor: number;
-  /** The enemy that ended a lost run. */
-  killer?: string;
-  hp: number;
-  combatTimes: number[];
-  /** Every fight the run had: who, how it ended, how long it took and how much HP it cost. */
-  fights: { enemy: string; act: number; won: boolean; time: number; hpLost: number }[];
-}
-
-export function simulateRun(hero: HeroId, seed: number, opts: BotOpts): RunOutcome {
-  let s = seed;
-  const rnd = (): number => {
-    s = (s * 1664525 + 1013904223) >>> 0;
-    return s / 2 ** 32;
-  };
-  const run: RunState = newRun(hero, seed, opts.scripted ?? [], [], opts.acts ?? MAIN_ACTS, opts.level ?? 0);
-  const combatTimes: number[] = [];
-  const fights: RunOutcome['fights'] = [];
-  for (;;) {
-    const node = currentNode(run);
-    if (node.type === 'promotion') {
-      // Crystals first: they grow the mana the rest of the deck needs.
-      const card = run.deck.find((c) => c.id === 'italianEspresso' || c.id === 'coffee');
-      if (card && canPerk(card, 'fastTrack')) addPerk(run, card.uid, 'fastTrack');
-      run.cleared = true;
-    } else if (node.type === 'tailor') {
-      gainRelic(run, 'cargoPants');
-      run.cleared = true;
-    } else if (node.type === 'lostFound') {
-      const [pick] = rollRelics(run);
-      if (pick) gainRelic(run, pick);
-      run.cleared = true;
-    } else if (node.type === 'vending') {
-      if (canVend(run, 'rare') && run.hp > run.maxHp * 0.7) vend(run, 'rare');
-      run.cleared = true;
-    } else if (node.type === 'crossTraining' || node.type === 'restructuring' || node.type === 'wheel' || node.type === 'lottery') {
-      // Off-class cards, a reshuffled deck and a raffle's luck don't help the bot's plan: it walks past.
-      run.cleared = true;
-    } else if (node.type === 'copy') {
-      // Thin the deck: shred a plain starter card (never a mana crystal).
-      const weak = run.deck.find((c) => CARDS[c.id].starterOnly);
-      if (weak && canShred(run)) shredCard(run, weak.uid);
-      run.cleared = true;
-    } else if (node.type === 'lunch') {
-      // Two helpings: the lasagna when hurt, the recipe otherwise.
-      if (canEat(run, 'lasagna') && run.hp < run.maxHp * 0.8) eatDish(run, 'lasagna');
-      else {
-        const up = run.deck.find(canUpgrade);
-        if (up) eatDish(run, 'recipe', up.uid);
-      }
-      eatDish(run, 'tiramisu');
-      run.cleared = true;
-    } else if (node.type === 'rest') {
-      if (run.hp < run.maxHp * 0.65) rest(run);
-      else {
-        const up = run.deck.find((c) => canUpgrade(c) && !['defense', 'skill'].includes(CARDS[c.id].type)) ?? run.deck.find(canUpgrade);
-        if (up) upgradeCard(run, up.uid);
-        run.cleared = true;
-      }
+    const fx = def.fx?.(c.up) ?? [];
+    const first = fx[0];
+    if (!first) continue;
+    if (def.aim === 'lane') {
+      const lane = bestLane(b);
+      if (laneFoes(b, lane) === 0) continue;
+      if (b.play(s, lane)) return true;
+    } else if (def.aim === 'tile') {
+      const lane = bestLane(b);
+      const row = freeRow(b, lane, true);
+      if (row >= 0 && b.play(s, lane, row)) return true;
     } else {
-      // The bot never begs: a defeat is a defeat, so win rates stay comparable.
-      const c = new Combat({ ...combatSetup(run), canBeg: false });
-      simulateCombat(c, rnd, opts);
-      combatTimes.push(c.time);
-      fights.push({ enemy: node.enemy!, act: node.act, won: c.result === 'win', time: c.time, hpLost: c.hero.maxHp - c.hero.hp });
-      applyCombat(run, c);
-      if (c.result === 'lose' || !c.result) return { won: false, act: node.act, floor: node.floor, killer: node.enemy, hp: 0, combatTimes, fights };
-      if (c.result === 'win' && node.type !== 'boss') {
-        const picks = rollRewards(run, node.type === 'elite' ? 'elite' : 'fight');
-        // Swap the best offer in for a plain starter card (never a mana crystal).
-        const pick = picks.find((p) => p.def.rarity !== 'common') ?? picks[0];
-        const out = run.deck.find((d) => CARDS[d.id].starterOnly);
-        if (pick && out) swapCard(run, out.uid, pick.def.id, pick.up);
+      switch (first.k) {
+        case 'oil':
+          if (b.oil < b.maxOil - 4 && b.play(s)) return true;
+          break;
+        case 'redeal':
+          if (b.oil < 3 && b.play(s)) return true;
+          break;
+        case 'mend':
+          if (b.units.some((u) => u.hp < u.maxHp * 0.6) && b.play(s)) return true;
+          break;
+        case 'flame':
+          if (b.flame < b.maxFlame && b.play(s)) return true;
+          break;
+        case 'bless':
+          if (b.units.filter((u) => u.def.atk).length >= 3 && foes.length >= 2 && b.play(s)) return true;
+          break;
+        case 'hit':
+          if (foes.length >= (first.scope === 'strongest' ? 1 : 3) && b.play(s)) return true;
+          break;
+        case 'summon':
+          if (foes.length >= 2 && b.play(s)) return true;
+          break;
+        case 'gamble':
+          if (b.oil < 6 && b.play(s)) return true;
+          break;
+        default:
+          break;
       }
     }
-    if (!advance(run)) return { won: true, act: node.act, floor: node.floor, hp: run.hp, combatTimes, fights };
   }
+  return false;
+}
+
+/** Plays a whole fight; returns the battle. */
+export function runBot(b: Battle, maxSeconds = 400): Battle {
+  b.start();
+  let next = 0;
+  while (b.state === 'playing' && b.time < maxSeconds) {
+    b.step(0.1);
+    if (b.time >= next) {
+      next = b.time + 0.45;
+      for (let i = 0; i < 3; i++) if (!botAct(b)) break;
+    }
+  }
+  return b;
 }

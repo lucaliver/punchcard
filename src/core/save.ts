@@ -1,5 +1,5 @@
 /** Safe wrappers around localStorage (it can throw in private mode or when storage is blocked). */
-const PREFIX = 'cardstone+:';
+const PREFIX = 'hyakki:';
 
 export function load<T>(key: string, fallback: T): T {
   try {
@@ -28,19 +28,19 @@ export function store(key: string, value: unknown): void {
   }
 }
 
+export function remove(key: string): void {
+  try {
+    localStorage.removeItem(PREFIX + key);
+  } catch {
+    /* ignore */
+  }
+}
+
 /** Wipes every saved key of the game (settings, run and progress). */
 export function clearAll(): void {
   try {
     for (const k of Object.keys(localStorage)) if (k.startsWith(PREFIX)) localStorage.removeItem(k);
   } catch {
     /* storage unavailable: nothing to clear */
-  }
-}
-
-export function remove(key: string): void {
-  try {
-    localStorage.removeItem(PREFIX + key);
-  } catch {
-    /* ignore */
   }
 }

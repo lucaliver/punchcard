@@ -1,7 +1,5 @@
 import en, { type EnKey } from '../i18n/en';
-import es from '../i18n/es';
 import it from '../i18n/it';
-import zh from '../i18n/zh';
 
 export type Dict = Record<string, string>;
 
@@ -9,27 +7,7 @@ export type Dict = Record<string, string>;
  * Prefixes of ids built at runtime (e.g. `card.${id}.name`); they are checked by tests/content.test.ts.
  * Any other key must be a literal id from en.ts, so a typo fails the typecheck.
  */
-type DynamicPrefix =
-  | 'card'
-  | 'enemy'
-  | 'move'
-  | 'status'
-  | 'kw'
-  | 'hero'
-  | 'type'
-  | 'rarity'
-  | 'journey.node'
-  | 'journey.actName'
-  | 'howto'
-  | 'compendium'
-  | 'intent'
-  | 'perk'
-  | 'wheel'
-  | 'relic'
-  | 'rank'
-  | 'hex'
-  | 'drink'
-  | 'task';
+type DynamicPrefix = 'card' | 'foe' | 'keeper' | 'relic' | 'node' | 'kw' | 'status' | 'rarity' | 'kind' | 'act' | 'tip' | 'scope' | 'stage' | 'lore';
 export type TKey = EnKey | `${DynamicPrefix}.${string}`;
 export type Params = Record<string, string | number>;
 
@@ -37,8 +15,6 @@ export type Params = Record<string, string | number>;
 const locales: Record<string, { name: string; dict: Dict }> = {
   en: { name: 'English', dict: en as Dict },
   it: { name: 'Italiano', dict: it },
-  es: { name: 'Español', dict: es },
-  zh: { name: '中文', dict: zh },
 };
 
 let current = 'en';
@@ -64,31 +40,22 @@ export function setLocale(code: string): void {
 
 export const getLocale = (): string => current;
 
-/** Numbers that rules text quotes as `{$name}` (see `data/values.ts`): the game registers them once at boot. */
-let values: Params = {};
-export const setStringValues = (v: Params): void => {
-  values = v;
-};
+/** Does the key exist (in the current language or the fallback)? For optional lines. */
+export const hasKey = (key: TKey): boolean => key in locales[current].dict || key in locales[fallback].dict;
 
 /**
- * Translates `key`, interpolating `{name}` params and the game's named `{$value}`s.
+ * Translates `key`, interpolating `{name}` params.
  * Plurals: `{n|card|cards}` picks a form through Intl.PluralRules for the param `n`.
  */
 export function t(key: TKey, params?: Params): string {
-  let s = locales[current].dict[key] ?? locales[fallback].dict[key];
+  const s = locales[current].dict[key] ?? locales[fallback].dict[key];
   if (s === undefined) {
     if (import.meta.env?.DEV) console.warn(`[i18n] missing key: ${key}`);
     return key;
   }
-  s = s.replace(/\{\$(\w+)\}/g, (m, name: string) => {
-    if (name in values) return String(values[name]);
-    if (import.meta.env?.DEV) console.warn(`[i18n] unknown value ${m} in ${key}`);
-    return m;
-  });
   if (!params) return s;
   const rules = new Intl.PluralRules(current);
-  s = s.replace(/\{(\w+)\|([^|}]*)\|([^}]*)\}/g, (_, p: string, one: string, other: string) =>
-    rules.select(Number(params[p])) === 'one' ? one : other,
-  );
-  return s.replace(/\{(\w+)\}/g, (m, p: string) => (p in params ? String(params[p]) : m));
+  return s
+    .replace(/\{(\w+)\|([^|}]*)\|([^}]*)\}/g, (_, p: string, one: string, other: string) => (rules.select(Number(params[p])) === 'one' ? one : other))
+    .replace(/\{(\w+)\}/g, (m, p: string) => (p in params ? String(params[p]) : m));
 }

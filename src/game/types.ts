@@ -1,686 +1,253 @@
-import type { TKey } from '../core/i18n';
-import type { Combat } from './combat';
+/**
+ * Shapes shared by the data, the engine and the screens.
+ *
+ * Geometry: the field is `COLS` lanes wide and `ROWS` rows tall. Row 0 is the top (where the parade comes in), row `ROWS - 1` is the last one
+ * before the lantern. A foe's `y` is a float in row units (tile `r` spans `r…r+1`, its centre is `r + 0.5`); a foe whose `y` reaches `ROWS`
+ * has reached the lantern.
+ */
 
-export type HeroId = 'warrior' | 'mage' | 'necromancer' | 'rogue';
-export type CardClass = HeroId | 'neutral' | 'curse';
-/** A card's type is the colour of its background: attack pink, defense blue, skill yellow, power grey, curse green. */
-export type CardType = 'attack' | 'defense' | 'skill' | 'power' | 'curse';
-export type Rarity = 'common' | 'rare' | 'epic' | 'legendary' | 'special';
-export type Keyword = 'exhaust' | 'consume' | 'fleeting' | 'unplayable' | 'volatile' | 'innate' | 'pending' | 'bulky' | 'large' | 'echo' | 'anchor';
-export type Side = 'hero' | 'enemy';
+export const COLS = 5;
+export const ROWS = 7;
+/** Spirits can be set only from this row down: the top rows are the road the parade walks in on. */
+export const PLACE_ROW = 2;
 
-/** A card in the run deck. */
-export interface CardInst {
-  uid: number;
-  id: string;
-  up: boolean;
-  /** Permanent perks earned on this copy (Promotion), ids of `PERKS`. */
-  perks?: string[];
-  /** Times this copy has been played in all the run's fights, for a card with `CardDef.tenure`. */
-  tenure?: number;
+export type KeeperId = 'miko' | 'ronin' | 'tanuki';
+export type Rarity = 'common' | 'rare' | 'epic' | 'legend';
+export type CardKind = 'spirit' | 'charm';
+export type Terrain = 'ground' | 'rock' | 'shrine';
+
+/** Id of a drawing in `ui/art/sprites.ts` (spirits and foes share one table). */
+export type SpriteId = string;
+
+/** Which foes an effect reaches. `front` = the foe nearest the lantern in the lane picked, `fronts` = the front foe of every lane. */
+export type Scope = 'front' | 'fronts' | 'lane' | 'lanes3' | 'all' | 'strongest';
+
+/** An effect of a charm, a keeper's ability, or a spirit's `onPlace`/`onDeath`. */
+export type Effect =
+  | { k: 'hit'; dmg: number; scope: Scope; stun?: number; slow?: [factor: number, secs: number]; burn?: [dps: number, secs: number] }
+  | { k: 'stun'; secs: number; scope: Scope }
+  | { k: 'push'; rows: number; scope: Scope }
+  /** Damages the foes within `radius` tiles of the spirit this goes off from (its tile, or the one picked). */
+  | { k: 'burst'; dmg: number; radius: number }
+  | { k: 'oil'; n: number }
+  /** Throws the rest of the hand away and deals a whole new one at once. */
+  | { k: 'redeal' }
+  | { k: 'mend'; hp: number; scope: 'all' | 'lane' }
+  | { k: 'flame'; n: number }
+  /** Spirits hit harder for a while: `atk` is the extra share of damage (0.3 = +30%). */
+  | { k: 'bless'; atk: number; secs: number; scope: 'all' | 'lane' }
+  /** Foes in the lane walk slower for a while. */
+  | { k: 'zone'; slow: number; secs: number }
+  /** Sets `n` spirits of its own: on the tile picked when `at` is `target`, else on random free tiles. */
+  | { k: 'summon'; spirit: SpiritDef; n: number; at: 'target' | 'random' }
+  /** A copy of the spirit played last, on the tile picked. */
+  | { k: 'copyLast' }
+  /** 50/50: gain `win` oil or lose `lose`. */
+  | { k: 'gamble'; win: number; lose: number };
+
+export interface AttackDef {
+  /** melee: the foe in contact; shot: the first foe in `range` rows; lob: like shot but splashes; pierce: every foe in the lane within range; pulse: like pierce, no projectile. */
+  kind: 'melee' | 'shot' | 'lob' | 'pierce' | 'pulse';
+  dmg: number;
+  /** Seconds between two attacks. */
+  every: number;
+  /** In rows, measured up the lane from the spirit. */
+  range: number;
+  /** Radius (in tiles, lanes included) of a lob. */
+  splash?: number;
+  /** A melee spirit that hits every foe within reach, not just the first. */
+  cleave?: boolean;
+  stun?: number;
+  slow?: [factor: number, secs: number];
+  burn?: [dps: number, secs: number];
 }
 
-/** A permanent perk a deck card can earn: extra keywords and/or a cost change. A `bad` one is a drawback: the Promotion never offers it, the Raffle's wheel can land on it. */
-export interface PerkDef {
-  id: string;
-  icon: string;
-  keywords?: Keyword[];
-  costDelta?: number;
-  bad?: boolean;
-}
-
-/** A curse cast on one card during a fight (e.g. petrified): it must be tapped `taps` times, then thaws for `thaw` s (`stages`: it shows as a picture instead of a card). */
-export interface HexDef {
-  id: string;
-  icon: string;
-  taps: number;
-  thaw: number;
-  /** Icons that cover the card instead of the stone, one per tap (the first while it is untouched): the card shows as that picture. */
-  stages?: string[];
-}
-
-/** A hex on a combat card: `left` taps still needed; once 0, it thaws for `t` seconds and the card is free. */
-export interface CardHex {
-  id: string;
-  left: number;
-  t: number;
-}
-
-/** A card during combat (a copy of a deck card, or a temporary one such as an enemy curse). */
-/** The colour of a plate of sushi on the Chef's belt (a pink, blue or yellow ink: `data-plate` on the card). */
-export type Plate = 'pink' | 'blue' | 'yellow';
-
-export interface CombatCard extends CardInst {
-  /** Per-combat scaling (e.g. Rampage). */
-  bonus: number;
-  /** Temporary cards don't belong to the run deck. */
-  temp: boolean;
-  hex?: CardHex;
-  /** True once the card has ridden the whole belt this fight (a Pending card becomes playable), until it is played. */
-  passed?: boolean;
-  /** Infected (Sick Coworker): costs 1 more until played, and once `t` (seconds on the belt) reaches `CONFIG.virusDelay` it infects the next card behind it, once (`spread`). */
-  virus?: { t: number; spread: boolean };
-  /** Extra mana cost until the card is next played (Inflation). */
-  tax?: number;
-  /** Seconds spent on the belt since it was drawn (cards with `ride` change with it). */
-  age?: number;
-  /** Mana its cost has dropped by so far this fight (`costDrop`). */
-  cut?: number;
-  /** A copy made this fight with the Fleeting keyword on top of its own (Krusty Krab). */
-  fleeting?: true;
-  /** Mana the cards falling into a full sleeve have taken off its cost, until the card is next played (the Rogue's passive). */
-  disc?: number;
-  /** Mana off its cost until the card is next played: a card added to the deck during a fight under `StatusDef.hireCut`. */
-  welcome?: number;
-  /** The plate a piece of sushi comes on (the Chef's order asks for a dish on a plate). */
-  plate?: Plate;
-}
-
-/** A card as the rules and the UI read it: a deck copy, with the combat state (bonus, tax…) when it is in a fight. */
-export type CardLike = CardInst & Partial<CombatCard>;
-
-/** A patch of rust on the belt: where (x, y: shares of the belt's width and height) and how much grime is left (1 = new). */
-export interface RustSpot {
-  id: number;
-  x: number;
-  y: number;
-  grime: number;
-}
-
-export interface BeltCard {
-  card: CombatCard;
-  /** Distance travelled, in belt widths. 0 = just entering on the right. */
-  pos: number;
-  /** Belt row (0 = top); always 0 on a one-row belt. */
-  row: number;
-  /** Seconds left before the card, which has slipped off the end of the belt, is really lost: it tips over meanwhile, and can still be grabbed. */
-  falling?: number;
-  /** Pinned where it is (Team Change): it doesn't move or leave until played or stashed; other cards ride past it. */
-  pinned?: boolean;
+export interface SpiritDef {
+  art: SpriteId;
+  hp: number;
+  atk?: AttackDef;
+  /** Makes oil. */
+  oil?: { n: number; every: number };
+  /** Damage handed back to a foe that hits it. */
+  thorns?: number;
+  /** Heals the spirits around it. */
+  heal?: { hp: number; every: number; to: 'adjacent' | 'lane' };
+  /** Boosts the spirits around it: `rate` = faster attacks (0.25 = +25%), `dmg` = harder ones. */
+  aura?: { to: 'adjacent' | 'lane' | 'all'; rate?: number; dmg?: number };
+  /** Goes off when a foe comes within 0.9 rows, once. */
+  trap?: { dmg: number; radius: number; stun?: number };
+  /** Seconds it stays (a decoy, a summon). */
+  lifespan?: number;
+  /** Stands back up once with this share of its HP. */
+  revive?: number;
+  /** Goes off when it falls (or its lifespan ends). */
+  onDeath?: Effect[];
+  /** Foes hit by it are slowed (a sticky wall). */
+  sticky?: [factor: number, secs: number];
 }
 
 export interface CardDef {
   id: string;
-  cls: CardClass;
-  type: CardType;
-  rarity: Rarity;
-  /** Only in a hero's starting deck: never a reward, a vending drop or a cross-training offer. */
-  starterOnly?: true;
-  /** -1 = X cost (spends all mana). */
+  kind: CardKind;
+  /** Oil. */
   cost: number;
+  rarity: Rarity;
+  /** `any` = neutral. */
+  keeper: KeeperId | 'any';
+  /** Only in the starting decks, never dealt as a reward. */
+  starter?: boolean;
+  /** Used up when played (does not go to the discard pile). */
+  vanish?: boolean;
+  /** What a spirit card sets down (`up` = the upgraded copy). */
+  spirit?: (up: boolean) => SpiritDef;
+  /** What a charm does (`up` = the upgraded copy). */
+  fx?: (up: boolean) => Effect[];
+  /** Where a charm is aimed: nowhere (played at once), at a lane, or at a tile. */
+  aim?: 'none' | 'lane' | 'tile';
+  /** The upgraded copy costs this instead. */
   upCost?: number;
-  /** Discounts (perks) never take the cost below this (mana crystals must always cost something). */
-  minCost?: number;
-  vals: number[];
-  upVals?: number[];
-  /** The value `CombatCard.bonus` adds to (default: the first damage value): a curse that hits harder every time. */
-  bonusIdx?: number;
-  /** Indexes of `vals` that are damage (live previews). Derived from the `{dmg:N}` glyphs of `face` unless set. */
-  dmg?: number[];
-  keywords?: Keyword[];
-  upKeywords?: Keyword[];
-  /** Icon id in ui/art/icons. */
-  art: string;
-  /**
-   * Language-neutral card face: `{kind:i}` renders an icon plus value i, `{kind}` an icon alone,
-   * `|` starts a new line. The full rules text lives in i18n (`card.<id>.desc`).
-   */
-  face: string;
-  /** Card widths it covers on the belt (default 1): wider cards ride over the ones ahead of them. A `large` card instead has its extra widths as its own body, behind it, and the belt leaves room for all of it before dealing the next card. */
-  span?: number;
-  /** A wide card that covers both belt rows ahead of it, not just its own. */
-  tall?: boolean;
-  /** While on the belt, every other card of its row is out of reach (Priority Task). */
-  lockRow?: boolean;
-  /**
-   * The value at `vals[i]` changes by `vals[by]` for every second the card rides the belt, until it reaches `vals[to]`
-   * (it grows when `to` is above the base, decays when below). Frozen while the card waits in the sleeve.
-   */
-  ride?: { i: number; by: number; to: number };
-  /**
-   * Grows for good: for every time this copy of the deck has been played (in any fight of the run, `CardInst.tenure`),
-   * `vals[i]` is `vals[by]` higher, up to `vals[to]`.
-   */
-  tenure?: { i: number; by: number; to: number };
-  /**
-   * Dragging the card over the belt sweeps the other cards off it (they count as lost, as if they had fallen off the end):
-   * each one adds `vals[by]` to its bonus (the damage it deals), up to `vals[max]`. The bonus is gone once the card is played or lost. While held it stays on the belt, and it is played the moment it is let go.
-   */
-  sweep?: { by: number; max: number };
-  /** Damage this card gains for every second the hero's mana is full and overflowing, wherever the card is. */
-  onOverflow?: number;
-  /** The first time ever it rides onto the belt, the fight stops and a note (`card.<id>.tip`) says how to handle it. */
-  tip?: true;
-  /** Index of the value its cost drops by every second of the fight, wherever the card is (Dunder Mifflin Box). */
-  costDrop?: number;
-  /** Bonus effects that only work while the card waits in the sleeve (`v` = its values, `card` = the copy held). */
-  inSleeve?: {
-    /** Extra damage for the hero's cards of any type (`def` = the card dealing it). */
-    bonusDamage?: (c: Combat, v: number[], def: CardDef | null) => number;
-    /** Another card was just played. */
-    onCardPlayed?: (c: Combat, v: number[], card: CombatCard, played: CardDef) => void;
-    /** An enemy hit got through to the hero. */
-    onHeroHit?: (c: Combat, v: number[], card: CombatCard, lost: number) => void;
-  };
-  /** What the face shows in a fight, for a card whose values depend on the moment (what it would do if played now): the same maths `play` uses. */
-  shown?: (c: Combat, v: number[], card: CombatCard) => number[];
-  /** Whether the condition its face names (`{?poison}`…) holds right now: the belt and the sleeve light the condition up. Share the check with `play` (`WHEN`). */
-  when?: (c: Combat) => boolean;
-  play?: (c: Combat, v: number[], card: CombatCard) => void;
-  /**
-   * A plate on the Sushi Chef's belt (`SushiOrder`): a tap tries to eat it (`Combat.eat`); it can't be played, stashed or caught, and is never kept: off the belt it is gone (the order deals it again).
-   * A `piece` can be part of the order; a `trap` never is, and eating it runs its `play` (the fugu).
-   */
-  sushi?: 'piece' | 'trap';
-  /** Triggered when the card leaves the belt without being played. */
-  onExpire?: (c: Combat, v: number[], card: CombatCard) => void;
+  /** Picture of a charm (a spirit's is its sprite). */
+  art?: SpriteId;
 }
 
-export type StatusKind = 'timed' | 'stacks' | 'dot';
+export type FoeTier = 'minion' | 'normal' | 'elite' | 'boss';
 
-/** The ink a status or keyword is written in: poison and life green, fire and force red, control purple, the rest blue. */
-/** The colour of what something does (`--tone-*` in tokens.css): a status, a keyword, an enemy move. */
-export type Tone = 'green' | 'red' | 'purple' | 'blue' | 'teal' | 'amber' | 'mint' | 'toxic' | 'magenta' | 'pink';
+export type FoeAbility =
+  /** Jumps over the first spirit that blocks it. */
+  | { k: 'leap' }
+  /** Webs the nearest spirit in its lane (it attacks slower for `secs`). */
+  | { k: 'web'; every: number; secs: number }
+  /** Heals the foes around it. */
+  | { k: 'mend'; hp: number; every: number; radius: number }
+  /** The foes around it walk faster. */
+  | { k: 'hasten'; radius: number; speed: number }
+  /** Slides into the next lane now and then. */
+  | { k: 'swap'; every: number }
+  | { k: 'summon'; foe: string; n: number; every: number }
+  /** Freezes the nearest spirit in its lane (it can't act for `secs`). */
+  | { k: 'freeze'; every: number; secs: number }
+  /** Leaves `n` smaller foes behind when it falls. */
+  | { k: 'split'; foe: string; n: number }
+  /** Below this share of its HP it walks `speed` times faster. */
+  | { k: 'rage'; at: number; speed: number }
+  /** Crushes every spirit in its lane for `dmg`. */
+  | { k: 'slam'; every: number; dmg: number }
+  /** Strikes the nearest spirit of each lane from afar. */
+  | { k: 'volley'; every: number; dmg: number };
 
-export interface StatusDef {
+export interface FoeDef {
   id: string;
-  kind: StatusKind;
-  good: boolean;
-  icon: string;
-  /** Ink of its chip, its name in texts and move chips, from what it does: poison green, force red, defence teal, speed and time amber, rules and control purple, mana and tech blue. */
-  tone: Tone;
-  /** How an enemy move's chip names it: `icon` = just the icon, `short` = the `status.<id>.short` string; by default the full name. */
-  chip?: 'icon' | 'short';
-  /** Timed statuses that also stack show their stacks instead of the seconds left. */
-  showStacks?: boolean;
-  /** Sparks flicker above and below the belt, two per stack the hero holds (the Mage's Multitasking). */
-  beltSparks?: boolean;
-  /** Seconds its chip's bar empties over: the chip is drawn as a coloured bar that drains with the timer (for a counter that runs out, like chained spells). */
-  span?: number;
-  /** How far the status is from going off, 0 to 1: its chip is drawn as a bar that fills up to the trigger (the engine calls `Combat.cue` as it goes off). */
-  progress?: (c: Combat, side: Side, s: StatusVal) => number;
-  /** The sound that plays each time `Combat.cue` says the status went off. */
-  cue?: import('../audio/sfx').SoundId;
-  /** A permanent trait (enemy passives): shown without a number. */
-  passive?: boolean;
-  /** A trait the player isn't told about: no chip in the status row, no line in the pre-fight traits or the handbook (Update Needed: the window is the surprise). */
-  hidden?: true;
-  /** On the hero it has its own name and text (`status.<id>.self`, `.self.d`, and a keyword of its own in the card texts): stunned vs asleep. */
-  selfName?: true;
-  /** Icon when the status is on the hero, if it must read differently there (you stunned vs the enemy stunned). */
-  selfIcon?: string;
-  /** Tone when the status is on the hero, if it must differ there (Stun is magenta on the enemy and purple on you: asleep). */
-  selfTone?: Tone;
-  /** While active, its amount (`v`) counts as Strength: extra damage for attack cards (a timed one is a temporary boost). */
-  strength?: true;
-  /** A `stacks` status that may go below zero: it stays (and counts as active) until it is exactly 0 (Strength, which Boris and Class Struggle sap). */
-  signed?: true;
-  /** While active on the enemy, its amount (`v`) is taken off every hit of the hero's cards (Fine Print); Poison, Burn and thorns slip through. */
-  cutsHits?: true;
-  /** While active on the enemy, no hit on it deals more than its amount (`v`): cards, and Poison, Burn and thorns ticks too (Rate Limit). */
-  capsHits?: true;
-  /** While active on the hero, the sleeve is out of reach: no card can be played from it or put into it (Batch Processing). */
-  barsSleeve?: true;
-  /** While active on the hero, multiplies its mana regeneration (a chill slows it, Brown Nosing speeds it up). */
-  regenMul?: number;
-  /** While active on the enemy, multiplies the speed of its clock (0 stops it). */
-  timeMul?: number;
-  /** While active on the hero, multiplies the belt's speed (0 stops it). */
-  beltMul?: number;
-  /** A `dot` status that heals its carrier every interval instead of hurting it (Regen). */
-  heals?: true;
-  /** While active, the carrier deals this much of its normal damage (Weak). */
-  dealtMul?: number;
-  /** While active, the carrier takes this much of the normal damage (Vulnerable). */
-  takenMul?: number;
-  /** While active, the carrier's Block doesn't decay (Fortified). */
-  holdsBlock?: true;
-  /** While active, the carrier takes no damage at all (Dodge). */
-  immune?: true;
-  /** While active on the enemy, an attack card the hero drags onto the stage (instead of tapping it) is critical (VIP Treatment). */
-  critOnDrag?: true;
-  /** While active on the hero, the cards' faces are hidden and can't be inspected (Blackout). */
-  hidesCards?: true;
-  /** While active on the hero, the hero can't act: no card played by hand, no ability (stashing is still allowed). Cards still play themselves under `autoplay` (Stun). */
-  handsTied?: true;
-  /** On the enemy: the share (0–1) of the belt, from where the cards come in, in which the hero's cards can't be played yet (Assembly Line). A veil marks it. */
-  lockedZone?: number;
-  /** A debuff that hurts whoever carries it the same way, so the hero can hand it to the enemy (CC the Boss). */
-  passable?: true;
-  /** While active on the hero, its amount (`v`) adds to every tick of this damage-over-time status on the enemy (Virulent Form). */
-  dotBonus?: string;
-  /** While active on the hero, this damage-over-time status on the enemy never loses a stack below the amount (`v`) (Pre-Existing Condition). */
-  dotFloor?: string;
-  /** A damage-over-time status that ticks for half its amount, rounded up (Poison), then loses 1 as usual. */
-  halves?: true;
-  /** While active on the hero, its amount (`v`) adds to the discount a falling card gives (Failing Upwards). */
-  catchBonus?: true;
-  /** While active on the hero, every card with a mana cost costs its amount (`v`) instead, X cards keep theirs (Low-Hanging Fruit). */
-  flatCost?: true;
-  /** While active on the hero, its amount (`v`) comes off a card's cost the first time that card (by id) is played in a fight (Introductory Offer). */
-  firstPlayCut?: true;
-  /** While active on the hero, every card added to the deck during the fight (never a curse) costs its amount (`v`) less until it is played (Signing Bonus). */
-  hireCut?: true;
-  /** While active on the hero, the next card that costs mana is free and takes one stack with it (Lost Badge). */
-  freeNext?: true;
-  /** While active on the hero, no card rule (`canPlay`) applies (Root access). */
-  ignoresRules?: true;
-  /** While active on the hero, a card slipping off the belt plays itself for free if it can (Autopilot). */
-  autoplay?: true;
-  /** A rule while active: returns why the hero can't play this card (`uid`: belt or sleeve copy) now (an i18n key), or null. */
-  canPlay?: (c: Combat, side: Side, def: CardDef, uid: number) => TKey | null;
-  /** While active (on either side), the hero's max mana can't grow past this. */
-  manaCap?: number;
-  /** While active on the hero, Multitasking can pile up to the status's amount instead of `CONFIG.multitaskingMax` (when that is more). */
-  multiCap?: true;
-  /** Reacts to every card the hero plays after the status was applied (`card` = the copy that was played). */
-  onCardPlayed?: (c: Combat, side: Side, def: CardDef, card: CombatCard) => void;
-  /** The side carrying it was just hit, even if its Block took all of it (a hit, not damage over time). */
-  onStruck?: (c: Combat, side: Side, s: StatusVal) => void;
-  /** The side carrying it just lost HP to a hit (`lost` > 0). */
-  onHurt?: (c: Combat, side: Side, s: StatusVal, lost: number) => void;
-  /** The side carrying it just attacked: one of its moves dealt damage (Burn). */
-  onAttack?: (c: Combat, side: Side, s: StatusVal) => void;
-  /** While active, the carrier's status with this id doesn't run out (Flow State keeps Multitasking up). */
-  keeps?: string;
-  /** The hero just put a status on the enemy (`id`, `v` = amount): reacts while this one is active (Cold Sweat). */
-  onEnemyStatus?: (c: Combat, id: string, s: StatusVal) => void;
-  /** The side carrying it just took a lethal hit: return true to survive it (the status removes itself if it was a one-off: Golden Parachute, Life Insurance). */
-  onDeath?: (c: Combat, side: Side, s: StatusVal) => boolean;
-  /** A timed status just ran out on its carrier (`s` is what it held). */
-  onEnd?: (c: Combat, side: Side, s: StatusVal) => void;
-  /** A hit on the carrier was just turned away by `immune` (Matador). */
-  onDodge?: (c: Combat, side: Side, s: StatusVal) => void;
-  /** One of the hero's cards was just used up for this fight (played with Exhaust or Consume, scrapped from the sleeve, swept off the belt, or a Fleeting one that slipped off it): not a power, not a card that vanished some other way (Shredder). */
-  onExhaust?: (c: Combat, side: Side, s: StatusVal, card: CombatCard) => void;
-  /** While active on the hero, extra damage for its cards (`def` = the card dealing it, null for anything else), like Strength but of any shape (Offshore Account). */
-  bonusDamage?: (c: Combat, s: StatusVal, def: CardDef | null) => number;
-  /** A card of the hero's just left the belt unplayed. */
-  onExpire?: (c: Combat, side: Side, s: StatusVal) => void;
-  /** While active on the enemy, a rust spot lands on the belt every `every` seconds, and the belt's speed drops along an ease-in-out sine of their share of `max` (`max` spots stop it dead: little at first, most of it in the middle, then it creeps to a halt; from the `warn` share of `max` on, the mop shakes and blinks). The hero scrubs them off with the mop. */
-  rust?: { every: number; max: number; warn: number };
-  /**
-   * While active on the enemy, an "UPDATE NEEDED" window covers the belt (no belt card can be played): the first one after `first` seconds, then one every `every` seconds
-   * after each update. Postpone brings it back after a random `postpone` ([min, max]) seconds, times `postponeMul` once the hero has updated at least once; Update runs a fake progress bar (`install` seconds up to 90%, as many
-   * more for the rest, easing out), and when it's done the enemy gets the `patch` status.
-   */
-  popup?: { first: number; every: number; postpone: [number, number]; postponeMul: number; install: number; patch: { id: string; v: number } };
-  /** Runs every simulation step while the status is active. */
-  tick?: (c: Combat, side: Side, s: StatusVal, dt: number) => void;
-  /** The particles that burst when the status lands (`kind` is a palette of `ui/fx/fx.ts`). */
-  burst?: { kind: string; n: number };
-  /** A class its sprite wears while the enemy carries the status, or the belt while the hero does (the look is in `combat-stage.css` / `combat-belt.css`). */
-  look?: string;
-  /** On the enemy: how close the status is to going off, 0 to 1 (the belt reddens as it nears 1). */
-  warning?: (c: Combat, s: StatusVal) => number;
-  /** On the enemy: whether the belt's red wash blinks now (the last moments before it goes off). */
-  alarming?: (c: Combat, s: StatusVal) => boolean;
-  /** With `progress`: whether the very next trigger is the one that sets it off; the chip's bar blinks. */
-  imminent?: (s: StatusVal) => boolean;
+  art: SpriteId;
+  tier: FoeTier;
+  hp: number;
+  /** Rows per second. */
+  speed: number;
+  /** Damage to the spirit it fights, per hit. */
+  dmg: number;
+  every: number;
+  /** How far above a spirit it stops to fight it, in rows. */
+  reach: number;
+  /** Flame lost when it reaches the lantern. */
+  leak: number;
+  /** Visual size, in tiles. */
+  size: number;
+  /** Flies over spirits: nothing blocks it. */
+  fly?: boolean;
+  /** Taken off every hit (but at least 1). */
+  armor?: number;
+  abilities?: FoeAbility[];
+  /** Acts it is dealt in, and the price of it in a wave's budget. */
+  acts: number[];
+  cost: number;
 }
 
-/** `v` = stacks/amount; `t` = seconds left for timed statuses; `e` = a free clock for statuses with a tick. */
-export interface StatusVal {
-  v: number;
+export interface Spawn {
+  /** Seconds into the fight. */
   t: number;
-  e?: number;
+  lane: number;
+  foe: string;
 }
 
-export type Statuses = Record<string, StatusVal>;
-
-export type IntentType = 'attack' | 'defend' | 'buff' | 'debuff' | 'curse' | 'heal' | 'steal' | 'charge' | 'drain' | 'idle' | 'absorb';
-
-export interface MoveDef {
-  id: string;
-  intent: IntentType;
-  /** Wind-up time in seconds before the move resolves. */
-  windup: number;
-  dmg?: number;
-  hits?: number;
-  block?: number;
-  heal?: number;
-  /** Statuses applied on resolve. */
-  status?: { id: string; v?: number; t?: number; target: Side }[];
-  /** Cards shuffled into the player's piles (several kinds at once if needed); `hex` puts that hex on each of them (see `HEXES`). */
-  curse?: { id: string; n: number; to: 'belt' | 'draw' | 'discard'; hex?: string }[];
-  steal?: number;
-  drainMana?: number;
-  /** Hexes cards (see `HEXES`): a `share` (0–1) of the belt, and the same share of the rest of the deck. */
-  hex?: { id: string; share: number };
-  /** Inflation: this many random cards (belt first, then the rest of the deck) cost 1 more mana until next played. */
-  inflate?: number;
-  /** Virus: this many random cards (belt first, then the rest of the deck) are infected until next played. */
-  infect?: number;
-  /** Every card on the belt and in the sleeve goes to the discard pile, and a new temporary copy of this card (a curse) takes its place. */
-  swap?: string;
-  /** While this move charges, the damage the enemy takes from cards is stored instead of lost… */
-  absorb?: boolean;
-  /** …and a `release` move adds everything stored to its hit. */
-  release?: boolean;
-  /** A chore the hero does while the move charges (most cover the belt and the sleeve with a window), and doing it in time cancels the move (`Combat.chore`). */
-  task?: TaskId;
-  fx?: (c: Combat) => void;
-}
-
-/** The chores a move can set: the Boss's coffee, the Board's shell game with three covered cards, the Sushi Chef's order eaten off the belt, the Punch Clock's badge swipe, the Self-Checkout's scan and bag, the Barbecue Dad's burgers to flip, or the Wedding DJ's slide to dance. */
-export type TaskId = 'coffee' | 'shells' | 'sushi' | 'badge' | 'checkout' | 'grill' | 'slide';
-
-/** The minigames an enemy can leave open to the hero (`EnemyDef.minigame`): a game of its own that hurts it, played in a window the hero opens and closes at will. */
-export type MinigameId = 'match3';
-
-/** How the belt runs while a boss is in a phase: how many rows it has and how fast it goes (a multiplier on top of everything else). */
-export interface BeltSetting {
-  rows: number;
-  mul: number;
-}
-
-/**
- * One phase of a boss, from the share `at` (0–1) of its maximum HP down: it changes its look and its whole pattern, and the belt changes with it.
- * Phase 1 is the `EnemyDef` itself (its `main`, `specials`, `every`, `art`, `belt`); `EnemyDef.phases` are the ones that follow, in order.
- */
-export interface EnemyPhase {
-  at: number;
-  art: string;
-  main: MoveDef;
-  specials: MoveDef[];
-  every: number;
-  belt: BeltSetting;
-  /** Block it gains the moment it enters the phase. */
-  block?: number;
-}
-
-/** The places the weekend's jobs are met in (the scene behind the enemy, `art/stageArt.ts`); an enemy with none stands in its act's own scene. */
-export type StageId = 'aisle' | 'park' | 'terrace' | 'garden' | 'livingRoom' | 'diningRoom' | 'ballroom' | 'townHall' | 'stairwell' | 'bedroom';
-
-export interface EnemyDef {
-  id: string;
-  act: 1 | 2 | 3 | 4;
-  tier: 'normal' | 'elite' | 'boss';
-  hp: number;
-  art: string;
-  /** The steady basic attack. */
-  main: MoveDef;
-  /** Special moves, used in turn: one after every `every` main attacks. */
-  specials: MoveDef[];
-  every: number;
-  /** Block it starts the fight with (elites and bosses come armoured). */
-  block?: number;
-  /** Statuses the enemy starts with. */
-  start?: { id: string; v?: number; t?: number }[];
-  /** Icon of a line spelled out before the fight (`enemy.<id>.note`, with its passives) for what it does that no status, hex or sleeve fill tells; a surprise has none. */
-  note?: string;
-  /** Curse card that fills every sleeve slot at the start of the fight. */
-  fillSleeve?: string;
-  /** Hex cast on a `share` (0–1) of your cards at the start of the fight. */
-  startHex?: { id: string; share: number };
-  /** Called once when HP drops to `halfAt` of its maximum. */
-  onHalf?: (c: Combat) => void;
-  /** Share of its maximum HP (0–1) at which `onHalf` fires; half by default (`halfAtOf`). */
-  halfAt?: number;
-  /** At half HP it also says something (`enemy.<id>.speech`, shown in a speech bubble). */
-  halfSpeech?: boolean;
-  /** Sprite once its half-HP trait has triggered (it shows its true face). */
-  halfArt?: string;
-  /** Its half-HP trait is a surprise: not announced before the fight starts. */
-  halfSecret?: boolean;
-  /** Belt rows open at the start of the fight (the rest stay shut until `openBeltRows`). */
-  startRows?: number;
-  /** The belt in the first phase (rows and speed); a boss's later `phases` each carry their own. */
-  belt?: BeltSetting;
-  /** The phases after the first (`enemy.<id>.phase<N>` is what it says on entering phase N, and `.phase<N>.d` the note under it). */
-  phases?: EnemyPhase[];
-  /** Seconds into the fight when the part of the screen under the belt slides away (the sleeve and the ability go with it, the mana bar stays) and, `CONFIG.sinkTime` later, a third belt row opens in its place (`enemy.<id>.deep`, `enemy.<id>.speech`). */
-  deepBelt?: number;
-  /** A surprise (no pre-fight line): seconds into the fight when the belt shuts off for good; from then on the player turns it by hand with a crank knob (`Combat.crankBelt`). It says `enemy.<id>.speech`. */
-  beltOff?: number;
-  /** A surprise (no pre-fight line): seconds into the fight when its hidden passive kicks in: mana stops coming back by itself and a button next to the mana bar gives `CONFIG.manaTapAmount` per tap (`Combat.tapMana`). It says `enemy.<id>.speech`. */
-  manaTap?: number;
-  /** A minigame the hero can open from a button beside the enemy (`Combat.minigame`): the fight runs on underneath while its window covers the belt, and what it scores hurts the enemy (`enemy.<id>.game` says how). */
-  minigame?: MinigameId;
-  /** The place it is met in, when it isn't the one of its act (the weekend's jobs each have their own). */
-  stage?: StageId;
-  /** Only met as the very first fight of the very first run (never dealt at random). */
-  firstRunOnly?: boolean;
-  /** Bends the rules of the belt or of what you may play (not just numbers): every act 2 opens on one of these, so the act's fun shows at once. */
-  ruleBreaker?: boolean;
-}
-
-export interface HeroHooks {
-  /** Called once when the fight is set up, after the enemy's own starting statuses (relics' `onCombatStart` come next). */
-  onCombatStart?: (c: Combat) => void;
-  onCardPlayed?: (c: Combat, card: CombatCard, def: CardDef, manaSpent: number) => void;
-  onCardExpired?: (c: Combat, card: CombatCard) => void;
-  /** Called when the hero applies a status to the enemy. */
-  onEnemyStatus?: (c: Combat, id: string, v: number) => void;
-  onHeroHit?: (c: Combat, dmg: number) => void;
-  /** Extra flat damage for hero damage from a card of the given type. */
-  bonusDamage?: (c: Combat, def: CardDef | null) => number;
-  damageMult?: (c: Combat, def: CardDef | null) => number;
-  tick?: (c: Combat, dt: number) => void;
-}
-
-/** Lifetime records, kept across runs (the handbook's Records tab). */
-export interface Records {
-  /** Runs won (the trial shift too), and full workdays won (every act). */
-  wins: number;
-  fullDays: number;
-  weekends: number;
-  kills: number;
-  elites: number;
-  bosses: number;
-  cardsPlayed: number;
-  /** Most pay, kills and cards played in one run. */
-  bestPay: number;
-  bestKills: number;
-  bestCards: number;
-  /** Furthest act and floor reached. */
-  bestAct: number;
-  bestFloor: number;
-  /** Fastest fight won, in seconds (0 = none yet). */
-  fastest: number;
-}
-
-/** One line of the handbook's run history. */
-export interface RunLog {
-  hero: HeroId;
-  result: 'win' | 'lose' | 'abandon';
+export interface StageDef {
   act: number;
-  floor: number;
-  kills: number;
-  cards: number;
-  pay: number;
-  /** Elites beaten and damage taken: the rest of the payslip. */
-  elites: number;
-  damageTaken: number;
-  /** The rank on the hero's career ladder the run was played at (absent in older entries: 0). */
-  rank?: number;
-  /** The deck and relics it ended with (the detail a tap on the history line opens). */
-  deck: { id: string; up: boolean; perks?: string[] }[];
-  relics: string[];
-  /** Seconds spent in fights, and whether the hero begged to stay: the payslip's small print. */
-  time: number;
-  begged: boolean;
-  /** When the run ended (ms since the epoch). */
-  at: number;
+  /** Seconds until dawn. */
+  duration: number;
+  spawns: Spawn[];
+  /** `terrain[lane][row]`. */
+  terrain: Terrain[][];
+  /** Foe hit points are multiplied by this (the act and the floor make fights tougher). */
+  hpMul: number;
+  boss?: string;
 }
 
-/** How a hero is unlocked: finish a run (win or lose) with another hero, reach the boss of an act, beat the boss of an act with every other hero, or (a hero still in the works) only through the debug menu's unlock-all. */
-export type HeroUnlock = { finishRun: HeroId } | { reachBoss: number } | { allStamped: number } | { debug: true };
+export interface CardInst {
+  uid: number;
+  id: string;
+  up: boolean;
+}
 
-export interface HeroDef {
-  id: HeroId;
-  /** Locked until this is done once (always available when omitted). */
-  unlock?: HeroUnlock;
-  hp: number;
-  maxMana: number;
-  /** Seconds per mana point. */
-  regen: number;
-  /** Pace of Block decay: seconds it takes to lose what the reference pace (`CONFIG.heroBlockDecay`) loses in one. */
-  blockDecay: number;
-  /** Block below `below` fades `mul` times slower (Thick Skin). */
-  slowBlock?: { below: number; mul: number };
-  startDeck: string[];
-  /** Card ids of which one copy (the first in `startDeck`) starts upgraded: an attack and a defense. */
-  startUpgraded: string[];
-  /** Sleeve slots. */
-  sleeve: number;
-  /** Every card falling off the belt takes this much off the cost of one random card in the sleeve, until it is played (Sticky Fingers). */
-  fallDiscount?: number;
-  /** Mana from card effects (`Combat.gainMana`) may go above the max, up to the mana cap; the regen still stops at the max (Sticky Fingers' second part). */
-  manaOverflow?: boolean;
-  starterRelic?: string;
-  /** The status that is this hero's passive: it leads the hero's status row (empty too) in place of a passive icon. */
-  passiveStatus?: string;
-  /** The ink the hero is printed in, as a CSS token (`var(--p)`): the hero select and the fight tint their accents with it. */
+export interface KeeperDef {
+  id: KeeperId;
+  flame: number;
+  /** Oil at the start of a fight, and the most the lantern holds. */
+  oil: number;
+  maxOil: number;
+  hand: number;
+  /** Starting deck: card ids. */
+  deck: string[];
+  /** Cooldown ability. */
+  ability: { cd: number; fx: Effect[] };
+  /** The keeper's colour, in CSS. */
   ink: string;
-  ability: {
-    id: string;
-    /** Mana cost: abilities are expensive, a mid-fight power move once the crystals have grown. */
-    cost: number;
-    use: (c: Combat) => void;
-  };
-  hooks: HeroHooks;
+  unlock: 'start' | 'boss1' | 'boss2';
+  /** Passive (read by the engine as flags). */
+  passive: KeeperPassive;
 }
 
-export interface RelicHooks {
-  onCombatStart?: (c: Combat) => void;
-  onCardPlayed?: (c: Combat, card: CombatCard, def: CardDef) => void;
-  onCombatEnd?: (c: Combat) => void;
-  tick?: (c: Combat, dt: number) => void;
-  /** Return true to cancel death (once-per-run relics flag themselves). */
-  onDeath?: (c: Combat) => boolean;
-  /** A card of the hero's just left the belt unplayed. */
-  onCardExpired?: (c: Combat, card: CombatCard) => void;
-  /** Multiplies the damage the hero's cards deal (previews included); `def` is null for damage that comes from no card. */
-  damageMult?: (c: Combat, def: CardDef | null) => number;
-  /** An enemy hit of `dmg` is about to land: return true to cancel it (the relic flags itself, the engine shows its name). */
-  cancelHit?: (c: Combat, dmg: number) => boolean;
-  /** An enemy move is about to put a curse card in the deck: return true to wipe it (the relic flags itself, the engine shows its name). */
-  wipeCurse?: (c: Combat) => boolean;
-  /** An enemy move has put a curse card in the piles or on the belt (not one that `wipeCurse` took away). */
-  onCurse?: (c: Combat, card: CombatCard) => void;
-  /** An enemy hit was soaked up whole by the hero's Block (nothing got through). */
-  onHitAbsorbed?: (c: Combat, dmg: number) => void;
-  /** A belt card has reached the end of the belt: return true to pin it there instead of letting it fall, like an Anchor card (the relic flags itself, the engine shows its name). */
-  anchorCard?: (c: Combat, card: CombatCard) => boolean;
-  /** Changes what a card costs now (`Combat.costOf`, after the statuses): return the new cost. Never called for an X card. */
-  cost?: (c: Combat, card: CardInst, cost: number) => number;
-}
+export type KeeperPassive =
+  /** Charms cost less. */
+  | { k: 'charmCut'; n: number }
+  /** Spirits have more HP (a share). */
+  | { k: 'hardy'; n: number }
+  /** Coins at the end of a fight. */
+  | { k: 'purse'; n: number };
 
 export interface RelicDef {
   id: string;
-  rarity: Rarity;
-  cls?: HeroId;
-  /** The number its text shows (`{n}`). */
+  rarity: Rarity | 'boss';
+  /** Number the text shows. */
   n: number;
-  /** Only dealt (Lost & Found, gifts, prizes) in the weekend. */
-  weekend?: true;
-  /** Card rewards (and the other card offers) draw from every class, each class and the neutral cards equally likely. */
-  openPool?: boolean;
-  /** A Break Room gives both the nap and the training, not one of them. */
-  restBoth?: boolean;
-  /** The hero's ability is ready again at every fight, not once per act. */
-  abilityEveryFight?: boolean;
-  /** Static modifiers applied to combat setup. */
+  /** Sprite id. */
+  art: SpriteId;
   mods?: Partial<{
-    maxMana: number;
-    sleeve: number;
+    maxOil: number;
+    startOil: number;
+    /** Oil per second, added. */
     regen: number;
-    maxHp: number;
-    gold: number;
-    /** Multiplies the belt's speed. */
-    beltSpeed: number;
-    /** The fight starts with the belt run until its first card is this far in (belt widths), if that is further than `CONFIG.prewarm`. */
-    startBelt: number;
-    /** Extra cards on offer after a fight. */
+    hand: number;
+    flame: number;
+    /** Seconds off the wait before a played card is replaced. */
+    drawCut: number;
+    /** Share added to spirit HP. */
+    hp: number;
+    /** Share added to spirit damage. */
+    dmg: number;
+    /** Added to coins at the end of a fight. */
+    coins: number;
+    /** Cards on offer after a fight. */
     rewardCards: number;
-    /** Added to the hero's ability cost (negative: cheaper). */
-    abilityCost: number;
-    /** Rooms more on the map in sight (the fog starts this many doors further). */
-    vision: number;
   }>;
-  hooks?: RelicHooks;
-  /** For a relic that triggers every so often: how full its bar is (0..1) in the fight. It gets a chip with a filling bar. */
-  progress?: (c: Combat) => number;
-  /** For a relic that waits for one trigger (once a fight or a run): whether it is still waiting. It gets a chip, lit while it waits and dimmed once spent. */
-  armed?: (c: Combat) => boolean;
-  /** Runs once when the relic is obtained. */
-  onGain?: (run: import('./run').RunState) => void;
+  hook?: RelicHook;
 }
 
-export type CombatEvent =
-  | { type: 'damage'; target: Side; amount: number; blocked: number; source: Side | 'dot'; hitIndex: number; kind: string }
-  | { type: 'heal'; target: Side; amount: number }
-  | { type: 'block'; target: Side; amount: number }
-  | { type: 'status'; target: Side; id: string; amount: number }
-  | { type: 'text'; target: Side; key: TKey; tone: 'good' | 'bad' | 'neutral' }
-  | { type: 'cardSpawn'; card: CombatCard }
-  | { type: 'cardPlayed'; card: CombatCard; from: 'belt' | 'sleeve' | 'exhaust' }
-  /** An Echo card was played and stays where it is. */
-  | { type: 'cardEchoed'; card: CombatCard }
-  | { type: 'cardExpired'; card: CombatCard }
-  | { type: 'cardStashed'; card: CombatCard; slot: number }
-  /** A piece of sushi was eaten. */
-  | { type: 'cardEaten'; card: CombatCard }
-  /** The sleeve grew a slot for the rest of the fight. */
-  | { type: 'sleeveGrew' }
-  /** The sleeve lost its last slot for the rest of the fight. */
-  | { type: 'sleeveShrank' }
-  /** Cards in the sleeve got cheaper (a full sleeve caught a falling card, a card cut their cost). */
-  | { type: 'sleeveCheaper' }
-  | { type: 'cardStolen'; card: CombatCard }
-  | { type: 'cantAfford'; card: CombatCard }
-  /** A rule (a stun, a status that bans cards…) stopped a tap on a card. */
-  | { type: 'ruled'; card: CombatCard }
-  | { type: 'cardAdded'; card: CombatCard; to: 'belt' | 'draw' | 'discard' }
-  /** `n` cards of the deck are upgraded for the fight (the portrait celebrates). */
-  | { type: 'cardsUpgraded'; n: number }
-  | { type: 'cardDiscarded'; card: CombatCard }
-  | { type: 'hexed'; card: CombatCard }
-  | { type: 'inflated'; card: CombatCard }
-  | { type: 'infected'; card: CombatCard }
-  | { type: 'absorbed'; amount: number }
-  | { type: 'hexTap'; card: CombatCard }
-  | { type: 'hexBroken'; card: CombatCard }
-  | { type: 'reshuffle' }
-  | { type: 'enemyIntent'; move: MoveDef }
-  | { type: 'enemyAct'; move: MoveDef }
-  | { type: 'mana'; amount: number }
-  | { type: 'manaCrystal'; amount: number }
-  | { type: 'manaDrain'; amount: number }
-  | { type: 'ability'; id: string }
-  /** A relic did its thing (shows its name over the hero). */
-  | { type: 'relic'; id: string }
-  /** A status with a trigger just went off (its chip empties and it plays its `cue`). */
-  | { type: 'cue'; side: Side; id: string }
-  /** The hero is down: the fight waits to know whether they beg to stay. */
-  | { type: 'beg' }
-  | { type: 'begged' }
-  | { type: 'enrage' }
-  /** The enemy was beaten and got back up (`StatusDef.onDeath`: Golden Parachute). */
-  | { type: 'revive' }
-  | { type: 'speech'; key: TKey }
-  | { type: 'beltReversed' }
-  | { type: 'beltPinned' }
-  | { type: 'rowsOpen' }
-  /** `deepBelt`: the lower part of the screen slides down, out of reach (the extra row opens `CONFIG.sinkTime` later: `rowAdded`). */
-  | { type: 'lowerSink' }
-  | { type: 'rowAdded' }
-  /** A boss's phase gave the belt a new number of rows (`Combat.beltRows`). */
-  | { type: 'rows' }
-  /** `beltOff`: the belt is shut off; it only moves under the player's finger now. */
-  | { type: 'beltDead' }
-  /** `manaTap`: mana no longer comes back by itself; the tap button is up. */
-  | { type: 'manaTap' }
-  | { type: 'rowsClose' }
-  | { type: 'weakSpot'; x: number; y: number }
-  | { type: 'rust' }
-  /** The enemy's window over the belt: it `open`s, goes `install`ing, or `close`s (postponed, or the update is done). */
-  | { type: 'popup'; phase: 'open' | 'install' | 'close' }
-  /** The chore window: it `open`s, the hero makes a `wrong` move (the move lands sooner), the chore is `done` in time, or the move lands first (`close`). */
-  | { type: 'task'; phase: 'open' | 'wrong' | 'done' | 'close' }
-  /** A boss enters its next phase (`index` from 1): new look, new pattern, a new belt. */
-  | { type: 'phase'; index: number }
-  | { type: 'end'; result: CombatResult };
+export type RelicHook =
+  /** Every `every`th foe that falls gives `n` oil. */
+  | { k: 'killOil'; every: number }
+  /** Every `every`th foe that reaches the lantern does it no harm. */
+  | { k: 'leakSpare'; every: number }
+  /** The lantern burns a little brighter after a won fight: heals `n` flame. */
+  | { k: 'dawnMend' }
+  /** The keeper's ability recharges this much faster (a share). */
+  | { k: 'abilityFast'; n: number };
 
-export type CombatResult = 'win' | 'lose';
+export type RoomType = 'watch' | 'elite' | 'boss' | 'rest' | 'market' | 'shrine' | 'treasure';
