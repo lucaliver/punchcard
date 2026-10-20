@@ -4,14 +4,11 @@ export const CONFIG = {
   tick: 1 / 60,
 
   oil: {
-    start: 3,
-    max: 10,
     /** Oil per second. */
     regen: 0.55,
   },
 
   hand: {
-    size: 4,
     /** Seconds before the slot of a played card is filled again. */
     drawDelay: 0.9,
     /** Extra wait when the draw pile has to be shuffled back in. */
@@ -38,12 +35,12 @@ export const CONFIG = {
   /** Seconds before dawn when no new foe is dealt. */
   tailQuiet: 9,
 
-  /** Share of a stunned or webbed spirit's attack speed that is left when webbed. */
+  /** Share of its attack speed a webbed spirit keeps. */
   webSlow: 0.5,
-  /** Vulnerable foes take this much more damage. */
+  /** Marked foes take this much more damage. */
   vulnerable: 0.5,
 
-  /** After this many seconds the lantern's flame flickers louder: purely visual. */
+  /** Below this share of its flame the lantern flickers in alarm (visual only). */
   lowFlame: 0.34,
 
   stage: {
@@ -51,7 +48,7 @@ export const CONFIG = {
     duration: { watch: 62, elite: 78, boss: 96 },
     /** Wave budget (foe `cost`) of a fight: base + perFloor * floor + perAct * (act - 1). */
     budget: { base: 22, perFloor: 2.4, perAct: 24, elite: 1.25, boss: 1 },
-    /** Foes beyond this many in a lane at once are held back a few seconds. */
+    /** Rocks and shrine tiles dealt per night (a range). */
     rocks: [0, 3] as [number, number],
     shrines: [0, 2] as [number, number],
     /** Foe hit points and spirit-facing damage grow this much per act and per floor. */
@@ -94,16 +91,15 @@ export const CONFIG = {
     /** Mon: skipping a reward pays this. */
     skipPay: 10,
     /** Market prices by rarity, relics and services. */
-    price: { common: 28, rare: 52, epic: 90, legend: 140, relic: 120, bossRelic: 160, remove: 40, removeStep: 15, heal: 30 },
+    price: { common: 28, rare: 52, epic: 90, legend: 140, relic: 120, remove: 40, removeStep: 15, heal: 30 },
     /** Mon variation of shop prices (± share). */
     priceSpread: 0.15,
     /** Deck limits. */
     minDeck: 6,
   },
 
-  /** Percent of the max flame a lost fight returns on the meta score. Visual only. */
+  /** How long a press must be held to read what it is. */
   longPressMs: 380,
-  holdRingDelayMs: 120,
   /** Pixels a press may drift and still be a tap. */
   tapSlop: 10,
   /** Screen shake strength on a leak. */

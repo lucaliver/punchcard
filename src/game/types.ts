@@ -24,7 +24,7 @@ export type Scope = 'front' | 'fronts' | 'lane' | 'lanes3' | 'all' | 'strongest'
 
 /** An effect of a charm, a keeper's ability, or a spirit's `onPlace`/`onDeath`. */
 export type Effect =
-  | { k: 'hit'; dmg: number; scope: Scope; stun?: number; slow?: [factor: number, secs: number]; burn?: [dps: number, secs: number] }
+  | { k: 'hit'; dmg: number; scope: Scope; stun?: number; slow?: [factor: number, secs: number]; burn?: [dps: number, secs: number]; mark?: number }
   | { k: 'stun'; secs: number; scope: Scope }
   | { k: 'push'; rows: number; scope: Scope }
   /** Damages the foes within `radius` tiles of the spirit this goes off from (its tile, or the one picked). */

@@ -22,7 +22,8 @@ amici** (kodama, volpi, tanuki, oggetti che si sono svegliati) e stendi **talism
   tempo. Trascina una carta sul giardino, oppure toccala e poi tocca una casella. Tenere premuto legge qualunque cosa.
   - **Spiriti**: stanno su una casella e fermano, colpiscono, curano, producono olio, potenziano i vicini…
   - **Talismani**: magie una tantum, su una corsia, su una casella o su tutto il campo.
-  - **Fusione**: giocare uno spirito sul suo gemello li fonde (livello 2, poi 3): più forte e curato del tutto.
+  - **Fusione**: giocare uno spirito sul suo gemello li fonde (livello 2, poi 3): più forte e curato del tutto. Tenere premuto uno
+    spirito sul campo lo legge e permette di rimandarlo indietro (metà dell'olio).
 - **Nemici sempre telegrafati.** Una lanterna rossa appare in cima alla corsia due secondi prima che un nemico entri; i
   boss avvisano le mosse grosse (schiacciare una corsia, una raffica).
 - **Il custode** ha una passiva e un'abilità con ricarica (la campana di Hanae, il taglio di Ichi, il rimescolo di Bunbuku).
@@ -37,8 +38,11 @@ che sale verso un boss (Nurikabe, Yamata-no-Orochi, Nurarihyon).
   (carte, amuleti, dimenticare una carta, tè caldo), **santuari** (lasciar andare una carta o trasformarla),
   **nascondigli** (un amuleto a scelta tra tre).
 - Dopo ogni veglia: **una carta su tre**, o salta per qualche mon. Élite e boss lasciano **amuleti**.
-- Tre custodi: **Hanae** (sacerdotessa: talismani, sigilli, purificazione), **Ichi** (ronin: blocchi, spine, colpi pesanti),
-  **Bunbuku** (tanuki: esche, economia, trucchi). Si sbloccano battendo i boss delle prime due notti.
+- Quattro custodi: **Hanae** (sacerdotessa: talismani, sigilli, purificazione), **Ichi** (ronin: blocchi, spine, colpi pesanti),
+  **Bunbuku** (tanuki: esche, economia, trucchi), **Seimei** (onmyōji: servitori di carta che vanno dove c'è il guaio, la prima
+  carta di ogni scontro è gratis). Si sbloccano battendo i boss delle prime due notti e vincendo una salita.
+- **Fasi lunari**: dopo una vittoria si sblocca una difficoltà crescente (cinque regole, una per fase: più vita ai nemici, meno
+  fiamma, élite più dure, mercato più caro, parata più veloce).
 - Salvataggio a ogni stanza. Almanacco con tutto ciò che hai incontrato; storico delle ultime salite.
 
 ## 2. Direzione artistica e audio

@@ -25,8 +25,9 @@ Three nights: **the village road**, **the bamboo and the marsh**, **the shrine s
 ## The run
 
 A map of rooms per night (watch, elite watch, rest, market, shrine, treasure) ending on the boss. Win a watch: choose 1 of 3 cards (or skip for mon),
-elites and bosses add a relic. Rest: heal or upgrade a card. Market: tanuki shop. Shrine: remove a card. Three keepers, unlocked by beating
-the first two bosses. Save on every room.
+elites and bosses add a trinket. Rest: heal or upgrade a card. Market: tanuki shop. Shrine: remove or transform a card. Four keepers (Hanae the
+shrine maiden, Ichi the ronin, Bunbuku the tanuki, Seimei the onmyōji), unlocked by beating the first two bosses and by winning a climb. Five **moon
+phases** make a won climb harder, one rule at a time. Save on every room.
 
 ## Look
 
@@ -47,9 +48,10 @@ Procedural: koto/shamisen plucks, taiko, wooden blocks, wind; a pentatonic gener
 4. [x] Run layer: map, rewards, campfire, market, shrine, cache, relics, saves, end, meta (unlocks, almanac).
 5. [x] Menus: title with a marching parade, keepers, settings, how to play, almanac, shoji transitions.
 6. [x] Music, Italian text, content and engine tests, e2e smoke, balance passes with the bots.
-7. [ ] Ideas not done: a difficulty ladder (moon phases), a fourth keeper (the Onmyoji), recalling a spirit, daily seed.
+7. [x] Extras done: moon phases, a fourth keeper (roaming paper servants), recalling a spirit, the mark status, 21 trinkets.
+8. [ ] Ideas not done: a daily seed, a shared Almanac of foes' habits, more nights, controller/keyboard play on the field.
 
 ## Balance notes
 
-`tests/balance.runs.test.ts` plays whole runs with a plain bot (`tests/runbot.ts`): about 30–50% clears with each keeper at the
-time of writing, the second night's boss being the usual wall. Tune with `CONFIG.stage` (budget and foe HP growth) and the foe records.
+`tests/balance.runs.test.ts` plays whole runs with a plain bot (`tests/runbot.ts`): about 25–45% clears with each keeper at the
+time of writing, the third night being the usual wall (humans do better than the bot at synergies, worse at tempo). Tune with `CONFIG.stage` (budget and foe HP growth) and the foe records.

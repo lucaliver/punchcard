@@ -18,6 +18,7 @@ const en = {
   'fx.andStun': 'Also **stuns** for {secs} s.',
   'fx.andSlow': 'Also **slows** by {pct} for {secs} s.',
   'fx.andBurn': 'Also **burns** for {dps} a second, {secs} s.',
+  'fx.andMark': 'Also **marks** it: it takes {pct} more damage for {secs} s.',
   'fx.stun': '**Stuns** {scope} for {secs} s.',
   'fx.push': 'Pushes {scope} back {rows} rows.',
   'fx.burst': 'Bursts for {dmg} damage around it.',

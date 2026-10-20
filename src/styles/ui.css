@@ -305,3 +305,30 @@
   font-weight: 700;
   color: var(--red-dark);
 }
+
+/* the sheet shown when the game throws */
+.crash {
+  position: fixed;
+  inset: 0;
+  z-index: 200;
+  display: grid;
+  place-items: center;
+  padding: 18px;
+  background: rgba(8, 10, 28, 0.85);
+}
+.crash .panel {
+  width: min(100%, 420px);
+  text-align: center;
+}
+.crash pre {
+  max-height: 160px;
+  overflow: auto;
+  margin: 8px 0;
+  padding: 8px;
+  border-radius: 8px;
+  background: rgba(29, 20, 40, 0.1);
+  font-size: 11px;
+  text-align: left;
+  white-space: pre-wrap;
+  user-select: text;
+}

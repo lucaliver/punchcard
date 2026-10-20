@@ -297,6 +297,19 @@ export class Field {
         } else {
           this.fx.burst(x, y, 10, { color: '#ffd36a', speed: 50, life: 1.1, size: 3, up: 90, glow: true });
         }
+        if (e.foe.def.tier === 'boss' && !e.dawn) {
+          this.abilityFlash = 0.9;
+          this.fx.burst(this.g.w / 2, this.g.h * 0.4, 60, {
+            color: '#ffd36a',
+            shape: 'star',
+            speed: 260,
+            life: 1.4,
+            size: 4,
+            glow: true,
+            gravity: 120,
+          });
+          this.fx.ring(x, y, tw * 2.2, '#ffd36a', 0.8);
+        }
         this.views.delete(e.foe.uid);
         break;
       }
@@ -857,6 +870,10 @@ export class Field {
     const iy = baseY + fly - size * 1.0;
     if (f.fx.slowT > 0) {
       this.icon('slow', ix, iy, 14);
+      ix += 15;
+    }
+    if (f.fx.vulnT > 0) {
+      this.icon('mark', ix, iy, 14);
       ix += 15;
     }
     if (f.fx.burnT > 0) {

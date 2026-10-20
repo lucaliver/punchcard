@@ -70,10 +70,18 @@ function effectChip(fx: Effect): Chip | null {
 export function cardChips(c: CardInst, max = 3): Chip[] {
   const def = card(c.id);
   if (def.kind === 'spirit') return spiritChips(spiritOf(c) as SpiritDef).slice(0, max);
-  return fxOf(c)
-    .map(effectChip)
-    .filter((x): x is Chip => x !== null && x.text !== '')
-    .slice(0, max);
+  const chips: Chip[] = [];
+  for (const fx of fxOf(c)) {
+    const main = effectChip(fx);
+    if (main && main.text !== '') chips.push(main);
+    if (fx.k === 'hit') {
+      if (fx.stun) chips.push({ icon: 'stun', text: `${fmt(fx.stun)}s` });
+      if (fx.slow) chips.push({ icon: 'slow', text: `${fmt(fx.slow[1])}s` });
+      if (fx.burn) chips.push({ icon: 'burn', text: `${fmt(fx.burn[1])}s` });
+      if (fx.mark) chips.push({ icon: 'mark', text: `${fmt(fx.mark)}s` });
+    }
+  }
+  return chips.slice(0, max);
 }
 
 /** One sentence for an effect. */
@@ -84,6 +92,7 @@ export function effectLine(fx: Effect): string {
       if (fx.stun) parts.push(t('fx.andStun', { secs: fmt(fx.stun) }));
       if (fx.slow) parts.push(t('fx.andSlow', { pct: pct(fx.slow[0]), secs: fmt(fx.slow[1]) }));
       if (fx.burn) parts.push(t('fx.andBurn', { dps: fmt(fx.burn[0]), secs: fmt(fx.burn[1]) }));
+      if (fx.mark) parts.push(t('fx.andMark', { pct: pct(CONFIG.vulnerable), secs: fmt(fx.mark) }));
       return parts.join(' ');
     }
     case 'stun':

@@ -1,6 +1,7 @@
 import './styles/index.css';
 
 import { applyVolumes } from './audio/sfx';
+import { t } from './core/i18n';
 import { randomSeed } from './core/rng';
 import { KEEPERS } from './data/keepers';
 import { Battle } from './game/battle';
@@ -13,7 +14,33 @@ import { preloadArt } from './ui/art/sprites';
 import { battleScreen } from './ui/battle/battleScreen';
 import { paintWashi } from './ui/washi';
 
+/** If the game throws, a paper sheet says so and offers the way out (the climb itself is saved at every step). */
+function catchCrashes(): void {
+  let shown = false;
+  const show = (what: unknown): void => {
+    if (shown) return;
+    shown = true;
+    const text = what instanceof Error ? `${what.message}\n${what.stack ?? ''}` : String(what);
+    console.error(text);
+    const sheet = document.createElement('div');
+    sheet.className = 'crash';
+    sheet.innerHTML = '<div class="panel"><h2 class="title-font"></h2><p></p><pre></pre><div class="actions"></div></div>';
+    (sheet.querySelector('h2') as HTMLElement).textContent = t('crash.title');
+    (sheet.querySelector('p') as HTMLElement).textContent = t('crash.body');
+    (sheet.querySelector('pre') as HTMLElement).textContent = `v${__APP_VERSION__}\n${text.slice(0, 700)}`;
+    const reload = document.createElement('button');
+    reload.className = 'btn';
+    reload.textContent = t('crash.reload');
+    reload.addEventListener('click', () => location.reload());
+    (sheet.querySelector('.actions') as HTMLElement).append(reload);
+    document.body.append(sheet);
+  };
+  addEventListener('error', (e) => show(e.error ?? e.message));
+  addEventListener('unhandledrejection', (e) => show(e.reason));
+}
+
 async function boot(): Promise<void> {
+  catchCrashes();
   applySettings();
   const root = document.getElementById('app') as HTMLElement;
   initApp(root);

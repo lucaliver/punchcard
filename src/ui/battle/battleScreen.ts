@@ -145,6 +145,7 @@ export function battleScreen(o: BattleScreenOpts): Screen {
         if (gate(45)) sfx('hit', 0.9 + Math.random() * 0.3);
         break;
       case 'foeDied':
+        if (e.foe.def.tier === 'boss' && !e.dawn) slow = 0.9;
         if (e.foe.def.tier === 'boss') sfx('bossDie');
         else if (!e.dawn) sfx('foeDie', 0.9 + Math.random() * 0.4);
         break;
@@ -199,6 +200,8 @@ export function battleScreen(o: BattleScreenOpts): Screen {
 
   // ——— state ———
   let armed = -1;
+  /** Seconds of slow motion left (a boss falling). */
+  let slow = 0;
   let paused = false;
   let inspecting = 0;
   let ended = false;
@@ -817,8 +820,13 @@ export function battleScreen(o: BattleScreenOpts): Screen {
       clearTimeout(hintTimer);
       suspendAudio(false);
     },
-    frame(dt) {
+    frame(rawDt) {
       const running = !isPaused() && !ended;
+      let dt = rawDt;
+      if (slow > 0) {
+        slow -= rawDt;
+        dt = rawDt * 0.3;
+      }
       if (running) {
         b.step(dt);
         // a new foe's lantern: a soft tick the first time it shows

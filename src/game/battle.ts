@@ -481,6 +481,7 @@ export class Battle {
           if (fx.stun) f.fx.stun = Math.max(f.fx.stun, fx.stun);
           if (fx.slow) this.slowFoe(f, fx.slow[0], fx.slow[1]);
           if (fx.burn) this.burnFoe(f, fx.burn[0], fx.burn[1]);
+          if (fx.mark) f.fx.vulnT = Math.max(f.fx.vulnT, fx.mark);
         }
         break;
       case 'stun':

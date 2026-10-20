@@ -94,6 +94,17 @@ export const ICON_ART: Record<string, string> = {
       circ(50, 50, 8, 'none', { w: 3, stroke: '#dfe6f0' }),
     ].join(''),
   ),
+  /** A marked foe: it takes more damage. */
+  mark: svg(
+    [
+      circ(50, 50, 38, 'none', { w: 9 }),
+      circ(50, 50, 38, 'none', { w: 4, stroke: C.red }),
+      circ(50, 50, 16, 'none', { w: 8 }),
+      circ(50, 50, 16, 'none', { w: 3.4, stroke: C.red }),
+      ln('M50 4 V30 M50 70 V96 M4 50 H30 M70 50 H96', INK, 7),
+      ln('M50 4 V30 M50 70 V96 M4 50 H30 M70 50 H96', C.red, 3),
+    ].join(''),
+  ),
   /** A moon phase (the difficulty ladder). */
   moon: svg(
     [

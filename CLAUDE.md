@@ -1,7 +1,8 @@
 # Hyakki — technical guide (branch `alt/hyakki`)
 
 An alternative game built on the same stack as *Punchcard* (master): a **real-time lane-defense deckbuilder** for mobile browsers (portrait),
-themed on the Japanese Night Parade of a Hundred Demons. Read [docs/DESIGN.md](docs/DESIGN.md) first (premise, rules, look, plan).
+themed on the Japanese Night Parade of a Hundred Demons. Read [docs/DESIGN.md](docs/DESIGN.md) first (premise, rules, look, plan); [docs/MECHANICS.md](docs/MECHANICS.md) says how each mechanic
+fits together across files.
 
 ## Working agreement
 
@@ -18,11 +19,14 @@ Vite + TypeScript (strict), plain DOM through `h()`, CSS, one canvas for the fie
 quotes). No new npm dependencies; fonts are vendored files. `localStorage` prefix `hyakki:`.
 
 ```bash
-npm run dev      # dev server on the LAN
+npm run dev      # dev server on the LAN (add ?fight=1&act=2&kind=boss&keeper=miko to open a fight at once)
 npm run check    # tsc + biome + vitest
 npm run sim      # balance bot win rates
-npm run e2e      # Playwright smoke tests
+npm run e2e      # Playwright smoke tests (about a minute; one test plays a whole climb)
 ```
+
+Dev hooks (dev server only): `window.__battle` (the fight on screen), `window.__game` (the run, `enter(roomType)`, `act(n)`, `seeAll()`, `deck(ids)`).
+Screenshots go through a throw-away Playwright script in the git-ignored `screenshots/`; delete the images after looking.
 
 ## Code map
 

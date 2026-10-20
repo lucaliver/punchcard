@@ -18,6 +18,7 @@ const it: Record<EnKey, string> = {
   'fx.andStun': '**Stordisce** anche per {secs} s.',
   'fx.andSlow': '**Rallenta** anche del {pct} per {secs} s.',
   'fx.andBurn': '**Brucia** anche per {dps} al secondo, {secs} s.',
+  'fx.andMark': '**Marchia** anche il bersaglio: subisce il {pct} di danni in più per {secs} s.',
   'fx.stun': '**Stordisce** {scope} per {secs} s.',
   'fx.push': 'Respinge {scope} di {rows} righe.',
   'fx.burst': 'Esplode infliggendo {dmg} danni attorno.',
