@@ -199,7 +199,7 @@ describe('recall', () => {
     expect(b.recallValue(u as never)).toBe(2);
     expect(b.recall((u as { uid: number }).uid)).toBe(2);
     expect(b.oil).toBe(2);
-    expect(b.units.length).toBe(0);
+    expect(b.unitAt(2, 4)).toBeNull();
   });
 
   it('a summoned decoy has nothing to give back', () => {
