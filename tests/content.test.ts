@@ -103,6 +103,16 @@ describe('cards', () => {
     }
   });
 
+  it('damage is always a whole number (every hit is rounded, so a face with 2.5 would lie)', () => {
+    for (const c of Object.values(CARDS)) {
+      for (const up of [false, true]) {
+        const a = c.spirit?.(up).atk;
+        if (a) expect(Number.isInteger(a.dmg), `${c.id} ${up ? 'up' : ''}`).toBe(true);
+        for (const fx of c.fx?.(up) ?? []) if (fx.k === 'hit') expect(Number.isInteger(fx.dmg), `${c.id} ${up ? 'up' : ''}`).toBe(true);
+      }
+    }
+  });
+
   it('their rules text can be built, in both languages', () => {
     for (const lang of ['en', 'it']) {
       setLocale(lang);

@@ -157,7 +157,7 @@ const list: CardDef[] = [
 
   // ——— Tanuki Bunbuku: tricks and trade ———
   spirit('leafDecoy', 'tanuki', 'common', 1, LEAF_DECOY, { starter: true }),
-  spirit('acorn', 'tanuki', 'common', 2, (u) => ({ art: 'acorn', hp: 5, atk: { kind: 'shot', dmg: u ? 3.5 : 2.5, every: 1, range: 6 } }), {
+  spirit('acorn', 'tanuki', 'common', 2, (u) => ({ art: 'acorn', hp: 5, atk: { kind: 'shot', dmg: u ? 4 : 3, every: 1.2, range: 6 } }), {
     starter: true,
   }),
   spirit('teapot', 'tanuki', 'common', 2, (u) => ({
@@ -184,7 +184,7 @@ const list: CardDef[] = [
     'onmyoji',
     'common',
     2,
-    (u) => ({ art: 'shikigami', hp: 4, atk: { kind: 'shot', dmg: u ? 3.2 : 2.2, every: 1.1, range: 5 }, roam: { every: u ? 5 : 6 } }),
+    (u) => ({ art: 'shikigami', hp: 4, atk: { kind: 'shot', dmg: u ? 3 : 2, every: 1, range: 5 }, roam: { every: u ? 5 : 6 } }),
     { starter: true },
   ),
   spirit('paperWarrior', 'onmyoji', 'common', 2, (u) => ({ ...PAPER_WARRIOR(u, undefined), lifespan: undefined, roam: { every: u ? 6 : 7 } }), {
@@ -205,7 +205,7 @@ const list: CardDef[] = [
   spirit('kudagitsune', 'onmyoji', 'rare', 2, (u) => ({
     art: 'kudagitsune',
     hp: 3,
-    atk: { kind: 'shot', dmg: u ? 1.6 : 1.2, every: 0.5, range: 5 },
+    atk: { kind: 'shot', dmg: u ? 2 : 1, every: u ? 0.8 : 0.45, range: 5 },
     roam: { every: 7 },
   })),
   spirit('gogyo', 'onmyoji', 'rare', 3, (u) => ({ art: 'gogyo', hp: 10, aura: { to: 'all', rate: u ? 0.25 : 0.15, dmg: u ? 0.15 : 0.1 } })),
