@@ -92,7 +92,7 @@ export function battleScreen(o: BattleScreenOpts): Screen {
   const abilityBtn = h('button', { class: 'b-ability', 'aria-label': t('ui.ability') }, abilityRing, pico('bell'));
   const status = h('div', { class: 'b-status' }, h('div', { class: 'b-bars' }, flameBox, oilBox), abilityBtn);
 
-  const handEl = h('div', { class: 'b-hand' });
+  const handEl = h('div', { class: 'b-hand', style: { '--slots': String(b.handSize) } });
   const slots: Slot[] = [];
   for (let i = 0; i < b.handSize; i++) {
     const ring = h('div', { class: 'refill' });

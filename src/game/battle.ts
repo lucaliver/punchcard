@@ -40,6 +40,8 @@ export interface Unit {
   uid: number;
   cardId: string;
   def: SpiritDef;
+  /** Set down from an upgraded card. */
+  up: boolean;
   lane: number;
   row: number;
   level: number;
@@ -386,16 +388,21 @@ export class Battle {
     if (def.kind === 'spirit') {
       const sd = spiritOf(c) as SpiritDef;
       this.lastSpirit = c;
-      this.place(c.id, sd, lane, row);
+      this.place(c.id, sd, lane, row, c.up);
     } else {
       this.applyEffects(fxOf(c), lane, row);
     }
     return true;
   }
 
-  private place(cardId: string, sd: SpiritDef, lane: number, row: number): Unit {
+  private place(cardId: string, sd: SpiritDef, lane: number, row: number, up = false): Unit {
     const there = this.unitAt(lane, row);
     if (there) {
+      // Merging an upgraded card into a plain spirit upgrades the whole.
+      if (up && !there.up) {
+        there.def = sd;
+        there.up = true;
+      }
       there.level++;
       there.maxHp = this.maxHpOf(there.def, there.level);
       there.hp = there.maxHp;
@@ -408,6 +415,7 @@ export class Battle {
       uid: nextUid(),
       cardId,
       def: sd,
+      up,
       lane,
       row,
       level: 1,
@@ -541,7 +549,7 @@ export class Battle {
       case 'copyLast': {
         const last = this.lastSpirit;
         const sd = last ? spiritOf(last) : null;
-        if (last && sd && this.tileFree(lane, row)) this.place(last.id, sd, lane, row);
+        if (last && sd && this.tileFree(lane, row)) this.place(last.id, sd, lane, row, last.up);
         break;
       }
       case 'gamble': {

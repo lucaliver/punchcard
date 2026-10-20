@@ -279,3 +279,18 @@ describe('more trinkets', () => {
     expect(b.state).toBe('playing');
   });
 });
+
+describe('merging upgrades', () => {
+  it('an upgraded card merged into a plain spirit upgrades the whole', () => {
+    const b = battle(['crane']);
+    hold(b, 'crane');
+    b.play(0, 1, 4);
+    const plain = b.unitAt(1, 4) as { def: { atk?: { dmg: number } }; up: boolean };
+    expect(plain.def.atk?.dmg).toBe(3);
+    b.hand[1] = { uid: 999, id: 'crane', up: true };
+    b.oil = 10;
+    expect(b.play(1, 1, 4)).toBe(true);
+    expect(plain.up).toBe(true);
+    expect(plain.def.atk?.dmg).toBe(4);
+  });
+});
