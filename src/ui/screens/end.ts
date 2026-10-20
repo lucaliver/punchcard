@@ -1,6 +1,5 @@
 import { type TKey, t } from '../../core/i18n';
 import { MAIN_ACTS } from '../../data/acts';
-import { epilogueKeys } from '../../data/epilogue';
 import { BEG_FLAG } from '../../data/config';
 import { sfx } from '../../audio/sfx';
 import type { HeroId } from '../../game/types';
@@ -113,8 +112,6 @@ export function endScreen(
         }),
       ),
       h('p', { class: 'sub' }, won ? t(weekend ? 'end.victoryWeekendDesc' : 'end.victoryDesc') : t('end.defeatDesc', { n: node.floor })),
-      // What happened to the people of the story (the hero's own line, then one of the run's tale).
-      h('div', { class: 'epilogue' }, ...epilogueKeys(run, won).map((k) => h('p', null, t(k as TKey)))),
       // A promotion: tapping the note opens the hire screen on this hero, where it is played on the plaque.
       end.promoted
         ? h('button', {

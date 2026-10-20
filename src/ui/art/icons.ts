@@ -767,11 +767,6 @@ export const ICONS: Record<string, { el: Element; svg: string; wide?: boolean }>
     el: 'necro',
     svg: `<rect x="10" y="12" width="44" height="48" rx="3"/><rect x="26" y="4" width="12" height="12"/><g fill="#16121f"><circle cx="32" cy="30" r="7"/><path d="M19 50c2-9 7-11 13-11s11 2 13 11z"/></g>`,
   },
-  // The Water Cooler room's mark: a jug on its cabinet, two taps and a bubble of gossip.
-  cooler: {
-    el: 'ice',
-    svg: `<path d="M16 3h26c3 0 5 2 5 5v17c0 3-2 5-5 5H16c-3 0-5-2-5-5V8c0-3 2-5 5-5z"/><path fill="#16121f" opacity=".35" d="M11 17h36v8c0 3-2 5-5 5H16c-3 0-5-2-5-5z"/><circle cx="20" cy="11" r="2.5" fill="#16121f" opacity=".5"/><circle cx="32" cy="22" r="2" fill="#16121f" opacity=".5"/><rect x="21" y="30" width="16" height="5"/><rect x="9" y="35" width="40" height="25" rx="2"/><rect x="17" y="40" width="9" height="6" fill="#16121f"/><rect x="32" y="40" width="9" height="6" fill="#16121f"/><rect x="18" y="52" width="22" height="4" fill="#16121f"/><path d="M47 2h14a3 3 0 0 1 3 3v8a3 3 0 0 1-3 3h-4l-5 5v-5h-5a3 3 0 0 1-3-3V5a3 3 0 0 1 3-3z"/><circle cx="50" cy="9" r="1.6" fill="#16121f"/><circle cx="55" cy="9" r="1.6" fill="#16121f"/><circle cx="60" cy="9" r="1.6" fill="#16121f"/>`,
-  },
   waterCooler: {
     el: 'necro',
     svg: `<path d="M22 2h20c4 4 6 10 6 16s-2 10-6 12H22c-4-2-6-6-6-12s2-12 6-16z"/><circle cx="27" cy="14" r="3" fill="#16121f" opacity=".5"/><circle cx="37" cy="22" r="2.5" fill="#16121f" opacity=".5"/><rect x="14" y="33" width="36" height="28" rx="2"/><rect x="21" y="39" width="22" height="14" fill="#16121f"/><rect x="29" y="39" width="6" height="7"/><rect x="26" y="57" width="12" height="3" fill="#16121f"/>`,
@@ -2441,15 +2436,6 @@ export const ICONS: Record<string, { el: Element; svg: string; wide?: boolean }>
   'relic.remoteControl': {
     el: 'steel',
     svg: `<rect x="18" y="2" width="28" height="60" rx="8"/><circle cx="32" cy="14" r="6" fill="#16121f"/><path d="M29 11v6M35 11v6" stroke="currentColor" stroke-width="2.5"/><rect x="24" y="26" width="16" height="14" rx="3" fill="#16121f"/><circle cx="26" cy="50" r="3" fill="#16121f"/><circle cx="38" cy="50" r="3" fill="#16121f"/><circle cx="32" cy="56" r="3" fill="#16121f"/>`,
-  },
-  // The Water Cooler's stationery.
-  'relic.masterKeys': {
-    el: 'steel',
-    svg: `<circle cx="32" cy="16" r="12" fill="none" stroke="currentColor" stroke-width="6"/><path d="M14 30h10v26a5 5 0 0 1-10 0z"/><path d="M40 30h10v20a5 5 0 0 1-10 0z"/><path d="M26 34h12v26a6 6 0 0 1-12 0z"/><path fill="#16121f" d="M14 44h-6v3h6zM14 52h-4v3h4zM50 42h5v3h-5zM38 48h6v3h-6z"/><rect x="27" y="40" width="10" height="9" fill="#16121f"/>`,
-  },
-  'relic.emeritusLanyard': {
-    el: 'holy',
-    svg: `<path d="M10 2l22 28L54 2" fill="none" stroke="currentColor" stroke-width="7" stroke-linejoin="round"/><rect x="26" y="26" width="12" height="8" rx="2"/><rect x="14" y="32" width="36" height="30" rx="4"/><rect x="14" y="32" width="36" height="8" rx="4" fill="#16121f"/><path fill="#16121f" d="M32 43l3 6 6 1-4.5 4.5 1 6.5-5.5-3-5.5 3 1-6.5L23 50l6-1z"/>`,
   },
 };
 

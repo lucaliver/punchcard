@@ -54,8 +54,6 @@ export const CONFIG = {
     regen: { min: 0.25, max: 3, step: 0.05, start: 1 },
     belt: { min: 0.5, max: 1.5, step: 0.05 },
   },
-  /** Runs started before a new run opens on the onboarding (`orientation`, the Water Cooler's opening scene): the first ones are for learning the game. */
-  onboardingAfterRuns: 2,
   /** Runs finished (won, lost or abandoned) before the home asks for a rating. */
   ratingAfterRuns: 2,
   /** Stars from which a rating counts as a good one (the review asks what was liked, not what was not). */
@@ -134,8 +132,6 @@ export const CONFIG = {
   musicFollowsBelt: 1,
   /** Pay for a won fight (the run's score): a base by enemy tier, plus `perSecond` for every second under `par`. */
   pay: { normal: 10, elite: 25, boss: 50, par: 60, perSecond: 1 },
-  /** Office conditions (`data/conditions.ts`): the share of ordinary fights that come with one (never the first run's, an elite's or a boss's). */
-  condition: { chance: 0.35 },
   /**
    * Block decay: it holds for `blockGrace` s after Block is gained, then loses points per second: `blockDecayMin`, or `blockDecayLin` per point held if that is more,
    * plus `blockDecayQuad` times the square of what is held above `blockDecayKnee` (so a big wall falls ever faster). A fighter's pace (`blockDecay`: `enemyBlockDecay` for an enemy, the hero's on its

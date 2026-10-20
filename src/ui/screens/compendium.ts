@@ -2,8 +2,7 @@ import { getLocale, type TKey, t } from '../../core/i18n';
 import { sfx } from '../../audio/sfx';
 import { CARD_LIST, RARITY_ORDER } from '../../data/cards';
 import { ACT_DEFS } from '../../data/acts';
-import { ENEMIES, ENEMY_LIST } from '../../data/enemies';
-import { EVENT_LIST, type EventDef } from '../../data/events';
+import { ENEMY_LIST } from '../../data/enemies';
 import type { EnemyDef, RelicDef } from '../../game/types';
 import { HERO_LIST } from '../../data/heroes';
 import { RELIC_LIST } from '../../data/relics';
@@ -19,7 +18,6 @@ import {
   newPages,
   records,
   relicSeen,
-  sceneSeen,
   runHistory,
 } from '../../game/meta';
 import type { CardClass, RunLog } from '../../game/types';
@@ -28,11 +26,10 @@ import { h, onPress, stagger } from '../dom';
 import { creature } from '../art/creatures';
 import { icon } from '../art/icons';
 import { relicArt } from '../art/relics';
-import { roomArt } from '../art/rooms';
 import { cardView, KEYWORD_LIST, keywordHtml, keywordIconHtml, UNKNOWN } from '../components/cardView';
 import { collectionBars } from '../components/collectionBars';
 import { foeView } from '../components/moveText';
-import { openCardAnatomy, openCardDetail, openInfo, sortCards, sortControl } from '../components/modals';
+import { openCardAnatomy, openCardDetail, sortCards, sortControl } from '../components/modals';
 import { openRunDetail } from '../components/runDetail';
 
 /** The class tabs of the handbook (a hero still in the works has none). */
@@ -49,13 +46,12 @@ const CLASS_ICON: Record<CardClass, string> = {
   curse: 'skull',
 };
 
-export type Section = 'cards' | 'enemies' | 'relics' | 'gossip' | 'keywords' | 'records' | 'history';
-const SECTIONS: Section[] = ['cards', 'enemies', 'relics', 'gossip', 'keywords', 'records', 'history'];
+export type Section = 'cards' | 'enemies' | 'relics' | 'keywords' | 'records' | 'history';
+const SECTIONS: Section[] = ['cards', 'enemies', 'relics', 'keywords', 'records', 'history'];
 const SECTION_ICON: Record<Section, string> = {
   cards: 'cards',
   enemies: 'clipboard',
   relics: 'stapler',
-  gossip: 'cooler',
   keywords: 'book',
   records: 'medal',
   history: 'lateClock',
@@ -78,7 +74,6 @@ const pagesNow = (): Page[] => [
   ...tabsNow().map((tab): Page => ({ section: 'cards', tab })),
   ...ACT_DEFS.map((_, i): Page => ({ section: 'enemies', act: i + 1 })),
   { section: 'relics' },
-  { section: 'gossip' },
   { section: 'keywords' },
   { section: 'records' },
   { section: 'history' },
@@ -99,34 +94,6 @@ function relicView(r: RelicDef): HTMLElement {
     'data-rarity': r.rarity,
     html: `<i class="relic-gem"></i>${relicArt(r.id)}<div><b>${seen ? t(`relic.${r.id}.name`) : UNKNOWN}</b>${seen ? keywordHtml(t(`relic.${r.id}.d`, { n: r.n })) : UNKNOWN}</div>`,
   });
-}
-
-/** One line per Water Cooler scene: the speaker's face and the title once it has been met (a tap reads it again), question marks before. */
-function sceneView(e: EventDef): HTMLElement {
-  const seen = sceneSeen(e.id);
-  const speaker = e.speaker ? ENEMIES[e.speaker] : undefined;
-  const art = speaker ? creature(speaker.art) : roomArt('event');
-  const who = speaker ? t(`enemy.${speaker.id}.name`) : t('event.cooler');
-  const line = h('article', {
-    class: `relic-line scene-line${seen ? '' : ' undiscovered'}`,
-    'data-rarity': 'common',
-    html: `<i class="relic-gem"></i>${art}<div><b>${seen ? t(`event.${e.id}.title`) : UNKNOWN}</b>${seen ? who : UNKNOWN}</div>`,
-  });
-  if (seen)
-    onPress(line, () => {
-      sfx('tap');
-      openInfo({
-        art,
-        title: t(`event.${e.id}.title`),
-        desc: t(`event.${e.id}.text`),
-        extra: [
-          t('gossip.who', { name: who }),
-          ...(e.hero ? [t('gossip.hero', { hero: t(`hero.${e.hero}.name`) })] : []),
-          ...(e.needs ? [t('gossip.chapter')] : []),
-        ],
-      });
-    });
-  return line;
 }
 
 /** One row per hero, one column per act: a rubber stamp where the hero beat that act's boss, a faint blank slot where not yet. */
@@ -239,7 +206,6 @@ export function compendiumScreen(onBack: () => void, open: Section = 'cards'): S
   const foes = h('div', { class: 'foes' });
   const foesWrap = h('div', null, actTabs, h('div', { style: { height: '12px' } }), foes);
   const relics = h('div', { class: 'relics' }, ...RELICS_BY_RARITY.map(relicView));
-  const gossip = h('div', { class: 'relics' }, ...EVENT_LIST.map(sceneView));
   const keywords = h(
     'div',
     { class: 'relics' },
@@ -290,14 +256,11 @@ export function compendiumScreen(onBack: () => void, open: Section = 'cards'): S
           ? t('compendium.foes', { n: filled.foes.n, total: filled.foes.total })
           : section === 'relics'
             ? t('compendium.relicsFound', { n: filled.relics.n, total: filled.relics.total })
-            : section === 'gossip'
-              ? t('compendium.gossipFound', { n: EVENT_LIST.filter((e) => sceneSeen(e.id)).length, total: EVENT_LIST.length })
-              : '';
+            : '';
     sub.hidden = section === 'records' || section === 'history' || section === 'keywords';
     cardsWrap.hidden = section !== 'cards';
     foesWrap.hidden = section !== 'enemies';
     relics.hidden = section !== 'relics';
-    gossip.hidden = section !== 'gossip';
     keywords.hidden = section !== 'keywords';
     slip.hidden = section !== 'records';
     history.hidden = section !== 'history';
@@ -370,7 +333,7 @@ export function compendiumScreen(onBack: () => void, open: Section = 'cards'): S
   cardsWrap.append(tabs, h('div', { style: { height: '12px' } }), sortControl(render), grid);
   render();
 
-  const scroller = h('div', { class: 'scroll', style: { flex: '1' } }, sub, cardsWrap, foesWrap, relics, gossip, keywords, slip, history);
+  const scroller = h('div', { class: 'scroll', style: { flex: '1' } }, sub, cardsWrap, foesWrap, relics, keywords, slip, history);
   const el = h(
     'div',
     { class: 'screen compendium' },

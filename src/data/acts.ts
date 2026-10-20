@@ -27,10 +27,10 @@ export interface ActDef {
 export const MAIN_ACTS = 3;
 
 export const ACT_DEFS: readonly ActDef[] = [
-  { shift: [8, 12], music: 'combat', mapMusic: 'map', door: 'door', bossClock: true, tagline: 'journey.actTag.1' },
-  { shift: [13, 17], music: 'combat2', mapMusic: 'map2', door: 'doorOffice', bossIcon: 'watchEye', tagline: 'journey.actTag.2' },
+  { shift: [8, 12], music: 'combat', mapMusic: 'map', door: 'door', bossClock: true },
+  { shift: [13, 17], music: 'combat2', mapMusic: 'map2', door: 'doorOffice', bossIcon: 'watchEye' },
   // The night shift runs past midnight to the dawn: the clock shows 22:00 to 06:00.
-  { shift: [22, 30], music: 'combat3', mapMusic: 'map3', door: 'doorShutter', bossIcon: 'gavel', tagline: 'journey.actTag.3' },
+  { shift: [22, 30], music: 'combat3', mapMusic: 'map3', door: 'doorShutter', bossIcon: 'gavel' },
   // The bonus act: the weekend, from Saturday morning to Sunday night (09:00 to 21:00 on the map's clock).
   {
     shift: [9, 21],

@@ -2,7 +2,6 @@ import { Rng } from '../core/rng';
 import { loadRaw, remove, store } from '../core/save';
 import { nextUid, peekUid, resetUid } from '../core/util';
 import { CARD_LIST, CARDS, RARITY_ORDER, cardCostOf, cardKeywordsOf, rewardPool } from '../data/cards';
-import { type ConditionDef, rollCondition } from '../data/conditions';
 import { PERKS } from '../data/perks';
 import { WHEEL, type WheelSlot } from '../data/wheel';
 import { RELIC_LIST, RELICS, abilityEveryFight, relicSum } from '../data/relics';
@@ -52,7 +51,6 @@ export const NODE_TYPES = [
   'wheel',
   'lunch',
   'lottery',
-  'event',
   'boss',
 ] as const;
 export type NodeType = (typeof NODE_TYPES)[number];
@@ -133,8 +131,8 @@ const SAVE_KEY = 'run';
  * lanes end on a rest before the boss.
  */
 const LANES: Slot[][] = [
-  ['fight', 'special', 'rest', 'event', 'elite', 'special', 'fight', 'rest'],
-  ['promotion', 'fight', 'special', 'event', 'rest', 'special', 'fight', 'rest'],
+  ['fight', 'special', 'rest', 'fight', 'elite', 'special', 'fight', 'rest'],
+  ['promotion', 'fight', 'special', 'fight', 'rest', 'special', 'fight', 'rest'],
 ];
 /** A `special` slot of a lane becomes one of these when the act is built; one act never deals the same room twice. */
 export const SPECIALS: NodeType[] = ['copy', 'tailor', 'lostFound', 'vending', 'crossTraining', 'restructuring', 'wheel'];
@@ -177,7 +175,7 @@ export const ACT_SCRIPTS: Record<number, ScriptNode[]> = {
     /* 8 */ { floor: 6, lane: 1, type: 'copy', next: [10, 9] },
     /* 9 */ { floor: 7, lane: 0, type: 'promotion', next: [11] },
     /* 10 */ { floor: 7, lane: 1, type: 'elite', enemy: 'sushiChef', next: [12] },
-    /* 11 */ { floor: 8, lane: 0, type: 'event', next: [13] },
+    /* 11 */ { floor: 8, lane: 0, type: 'rest', next: [13] },
     /* 12 */ { floor: 8, lane: 1, type: 'rest', next: [13] },
     /* 13 */ { floor: 9, lane: 0.5, type: 'lostFound', next: [14] },
     /* 14 */ { floor: 10, lane: 0.5, type: 'boss', enemy: 'slavesCeo', next: [] },
@@ -189,7 +187,7 @@ export const ACT_SCRIPTS: Record<number, ScriptNode[]> = {
     /* 2 */ { floor: 2, lane: 1, type: 'promotion', next: [4] },
     /* 3 */ { floor: 3, lane: 0, type: 'vending', next: [5, 4] },
     /* 4 */ { floor: 3, lane: 1, type: 'fight', enemy: 'officeChair', next: [6] },
-    /* 5 */ { floor: 4, lane: 0, type: 'event', next: [7] },
+    /* 5 */ { floor: 4, lane: 0, type: 'rest', next: [7] },
     /* 6 */ { floor: 4, lane: 1, type: 'copy', next: [8] },
     /* 7 */ { floor: 5, lane: 0, type: 'fight', enemy: 'changeManager', next: [9] },
     /* 8 */ { floor: 5, lane: 1, type: 'rest', next: [10] },
@@ -211,7 +209,7 @@ export const ACT_SCRIPTS: Record<number, ScriptNode[]> = {
     /* 3 */ { floor: 3, lane: 0, type: 'fight', enemy: 'vipClient', next: [5] },
     /* 4 */ { floor: 3, lane: 1, type: 'fight', enemy: 'lineLead', next: [6] },
     /* 5 */ { floor: 4, lane: 0, type: 'rest', next: [7] },
-    /* 6 */ { floor: 4, lane: 1, type: 'event', next: [8] },
+    /* 6 */ { floor: 4, lane: 1, type: 'rest', next: [8] },
     /* 7 */ { floor: 5, lane: 0, type: 'fight', enemy: 'smokeDetector', next: [9] },
     /* 8 */ { floor: 5, lane: 1, type: 'fight', enemy: 'microwave', next: [10, 9] },
     /* 9 */ { floor: 6, lane: 0, type: 'elite', enemy: 'tourist', next: [11] },
@@ -232,7 +230,7 @@ export const ACT_SCRIPTS: Record<number, ScriptNode[]> = {
     /* 2 */ { floor: 2, lane: 1, type: 'lottery', next: [4] },
     /* 3 */ { floor: 3, lane: 0, type: 'fight', enemy: 'leafBlowerNeighbour', next: [5] },
     /* 4 */ { floor: 3, lane: 1, type: 'fight', enemy: 'brunchInfluencer', next: [6, 5] },
-    /* 5 */ { floor: 4, lane: 0, type: 'event', next: [7] },
+    /* 5 */ { floor: 4, lane: 0, type: 'rest', next: [7] },
     /* 6 */ { floor: 4, lane: 1, type: 'vending', next: [8] },
     /* 7 */ { floor: 5, lane: 0, type: 'elite', enemy: 'weddingDj', next: [9] },
     /* 8 */ { floor: 5, lane: 1, type: 'fight', enemy: 'grillDad', next: [10, 9] },
@@ -517,7 +515,7 @@ export function clockAt(run: RunState, node: RunNode): number {
 }
 export const totalFloors = (run: RunState): number => Math.max(...run.nodes.map((n) => n.floor));
 
-export function rngOf(run: RunState): Rng {
+function rngOf(run: RunState): Rng {
   return new Rng(run.rng);
 }
 
@@ -531,10 +529,6 @@ export function enemyScale(node: RunNode, m: Mods = NO_MODS, pressure: Pressure 
     dmg: (1 + CONFIG.floorDmg * f) * CONFIG.enemyDmg * m.enemyDmg * p.dmg,
   };
 }
-
-/** The day's twist on a fight room (`data/conditions.ts`): only ordinary jobs have one, and never the teaching run's. */
-export const conditionFor = (run: RunState, node: RunNode): ConditionDef | undefined =>
-  node.type === 'fight' && !isFirstRun(run) ? rollCondition(run.seed, node.id, node.act) : undefined;
 
 export function combatSetup(run: RunState): CombatSetup {
   const node = currentNode(run);
@@ -558,7 +552,6 @@ export function combatSetup(run: RunState): CombatSetup {
     manaSlow: m.manaSlow,
     blockFade: m.blockFade,
     enemyTime: m.enemyTime,
-    condition: conditionFor(run, node),
     bonusMaxMana: run.crystals,
     sleeveLost: run.sleeveLost,
     abilitySpent: run.abilityAct === node.act && !abilityEveryFight(run.relics),
@@ -606,7 +599,7 @@ export function applyCombat(run: RunState, combat: Combat): void {
     if (pressureLearns(run)) run.pressure = learn(run.pressure, fightFacts(combat, run.maxHp));
     run.stats.kills++;
     if (combat.enemy.def.tier === 'elite') run.stats.elites++;
-    run.money += Math.round(fightPay(combat.enemy.def.tier, combat.time) * (combat.condition?.pay ?? 1));
+    run.money += fightPay(combat.enemy.def.tier, combat.time);
     if (node.type === 'boss') stampAct(run.hero, node.act);
   }
   run.cleared = true;
@@ -901,20 +894,6 @@ export function restructure(run: RunState, uids: number[]): { before: CardInst; 
   run.rng = rng.state;
   run.cleared = true;
   return moved;
-}
-
-/** A random card of this rarity, from the hero's pool (every class's with `cross`, like the Rolodex), goes into the deck. Returns it, or nothing when the pool has none. */
-export function giftCard(run: RunState, rarity: Rarity, cross = false): CardInst | undefined {
-  const rng = rngOf(run);
-  const pool = rewardPool(run.hero, rarity, cross || openPool(run));
-  const def = pool.length ? pickReward(rng, run, pool) : undefined;
-  run.rng = rng.state;
-  if (!def) return undefined;
-  discover([def.id]);
-  const card = newCard(run, def.id);
-  run.deck.push(card);
-  run.cleared = true;
-  return card;
 }
 
 /** The relics the run doesn't hold yet (no special one). */

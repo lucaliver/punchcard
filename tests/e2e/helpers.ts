@@ -11,8 +11,6 @@ export async function freshGame(
     tutorial?: boolean;
     locked?: boolean;
     veteran?: boolean;
-    /** Runs already started (the third run on opens on the onboarding); default 1 for a veteran. */
-    runs?: number;
     debug?: boolean;
     stamps?: string[];
     met?: string[];
@@ -29,7 +27,7 @@ export async function freshGame(
   page.on('pageerror', (e) => problems.push(`pageerror: ${e.message}`));
   await page.goto('/');
   await page.evaluate(
-    ([seen, unlocked, veteran, debug, stamps, met, more, ranks, runs]) => {
+    ([seen, unlocked, veteran, debug, stamps, met, more, ranks]) => {
       localStorage.clear();
       localStorage.setItem('cardstone+:settings', JSON.stringify({ seenTutorial: seen, debugMenus: debug, localeChosen: true }));
       const heroes = unlocked ? ['mage', 'necromancer', ...more] : [];
@@ -41,7 +39,7 @@ export async function freshGame(
             met,
             heroes,
             fresh: [],
-            runs: runs ?? (veteran || stamps.length || Object.keys(ranks).length ? 1 : 0),
+            runs: veteran || stamps.length || Object.keys(ranks).length ? 1 : 0,
             ranks,
             stamps,
             actsReached: veteran || stamps.length || Object.keys(ranks).length ? [1, 2, 3] : [],
@@ -57,7 +55,6 @@ export async function freshGame(
       opts.met ?? [],
       opts.heroes ?? [],
       opts.ranks ?? {},
-      opts.runs ?? null,
     ] as const,
   );
   await page.reload();

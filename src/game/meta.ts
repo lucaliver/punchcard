@@ -4,7 +4,6 @@ import { CARD_LIST, CARDS } from '../data/cards';
 import { ENEMIES, ENEMY_LIST } from '../data/enemies';
 import { HERO_LIST, HEROES } from '../data/heroes';
 import { rankMax } from '../data/rank';
-import { EVENTS } from '../data/events';
 import { RELIC_LIST, RELICS } from '../data/relics';
 import { CONFIG } from '../data/config';
 import type { EnemyDef, HeroId, HeroUnlock, Records, RunLog } from './types';
@@ -32,8 +31,6 @@ interface Meta {
   met: string[];
   /** Relic ids seen (offered or owned): the handbook hides the others' names. */
   relics: string[];
-  /** Ids of the Water Cooler scenes met (`data/events.ts`). */
-  scenes: string[];
   /** Runs started so far (the very first one has a scripted act 1). */
   runs: number;
   /** The employment contract has been signed (the start screen's first-time hold). */
@@ -81,7 +78,6 @@ const meta: Meta = load('meta', {
   fresh: [],
   met: [],
   relics: [],
-  scenes: [],
   runs: 0,
   signed: false,
   stamps: [],
@@ -100,7 +96,6 @@ for (const k of ['heroes', 'fresh'] as const) meta[k] = Array.isArray(meta[k]) ?
 const discovered = new Set(Array.isArray(meta.discovered) ? meta.discovered.filter((id) => typeof id === 'string' && id in CARDS) : []);
 meta.met = Array.isArray(meta.met) ? meta.met.filter((id) => typeof id === 'string' && id in ENEMIES) : [];
 meta.relics = Array.isArray(meta.relics) ? meta.relics.filter((id) => typeof id === 'string' && id in RELICS) : [];
-meta.scenes = Array.isArray(meta.scenes) ? meta.scenes.filter((id) => typeof id === 'string' && id in EVENTS) : [];
 if (typeof meta.runs !== 'number') meta.runs = 0;
 meta.signed = meta.signed === true;
 meta.rated = meta.rated === true;
@@ -304,14 +299,6 @@ export function seeRelics(ids: Iterable<string>): void {
 }
 export const relicSeen = (id: string): boolean => meta.relics.includes(id);
 
-/** A Water Cooler scene has been met: the handbook's Gossip page keeps it. */
-export function seeScene(id: string): void {
-  if (meta.scenes.includes(id)) return;
-  meta.scenes.push(id);
-  store('meta', meta);
-}
-export const sceneSeen = (id: string): boolean => meta.scenes.includes(id);
-
 /** Debug: every hero hired and stamped for every act (the weekend is open to all, every rank of every ladder is reached), every card discovered, every enemy met and every relic seen. */
 export function unlockAll(cards: Iterable<string>, enemies: Iterable<string>, relics: Iterable<string>): void {
   meta.heroes = HERO_LIST.filter((hd) => hd.unlock).map((hd) => hd.id);
@@ -319,7 +306,6 @@ export function unlockAll(cards: Iterable<string>, enemies: Iterable<string>, re
   meta.stamps = HERO_LIST.flatMap((hd) => ACT_DEFS.map((_, i) => `${hd.id}:${i + 1}`));
   meta.met = [...enemies];
   meta.relics = [...relics];
-  meta.scenes = Object.keys(EVENTS);
   // Every rank of every ladder is reached (and seen), so each can be tried.
   for (const hd of HERO_LIST) if (rankMax(hd.id)) meta.ranks[hd.id] = { top: rankMax(hd.id), seen: rankMax(hd.id), pick: rankMax(hd.id) };
   for (const id of cards) discovered.add(id);

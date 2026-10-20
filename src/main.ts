@@ -40,7 +40,7 @@ import {
   type RewardOffer,
   type RunState,
 } from './game/run';
-import { records, contractSigned, lastEnemies, rankPick, reachAct, setLastEnemies, startingFirstRun, unmetActs, weekendOpen } from './game/meta';
+import { contractSigned, lastEnemies, rankPick, reachAct, setLastEnemies, startingFirstRun, unmetActs, weekendOpen } from './game/meta';
 import { settings } from './game/settings';
 import type { HeroId } from './game/types';
 import { confirmModal, initApp, openModal, type Screen, show } from './ui/app';
@@ -71,7 +71,6 @@ import { restructuringScreen } from './ui/screens/restructuring';
 import { wheelScreen } from './ui/screens/wheel';
 import { lunchScreen } from './ui/screens/lunch';
 import { lotteryScreen } from './ui/screens/lottery';
-import { eventScreen } from './ui/screens/event';
 import { rewardScreen } from './ui/screens/reward';
 import { studioScreen } from './ui/screens/studio';
 import { languageScreen } from './ui/screens/language';
@@ -101,7 +100,6 @@ const ROOMS: Partial<Record<NodeType, (run: RunState, onDone: () => void) => Scr
   wheel: wheelScreen,
   lunch: lunchScreen,
   lottery: lotteryScreen,
-  event: eventScreen,
 };
 
 function goTitle(): void {
@@ -144,26 +142,7 @@ function startRun(hero: HeroId): void {
   run = newRun(hero, first ? FIRST_RUN_SEED : randomSeed(), scripted, lastEnemies(), open ? ACT_DEFS.length : MAIN_ACTS, first ? 0 : rankPick(hero));
   setLastEnemies(run.nodes.flatMap((n) => (n.enemy ? [n.enemy] : [])));
   resetFightLog();
-  if (first || records().runs <= CONFIG.onboardingAfterRuns) goJourney();
-  else goOnboarding(run);
-}
-
-/** A new run (not the teaching one) opens on the onboarding: three packages out of eight, one boon each. The first room stays to be played after it. */
-function goOnboarding(r: RunState): void {
-  playMusic('rest');
-  show(
-    inAct(
-      eventScreen(
-        r,
-        () => {
-          r.cleared = false;
-          goJourney();
-        },
-        true,
-      ),
-      r,
-    ),
-  );
+  goJourney();
 }
 
 /** Debug: a fresh run whose first fight is against the chosen enemy. */
@@ -422,11 +401,6 @@ async function boot(): Promise<void> {
         },
         nextNode,
         goJourney,
-        endRun,
-        /** Dev only: opens a room's screen on the current run (screenshots). */
-        room: (type: NodeType) => {
-          if (run) show(inAct(ROOMS[type]!(run, goJourney), run));
-        },
         musicTrack,
       },
     });

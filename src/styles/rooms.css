@@ -338,11 +338,3 @@
 .sc-cell.covered::after { content: ''; position: absolute; inset: 0; background-image: repeating-linear-gradient(45deg, var(--paper2) 0 3px, var(--muted) 3px 6px); }
 .sc-verdict { min-height: 2.4em; }
 .lunch-left { margin: 4px 0; }
-
-/* a room's picture talks (`say`, the same bubble as an enemy's): the bubble sits over the top of the picture, its tail pointing down at it */
-.room-scene .speech { top: 0; width: min(86%, 300px); z-index: 2; }
-.room-scene .speech::after {
-  top: 100%;
-  bottom: auto;
-  clip-path: polygon(0 0, 50% 100%, 100% 0);
-}

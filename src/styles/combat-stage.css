@@ -810,8 +810,7 @@
 .threat .t-time .pico { font-size: 20px; --ink2: var(--b); }
 
 /* Before Start: the enemy's passives, on a paper slip under the Clock in button; its dark head, with the enemy's face, says whose they are. */
-.foe-traits,
-.today-slip {
+.foe-traits {
   width: min(92%, 340px);
   color: var(--k);
   background: var(--paper);
@@ -845,18 +844,3 @@
 .trait p { margin: 0; font-family: var(--font); font-size: 15px; line-height: 1.25; }
 .trait b { display: block; font-family: var(--font-ui); font-size: 18px; text-transform: uppercase; }
 .trait b.kw { display: inline; font-family: inherit; font-size: inherit; text-transform: none; }
-
-/* the day's twist (an office condition): a slip of its own over the passives, its head in the pink of the day, the pay it changes stamped at the side */
-.today-slip { box-shadow: var(--off) var(--off) 0 var(--y); margin-bottom: 8px; }
-.today-slip .trait-head { color: var(--k); background: var(--y); }
-.trait-pay {
-  flex: none;
-  padding: 1px 6px;
-  font-style: normal;
-  font-family: var(--font-ui);
-  font-size: 15px;
-  color: var(--paper);
-  background: var(--p);
-  border: 2px solid var(--k);
-  rotate: 3deg;
-}

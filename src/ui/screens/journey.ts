@@ -2,7 +2,7 @@ import { t } from '../../core/i18n';
 import { sfx } from '../../audio/sfx';
 import { haptic } from '../fx/fx';
 import { actDef } from '../../data/acts';
-import { clockAt, conditionFor, currentNode, mapAct, saveRun, startShift, type RunNode, type RunState } from '../../game/run';
+import { clockAt, currentNode, mapAct, saveRun, startShift, type RunNode, type RunState } from '../../game/run';
 import { openModal, type Screen } from '../app';
 import { ENEMIES } from '../../data/enemies';
 import { relicSum } from '../../data/relics';
@@ -19,9 +19,6 @@ import { creature } from '../art/creatures';
 import { heroFaces } from '../components/heroMood';
 import { UNKNOWN } from '../components/cardView';
 import { actArt } from '../art/actArt';
-import { conditionText } from '../components/condition';
-import { type Typing, typeLine } from '../components/typewriter';
-import { pickIntercom } from '../../data/intercom';
 
 export const NODE_ICON: Record<RunNode['type'], string> = {
   fight: 'toolbox',
@@ -37,15 +34,12 @@ export const NODE_ICON: Record<RunNode['type'], string> = {
   wheel: 'luckyWheel',
   lunch: 'lasagna',
   lottery: 'scratchCard',
-  event: 'cooler',
   boss: 'tophat',
 };
 /** What a room is called on the map and in its info (the last act's boss is the final one). */
 const nodeKind = (n: RunNode): 'finalBoss' | RunNode['type'] => (n.type === 'boss' && !n.next.length ? 'finalBoss' : n.type);
 /** The icon of a room on the map: a boss wears the one of its act. */
 export const nodeIcon = (n: RunNode): string => (n.type === 'boss' ? (actDef(n.act).bossIcon ?? NODE_ICON.boss) : NODE_ICON[n.type]);
-/** One letter of the Intercom's line every so many ms. */
-const INTERCOM_MS = 22;
 /** Height of one floor on the map (px); a room takes most of it, the rest is corridor. */
 const ROW_H = 100;
 const laneX = (lane: number): number => 22 + lane * 56;
@@ -312,16 +306,12 @@ export function journeyScreen(run: RunState, onEnter: (to?: number) => void, onH
           return;
         }
         const enemy = n.enemy ? t(`enemy.${n.enemy}.name`) : null;
-        const today = conditionFor(run, n);
         openInfo({
           icon: nodeIcon(n),
           title: label,
           tag: t('common.floor', { n: n.floor }),
           desc: t(`journey.info.${nodeKind(n)}`),
-          extra: [
-            ...(enemy ? [t('journey.info.enemy', { name: enemy })] : []),
-            ...(today ? [t('journey.info.today', { name: conditionText(today).name })] : []),
-          ],
+          extra: enemy ? [t('journey.info.enemy', { name: enemy })] : undefined,
         });
       },
     );
@@ -347,26 +337,6 @@ export function journeyScreen(run: RunState, onEnter: (to?: number) => void, onH
       },
     }),
   );
-  // The Intercom: the building's voice over the map. A tap on the speaker asks for another line.
-  const said = h('span', null);
-  const unsaid = h('span', { class: 'unsaid' });
-  const intercom = h(
-    'button',
-    { class: 'intercom', 'aria-label': t('intercom.label') },
-    h('i', { class: 'intercom-ico', html: icon('megaphone') }),
-    h('p', { class: 'intercom-line' }, said, unsaid),
-  );
-  let announcing: Typing | undefined;
-  let salt = 0;
-  const announce = (): void => {
-    announcing?.cancel();
-    announcing = typeLine(said, unsaid, t(`intercom.${pickIntercom(run, act, salt++)}`), INTERCOM_MS, () => {});
-  };
-  intercom.addEventListener('click', () => {
-    sfx('ding');
-    announce();
-  });
-
   const el = h(
     'div',
     { class: 'screen journey', 'data-act': String(act) },
@@ -378,7 +348,6 @@ export function journeyScreen(run: RunState, onEnter: (to?: number) => void, onH
       h('div', { class: 'h1' }, t('journey.title', { n: act })),
       h('p', { class: 'sub' }, t(`journey.actName.${act}`)),
     ),
-    intercom,
     h('div', { class: 'scroll', style: { flex: '1' } }, path),
     enterBtn,
     debugButton(t('debug.menu'), onDebug),
@@ -447,11 +416,9 @@ export function journeyScreen(run: RunState, onEnter: (to?: number) => void, onH
     el,
     leave() {
       clearTimeout(revealTimer);
-      announcing?.cancel();
       cancelAnimationFrame(glideId);
     },
     enter() {
-      announce();
       const newShift = act !== cur.act || (run.path.length === 1 && !run.cleared);
       if (newShift) frameBoss();
       else first()?.scrollIntoView({ block: 'center' });
